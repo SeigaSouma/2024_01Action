@@ -1,0 +1,85 @@
+#==============================================================================
+#
+# 『階層モデル』スクリプトファイル [setup_leg.txt]
+# Author : 相馬 靜雅
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 6
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data\MODEL\union_SUPER_title\Lleg.x		# [11]左もも
+MODEL_FILENAME = data\MODEL\union_SUPER_title\Lshin.x		# [12]左脚
+MODEL_FILENAME = data\MODEL\union_SUPER_title\Lfeet.x		# [13]左あし
+MODEL_FILENAME = data\MODEL\union_SUPER_title\Rleg.x		# [14]右もも
+MODEL_FILENAME = data\MODEL\union_SUPER_title\Rshin.x		# [15]右脚
+MODEL_FILENAME = data\MODEL\union_SUPER_title\Rfeet.x		# [16]右あし
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	VELOCITY = 2.5					# 移動量
+	JUMP = 8.65						# ジャンプ量
+	RADIUS = 60.0					# 半径
+	HEIGHT = 80.0					# 高さ
+	LIFE = 28						# 体力
+	MOTION_STARTPARTS = 11
+	
+	PARTSSET
+		INDEX = 0
+		PARENT = -1
+		POS = 88.00 -32.00 14.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 1
+		PARENT = 0
+		POS = 0.00 -236.00 24.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 2
+		PARENT = 1
+		POS = 0.00 -270.00 -48.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 3
+		PARENT = -1
+		POS = -88.00 -32.00 14.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 4
+		PARENT = 3
+		POS = 0.00 -236.00 24.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 5
+		PARENT = 4
+		POS = 0.00 -270.00 -48.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+	
+END_CHARACTERSET
+
+END_SCRIPT		# この行は絶対消さないこと！

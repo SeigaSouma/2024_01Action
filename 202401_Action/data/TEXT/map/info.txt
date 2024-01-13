@@ -1,0 +1,52 @@
+#------------------------------------------------------------------------------
+# テクスチャ数
+#------------------------------------------------------------------------------
+NUM_TEXTURE = 21
+
+#------------------------------------------------------------------------------
+# テクスチャファイル名
+#------------------------------------------------------------------------------
+TEXTURE_FILENAME = data/TEXTURE/FIELD/concreat.png		# [0]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/senter.png		# [1]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/senterlong.png		# [2]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/sideL.png		# [3]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/sideR.png		# [4]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/odan.png		# [5]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/walkroad.jpg		# [6]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/walkroad_01.jpg		# [7]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/tile_04.jpg		# [8]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/tile_03.jpg		# [9]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/water_02.jpg		# [10]
+TEXTURE_FILENAME = data/TEXTURE/sky_06.jpg		# [11]
+TEXTURE_FILENAME = data/TEXTURE/forest_02.jpg		# [12]
+TEXTURE_FILENAME = data/TEXTURE/line.png		# [13]
+TEXTURE_FILENAME = data/TEXTURE/glass.jpg		# [14]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/soil.jpg		# [15]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/douro_01.png		# [16]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/kousaten_01.png		# [17]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/stop.png		# [18]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/forest.png		# [19]
+TEXTURE_FILENAME = data/TEXTURE/FIELD/forest_01.png		# [20]
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 2
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data\\MODEL\\map\mark_01.x		# [0]
+MODEL_FILENAME = data\\MODEL\\map_object\tree_01.x		# [1]
+
+#==============================================================================
+# 山情報
+#==============================================================================
+
+
+#==============================================================================
+# モデルの配置
+#==============================================================================
+
+
+END_SCRIPT		# この行は絶対消さないこと！
