@@ -113,6 +113,7 @@ private:
 	MyLib::Vector3 m_vecU;				// 上方向ベクトル
 	MyLib::Vector3 m_move;				// 移動量
 	MyLib::Vector3 m_rot;				// 向き
+	MyLib::Vector3 m_Moverot;			// 向きの移動量
 	MyLib::Vector3 m_rotVDest;			// 目標の視点の向き
 	MyLib::Vector3 m_TargetPos;		// 追従目標の位置
 	MyLib::Vector3 m_TargetRot;		// 追従目標の向き

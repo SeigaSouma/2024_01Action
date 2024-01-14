@@ -73,12 +73,12 @@ HRESULT CObjectChara::SetCharacter(const std::string pTextFile)
 	CObjectHierarchy::SetCharacter(pTextFile);
 
 	// モーションの生成処理
-	m_pMotion = CMotion::Create(pTextFile);
+	m_pMotion = CMotion::Create(pTextFile, this);
 
 	// モーションの設定
 	if (m_pMotion != nullptr)
 	{
-		m_pMotion->SetModel(GetModel(), GetNumModel(), this);
+		m_pMotion->SetModel(GetModel(), GetNumModel());
 
 		// ポーズのリセット
 		m_pMotion->ResetPose(0);
@@ -230,10 +230,10 @@ void CObjectChara::ChangeMotion(const char* pMotionFile)
 	}
 
 	// モーションの生成処理
-	m_pMotion = CMotion::Create(pMotionFile);
+	m_pMotion = CMotion::Create(pMotionFile, this);
 
 	// モーションの設定
-	m_pMotion->SetModel(GetModel(), GetNumModel(), this);
+	m_pMotion->SetModel(GetModel(), GetNumModel());
 
 	// ポーズのリセット
 	m_pMotion->ResetPose(0);

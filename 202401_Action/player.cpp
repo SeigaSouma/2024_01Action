@@ -46,13 +46,13 @@
 //==========================================================================
 namespace
 {
-	const char* CHARAFILE = "data\\TEXT\\character\\player\\tyuuniplayer\\setup_player.txt";	// キャラクターファイル
+	const char* CHARAFILE = "data\\TEXT\\character\\player\\tyuuni\\setup_player.txt";	// キャラクターファイル
 	const float JUMP = 20.0f * 1.5f;	// ジャンプ力初期値
 	const int INVINCIBLE_INT = 2;		// 無敵の間隔
 	const int INVINCIBLE_TIME = 90;		// 無敵の時間
 	const int DEADTIME = 120;			// 死亡時の時間
 	const int FADEOUTTIME = 60;			// フェードアウトの時間
-	const float MULTIPLIY_DASH = 1.5f;	// ダッシュの倍率
+	const float MULTIPLIY_DASH = 1.875f;	// ダッシュの倍率
 	const float RADIUS_STAGE = 20000.0f;	// ステージの半径
 }
 
@@ -296,14 +296,14 @@ void CPlayer::Update(void)
 	// 位置の制限
 	LimitPos();
 
-#if 0
+#if 1
 	// デバッグ表示
 	CManager::GetInstance()->GetDebugProc()->Print(
 		"------------------[プレイヤーの操作]------------------\n"
-		"位置：【X：%f, Y：%f, Z：%f】【X：%f, Y：%f, Z：%f】 【W / A / S / D】\n"
+		"位置：【X：%f, Y：%f, Z：%f】 【W / A / S / D】\n"
 		"向き：【X：%f, Y：%f, Z：%f】 【Z / C】\n"
 		"移動量：【X：%f, Y：%f, Z：%f】\n"
-		"体力：【%d】\n", pos.x, pos.y, pos.z, posCenter.x, posCenter.y, posCenter.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife());
+		"体力：【%d】\n", pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife());
 #endif
 
 }
@@ -354,7 +354,7 @@ void CPlayer::Controll(void)
 	{// 行動できるとき
 
 		// ダッシュ判定
-		m_bDash = pInputGamepad->GetPress(CInputGamepad::BUTTON_LB, 0);
+		m_bDash = pInputGamepad->GetPress(CInputGamepad::BUTTON_LB, m_nMyPlayerIdx);
 		if (m_bDash)
 		{
 			fMove *= MULTIPLIY_DASH;
@@ -452,13 +452,26 @@ void CPlayer::Controll(void)
 				m_sMotionFrag.bMove = true;
 
 				// スティックの向き取得
-				float stickrot = pInputGamepad->GetStickRotL(0);
+				float stickrot = pInputGamepad->GetStickRotL(m_nMyPlayerIdx);
 				UtilFunc::Transformation::RotNormalize(stickrot);
 
 				// 移動量と向き設定
 				move.x += sinf(stickrot + Camerarot.y) * fMove;
 				move.z += cosf(stickrot + Camerarot.y) * fMove;
 				fRotDest = D3DX_PI + stickrot + Camerarot.y;
+			}
+
+			if (m_bJump == false &&
+				(pInputKeyboard->GetTrigger(DIK_SPACE) == true ||
+				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, m_nMyPlayerIdx)))
+			{// ジャンプ
+
+				m_bJump = true;
+				m_sMotionFrag.bJump = true;
+				move.y += 17.0f;
+
+				// サウンド再生
+				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_JUMP);
 			}
 		}
 		else if (pMotion->IsGetMove(nMotionType) == 0 &&
@@ -509,7 +522,7 @@ void CPlayer::Controll(void)
 			if (pInputGamepad->IsTipStick())
 			{// 左スティックが倒れてる場合
 
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(0) + Camerarot.y;
+				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
 		}
 	}
@@ -705,6 +718,33 @@ void CPlayer::MotionSet(void)
 			{
 				pMotion->Set(MOTION_WALK);
 			}
+		}
+		else if (m_sMotionFrag.bJump == true && m_sMotionFrag.bATK == false && m_sMotionFrag.bKnockBack == false && m_sMotionFrag.bDead == false)
+		{// ジャンプ中
+
+			// ジャンプのフラグOFF
+			m_sMotionFrag.bJump = false;
+
+			// ジャンプモーション
+			pMotion->Set(MOTION_JUMP);
+		}
+		else if (m_bJump == true && m_sMotionFrag.bJump == false && m_sMotionFrag.bATK == false && m_sMotionFrag.bKnockBack == false && m_sMotionFrag.bDead == false)
+		{// ジャンプ中&&ジャンプモーションが終わってる時
+
+			// 落下モーション
+			pMotion->Set(MOTION_FALL);
+		}
+		else if (m_sMotionFrag.bKnockBack == true)
+		{// やられ中だったら
+
+			// やられモーション
+			pMotion->Set(MOTION_KNOCKBACK);
+		}
+		else if (m_sMotionFrag.bDead == true)
+		{// 死亡中だったら
+
+			// やられモーション
+			pMotion->Set(MOTION_DEAD);
 		}
 		else if (m_sMotionFrag.bATK == true)
 		{// 攻撃

@@ -26,7 +26,8 @@
 #define MIN_LENGTH		(10.0f)				// Å­‹——£
 #define START_CAMERALEN	(800.0f)			// Œ³‚Ì‹——£
 #define ROT_MOVE_MOUSE	(0.01f)				// ‰ñ“]ˆÚ“®—Ê
-#define ROT_MOVE_STICK	(0.0015f)			// ‰ñ“]ˆÚ“®—Ê
+#define ROT_MOVE_STICK_Y	(0.00040f)			// ‰ñ“]ˆÚ“®—Ê
+#define ROT_MOVE_STICK_Z	(0.00020f)			// ‰ñ“]ˆÚ“®—Ê
 #define ROT_MOVE		(0.025f)			// ‰ñ“]ˆÚ“®—Ê
 #define MIN_ROT			(-D3DX_PI * 0.49f)	// ƒJƒƒ‰ŒÅ’è—p
 #define MAX_ROT			(D3DX_PI * 0.49f)	// ƒJƒƒ‰ŒÅ’è—p
@@ -45,6 +46,17 @@
 #define DECIDECAMERAROT_NONE		(MyLib::Vector3(0.0f, 0.0f, 0.0f))
 #define DECIDECAMERAPOS_NONE		(MyLib::Vector3(0.0f, 230.0f, -50.0f))
 #define DECIDE_LEN	(500.0f)
+
+
+namespace
+{
+	const float MULTIPLY_POSV_CORRECTION = 2.1f;	// (ƒQ[ƒ€Žž)Ž‹“_‚Ì•â³ŒW””{—¦
+	const float MULTIPLY_POSR_CORRECTION = 2.1f;	// (ƒQ[ƒ€Žž)’Ž‹“_‚Ì•â³ŒW””{—¦
+	const float DISATNCE_POSR_PLAYER = 200.0f;		// (ƒQ[ƒ€Žž)ƒvƒŒƒCƒ„[‚Æ‚Ì’Ž‹“_‹——£
+
+}
+
+
 
 //==========================================================================
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -66,6 +78,7 @@ CCamera::CCamera()
 	m_vecU = MyLib::Vector3(0.0f, 1.0f, 0.0f);		// ã•ûŒüƒxƒNƒgƒ‹
 	m_move = mylib_const::DEFAULT_VECTOR3;		// ˆÚ“®—Ê
 	m_rot = mylib_const::DEFAULT_VECTOR3;		// Œü‚«
+	m_Moverot = 0.0f;							// Œü‚«‚ÌˆÚ“®—Ê
 	m_rotVDest = mylib_const::DEFAULT_VECTOR3;	// –Ú•W‚ÌŽ‹“_‚ÌŒü‚«
 	m_TargetPos = mylib_const::DEFAULT_VECTOR3;	// ’Ç]–Ú•W‚ÌˆÊ’u
 	m_TargetRot = mylib_const::DEFAULT_VECTOR3;	// ’Ç]–Ú•W‚ÌˆÊ’u
@@ -250,10 +263,18 @@ void CCamera::MoveCameraStick(int nIdx)
 	// ƒQ[ƒ€ƒpƒbƒhî•ñŽæ“¾
 	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-#if 0
-	m_rot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK;
-	//m_rot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK;
+#if 1
+
+	m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
+	m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+
+	// ˆÚ“®‚·‚é
+	m_rot += m_Moverot;
+
+	UtilFunc::Correction::InertiaCorrection(m_Moverot.y, 0.0f, 0.25f);
+	UtilFunc::Correction::InertiaCorrection(m_Moverot.z, 0.0f, 0.25f);
 #endif
+
 	// Šp“x‚Ì³‹K‰»
 	UtilFunc::Transformation::RotNormalize(m_rot);
 
@@ -621,9 +642,6 @@ void CCamera::SetCameraVGame(void)
 	else if (m_bFollow == true)
 	{// ’Ç]ON
 
-
-		float fYcamera = 100.0f;
-
 		// Ž‹“_‚Ì‘ã“üˆ—
 		m_posVDest.x = m_posR.x + cosf(m_rot.z) * sinf(m_rot.y) * -m_fDistance;
 		m_posVDest.z = m_posR.z + cosf(m_rot.z) * cosf(m_rot.y) * -m_fDistance;
@@ -631,11 +649,11 @@ void CCamera::SetCameraVGame(void)
 
 		float fDistance = 0.0f;
 		m_fHeightMaxDest = m_posVDest.y;
+
 		// –Ú•W‚ÌŠp“x‚ð‹‚ß‚é
 		float fRotDest = atan2f((m_posVDest.x - m_posR.x), (m_posVDest.z - m_posR.z));
 		while (1)
 		{
-
 			// ‰¼‘z‚Ì’e‚ÌˆÊ’u
 			float fPosBulletX = m_TargetPos.x + cosf(m_rot.z) * sinf(m_rot.y) * -fDistance;
 			float fPosBulletZ = m_TargetPos.z + cosf(m_rot.z) * cosf(m_rot.y) * -fDistance;
@@ -676,7 +694,7 @@ void CCamera::SetCameraVGame(void)
 		}
 
 		// •â³‚·‚é
-		m_posV += (m_posVDest - m_posV) * 0.12f;
+		m_posV += (m_posVDest - m_posV) * (0.12f * MULTIPLY_POSV_CORRECTION);
 	}
 }
 
@@ -777,17 +795,18 @@ void CCamera::SetCameraRGame(void)
 	{// ’Ç]ON
 
 		float fYcamera = 100.0f;
+		float fCorrectionHeight = 50.0f;
 
-		if (m_TargetPos.y >= 50.0f)
+		if (m_TargetPos.y >= fCorrectionHeight)
 		{
-			fYcamera = (m_TargetPos.y - 50.0f) + 100.0f;
+			fYcamera = (m_TargetPos.y - fCorrectionHeight) + fYcamera;
 		}
-		else if (m_TargetPos.y <= -50.0f)
+		else if (m_TargetPos.y <= -fCorrectionHeight)
 		{
-			fYcamera = (m_TargetPos.y + 50.0f) + 100.0f;
+			fYcamera = (m_TargetPos.y + fCorrectionHeight) + fYcamera;
 		}
 
-		fYcamera = m_TargetPos.y + 100.0f;
+		fYcamera = m_TargetPos.y + 150.0f;
 
 		if (fYcamera <= 0.0f)
 		{
@@ -801,12 +820,12 @@ void CCamera::SetCameraRGame(void)
 		m_fDiffHeight += (m_fDiffHeightDest - m_fDiffHeight) * 0.01f;
 
 		// ’Ž‹“_‚Ì‘ã“üˆ—
-		m_posRDest.x = (m_TargetPos.x + sinf(D3DX_PI + m_TargetRot.y) * 100.0f);
-		m_posRDest.z = (m_TargetPos.z + cosf(D3DX_PI + m_TargetRot.y) * 100.0f);
+		m_posRDest.x = (m_TargetPos.x + sinf(m_rot.y) * DISATNCE_POSR_PLAYER);
+		m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * DISATNCE_POSR_PLAYER);
 		m_posRDest.y = fYcamera - m_fDiffHeight;
 
 		// •â³‚·‚é
-		m_posR += (m_posRDest - m_posR) * 0.08f;
+		m_posR += (m_posRDest - m_posR) * (0.08f * MULTIPLY_POSR_CORRECTION);
 	}
 }
 

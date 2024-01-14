@@ -75,8 +75,7 @@ public:
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(float fBuff = 1.0f);
-	static CMotion *Create(void);
-	static CMotion *Create(const std::string pTextFile);
+	static CMotion *Create(const std::string pTextFile, CObjectChara* pObjChara);
 	void Set(int nType, bool bBlend = true);	// モーションの設定処理
 	int GetType(void);		// 現在のモーションタイプ取得
 	int GetOldType(void);		// 前回のモーションタイプ取得
@@ -99,8 +98,8 @@ public:
 	void AddNumAttackInfo(int nType);	// 攻撃情報の総数加算
 	void SubNumAttackInfo(int nType);	// 攻撃情報の総数減算
 
-	Parts GetPartsOld(int nParts) { return aPartsOld[nParts]; }
-	void SetPartsOld(int nParts, Parts parts) { aPartsOld[nParts] = parts; }
+	Parts GetPartsOld(int nParts);
+	void SetPartsOld(int nParts, Parts parts);
 	void SetInfo(Info info);	// モーション情報の登録
 	void SetInfoData(int nType, Info info);	// モーション情報の登録
 	void SetAttackInfo(AttackInfo info);	// 攻撃情報の登録
@@ -111,7 +110,7 @@ public:
 	void ChangeKeyFrame(int nType, int nKey, int nNum);	// キーフレーム変更
 	void ChangeAttackInfo(int nType, int nIdx, AttackInfo info);	// 攻撃情報変更
 	int IsGetMove(int nType);	// 移動の判定取得
-	void SetModel(CModel **pModel, int nNumModel, CObjectChara *pObjChara);	// モーションをするモデルの登録
+	void SetModel(CModel **pModel, int nNumModel);	// モーションをするモデルの登録
 	void ResetPose(int nType);	// ポーズのリセット
 
 private:
@@ -128,8 +127,8 @@ private:
 	void LoadMotion(const std::string text, int nMotion);
 
 	// メンバ変数
-	Info m_aInfo[MAX_MOTION];	// モーションの情報
-	Parts aPartsOld[MAX_PARTS];	// 過去の情報
+	Info* m_pInfo;	// モーションの情報
+	Parts* m_pPartsOld;	// 過去の情報
 	int m_nNumAll;				// モーションの総数
 	int m_nType;				// 現在のモーションの種類
 	int m_nOldType;				// 前回のモーションの種類

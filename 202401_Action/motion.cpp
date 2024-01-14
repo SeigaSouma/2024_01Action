@@ -40,55 +40,8 @@ CMotion::CMotion()
 	m_ppModel = NULL;		// モデルのポインタ
 	m_nNumModel = 0;		// モデルの総数
 	m_nNumMotion = 0;		// モーションの総数
-
-	for (int nCntMotion = 0; nCntMotion < MAX_MOTION; nCntMotion++)
-	{
-		m_aInfo[nCntMotion].nNumKey = 0;			// キーの数
-		m_aInfo[nCntMotion].nLoop = 0;				// ループ判定
-		m_aInfo[nCntMotion].nMove = 0;				// 移動判定
-		m_aInfo[nCntMotion].nNumAttackInfo = 0;		// 攻撃情報の数
-
-		for (int nCntKey = 0; nCntKey < MAX_KEY; nCntKey++)
-		{
-			m_aInfo[nCntMotion].aKey[nCntKey].nFrame = 0;
-
-			for (int nCntParts = 0; nCntParts < MAX_PARTS; nCntParts++)
-			{
-				m_aInfo[nCntMotion].aKey[nCntKey].aParts[nCntParts].rot = MyLib::Vector3(0.0f, 0.0f, 0.0f);		// 向き
-				m_aInfo[nCntMotion].aKey[nCntKey].aParts[nCntParts].rotDest = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 目標の向き
-				m_aInfo[nCntMotion].aKey[nCntKey].aParts[nCntParts].pos = MyLib::Vector3(0.0f, 0.0f, 0.0f);		// 位置
-				m_aInfo[nCntMotion].aKey[nCntKey].aParts[nCntParts].posDest = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 目標の位置
-				m_aInfo[nCntMotion].aKey[nCntKey].aParts[nCntParts].posOrigin = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 位置の原点
-			}
-		}
-
-		for (int nCntParts = 0; nCntParts < MAX_PARTS; nCntParts++)
-		{
-			m_aInfo[nCntMotion].AttackInfo[nCntParts] = NULL;	// 攻撃情報
-		}
-	}
-
-	for (int nCntParts = 0; nCntParts < MAX_PARTS; nCntParts++)
-	{
-		// 過去の情報
-		aPartsOld[nCntParts].rot = MyLib::Vector3(0.0f, 0.0f, 0.0f);		// 向き
-		aPartsOld[nCntParts].rotDest = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 目標の向き
-		aPartsOld[nCntParts].pos = MyLib::Vector3(0.0f, 0.0f, 0.0f);		// 位置
-		aPartsOld[nCntParts].posDest = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 目標の位置
-		aPartsOld[nCntParts].posOrigin = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 位置の原点
-	}
-
-	m_nNumAll = 0;			// モーションの総数
-	m_nType = 0;			// 現在のモーションの種類
-	m_nOldType = 0;			// 前回のモーションの種類
-	m_bLoop = false;		// ループするかどうか
-	m_nPatternKey = 0;		// 何個目のキーか
-	m_fSlowFactor = 0.0f;	// 遅延係数
-	m_bFinish = false;		// 終了したかどうか
-	m_pObjChara = NULL;		// オブジェクトのポインタ
-	m_ppModel = NULL;		// モデルのポインタ
-	m_nNumModel = 0;		// モデルの総数
-	m_nNumMotion = 0;		// モーションの総数
+	m_pInfo = nullptr;		// モーション情報
+	//m_pPartsOld = nullptr;	// 過去の情報
 
 }
 
@@ -100,11 +53,10 @@ CMotion::~CMotion()
 
 }
 
-
 //==========================================================================
 // 生成処理
 //==========================================================================
-CMotion *CMotion::Create(void)
+CMotion *CMotion::Create(const std::string pTextFile, CObjectChara* pObjChara)
 {
 	// 生成用のオブジェクト
 	CMotion *pMotion = NULL;
@@ -118,33 +70,8 @@ CMotion *CMotion::Create(void)
 		if (pMotion != NULL)
 		{// メモリの確保が出来ていたら
 
-			// 初期化処理
-			pMotion->Init();
-		}
-
-		return pMotion;
-	}
-
-	return NULL;
-}
-
-
-//==========================================================================
-// 生成処理
-//==========================================================================
-CMotion *CMotion::Create(const std::string pTextFile)
-{
-	// 生成用のオブジェクト
-	CMotion *pMotion = NULL;
-
-	if (pMotion == NULL)
-	{// NULLだったら
-
-		// メモリの確保
-		pMotion = DEBUG_NEW CMotion;
-
-		if (pMotion != NULL)
-		{// メモリの確保が出来ていたら
+			// オブジェクトのポインタを渡す
+			pMotion->m_pObjChara = pObjChara;
 
 			// 初期化処理
 			pMotion->Init();
@@ -182,17 +109,29 @@ HRESULT CMotion::Init(void)
 //==========================================================================
 void CMotion::Uninit(void)
 {
-	// 攻撃情報の破棄
-	for (int nCntMotion = 0; nCntMotion < MAX_MOTION; nCntMotion++)
+	if (m_pInfo != nullptr)
 	{
-		for (int nCntAttack = 0; nCntAttack < MAX_PARTS; nCntAttack++)
+		// 攻撃情報の破棄
+		for (int nCntMotion = 0; nCntMotion < m_nNumMotion; nCntMotion++)
 		{
-			if (m_aInfo[nCntMotion].AttackInfo[nCntAttack] != NULL)
+			for (int nCntAttack = 0; nCntAttack < MAX_PARTS; nCntAttack++)
 			{
-				delete m_aInfo[nCntMotion].AttackInfo[nCntAttack];
-				m_aInfo[nCntMotion].AttackInfo[nCntAttack] = NULL;
+				if (m_pInfo[nCntMotion].AttackInfo[nCntAttack] != nullptr)
+				{
+					delete m_pInfo[nCntMotion].AttackInfo[nCntAttack];
+					m_pInfo[nCntMotion].AttackInfo[nCntAttack] = nullptr;
+				}
 			}
 		}
+
+		delete[] m_pInfo;
+		m_pInfo = nullptr;
+	}
+
+	if (m_pPartsOld != nullptr)
+	{
+		delete[] m_pPartsOld;
+		m_pPartsOld = nullptr;
 	}
 }
 
@@ -201,14 +140,19 @@ void CMotion::Uninit(void)
 //==========================================================================
 void CMotion::SetInfo(Info info)
 {
+	if (m_nNumMotion <= m_nNumAll)
+	{
+		return;
+	}
+
 	// コピー
-	memcpy(m_aInfo[m_nNumAll].aKey, info.aKey, sizeof(info.aKey));
+	memcpy(m_pInfo[m_nNumAll].aKey, info.aKey, sizeof(info.aKey));
 
-	m_aInfo[m_nNumAll].nLoop = info.nLoop;
-	m_aInfo[m_nNumAll].nMove = info.nMove;
-	m_aInfo[m_nNumAll].nNumKey = info.nNumKey;
+	m_pInfo[m_nNumAll].nLoop = info.nLoop;
+	m_pInfo[m_nNumAll].nMove = info.nMove;
+	m_pInfo[m_nNumAll].nNumKey = info.nNumKey;
 
-	for (int nCntKey = 0; nCntKey < m_aInfo[m_nNumAll].nNumKey; nCntKey++)
+	for (int nCntKey = 0; nCntKey < m_pInfo[m_nNumAll].nNumKey; nCntKey++)
 	{
 		int nBeforeCnt = nCntKey - 1;
 		if (nBeforeCnt <= 0)
@@ -216,13 +160,13 @@ void CMotion::SetInfo(Info info)
 			nBeforeCnt = 0;
 		}
 
-		float PosX = m_aInfo[m_nNumAll].aKey[nBeforeCnt].aParts[0].pos.x;
-		float PosZ = m_aInfo[m_nNumAll].aKey[nBeforeCnt].aParts[0].pos.z;
+		float PosX = m_pInfo[m_nNumAll].aKey[nBeforeCnt].aParts[0].pos.x;
+		float PosZ = m_pInfo[m_nNumAll].aKey[nBeforeCnt].aParts[0].pos.z;
 
 		// 向きを求める
-		m_aInfo[m_nNumAll].aKey[nCntKey].fRotMove = atan2f(
-			(PosX - m_aInfo[m_nNumAll].aKey[nCntKey].aParts[0].pos.x),
-			(PosZ - m_aInfo[m_nNumAll].aKey[nCntKey].aParts[0].pos.z));
+		m_pInfo[m_nNumAll].aKey[nCntKey].fRotMove = atan2f(
+			(PosX - m_pInfo[m_nNumAll].aKey[nCntKey].aParts[0].pos.x),
+			(PosZ - m_pInfo[m_nNumAll].aKey[nCntKey].aParts[0].pos.z));
 	}
 
 	// モーションの総数加算
@@ -234,24 +178,26 @@ void CMotion::SetInfo(Info info)
 //==========================================================================
 void CMotion::SetAttackInfo(AttackInfo info)
 {
-	// メモリ確保
-	m_aInfo[m_nNumAll].AttackInfo[m_aInfo[m_nNumAll].nNumAttackInfo] = DEBUG_NEW AttackInfo;
+	int nIdx = m_pInfo[m_nNumAll].nNumAttackInfo;
 
-	if (m_aInfo[m_nNumAll].AttackInfo[m_aInfo[m_nNumAll].nNumAttackInfo] != NULL)
+	// メモリ確保
+	m_pInfo[m_nNumAll].AttackInfo[nIdx] = DEBUG_NEW AttackInfo;
+
+	if (m_pInfo[m_nNumAll].AttackInfo[nIdx] != NULL)
 	{// NULLじゃなければ
 
 		// 情報渡す
-		*m_aInfo[m_nNumAll].AttackInfo[m_aInfo[m_nNumAll].nNumAttackInfo] = info;
+		*m_pInfo[m_nNumAll].AttackInfo[nIdx] = info;
 
 		// 攻撃情報の総数加算
-		m_aInfo[m_nNumAll].nNumAttackInfo++;
+		m_pInfo[m_nNumAll].nNumAttackInfo++;
 	}
 }
 
 //==========================================================================
 // モーションをするモデルの登録
 //==========================================================================
-void CMotion::SetModel(CModel **pModel, int nNumModel, CObjectChara *pObjChara)
+void CMotion::SetModel(CModel **pModel, int nNumModel)
 {
 	// モデルのポインタを渡す
 	m_ppModel = pModel;
@@ -259,8 +205,12 @@ void CMotion::SetModel(CModel **pModel, int nNumModel, CObjectChara *pObjChara)
 	// モデルの総数
 	m_nNumModel = nNumModel;
 
-	// オブジェクトのポインタを渡す
-	m_pObjChara = pObjChara;
+	m_pPartsOld = DEBUG_NEW Parts[m_nNumModel];
+	if (m_pPartsOld == nullptr)
+	{
+		return;
+	}
+	memset(m_pPartsOld, 0, sizeof(Parts) * m_nNumModel);
 }
 
 //==========================================================================
@@ -290,9 +240,9 @@ void CMotion::ResetPose(int nType)
 		}
 
 		// 向き設定
-		m_ppModel[nCntModel]->SetRotation(m_aInfo[nType].aKey[0].aParts[nCntParts].rot);
-		aPartsOld[nCntParts].rot = m_aInfo[nType].aKey[0].aParts[nCntParts].rot;
-		aPartsOld[nCntParts].scale = m_aInfo[nType].aKey[0].aParts[nCntParts].scale;
+		m_ppModel[nCntModel]->SetRotation(m_pInfo[nType].aKey[0].aParts[nCntParts].rot);
+		m_pPartsOld[nCntParts].rot = m_pInfo[nType].aKey[0].aParts[nCntParts].rot;
+		m_pPartsOld[nCntParts].scale = m_pInfo[nType].aKey[0].aParts[nCntParts].scale;
 
 		// 元の位置取得
 		MyLib::Vector3 posOrigin = m_pObjChara->GetOriginPosition();
@@ -300,15 +250,15 @@ void CMotion::ResetPose(int nType)
 		// 位置設定
 		if (nCntParts == 0)
 		{
-			m_ppModel[nCntModel]->SetPosition(m_aInfo[nType].aKey[0].aParts[nCntParts].pos + posOrigin);
+			m_ppModel[nCntModel]->SetPosition(m_pInfo[nType].aKey[0].aParts[nCntParts].pos + posOrigin);
 		}
 		else
 		{
-			m_ppModel[nCntModel]->SetPosition(m_aInfo[nType].aKey[0].aParts[nCntParts].pos + m_ppModel[nCntModel]->GetOriginPosition());
+			m_ppModel[nCntModel]->SetPosition(m_pInfo[nType].aKey[0].aParts[nCntParts].pos + m_ppModel[nCntModel]->GetOriginPosition());
 		}
 	}
 
-	aPartsOld[0].pos = m_aInfo[nType].aKey[0].aParts[0].pos;
+	m_pPartsOld[0].pos = m_pInfo[nType].aKey[0].aParts[0].pos;
 }
 
 //==========================================================================
@@ -318,35 +268,35 @@ void CMotion::Update(float fBuff)
 {
 
 	// 攻撃情報の総数取得
-	int nNumAttackInfo = m_aInfo[m_nType].nNumAttackInfo;
+	int nNumAttackInfo = m_pInfo[m_nType].nNumAttackInfo;
 
 	for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 	{
-		if (m_aInfo[m_nType].AttackInfo[nCntAttack] == NULL)
+		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
 		{// NULLだったら
 			continue;
 		}
 
-		if (m_aInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt < 0)
+		if (m_pInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt < 0)
 		{
 			continue;
 		}
 
 		// まだ衝撃カウントの行動をしてない状態にする
-		m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
+		m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
 
-		if (m_fCntAllFrame >= m_aInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt &&
-			m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet == false)
+		if (m_fCntAllFrame >= m_pInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt &&
+			m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet == false)
 		{// 衝撃のカウントを超えた時 && まだ行動してなかったら
 			
 			// まだ衝撃カウントの行動をしてない状態にする
-			m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = true;
-			m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = true;
+			m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = true;
+			m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = true;
 		}
 	}
 
 
-	if (m_bFinish == true && m_aInfo[m_nType].nLoop == LOOP_OFF)
+	if (m_bFinish == true && m_pInfo[m_nType].nLoop == LOOP_OFF)
 	{// 終了してた && ループOFFだったら
 		return;
 	}
@@ -355,7 +305,7 @@ void CMotion::Update(float fBuff)
 	int nFrame;
 
 	// 再生フレーム保存
-	nFrame = m_aInfo[m_nType].aKey[m_nPatternKey].nFrame;
+	nFrame = m_pInfo[m_nType].aKey[m_nPatternKey].nFrame;
 
 	if (m_nType == 0 && m_nOldType != 0 && m_nPatternKey == 0)
 	{// ニュートラルで0個の時
@@ -363,13 +313,13 @@ void CMotion::Update(float fBuff)
 	}
 
 	// 次のキー
-	int nNextKey = (m_nPatternKey + 1) % m_aInfo[m_nType].nNumKey;
+	int nNextKey = (m_nPatternKey + 1) % m_pInfo[m_nType].nNumKey;
 
-	if (nNextKey == 0 && m_aInfo[m_nType].nLoop == LOOP_OFF)
+	if (nNextKey == 0 && m_pInfo[m_nType].nLoop == LOOP_OFF)
 	{// ループしないとき
 
 		// 最後で固定
-		nNextKey = m_aInfo[m_nType].nNumKey - 1;
+		nNextKey = m_pInfo[m_nType].nNumKey - 1;
 	}
 
 	int nStartIdx = m_pObjChara->GetMotionStartIdx();
@@ -393,14 +343,14 @@ void CMotion::Update(float fBuff)
 		}
 
 		// 次と今の向きの差分取得
-		float rotDiffX = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].rot.x -
-			aPartsOld[nCntParts].rot.x;
+		float rotDiffX = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].rot.x -
+			m_pPartsOld[nCntParts].rot.x;
 
-		float rotDiffY = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].rot.y -
-			aPartsOld[nCntParts].rot.y;
+		float rotDiffY = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].rot.y -
+			m_pPartsOld[nCntParts].rot.y;
 
-		float rotDiffZ = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].rot.z -
-			aPartsOld[nCntParts].rot.z;
+		float rotDiffZ = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].rot.z -
+			m_pPartsOld[nCntParts].rot.z;
 
 		// 角度の正規化
 		UtilFunc::Transformation::RotNormalize(rotDiffX);
@@ -412,7 +362,7 @@ void CMotion::Update(float fBuff)
 
 		// パーツの向きを設定
 		rot.x =
-			aPartsOld[nCntParts].rot.x +
+			m_pPartsOld[nCntParts].rot.x +
 			rotDiffX *
 			(
 			m_fCntFrame /
@@ -421,7 +371,7 @@ void CMotion::Update(float fBuff)
 
 		// パーツの向きを設定
 		rot.y =
-			aPartsOld[nCntParts].rot.y +
+			m_pPartsOld[nCntParts].rot.y +
 			rotDiffY *
 			(
 			m_fCntFrame /
@@ -430,7 +380,7 @@ void CMotion::Update(float fBuff)
 
 		// パーツの向きを設定
 		rot.z =
-			aPartsOld[nCntParts].rot.z +
+			m_pPartsOld[nCntParts].rot.z +
 			rotDiffZ *
 			(
 			m_fCntFrame /
@@ -447,21 +397,21 @@ void CMotion::Update(float fBuff)
 
 		{
 			// 次と今の向きの差分取得
-			float scaleDiffX = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].scale.x -
-				aPartsOld[nCntParts].scale.x;
+			float scaleDiffX = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].scale.x -
+				m_pPartsOld[nCntParts].scale.x;
 
-			float scaleDiffY = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].scale.y -
-				aPartsOld[nCntParts].scale.y;
+			float scaleDiffY = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].scale.y -
+				m_pPartsOld[nCntParts].scale.y;
 
-			float scaleDiffZ = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].scale.z -
-				aPartsOld[nCntParts].scale.z;
+			float scaleDiffZ = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].scale.z -
+				m_pPartsOld[nCntParts].scale.z;
 
 			// パーツの向きを設定
 			MyLib::Vector3 scale = MyLib::Vector3(0.0f, 0.0f, 0.0f);
 
 			// パーツの向きを設定
 			scale.x =
-				aPartsOld[nCntParts].scale.x +
+				m_pPartsOld[nCntParts].scale.x +
 				scaleDiffX *
 				(
 				m_fCntFrame /
@@ -470,7 +420,7 @@ void CMotion::Update(float fBuff)
 
 			// パーツの向きを設定
 			scale.y =
-				aPartsOld[nCntParts].scale.y +
+				m_pPartsOld[nCntParts].scale.y +
 				scaleDiffY *
 				(
 				m_fCntFrame /
@@ -479,7 +429,7 @@ void CMotion::Update(float fBuff)
 
 			// パーツの向きを設定
 			scale.z =
-				aPartsOld[nCntParts].scale.z +
+				m_pPartsOld[nCntParts].scale.z +
 				scaleDiffZ *
 				(
 				m_fCntFrame /
@@ -506,18 +456,18 @@ void CMotion::Update(float fBuff)
 			MyLib::Vector3 posPartsOld = m_ppModel[nCntModel]->GetPosition();
 
 			// 目標の位置との差分を求める
-			float posDiffX = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.x -
-				aPartsOld[nCntParts].pos.x;
+			float posDiffX = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.x -
+				m_pPartsOld[nCntParts].pos.x;
 
-			float posDiffY = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.y -
-				aPartsOld[nCntParts].pos.y;
+			float posDiffY = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.y -
+				m_pPartsOld[nCntParts].pos.y;
 
-			float posDiffZ = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.z -
-				aPartsOld[nCntParts].pos.z;
+			float posDiffZ = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.z -
+				m_pPartsOld[nCntParts].pos.z;
 
 			// 親のYを補正
 			posParts.y =
-				aPartsOld[nCntParts].pos.y +
+				m_pPartsOld[nCntParts].pos.y +
 				posDiffY *
 				(
 				m_fCntFrame /
@@ -527,19 +477,19 @@ void CMotion::Update(float fBuff)
 			m_ppModel[nCntModel]->SetPosition(posParts + posOrigin);
 
 			int nNextMoveKey = m_nPatternKey + 1;
-			if (nNextMoveKey >= m_aInfo[m_nType].nNumKey)
+			if (nNextMoveKey >= m_pInfo[m_nType].nNumKey)
 			{
 				nNextMoveKey = m_nPatternKey;
 			}
 
 			// 動いた長さを求める
 			float fMoveDiff =
-				sqrtf((m_aInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.x - aPartsOld[nCntParts].pos.x) * (m_aInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.x - aPartsOld[nCntParts].pos.x)
-					+ (m_aInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.z - aPartsOld[nCntParts].pos.z) * (m_aInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.z - aPartsOld[nCntParts].pos.z));
+				sqrtf((m_pInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.x - m_pPartsOld[nCntParts].pos.x) * (m_pInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.x - m_pPartsOld[nCntParts].pos.x)
+					+ (m_pInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.z - m_pPartsOld[nCntParts].pos.z) * (m_pInfo[m_nType].aKey[nNextMoveKey].aParts[nCntParts].pos.z - m_pPartsOld[nCntParts].pos.z));
 			fMoveDiff /= (static_cast<float>(nFrame) / static_cast<float>(fBuff));
 
 			// 動きの向きを一時代入
-			float fRot = m_aInfo[m_nType].aKey[nNextMoveKey].fRotMove;
+			float fRot = m_pInfo[m_nType].aKey[nNextMoveKey].fRotMove;
 
 			// 動きの向き方向へ移動
 			pos.x += sinf(D3DX_PI + fRot + rot.y) * fMoveDiff;
@@ -556,30 +506,30 @@ void CMotion::Update(float fBuff)
 			MyLib::Vector3 posOrigin = m_pObjChara->GetOriginPosition();
 
 			// 目標の位置との差分を求める
-			float posDiffX = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.x -
-				aPartsOld[nCntParts].pos.x;
+			float posDiffX = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.x -
+				m_pPartsOld[nCntParts].pos.x;
 
-			float posDiffY = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.y -
-				aPartsOld[nCntParts].pos.y;
+			float posDiffY = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.y -
+				m_pPartsOld[nCntParts].pos.y;
 
-			float posDiffZ = m_aInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.z -
-				aPartsOld[nCntParts].pos.z;
+			float posDiffZ = m_pInfo[m_nType].aKey[nNextKey].aParts[nCntParts].pos.z -
+				m_pPartsOld[nCntParts].pos.z;
 
 			// パーツの位置を設定
 			posParts.y =
-				aPartsOld[nCntParts].pos.y +
+				m_pPartsOld[nCntParts].pos.y +
 				posDiffY *
 				(m_fCntFrame /
 				(float)nFrame);
 
 			posParts.x =
-				aPartsOld[nCntParts].pos.x +
+				m_pPartsOld[nCntParts].pos.x +
 				posDiffX *
 				(m_fCntFrame /
 				(float)nFrame);
 
 			posParts.z =
-				aPartsOld[nCntParts].pos.z +
+				m_pPartsOld[nCntParts].pos.z +
 				posDiffZ *
 				(m_fCntFrame /
 				(float)nFrame);
@@ -593,7 +543,7 @@ void CMotion::Update(float fBuff)
 	m_fCntFrame += 1.0f * fBuff;
 	m_fCntAllFrame += 1.0f * fBuff;
 
-	if (m_aInfo[m_nType].nLoop == LOOP_ON)
+	if (m_pInfo[m_nType].nLoop == LOOP_ON)
 	{// ループモーションはいつでも終わってる
 
 		// 終了判定ON
@@ -609,14 +559,26 @@ void CMotion::Update(float fBuff)
 		m_nOldType = m_nType;	// 前回のモーションの種類
 
 		// パターンNO.更新
-		m_nPatternKey = (m_nPatternKey + 1) % m_aInfo[m_nType].nNumKey;
+		m_nPatternKey = (m_nPatternKey + 1) % m_pInfo[m_nType].nNumKey;
 
 		int nStartIdx = m_pObjChara->GetMotionStartIdx();
 		for (int nCntParts = nStartIdx; nCntParts < m_nNumModel + nStartIdx + 1; nCntParts++)
 		{// 全パーツ分繰り返す
-			aPartsOld[nCntParts].rot = m_aInfo[m_nType].aKey[m_nPatternKey].aParts[nCntParts].rot;
-			aPartsOld[nCntParts].pos = m_aInfo[m_nType].aKey[m_nPatternKey].aParts[nCntParts].pos;
-			aPartsOld[nCntParts].scale = m_aInfo[m_nType].aKey[m_nPatternKey].aParts[nCntParts].scale;
+
+			int nCntModel = nCntParts;
+			if (nStartIdx != 0)
+			{
+				nCntModel = nCntParts - nStartIdx;
+			}
+
+			if (nCntModel >= m_nNumModel)
+			{
+				break;
+			}
+
+			m_pPartsOld[nCntParts].rot = m_pInfo[m_nType].aKey[m_nPatternKey].aParts[nCntParts].rot;
+			m_pPartsOld[nCntParts].pos = m_pInfo[m_nType].aKey[m_nPatternKey].aParts[nCntParts].pos;
+			m_pPartsOld[nCntParts].scale = m_pInfo[m_nType].aKey[m_nPatternKey].aParts[nCntParts].scale;
 		}
 
 		if (m_nPatternKey == 0)
@@ -626,7 +588,7 @@ void CMotion::Update(float fBuff)
 			m_fCntAllFrame = 0.0f;
 
 			//モーションの設定
-			if (m_aInfo[m_nType].nLoop == LOOP_OFF)
+			if (m_pInfo[m_nType].nLoop == LOOP_OFF)
 			{// ループモーションじゃない時
 
 				// 終了判定ON
@@ -636,19 +598,19 @@ void CMotion::Update(float fBuff)
 			{
 				for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 				{
-					if (m_aInfo[m_nType].AttackInfo[nCntAttack] == NULL)
+					if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
 					{// NULLだったら
 						continue;
 					}
 
-					if (m_aInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt < 0)
+					if (m_pInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt < 0)
 					{
 						continue;
 					}
 
 					// まだ衝撃カウントの行動をしてない状態にする
-					m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
-					m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = false;
+					m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
+					m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = false;
 				}
 			}
 		}
@@ -679,23 +641,23 @@ void CMotion::Set(int nType, bool bBlend)
 	m_fMaxAllFrame = 0.0f;	// 全てのカウントの最大値
 	m_bFinish = false;		// 終了したかどうか
 
-	for (int nCntKey = 0; nCntKey < m_aInfo[m_nPatternKey].nNumKey; nCntKey++)
+	for (int nCntKey = 0; nCntKey < m_pInfo[m_nPatternKey].nNumKey; nCntKey++)
 	{
-		m_fMaxAllFrame += m_aInfo[m_nPatternKey].aKey[nCntKey].nFrame;	// 全てのカウントの最大値
+		m_fMaxAllFrame += m_pInfo[m_nPatternKey].aKey[nCntKey].nFrame;	// 全てのカウントの最大値
 	}
 
 	// 攻撃情報の総数取得
-	int nNumAttackInfo = m_aInfo[m_nType].nNumAttackInfo;
+	int nNumAttackInfo = m_pInfo[m_nType].nNumAttackInfo;
 	for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 	{
-		if (m_aInfo[m_nType].AttackInfo[nCntAttack] == NULL)
+		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
 		{// NULLだったら
 			continue;
 		}
 
 		// まだ衝撃カウントの行動をしてない状態にする
-		m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
-		m_aInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = false;
+		m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
+		m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = false;
 	}
 
 	int nStartIdx = m_pObjChara->GetMotionStartIdx();
@@ -721,23 +683,23 @@ void CMotion::Set(int nType, bool bBlend)
 		// 過去の位置・向きを保存
 		if (bBlend == true)
 		{
-			aPartsOld[nCntParts].rot = m_ppModel[nCntModel]->GetRotation();
-			aPartsOld[nCntParts].scale = m_ppModel[nCntModel]->GetScale();
+			m_pPartsOld[nCntParts].rot = m_ppModel[nCntModel]->GetRotation();
+			m_pPartsOld[nCntParts].scale = m_ppModel[nCntModel]->GetScale();
 
 			if (nStartIdx == nCntParts)
 			{
-				aPartsOld[nCntParts].pos = m_ppModel[nCntModel]->GetPosition() - m_pObjChara->GetOriginPosition();
+				m_pPartsOld[nCntParts].pos = m_ppModel[nCntModel]->GetPosition() - m_pObjChara->GetOriginPosition();
 			}
 			else
 			{
-				aPartsOld[nCntParts].pos = m_ppModel[nCntModel]->GetPosition() - m_ppModel[nCntModel]->GetOriginPosition();
+				m_pPartsOld[nCntParts].pos = m_ppModel[nCntModel]->GetPosition() - m_ppModel[nCntModel]->GetOriginPosition();
 			}
 		}
 		else
 		{
-			aPartsOld[nCntParts].rot = m_aInfo[m_nType].aKey[0].aParts[nCntParts].rot;
-			aPartsOld[nCntParts].pos = m_aInfo[m_nType].aKey[0].aParts[nCntParts].pos + m_pObjChara->GetOriginPosition();
-			aPartsOld[nCntParts].scale = m_aInfo[m_nType].aKey[0].aParts[nCntParts].scale;
+			m_pPartsOld[nCntParts].rot = m_pInfo[m_nType].aKey[0].aParts[nCntParts].rot;
+			m_pPartsOld[nCntParts].pos = m_pInfo[m_nType].aKey[0].aParts[nCntParts].pos + m_pObjChara->GetOriginPosition();
+			m_pPartsOld[nCntParts].scale = m_pInfo[m_nType].aKey[0].aParts[nCntParts].scale;
 		}
 	}
 }
@@ -787,7 +749,7 @@ void CMotion::SetSlowFactor(float fFactor)
 //==========================================================================
 int CMotion::IsGetMove(int nType)
 {
-	return m_aInfo[nType].nMove;
+	return m_pInfo[nType].nMove;
 }
 
 //==========================================================================
@@ -795,7 +757,7 @@ int CMotion::IsGetMove(int nType)
 //==========================================================================
 void CMotion::SetInfoData(int nType, Info info)
 {
-	m_aInfo[nType] = info;
+	m_pInfo[nType] = info;
 }
 
 //==========================================================================
@@ -803,7 +765,7 @@ void CMotion::SetInfoData(int nType, Info info)
 //==========================================================================
 CMotion::Info CMotion::GetInfo(int nType)
 {
-	return m_aInfo[nType];
+	return m_pInfo[nType];
 }
 
 //==========================================================================
@@ -811,7 +773,7 @@ CMotion::Info CMotion::GetInfo(int nType)
 //==========================================================================
 CMotion::Info *CMotion::GetInfoPtr(int nType)
 {
-	return &m_aInfo[nType];
+	return &m_pInfo[nType];
 }
 
 //==========================================================================
@@ -819,7 +781,7 @@ CMotion::Info *CMotion::GetInfoPtr(int nType)
 //==========================================================================
 void CMotion::SetInfoSave(int nType, int nKey, int nParts, MyLib::Vector3 rot)
 {
-	m_aInfo[nType].aKey[nKey].aParts[nParts].rot = rot;
+	m_pInfo[nType].aKey[nKey].aParts[nParts].rot = rot;
 }
 
 //==========================================================================
@@ -827,7 +789,7 @@ void CMotion::SetInfoSave(int nType, int nKey, int nParts, MyLib::Vector3 rot)
 //==========================================================================
 void CMotion::ChangeKeyNum(int nType, int nNum)
 {
-	m_aInfo[nType].nNumKey = nNum;
+	m_pInfo[nType].nNumKey = nNum;
 }
 
 //==========================================================================
@@ -835,7 +797,7 @@ void CMotion::ChangeKeyNum(int nType, int nNum)
 //==========================================================================
 void CMotion::ChangeKeyFrame(int nType, int nKey, int nNum)
 {
-	m_aInfo[nType].aKey[nKey].nFrame = nNum;
+	m_pInfo[nType].aKey[nKey].nFrame = nNum;
 }
 
 //==========================================================================
@@ -843,7 +805,7 @@ void CMotion::ChangeKeyFrame(int nType, int nKey, int nNum)
 //==========================================================================
 void CMotion::ChangeAttackInfo(int nType, int nIdx, AttackInfo info)
 {
-	*m_aInfo[nType].AttackInfo[nIdx] = info;
+	*m_pInfo[nType].AttackInfo[nIdx] = info;
 }
 
 //==========================================================================
@@ -851,22 +813,22 @@ void CMotion::ChangeAttackInfo(int nType, int nIdx, AttackInfo info)
 //==========================================================================
 void CMotion::AddNumAttackInfo(int nType)
 {
-	if (m_aInfo[nType].nNumAttackInfo >= MAX_PARTS)
+	if (m_pInfo[nType].nNumAttackInfo >= MAX_PARTS)
 	{
 		return;
 	}
 
 	// メモリ確保
-	m_aInfo[nType].AttackInfo[m_aInfo[nType].nNumAttackInfo] = DEBUG_NEW AttackInfo;
+	m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo] = DEBUG_NEW AttackInfo;
 
-	if (m_aInfo[nType].AttackInfo[m_aInfo[nType].nNumAttackInfo] != NULL)
+	if (m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo] != NULL)
 	{// NULLじゃなければ
 
 		// 初期化
-		memset(m_aInfo[nType].AttackInfo[m_aInfo[nType].nNumAttackInfo], 0, sizeof(AttackInfo));
+		memset(m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo], 0, sizeof(AttackInfo));
 
 		// 攻撃情報の総数加算
-		m_aInfo[nType].nNumAttackInfo++;
+		m_pInfo[nType].nNumAttackInfo++;
 	}
 }
 
@@ -875,21 +837,37 @@ void CMotion::AddNumAttackInfo(int nType)
 //==========================================================================
 void CMotion::SubNumAttackInfo(int nType)
 {
-	if (m_aInfo[nType].nNumAttackInfo <= 1)
+	if (m_pInfo[nType].nNumAttackInfo <= 1)
 	{
 		return;
 	}
-	int nIdx = m_aInfo[nType].nNumAttackInfo - 1;
+	int nIdx = m_pInfo[nType].nNumAttackInfo - 1;
 
 	// メモリ解放
-	//if (m_aInfo[nType].AttackInfo[nIdx] != NULL)
+	//if (m_pInfo[nType].AttackInfo[nIdx] != NULL)
 	{
-		delete m_aInfo[nType].AttackInfo[nIdx];
-		m_aInfo[nType].AttackInfo[nIdx] = NULL;
+		delete m_pInfo[nType].AttackInfo[nIdx];
+		m_pInfo[nType].AttackInfo[nIdx] = NULL;
 
 		// 攻撃情報の総数減算
-		m_aInfo[nType].nNumAttackInfo--;
+		m_pInfo[nType].nNumAttackInfo--;
 	}
+}
+
+//==========================================================================
+// 攻撃情報の総数減算
+//==========================================================================
+CMotion::Parts CMotion::GetPartsOld(int nParts)
+{ 
+	return m_pPartsOld[nParts];
+}
+
+//==========================================================================
+// 攻撃情報の総数減算
+//==========================================================================
+void CMotion::SetPartsOld(int nParts, Parts parts)
+{ 
+	m_pPartsOld[nParts] = parts;
 }
 
 //==========================================================================
@@ -966,9 +944,9 @@ float CMotion::GetAllCount(void)
 int CMotion::GetMaxAllCount(int nType)
 {
 	int nAllFrame = 0;
-	for (int nCntKey = 0; nCntKey < m_aInfo[nType].nNumKey; nCntKey++)
+	for (int nCntKey = 0; nCntKey < m_pInfo[nType].nNumKey; nCntKey++)
 	{
-		nAllFrame += m_aInfo[nType].aKey[nCntKey].nFrame;	// 全てのカウントの最大値
+		nAllFrame += m_pInfo[nType].aKey[nCntKey].nFrame;	// 全てのカウントの最大値
 	}
 	return nAllFrame;
 }
@@ -985,6 +963,10 @@ void CMotion::ReadText(const std::string pTextFile)
 		{// ファイル名が一致してない
 			continue;
 		}
+
+		// モーションの情報生成
+		m_pInfo = DEBUG_NEW Info[m_nNumLoadData[nCntData]];
+		memset(m_pInfo, 0, sizeof(Info) * m_nNumLoadData[nCntData]);
 
 		for (int nCntInfo = 0; nCntInfo < m_nNumLoadData[nCntData]; nCntInfo++)
 		{
@@ -1034,6 +1016,15 @@ void CMotion::ReadText(const std::string pTextFile)
 
 			fscanf(pFile, "%s", &aComment[0]);	// =の分
 			fscanf(pFile, "%d", &m_nNumMotion);	// モーション数読み込み
+
+			// モーションの情報生成
+			m_pInfo = DEBUG_NEW Info[m_nNumMotion];
+			if (m_pInfo == nullptr)
+			{
+				fclose(pFile);
+				return;
+			}
+			memset(m_pInfo, 0, sizeof(Info) * m_nNumMotion);
 
 			while (nCntFile != m_nNumMotion)
 			{// モーション数分読み込むまで繰り返し
@@ -1288,12 +1279,12 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 			// モーション情報の登録
 			SetInfo(m_aLoadData[m_nNumLoad][nIdxMotion]);
 
-			if (m_nNumMotion == 0)
+			if (nIdxMotion == 0)
 			{
 				m_fMaxAllFrame = 0;
-				for (int nCntKey = 0; nCntKey < m_aInfo[m_nPatternKey].nNumKey; nCntKey++)
+				for (int nCntKey = 0; nCntKey < m_pInfo[m_nPatternKey].nNumKey; nCntKey++)
 				{
-					m_fMaxAllFrame += m_aInfo[m_nPatternKey].aKey[nCntKey].nFrame;	// 全てのカウントの最大値
+					m_fMaxAllFrame += m_pInfo[m_nPatternKey].aKey[nCntKey].nFrame;	// 全てのカウントの最大値
 				}
 			}
 

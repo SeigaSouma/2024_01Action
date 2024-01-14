@@ -41,7 +41,7 @@ MODEL_FILENAME = data/MODEL/MonnMonnsowd_Low.x			# [16]大剣
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
-	VELOCITY = 2.50		
+	VELOCITY = 2.00		
 	JUMP = 0.00		
 	RADIUS = 60.00		
 	HEIGHT = 0.00		
@@ -198,14 +198,14 @@ NUM_MOTION = 8
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_def.txt		# [0]デフォルト
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_walk.txt		# [1]歩き
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_dash.txt		# [2]ダッシュ
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_attack.txt		# [3]攻撃
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_jump.txt		# [4]ジャンプ
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_fall.txt		# [5]落下中
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_knockback.txt	# [6]ノックバック
-MOTION_FILENAME = data/TEXT/character/player/tyuuniplayer/motion_dead.txt		# [7]死亡
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_def.txt			# [0]デフォルト
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_walk.txt			# [1]歩き
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dash.txt			# [2]ダッシュ
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack.txt		# [3]攻撃
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [4]ジャンプ
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [5]落下中
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [6]ノックバック
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [7]死亡
 
 
 END_SCRIPT		# この行は絶対消さないこと！
