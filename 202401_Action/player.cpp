@@ -63,19 +63,16 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 {
 	// 値のクリア
 	// 共有変数
-	m_bJump = false;					// ジャンプ中かどうか
-	m_bLandOld = false;					// 過去の着地情報
-	m_bHitStage = false;				// ステージの当たり判定
-	m_bLandField = false;				// フィールドの着地判定
-	m_bHitWall = false;					// 壁の当たり判定
-	m_nCntWalk = 0;						// 歩行カウンター
-	m_state = STATE_NONE;				// 状態
-	m_sMotionFrag.bATK = false;		// モーションのフラグ
-	m_sMotionFrag.bATK = false;		// モーションのフラグ
-	m_sMotionFrag.bJump = false;		// モーションのフラグ
-	m_sMotionFrag.bKnockBack = false;	// モーションのフラグ
-	m_sMotionFrag.bDead = false;		// モーションのフラグ
-	m_sMotionFrag.bMove = false;		// モーションのフラグ
+	m_bJump = false;				// ジャンプ中かどうか
+	m_bLandOld = false;				// 過去の着地情報
+	m_bHitStage = false;			// ステージの当たり判定
+	m_bLandField = false;			// フィールドの着地判定
+	m_bHitWall = false;				// 壁の当たり判定
+	m_nCntWalk = 0;					// 歩行カウンター
+	m_state = STATE_NONE;			// 状態
+
+	SMotionFrag initFrag = {};
+	m_sMotionFrag = initFrag;		// モーションのフラグ
 
 	// プライベート変数
 	m_Oldstate = STATE_NONE;						// 前回の状態
@@ -554,6 +551,12 @@ void CPlayer::Controll(void)
 			if (m_bAttacking)
 			{
 				m_nComboStage++;	// コンボの段階
+			}
+
+			if (pInputGamepad->IsTipStick())
+			{// 左スティックが倒れてる場合
+
+				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
 		}
 	}

@@ -154,6 +154,7 @@ void CMotion::SetInfo(Info info)
 	m_pInfo[m_nNumAll].nMove = info.nMove;
 	m_pInfo[m_nNumAll].nNumKey = info.nNumKey;
 	m_pInfo[m_nNumAll].nCancelableFrame = info.nCancelableFrame;
+	m_pInfo[m_nNumAll].nCombolableFrame = info.nCombolableFrame;
 
 	for (int nCntKey = 0; nCntKey < m_pInfo[m_nNumAll].nNumKey; nCntKey++)
 	{
@@ -546,8 +547,8 @@ void CMotion::Update(float fBuff)
 	m_fCntFrame += 1.0f * fBuff;
 	m_fCntAllFrame += 1.0f * fBuff;
 
-	if (m_pInfo[m_nType].nCancelableFrame != -1 &&
-		m_pInfo[m_nType].nCancelableFrame <= m_fCntAllFrame + 15)
+	if (m_pInfo[m_nType].nCombolableFrame != -1 &&
+		m_pInfo[m_nType].nCombolableFrame <= m_fCntAllFrame)
 	{// -1じゃなく、フレームを超えた時
 		m_bCombiable = true;	// コンボ可能
 	}
@@ -1171,6 +1172,13 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 
 					fscanf(pFile, "%s", &aComment[0]);	// =の分
 					fscanf(pFile, "%d", &m_aLoadData[m_nNumLoad][nIdxMotion].nCancelableFrame);	// キャンセル可能フレーム
+				}
+
+				if (strcmp(aComment, "COMBOLABLE") == 0)
+				{// COMBOLABLEでコンボ可能フレーム読み込み
+
+					fscanf(pFile, "%s", &aComment[0]);	// =の分
+					fscanf(pFile, "%d", &m_aLoadData[m_nNumLoad][nIdxMotion].nCombolableFrame);	// コンボ可能フレーム
 				}
 
 				if (strcmp(aComment, "ATTACKINFO") == 0)

@@ -46,6 +46,7 @@ protected:
 	{
 		bool bJump;			// ジャンプ中
 		bool bATK;			// 攻撃中
+		bool bCounter;		// カウンター中
 		bool bKnockBack;	// ノックバック中
 		bool bDead;			// 死亡中
 		bool bMove;			// 移動中

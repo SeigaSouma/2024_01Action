@@ -67,6 +67,7 @@ public:
 		int nMove;				// 移動判定
 		int nNumAttackInfo;		// 攻撃情報の数
 		int nCancelableFrame;	// キャンセル可能フレーム
+		int nCombolableFrame;	// コンボ可能フレーム
 		AttackInfo *AttackInfo[MAX_PARTS];	// 当たり判定用
 	}Info;
 
