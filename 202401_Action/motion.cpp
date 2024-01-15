@@ -36,6 +36,8 @@ CMotion::CMotion()
 	m_fMaxAllFrame = 0.0f;	// 全てのカウントの最大値
 	m_fSlowFactor = 0.0f;	// 遅延係数
 	m_bFinish = false;		// 終了したかどうか
+	m_bCancelable = false;	// キャンセル可能か
+	m_bCombiable = false;	// コンボ可能か
 	m_pObjChara = NULL;		// オブジェクトのポインタ
 	m_ppModel = NULL;		// モデルのポインタ
 	m_nNumModel = 0;		// モデルの総数
@@ -151,6 +153,7 @@ void CMotion::SetInfo(Info info)
 	m_pInfo[m_nNumAll].nLoop = info.nLoop;
 	m_pInfo[m_nNumAll].nMove = info.nMove;
 	m_pInfo[m_nNumAll].nNumKey = info.nNumKey;
+	m_pInfo[m_nNumAll].nCancelableFrame = info.nCancelableFrame;
 
 	for (int nCntKey = 0; nCntKey < m_pInfo[m_nNumAll].nNumKey; nCntKey++)
 	{
@@ -543,6 +546,18 @@ void CMotion::Update(float fBuff)
 	m_fCntFrame += 1.0f * fBuff;
 	m_fCntAllFrame += 1.0f * fBuff;
 
+	if (m_pInfo[m_nType].nCancelableFrame != -1 &&
+		m_pInfo[m_nType].nCancelableFrame <= m_fCntAllFrame + 15)
+	{// -1じゃなく、フレームを超えた時
+		m_bCombiable = true;	// コンボ可能
+	}
+
+	if (m_pInfo[m_nType].nCancelableFrame != -1 &&
+		m_pInfo[m_nType].nCancelableFrame <= m_fCntAllFrame)
+	{// -1じゃなく、フレームを超えた時
+		m_bCancelable = true;	// キャンセル可能
+	}
+
 	if (m_pInfo[m_nType].nLoop == LOOP_ON)
 	{// ループモーションはいつでも終わってる
 
@@ -640,6 +655,8 @@ void CMotion::Set(int nType, bool bBlend)
 	m_fCntAllFrame = 0.0f;	// 全てのカウント
 	m_fMaxAllFrame = 0.0f;	// 全てのカウントの最大値
 	m_bFinish = false;		// 終了したかどうか
+	m_bCancelable = false;	// キャンセル可能か
+	m_bCombiable = false;	// コンボ可能か
 
 	for (int nCntKey = 0; nCntKey < m_pInfo[m_nPatternKey].nNumKey; nCntKey++)
 	{
@@ -698,7 +715,17 @@ void CMotion::Set(int nType, bool bBlend)
 		else
 		{
 			m_pPartsOld[nCntParts].rot = m_pInfo[m_nType].aKey[0].aParts[nCntParts].rot;
-			m_pPartsOld[nCntParts].pos = m_pInfo[m_nType].aKey[0].aParts[nCntParts].pos + m_pObjChara->GetOriginPosition();
+
+			if (nStartIdx == nCntParts)
+			{
+				m_pPartsOld[nCntParts].pos = m_pInfo[m_nType].aKey[0].aParts[nCntParts].pos + m_pObjChara->GetOriginPosition() - m_ppModel[nCntModel]->GetOriginPosition();
+			}
+			else
+			{
+				m_pPartsOld[nCntParts].pos = m_pInfo[m_nType].aKey[0].aParts[nCntParts].pos;
+			}
+			//m_pPartsOld[nCntParts].pos = m_pInfo[m_nType].aKey[0].aParts[nCntParts].pos + m_pObjChara->GetOriginPosition();
+
 			m_pPartsOld[nCntParts].scale = m_pInfo[m_nType].aKey[0].aParts[nCntParts].scale;
 		}
 	}
@@ -964,11 +991,14 @@ void CMotion::ReadText(const std::string pTextFile)
 			continue;
 		}
 
-		// モーションの情報生成
-		m_pInfo = DEBUG_NEW Info[m_nNumLoadData[nCntData]];
-		memset(m_pInfo, 0, sizeof(Info) * m_nNumLoadData[nCntData]);
+		// モーション数
+		m_nNumMotion = m_nNumLoadData[nCntData];
 
-		for (int nCntInfo = 0; nCntInfo < m_nNumLoadData[nCntData]; nCntInfo++)
+		// モーションの情報生成
+		m_pInfo = DEBUG_NEW Info[m_nNumMotion];
+		memset(m_pInfo, 0, sizeof(Info) * m_nNumMotion);
+
+		for (int nCntInfo = 0; nCntInfo < m_nNumMotion; nCntInfo++)
 		{
 			for (int nCntATK = 0; nCntATK < m_aLoadData[nCntData][nCntInfo].nNumAttackInfo; nCntATK++)
 			{// 攻撃情報分繰り返す
@@ -1083,6 +1113,9 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 	Info InitInfo = {};
 	AttackInfo InitAttackInfo = {};
 
+	// キャンセル可能フレームリセット
+	InitInfo.nCancelableFrame = 0;
+
 	// スケール値リセット
 	for (int key = 0; key < MAX_KEY; key++)
 	{
@@ -1131,6 +1164,13 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 
 					fscanf(pFile, "%s", &aComment[0]);	// =の分
 					fscanf(pFile, "%d", &m_aLoadData[m_nNumLoad][nIdxMotion].nMove);	// 移動0か1か
+				}
+
+				if (strcmp(aComment, "CANCELABLE") == 0)
+				{// CANCELABLEでキャンセル可能フレーム読み込み
+
+					fscanf(pFile, "%s", &aComment[0]);	// =の分
+					fscanf(pFile, "%d", &m_aLoadData[m_nNumLoad][nIdxMotion].nCancelableFrame);	// キャンセル可能フレーム
 				}
 
 				if (strcmp(aComment, "ATTACKINFO") == 0)

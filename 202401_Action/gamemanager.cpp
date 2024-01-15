@@ -28,7 +28,6 @@ CGameManager::CGameManager()
 	m_bEndRush = false;			// ラッシュが終了したか
 	m_bControll = false;		// 操作できるか
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
-	m_bSetEvolusion = false;	// 進化設定してるか
 	m_nNowStage = 0;			// 現在のステージ
 	m_nNumStage = 0;			// ステージの総数
 }
@@ -81,7 +80,6 @@ HRESULT CGameManager::Init(void)
 	m_bControll = true;			// 操作できるか
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 	m_nNowStage = 0;			// 現在のステージ
-	m_bSetEvolusion = false;	// 進化設定してるか
 	m_SceneType = SCENE_MAIN;	// シーンの種類
 
 	return S_OK;
@@ -112,6 +110,14 @@ void CGameManager::Update(void)
 	switch (m_SceneType)
 	{
 	case CGameManager::SCENE_MAIN:
+		m_bControll = true;
+		break;
+
+	case CGameManager::SCENE_MAINCLEAR:
+		m_bControll = true;
+		break;
+
+	case CGameManager::SCENE_BOSS:
 		m_bControll = true;
 		break;
 
@@ -150,18 +156,64 @@ void CGameManager::Update(void)
 				pCamera->SetEnableFollow(true);
 			}
 
-			if (m_bEndNormalStage == false)
+			if (!m_bEndNormalStage)
 			{// 通常ステージが終わっていなかったら
 				SetEnemy();
 			}
 			else
 			{// ボスステージ
-				//SetBoss();
+				SetBoss();
 			}
 
 		}
 	}
 
+}
+
+//==========================================================================
+// ボス設定
+//==========================================================================
+void CGameManager::SetBoss(void)
+{
+	// BGMストップ
+	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL_BGM_GAME);
+
+	// 種類設定
+	m_SceneType = SCENE_BOSS;
+
+	// リセット処理
+	CGame::Reset();
+
+	// シーンのリセット
+	CManager::GetInstance()->GetScene()->ResetScene();
+
+	// プレイヤー情報
+	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
+	{
+		CPlayer* pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
+		if (pPlayer == NULL)
+		{
+			continue;
+		}
+
+		// 位置設定
+		pPlayer->SetPosition(D3DXVECTOR3(-500.0f + nCntPlayer * 50.0f, 5000.0f, 0.0f));
+	}
+
+	// カメラの情報取得
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	pCamera->ResetBoss();
+
+	// 黒フレーム侵入
+	CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_IN);
+
+	// 敵の再配置
+	CEnemyManager* pEnemyManager = CGame::GetEnemyManager();
+	if (pEnemyManager != NULL)
+	{
+		// 敵の再配置
+		pEnemyManager->SetStageBoss();
+	}
 }
 
 //==========================================================================
@@ -188,7 +240,6 @@ void CGameManager::SetEnemy(void)
 	{
 		pCamera->Reset(CScene::MODE_GAME);
 	}
-
 
 	// 種類設定
 	m_SceneType = SCENE_MAIN;

@@ -24,10 +24,10 @@
 const char *CPause::m_apTextureFile[CPause::VTX_MAX] =		// テクスチャのファイル
 {
 	"",
-	"data\\TEXTURE\\pause_menu.png",
-	"data\\TEXTURE\\pause_game.png",
-	"data\\TEXTURE\\pause_retry.png",
-	"data\\TEXTURE\\pause_title.png",
+	"data\\TEXTURE\\pause\\window.png",
+	"data\\TEXTURE\\pause\\game.png",
+	"data\\TEXTURE\\pause\\retry.png",
+	"data\\TEXTURE\\pause\\title.png",
 };
 
 //==========================================================================

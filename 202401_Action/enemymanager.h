@@ -76,12 +76,9 @@ private:
 	Pattern m_aPattern[mylib_const::MAX_PATTEN_ENEMY];			// 配置の種類
 	std::string sMotionFileName[mylib_const::MAX_PATTEN_ENEMY];	// モーションファイル名
 	STATE m_state;			// 状態
-	int m_nCntSpawn;		// 出現カウント
 	int m_nPatternNum;		// 出現パターン数
 	int m_nNumChara;		// 敵の種類の総数
 	bool m_bChangeStage;	// ステージ変更中か
-	float m_fTimeSpawn;		// スポーンまでの時間
-	float m_fTimer;			// スポーンタイマー
 };
 
 

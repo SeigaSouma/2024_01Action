@@ -27,14 +27,6 @@
 #include "timer.h"
 
 //==========================================================================
-// マクロ定義
-//==========================================================================
-#define SPAWN_STRENGTH	(100.0f)	// スポーン時の高さ
-#define KILL_INT		(30)		// 倒したインターバル
-#define INITIAL_TIME (3.0f)	// 初期時間
-#define MIN_TIME (2.0f)	// 最小時間
-
-//==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
 
@@ -47,11 +39,8 @@ CEnemyManager::CEnemyManager()
 	m_pBoss = NULL;										// ボス
 	memset(&m_aPattern[0], NULL, sizeof(m_aPattern));	// 配置の種類
 	m_state = STATE_NONE;	// 状態
-	m_nCntSpawn = 0;		// 出現カウント
 	m_nPatternNum = 0;		// 出現パターン数
 	m_nNumChara = 0;		// 敵の種類の総数
-	m_fTimer = 0.0f;		// スポーンタイマー
-	m_fTimeSpawn = 0.0f;	// スポーンする時間
 	m_bChangeStage = false;	// ステージ変更中か
 }
 
@@ -109,10 +98,6 @@ CEnemyManager *CEnemyManager::Create(const std::string pTextFile)
 //==========================================================================
 HRESULT CEnemyManager::Init(void)
 {
-	m_fTimeSpawn = INITIAL_TIME;
-
-	// 総数リセット
-	m_nCntSpawn = 0;
 
 	// ステージ変更中にする
 	m_bChangeStage = false;
@@ -131,14 +116,14 @@ HRESULT CEnemyManager::Init(void)
 	// 拠点の数取得
 	int nNumBase = pEnemyBase->GetNumBase(0);
 
-	//for (int i = 0; i < nNumBase; i++)
-	//{
-	//	// 拠点ごとのデータ取得
-	//	CEnemyBase::sInfo sEnemyBaseInfo = pEnemyBase->GetEnemyBaseInfo(0, i);
+	for (int i = 0; i < nNumBase; i++)
+	{
+		// 拠点ごとのデータ取得
+		CEnemyBase::sInfo sEnemyBaseInfo = pEnemyBase->GetEnemyBaseInfo(0, i);
 
-	//	// 敵の配置
-	//	SetEnemy(sEnemyBaseInfo.pos, sEnemyBaseInfo.rot, sEnemyBaseInfo.nPattern);
-	//}
+		// 敵の配置
+		SetEnemy(sEnemyBaseInfo.pos, sEnemyBaseInfo.rot, sEnemyBaseInfo.nPattern);
+	}
 
 
 	// 変更中じゃなくする
@@ -161,35 +146,24 @@ void CEnemyManager::Uninit(void)
 void CEnemyManager::Update(void)
 {
 	int nNumAll = CEnemy::GetListObj().GetNumAll();
-	if (nNumAll <= 0)
+	if (nNumAll <= 0 && !m_bChangeStage)
 	{// 全員倒されたら
 
-		
+		// ステージ変更中にする
+		m_bChangeStage = true;
+
+		// 通常クリア状態にする
+		CGame::GetGameManager()->SetType(CGameManager::SCENE_MAINCLEAR);
+
+		//// 遷移なしフェード追加
+		//CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
+
+		//// 遷移状態に変更
+		//CGame::GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
+
+		// クリアテキスト生成
+		CStageClearText::Create(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	}
-
-	//// 時間の取得
-	//m_fTimer += CManager::GetInstance()->GetDeltaTime();
-
-	//// タイムによる割合を計算
-	//float fRate =  0.0f;
-
-	//CTimer *pTimer = CTimer::GetInstance();
-
-	//if (pTimer != nullptr)
-	//{
-	//	float fTime = pTimer->GetTime();
-
-	//	fRate = fTime / START_TIME;
-	//}
-
-	//float fTime = INITIAL_TIME - (INITIAL_TIME - MIN_TIME) * (1.0f - fRate);
-
-	//if (m_fTimer >= fTime)
-	//{// ランダムな敵スポーン
-	//	SetStageEnemy();
-
-	//	m_fTimer = 0.0f;
-	//}
 
 	// テキストの描画
 	CManager::GetInstance()->GetDebugProc()->Print(
@@ -203,9 +177,14 @@ void CEnemyManager::Update(void)
 void CEnemyManager::SetStageEnemy(void)
 {
 	// ゲームマネージャ取得
-	CGameManager *pGameManager = CGame::GetGameManager();
+	CGameManager* pGameManager = CGame::GetGameManager();
 
 	if (pGameManager == NULL)
+	{
+		return;
+	}
+
+	if (pGameManager->IsEndNormalStage() == true)
 	{
 		return;
 	}
@@ -220,8 +199,7 @@ void CEnemyManager::SetStageEnemy(void)
 	}
 
 	// 敵拠点データ取得
-	CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
-
+	CEnemyBase* pEnemyBase = CGame::GetEnemyBase();
 	if (pEnemyBase == NULL)
 	{
 		return;
@@ -230,14 +208,14 @@ void CEnemyManager::SetStageEnemy(void)
 	// 拠点の数取得
 	int nNumBase = pEnemyBase->GetNumBase(nNowStage);
 
-	// 拠点決定
-	int nBase = UtilFunc::Transformation::Random(0, nNumBase - 1);
+	for (int i = 0; i < nNumBase; i++)
+	{
+		// 拠点ごとのデータ取得
+		CEnemyBase::sInfo sEnemyBaseInfo = pEnemyBase->GetEnemyBaseInfo(nNowStage, i);
 
-	// 拠点ごとのデータ取得
-	CEnemyBase::sInfo sEnemyBaseInfo = pEnemyBase->GetEnemyBaseInfo(nNowStage, nBase);
-
-	// 敵の配置
-	SetEnemy(sEnemyBaseInfo.pos, sEnemyBaseInfo.rot, sEnemyBaseInfo.nPattern);
+		// 敵の配置
+		SetEnemy(sEnemyBaseInfo.pos, sEnemyBaseInfo.rot, sEnemyBaseInfo.nPattern);
+	}
 
 	// ステージ加算
 	pGameManager->AddNowStage();

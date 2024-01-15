@@ -14,14 +14,17 @@
 //==========================================================================
 // マクロ定義
 //==========================================================================
-#define TEXTURE	"data\\TEXTURE\\stageclear_01.png"
-#define TIME_SCALEUP		(25)
-#define TIME_SCALEDOWN		(10)
-#define TIME_SCALENONE		(10)
-#define TIME_FADEOUT		(120)
-#define SIZE_SCALEORIGIN	(0.3f)
-#define SIZE_SCALEUP		(0.6f)
-#define SIZE_SCALEDOWN		(0.25f)
+namespace
+{
+	const char* TEXTURE = "data\\TEXTURE\\stageclear_01.png";
+	const int TIME_SCALEUP = 25;				// 拡大時間
+	const int TIME_SCALEDOWN = 25;				// 縮小時間
+	const int TIME_SCALENONE = 25;				// 変更なし時間
+	const int TIME_FADEOUT = 120;				// フェードアウト時間
+	const float SIZE_SCALEORIGIN = 0.3f;		// 元の大きさ
+	const float SIZE_SCALEUP = 0.6f;			// 拡大の大きさ
+	const float SIZE_SCALEDOWN = 0.25f;			// 縮小の大きさ
+}
 
 //==========================================================================
 // 関数ポインタ

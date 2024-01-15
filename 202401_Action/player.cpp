@@ -83,6 +83,8 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_posKnokBack = mylib_const::DEFAULT_VECTOR3;	// ノックバックの位置
 	m_KnokBackMove = mylib_const::DEFAULT_VECTOR3;	// ノックバックの移動量
 	m_nCntState = 0;								// 状態遷移カウンター
+	m_nComboStage = 0;								// コンボの段階
+	m_bAttacking = false;							// 攻撃中
 	m_bDash = false;								// ダッシュ判定
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
@@ -248,6 +250,9 @@ void CPlayer::Update(void)
 	// モーションの設定処理
 	MotionSet();
 
+	// モーション別の状態設定
+	MotionBySetState();
+
 	// 状態更新
 	UpdateState();
 
@@ -303,7 +308,9 @@ void CPlayer::Update(void)
 		"位置：【X：%f, Y：%f, Z：%f】 【W / A / S / D】\n"
 		"向き：【X：%f, Y：%f, Z：%f】 【Z / C】\n"
 		"移動量：【X：%f, Y：%f, Z：%f】\n"
-		"体力：【%d】\n", pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife());
+		"体力：【%d】\n"
+		"コンボステージ：【%d】\n"
+		, pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife(), m_nComboStage);
 #endif
 
 }
@@ -360,7 +367,8 @@ void CPlayer::Controll(void)
 			fMove *= MULTIPLIY_DASH;
 		}
 
-		if (pMotion->IsGetMove(nMotionType) == 1 &&
+		if ((pMotion->IsGetMove(nMotionType) == 1 || pMotion->IsGetCancelable()) &&
+			!m_sMotionFrag.bATK &&
 			m_state != STATE_DMG &&
 			m_state != STATE_KNOCKBACK &&
 			m_state != STATE_DEAD &&
@@ -437,6 +445,8 @@ void CPlayer::Controll(void)
 
 				// 移動中にする
 				m_sMotionFrag.bMove = true;
+				move.x += sinf(D3DX_PI * 1.0f + Camerarot.y) * fMove;
+				move.z += cosf(D3DX_PI * 1.0f + Camerarot.y) * fMove;
 				fRotDest = D3DX_PI * 0.0f + Camerarot.y;
 			}
 			else
@@ -459,6 +469,13 @@ void CPlayer::Controll(void)
 				move.x += sinf(stickrot + Camerarot.y) * fMove;
 				move.z += cosf(stickrot + Camerarot.y) * fMove;
 				fRotDest = D3DX_PI + stickrot + Camerarot.y;
+			}
+
+			if (m_sMotionFrag.bMove &&
+				!m_bJump)
+			{// キャンセル可能 && 移動中
+
+				pMotion->ToggleFinish(true);
 			}
 
 			if (m_bJump == false &&
@@ -519,10 +536,24 @@ void CPlayer::Controll(void)
 				fRotDest = D3DX_PI * 0.0f + Camerarot.y;
 			}
 
-			if (pInputGamepad->IsTipStick())
-			{// 左スティックが倒れてる場合
+			//if (pInputGamepad->IsTipStick())
+			//{// 左スティックが倒れてる場合
 
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
+			//	fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
+			//}
+		}
+
+		// 攻撃
+		if (pMotion->IsGetCombiable() &&
+			!m_bJump &&
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
+		{
+			pMotion->ToggleFinish(true);
+			m_sMotionFrag.bATK = true;		// 攻撃判定ON
+
+			if (m_bAttacking)
+			{
+				m_nComboStage++;	// コンボの段階
 			}
 		}
 	}
@@ -618,6 +649,11 @@ void CPlayer::Controll(void)
 
 	// 移動量設定
 	SetMove(move);
+
+	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
+	{
+		CCollisionObject::Create(GetPosition(), mylib_const::DEFAULT_VECTOR3, 100000.0f, 3, 10000, CCollisionObject::TAG_PLAYER);
+	}
 
 	if (pInputKeyboard->GetTrigger(DIK_RETURN) == true)
 	{
@@ -751,13 +787,46 @@ void CPlayer::MotionSet(void)
 
 			m_sMotionFrag.bATK = false;		// 攻撃判定OFF
 
-			pMotion->Set(MOTION_ATK, true);
+			int nSetType = MOTION_ATK + m_nComboStage;
+			pMotion->Set(nSetType, true);
+
+			if (m_nComboStage >= MOTION_ATK2 - MOTION_ATK)
+			{
+				m_nComboStage = 0;
+			}
 		}
 		else
 		{
 			// ニュートラルモーション
 			pMotion->Set(MOTION_DEF);
 		}
+	}
+}
+
+//==========================================================================
+// モーション別の状態設定
+//==========================================================================
+void CPlayer::MotionBySetState(void)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+	int nType = pMotion->GetType();
+
+	switch (nType)
+	{
+	case MOTION_ATK:
+	case MOTION_ATK2:
+		m_bAttacking = true;
+		break;
+
+	default:
+		m_bAttacking = false;
+		m_nComboStage = 0;
+		break;
 	}
 }
 

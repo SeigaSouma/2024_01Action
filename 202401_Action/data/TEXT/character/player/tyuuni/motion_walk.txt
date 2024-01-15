@@ -30,87 +30,104 @@ MOTIONSET
 		FRAME = 9
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.22 0.00 0.00
-			POS = 0.00 9.50 0.00
+			POS = 0.00 4.50 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
 			ROT = -0.07 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 2 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 3 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
 			ROT = -0.23 0.00 1.29
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 5 ] -----
 			ROT = 0.00 -1.04 -0.19
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 6 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 7 ] -----
 			ROT = 0.06 0.00 -1.29
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
 			ROT = 0.00 0.91 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 9 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 10 ] -----
 			ROT = 1.35 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 11 ] -----
 			ROT = -1.45 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 12 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 13 ] -----
 			ROT = -0.15 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 14 ] -----
 			ROT = -0.48 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 15 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 16 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 	END_KEYSET
@@ -119,87 +136,104 @@ MOTIONSET
 		FRAME = 8
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.12 0.28 0.00
-			POS = 0.00 2.50 0.00
+			POS = 0.00 -2.50 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
 			ROT = -0.19 0.06 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 2 ] -----
-			ROT = 0.09 -0.19 -0.06
+			ROT = 0.09 -0.32 -0.12
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 3 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
 			ROT = -0.25 0.06 1.04
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 5 ] -----
 			ROT = 0.00 -0.72 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 6 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 7 ] -----
 			ROT = 0.47 0.60 -1.13
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
 			ROT = 0.00 1.39 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 9 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 10 ] -----
 			ROT = 1.09 -0.44 -0.16
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 11 ] -----
 			ROT = -0.98 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 12 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 13 ] -----
 			ROT = -0.58 -0.28 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 14 ] -----
 			ROT = -1.13 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 15 ] -----
 			ROT = -0.31 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 16 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 	END_KEYSET
@@ -208,87 +242,104 @@ MOTIONSET
 		FRAME = 8
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.12 0.28 0.00
-			POS = 0.00 -3.50 0.00
+			POS = 0.00 -6.50 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
 			ROT = -0.19 0.06 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 2 ] -----
-			ROT = 0.09 -0.19 -0.06
+			ROT = 0.09 -0.35 -0.09
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 3 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
 			ROT = -0.53 0.06 1.04
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 5 ] -----
 			ROT = 0.00 -0.47 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 6 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 7 ] -----
 			ROT = 0.03 0.38 -1.13
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
 			ROT = 0.00 0.98 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 9 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 10 ] -----
 			ROT = 0.65 -0.44 -0.16
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 11 ] -----
 			ROT = -0.35 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 12 ] -----
 			ROT = -0.22 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 13 ] -----
 			ROT = -0.36 -0.28 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 14 ] -----
 			ROT = -0.97 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 15 ] -----
 			ROT = -0.31 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 16 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 	END_KEYSET
@@ -297,87 +348,104 @@ MOTIONSET
 		FRAME = 9
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.22 0.00 0.00
-			POS = 0.00 9.50 0.00
+			POS = 0.00 4.50 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
 			ROT = -0.07 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 2 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 3 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
 			ROT = 0.05 0.00 1.32
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 5 ] -----
 			ROT = 0.00 -0.78 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 6 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 7 ] -----
 			ROT = -0.22 0.00 -1.29
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
 			ROT = 0.00 0.66 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 9 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 10 ] -----
 			ROT = -0.15 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 11 ] -----
 			ROT = -0.47 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 12 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 13 ] -----
 			ROT = 1.36 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 14 ] -----
 			ROT = -1.45 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 15 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 16 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 	END_KEYSET
@@ -386,87 +454,104 @@ MOTIONSET
 		FRAME = 8
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.13 -0.28 0.00
-			POS = 0.00 2.50 0.00
+			POS = 0.00 -2.50 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
 			ROT = -0.19 -0.06 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 2 ] -----
-			ROT = 0.09 0.19 0.06
+			ROT = 0.09 0.35 0.12
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 3 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
 			ROT = 0.47 -0.60 1.13
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 5 ] -----
 			ROT = 0.00 -1.38 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 6 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 7 ] -----
 			ROT = -0.12 -0.06 -1.04
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
 			ROT = 0.00 0.56 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 9 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 10 ] -----
 			ROT = -0.57 0.27 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 11 ] -----
 			ROT = -1.12 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 12 ] -----
 			ROT = -0.31 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 13 ] -----
 			ROT = 1.09 0.44 0.15
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 14 ] -----
 			ROT = -0.98 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 15 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 16 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 	END_KEYSET
@@ -475,87 +560,104 @@ MOTIONSET
 		FRAME = 8
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.13 -0.28 0.00
-			POS = 0.00 -3.50 0.00
+			POS = 0.00 -6.50 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
 			ROT = -0.19 -0.06 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 2 ] -----
-			ROT = 0.09 0.19 0.06
+			ROT = 0.09 0.35 0.09
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 3 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
 			ROT = 0.03 -0.60 1.13
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 5 ] -----
 			ROT = 0.00 -0.97 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 6 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 7 ] -----
 			ROT = -0.53 -0.06 -1.04
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
 			ROT = 0.00 0.47 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 9 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 10 ] -----
 			ROT = -0.35 0.27 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 11 ] -----
 			ROT = -0.96 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 12 ] -----
 			ROT = -0.31 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 13 ] -----
 			ROT = 0.65 0.44 0.15
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 14 ] -----
 			ROT = -0.35 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 15 ] -----
 			ROT = -0.22 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 		PARTS	# ----- [ 16 ] -----
 			ROT = 0.00 0.00 0.00
 			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
 	END_KEYSET

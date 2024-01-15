@@ -29,6 +29,7 @@
 #define ROT_MOVE_STICK_Y	(0.00040f)			// 回転移動量
 #define ROT_MOVE_STICK_Z	(0.00020f)			// 回転移動量
 #define ROT_MOVE		(0.025f)			// 回転移動量
+#define MIN_STICKROT			(-D3DX_PI * 0.25f)	// カメラ固定用
 #define MIN_ROT			(-D3DX_PI * 0.49f)	// カメラ固定用
 #define MAX_ROT			(D3DX_PI * 0.49f)	// カメラ固定用
 #define BACKFOLLOW_TIME	(20)				// 背面補正までの時間
@@ -95,6 +96,7 @@ CCamera::CCamera()
 	m_fDiffHeightSave = 0.0f;					// 高さの差分保存用
 	m_fDiffHeightDest = 0.0f;					// 目標の高さの差分
 	m_bFollow = false;							// 追従するかどうか
+	m_bRotationZ = false;						// Z回転出来るかどうか
 	m_state = CAMERASTATE_NONE;					// 状態
 	m_nCntState = 0;							// 状態カウンター
 	m_nCntDistance = 0;							// 距離カウンター
@@ -158,31 +160,28 @@ void CCamera::Uninit(void)
 void CCamera::Update(void)
 {
 	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
-	//if (m_state == CAMERASTATE_NONE)
+	// 高さの差分リセット
+	m_fDiffHeightSave = 0.0f;
+
+	// 視点・注視点移動
+	MoveCameraFollow();
+	MoveCameraInput();
+	MoveCameraVR();
+	MoveCameraR();
+	MoveCameraV();
+	MoveCameraDistance();
+	MoveCameraDistance();
+	UpdateSpotLightVec();
+
+	if (m_state == CAMERASTATE_SHAKE)
 	{
-		// 高さの差分リセット
-		m_fDiffHeightSave = 0.0f;
-
-		// 視点・注視点移動
-		MoveCameraFollow();
-		MoveCameraInput();
-		MoveCameraVR();
-		MoveCameraR();
-		MoveCameraV();
-		MoveCameraDistance();
-		MoveCameraDistance();
-		UpdateSpotLightVec();
-
-		if (m_state == CAMERASTATE_SHAKE)
-		{
-			UpdateState();
-		}
+		UpdateState();
 	}
 
-//#ifdef _DEBUG
-	
+	//#ifdef _DEBUG
+
 	if (pInputKeyboard->GetTrigger(DIK_F7) == true)
 	{// F7が押された,追従切り替え
 
@@ -208,9 +207,9 @@ void CCamera::Update(void)
 		//// 視点の代入処理
 		//SetCameraV();
 	}
-//#endif
+	//#endif
 
-	// テキストの描画
+		// テキストの描画
 	CManager::GetInstance()->GetDebugProc()->Print(
 		"---------------- カメラ情報 ----------------\n"
 		"【向き】[X：%f Y：%f Z：%f]\n"
@@ -266,7 +265,16 @@ void CCamera::MoveCameraStick(int nIdx)
 #if 1
 
 	m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
-	m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+
+	if (m_rot.z > MIN_STICKROT &&
+		(m_bRotationZ || pInputGamepad->GetStickMoveR(nIdx).y < 0.0f))
+	{
+		m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+	}
+	else if (m_rot.z <= MIN_STICKROT && pInputGamepad->GetStickMoveR(nIdx).y > 0.0f)
+	{
+		m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+	}
 
 	// 移動する
 	m_rot += m_Moverot;
@@ -650,6 +658,9 @@ void CCamera::SetCameraVGame(void)
 		float fDistance = 0.0f;
 		m_fHeightMaxDest = m_posVDest.y;
 
+		// Z操作出来る状態
+		m_bRotationZ = true;
+
 		// 目標の角度を求める
 		float fRotDest = atan2f((m_posVDest.x - m_posR.x), (m_posVDest.z - m_posR.z));
 		while (1)
@@ -670,6 +681,10 @@ void CCamera::SetCameraVGame(void)
 
 				// 目標の最大高さ保存
 				m_fHeightMaxDest = fHeight * (fDistanceRatio + 1.0f);
+
+				// Z操作不能
+				m_bRotationZ = false;
+				m_Moverot.z = 0.0f;
 			}
 
 			// 長さ加算

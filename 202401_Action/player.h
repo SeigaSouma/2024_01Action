@@ -33,6 +33,7 @@ protected:
 		MOTION_WALK,		// 移動
 		MOTION_DASH,		// ダッシュ
 		MOTION_ATK,			// 攻撃
+		MOTION_ATK2,		// 攻撃(派生1)
 		MOTION_JUMP,		// ジャンプ
 		MOTION_FALL,		// 落下中
 		MOTION_KNOCKBACK,	// ノックバック
@@ -108,6 +109,7 @@ private:
 	void Invincible(void);	// 無敵
 	virtual void Controll(void);	// 操作
 	void LimitPos(void);	// 位置制限
+	void MotionBySetState(void);	// モーション別の状態設定
 
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;			// 攻撃判定中処理
@@ -117,6 +119,8 @@ private:
 	MyLib::Vector3 m_posKnokBack;	// ノックバックの位置
 	MyLib::Vector3 m_KnokBackMove;	// ノックバックの移動量
 	int m_nCntState;				// 状態遷移カウンター
+	int m_nComboStage;				// コンボの段階
+	bool m_bAttacking;				// 攻撃中
 	bool m_bDash;					// ダッシュ判定
 	CTargetPoint *m_pTargetP;		// 目標の地点
 	Effekseer::Handle *m_pWeaponHandle;	// エフェクトの武器ハンドル

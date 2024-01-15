@@ -66,6 +66,7 @@ public:
 		int nLoop;				// ループ判定
 		int nMove;				// 移動判定
 		int nNumAttackInfo;		// 攻撃情報の数
+		int nCancelableFrame;	// キャンセル可能フレーム
 		AttackInfo *AttackInfo[MAX_PARTS];	// 当たり判定用
 	}Info;
 
@@ -77,11 +78,13 @@ public:
 	void Update(float fBuff = 1.0f);
 	static CMotion *Create(const std::string pTextFile, CObjectChara* pObjChara);
 	void Set(int nType, bool bBlend = true);	// モーションの設定処理
-	int GetType(void);		// 現在のモーションタイプ取得
-	int GetOldType(void);		// 前回のモーションタイプ取得
-	bool IsFinish(void);	// 終了しているかの判定
-	void ToggleFinish(bool bFinish);	// 終了しているかの判定切り替え
-	void SetSlowFactor(float fFactor);	// 遅延係数の設定
+	int GetType(void);							// 現在のモーションタイプ取得
+	int GetOldType(void);						// 前回のモーションタイプ取得
+	bool IsFinish(void);						// 終了しているかの判定
+	void ToggleFinish(bool bFinish);			// 終了しているかの判定切り替え
+	bool IsGetCancelable(void) { return m_bCancelable; }	// キャンセルの判定取得
+	bool IsGetCombiable(void) { return m_bCombiable; }	// キャンセルの判定取得
+	void SetSlowFactor(float fFactor);			// 遅延係数の設定
 
 	bool IsImpactFrame(AttackInfo attackInfo);	// 衝撃のフレームかどうか取得
 	MyLib::Vector3 GetAttackPosition(CModel **ppModel, AttackInfo attackInfo);	// 攻撃の位置取得
@@ -139,6 +142,8 @@ private:
 	float m_fMaxAllFrame;		// 全てのカウントの最大値
 	float m_fSlowFactor;		// 遅延係数
 	bool m_bFinish;				// 終了したかどうか
+	bool m_bCancelable;			// キャンセル可能か
+	bool m_bCombiable;			// コンボ可能か
 
 	CObjectChara *m_pObjChara;	// オブジェクトキャラクターのポインタ
 	CModel **m_ppModel;			// モデルのポインタ

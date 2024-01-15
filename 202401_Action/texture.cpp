@@ -265,7 +265,7 @@ CTexture::STexture CTexture::GetTextureInfo(int nIdxTex)
 //==========================================================================
 D3DXVECTOR2 CTexture::GetImageSize(int nIdx)
 {
-	if (static_cast<int>(m_TexInfo.size()) >= nIdx)
+	if (static_cast<int>(m_TexInfo.size()) <= nIdx)
 	{
 		return mylib_const::DEFAULT_VECTOR2;
 	}

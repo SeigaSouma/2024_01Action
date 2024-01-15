@@ -101,20 +101,19 @@ private:
 	void ResetTitle(void);
 	void ResetResult(void);
 	void ResetRanking(void);
-	void ResetDecide(void);
 
 	D3DXMATRIX	m_mtxProjection;	// プロジェクションマトリックス
 	D3DXMATRIX	m_mtxView;			// ビューマトリックス
 	D3DVIEWPORT9 m_viewport;		// ビューポート
-	MyLib::Vector3 m_posV;				// 視点(カメラの位置)
-	MyLib::Vector3 m_posR;				// 注視点(見たい場所)
-	MyLib::Vector3 m_posVDest;			// 目標の視点
-	MyLib::Vector3 m_posRDest;			// 目標の注視点
-	MyLib::Vector3 m_vecU;				// 上方向ベクトル
-	MyLib::Vector3 m_move;				// 移動量
-	MyLib::Vector3 m_rot;				// 向き
-	MyLib::Vector3 m_Moverot;			// 向きの移動量
-	MyLib::Vector3 m_rotVDest;			// 目標の視点の向き
+	MyLib::Vector3 m_posV;			// 視点(カメラの位置)
+	MyLib::Vector3 m_posR;			// 注視点(見たい場所)
+	MyLib::Vector3 m_posVDest;		// 目標の視点
+	MyLib::Vector3 m_posRDest;		// 目標の注視点
+	MyLib::Vector3 m_vecU;			// 上方向ベクトル
+	MyLib::Vector3 m_move;			// 移動量
+	MyLib::Vector3 m_rot;			// 向き
+	MyLib::Vector3 m_Moverot;		// 向きの移動量
+	MyLib::Vector3 m_rotVDest;		// 目標の視点の向き
 	MyLib::Vector3 m_TargetPos;		// 追従目標の位置
 	MyLib::Vector3 m_TargetRot;		// 追従目標の向き
 	float m_fDistance;				// 距離
@@ -133,6 +132,7 @@ private:
 	float m_fChaseDistance;			// 追従の間隔
 	float m_fDestChaseDistance;		// 目標の追従の間隔
 	bool m_bFollow;					// 追従するかどうか
+	bool m_bRotationZ;				// Z回転出来るかどうか
 	int m_nCntState;				// 状態カウンター
 	int m_nCntDistance;				// 距離カウンター
 	int m_nOriginCntDistance;		// 元の距離カウンター

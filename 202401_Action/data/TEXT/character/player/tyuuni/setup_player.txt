@@ -35,7 +35,7 @@ MODEL_FILENAME = data/MODEL/tyuuni/15_R_foot.x		# [12]右足
 MODEL_FILENAME = data/MODEL/tyuuni/10_L_UPleg.x		# [13]左太もも
 MODEL_FILENAME = data/MODEL/tyuuni/11_L_DWleg.x		# [14]左脛
 MODEL_FILENAME = data/MODEL/tyuuni/12_L_foot.x		# [15]左足
-MODEL_FILENAME = data/MODEL/MonnMonnsowd_Low.x			# [16]大剣
+MODEL_FILENAME = data/MODEL/tyuuni/MonnMonnsowd_Low.x			# [16]大剣
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -154,7 +154,7 @@ CHARACTERSET
 	PARTSSET						# [13]右太もも
 		INDEX = 13
 		PARENT = 0					# (親)腰
-		POS = 13.5 -4.5 0.0
+		POS = 10.0 -4.5 0.0
 		ROT = 0.0 0.0 0.0
 		START = 1
 	END_PARTSSET
@@ -193,7 +193,7 @@ END_CHARACTERSET
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 8
+NUM_MOTION = 9
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -202,10 +202,11 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_def.txt			# [0]デフォ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_walk.txt			# [1]歩き
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dash.txt			# [2]ダッシュ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack.txt		# [3]攻撃
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [4]ジャンプ
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [5]落下中
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [6]ノックバック
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [7]死亡
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack2.txt		# [4]攻撃2
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [5]ジャンプ
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [6]落下中
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [7]ノックバック
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [8]死亡
 
 
 END_SCRIPT		# この行は絶対消さないこと！

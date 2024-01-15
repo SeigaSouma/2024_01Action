@@ -22,6 +22,8 @@ public:
 	enum SceneType
 	{
 		SCENE_MAIN = 0,			// メイン
+		SCENE_MAINCLEAR,		// メインクリア
+		SCENE_BOSS,				// ボス
 		SCENE_TRANSITIONWAIT,	// 遷移待機
 		SCENE_TRANSITION,		// 遷移
 		SCENE_MAX
@@ -52,13 +54,13 @@ private:
 
 	// メンバ関数
 	void SetEnemy(void);
+	void SetBoss(void);
 
 	// メンバ変数
 	SceneType m_SceneType;	// シーンの種類
 	bool m_bEndRush;		// ラッシュが終了したか
 	bool m_bControll;		// 操作できるか
 	bool m_bEndNormalStage;	// 通常ステージが終了したか
-	bool m_bSetEvolusion;	// 進化設定してるか
 	int m_nNowStage;		// 現在のステージ
 	int m_nNumStage;		// ステージの総数
 };
