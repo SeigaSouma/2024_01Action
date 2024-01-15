@@ -487,6 +487,21 @@ void CPlayer::Controll(void)
 				// サウンド再生
 				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_JUMP);
 			}
+
+			// カウンター
+			if (!m_bJump &&
+				pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) &&
+				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
+			{
+				pMotion->Set(MOTION_COUNTER);
+				m_sMotionFrag.bCounter = true;		// 攻撃判定ON
+
+				if (pInputGamepad->IsTipStick())
+				{// 左スティックが倒れてる場合
+
+					fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
+				}
+			}
 		}
 		else if (pMotion->IsGetMove(nMotionType) == 0 &&
 			m_state != STATE_DEAD &&
@@ -543,6 +558,7 @@ void CPlayer::Controll(void)
 		// 攻撃
 		if (pMotion->IsGetCombiable() &&
 			!m_bJump &&
+			!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) && 
 			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
 		{
 			pMotion->ToggleFinish(true);
@@ -1057,6 +1073,8 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 //==========================================================================
 bool CPlayer::Hit(const int nValue)
 {
+	bool bHit = false;
+
 	// 体力取得
 	int nLife = GetLife();
 
@@ -1067,9 +1085,11 @@ bool CPlayer::Hit(const int nValue)
 		m_state != STATE_FADEOUT)
 	{// ダメージ受付状態の時
 
+		// 当たった
+		bHit = true;
+
 		// 体力減らす
 		nLife -= nValue;
-
 
 		// ゲームパッド情報取得
 		CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
@@ -1151,7 +1171,7 @@ bool CPlayer::Hit(const int nValue)
 		m_sMotionFrag.bKnockBack = true;
 
 		// やられモーション
-		///pMotion->Set(MOTION_KNOCKBACK);
+		GetMotion()->Set(MOTION_KNOCKBACK);
 
 		// 衝撃波生成
 		CImpactWave::Create
@@ -1177,8 +1197,8 @@ bool CPlayer::Hit(const int nValue)
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_PLAYERDMG);
 	}
 
-	// 死んでない
-	return false;
+	// 当たった判定を返す
+	return bHit;
 }
 
 //==========================================================================

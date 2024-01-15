@@ -415,7 +415,7 @@ void CManager::SetMode(CScene::MODE mode)
 	{
 		if (m_pPause->IsPause() == true)
 		{// ƒ|[ƒY’†‚¾‚Á‚½‚ç
-			//m_pPause->SetPause();
+			m_pPause->SetPause();
 		}
 	}
 

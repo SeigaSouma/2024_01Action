@@ -71,30 +71,42 @@ HRESULT CXLoad::Init(void)
 //==========================================================================
 void CXLoad::Uninit(void)
 {
-	for (const auto& XInfo : m_XFileInfo)
+	for (auto& XInfo : m_XFileInfo)
 	{
 		if (XInfo.nIdxTexture != nullptr)
 		{
 			delete[] XInfo.nIdxTexture;
+			XInfo.nIdxTexture = nullptr;
 		}
 
 		// メッシュの破棄
 		if (XInfo.pMesh != nullptr)
 		{
 			XInfo.pMesh->Release();
+			XInfo.pMesh = nullptr;
 		}
 
 		// マテリアルの破棄
 		if (XInfo.pBuffMat != nullptr)
 		{
 			XInfo.pBuffMat->Release();
+			XInfo.pBuffMat = nullptr;
 		}
 
 		// 頂点座標の破棄
 		if (XInfo.pVtxPos != nullptr)
 		{
 			delete[] XInfo.pVtxPos;
+			XInfo.pVtxPos = nullptr;
 		}
+	}
+
+	m_XFileInfo.clear();
+
+	if (m_pXX != nullptr)
+	{
+		delete m_pXX;
+		m_pXX = nullptr;
 	}
 }
 
@@ -159,7 +171,8 @@ HRESULT CXLoad::Load(std::string file)
 
 
 	// 要素追加
-	m_XFileInfo.emplace_back();
+	SXFile initinfo = {};
+	m_XFileInfo.push_back(initinfo);
 
 	//Xファイルの読み込み
 	HRESULT hr = D3DXLoadMeshFromX(

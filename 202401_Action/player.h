@@ -38,6 +38,7 @@ protected:
 		MOTION_FALL,		// 落下中
 		MOTION_KNOCKBACK,	// ノックバック
 		MOTION_DEAD,		// 死亡
+		MOTION_COUNTER,		// 反撃待機
 		MOTION_MAX
 	};
 

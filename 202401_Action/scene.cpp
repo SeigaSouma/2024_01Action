@@ -163,7 +163,6 @@ void CScene::Uninit(void)
 		m_pXLoad->Uninit();
 
 		// ƒƒ‚ƒŠ‚ÌŠJ•ú
-		delete m_pXLoad;
 		m_pXLoad = NULL;
 	}
 

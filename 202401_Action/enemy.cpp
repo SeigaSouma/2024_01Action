@@ -1738,33 +1738,29 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, ATKInfo.fRangeSize, fRadius))
 		{// 球の判定
 
-			// プレイヤーの向き
-			MyLib::Vector3 PlayerRot = pPlayer->GetRotation();
-
-			// ターゲットと敵との向き
-			float fRot = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
-
-			// 向きを正面にする
-			fRot = D3DX_PI + fRot;
-
-			// 角度の正規化
-			UtilFunc::Transformation::RotNormalize(fRot);
-
-			// 向き設定
-			pPlayer->SetRotation(MyLib::Vector3(PlayerRot.x, fRot, PlayerRot.z));
-			fRot = pPlayer->GetRotation().y;
-
-			// 吹き飛ばし
-			pPlayer->SetMove(MyLib::Vector3(
-				sinf(fRot) * 4.0f,
-				12.0f,
-				cosf(fRot) * 4.0f));
-
 			if (pPlayer->Hit(ATKInfo.nDamage) == true)
-			{// 死んでたら
+			{// 当たってたら
 
-				// なんかする
-				//my_particle::Create(TargetPos, my_particle::TYPE_OFFSETTING);
+				// プレイヤーの向き
+				MyLib::Vector3 PlayerRot = pPlayer->GetRotation();
+
+				// ターゲットと敵との向き
+				float fRot = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
+
+				// 向きを正面にする
+				fRot = D3DX_PI + fRot;
+				UtilFunc::Transformation::RotNormalize(fRot);
+
+				// 向き設定
+				pPlayer->SetRotation(MyLib::Vector3(PlayerRot.x, fRot, PlayerRot.z));
+				pPlayer->SetRotDest(fRot);
+				fRot = pPlayer->GetRotation().y;
+
+				// 吹き飛ばし
+				pPlayer->SetMove(MyLib::Vector3(
+					sinf(fRot) * 4.0f,
+					12.0f,
+					cosf(fRot) * 4.0f));
 			}
 		}
 
