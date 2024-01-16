@@ -10,6 +10,7 @@
 
 #include "gamemanager.h"
 #include "objectChara.h"
+#include "listmanager.h"
 
 //==========================================================================
 // 前方宣言
@@ -38,7 +39,9 @@ protected:
 		MOTION_FALL,		// 落下中
 		MOTION_KNOCKBACK,	// ノックバック
 		MOTION_DEAD,		// 死亡
-		MOTION_COUNTER,		// 反撃待機
+		MOTION_COUNTER_ACCEPT,		// 反撃受け付け
+		MOTION_COUNTER_TURN,		// 反撃受け流し
+		MOTION_COUNTER_ATTACK,		// 反撃
 		MOTION_MAX
 	};
 
@@ -64,7 +67,7 @@ public:
 		STATE_KNOCKBACK,	// ノックバック
 		STATE_DEAD,			// 死
 		STATE_FADEOUT,		// フェードアウト
-		STATE_ATTACK,		// 攻撃処理
+		STATE_COUNTER,		// 反撃
 		STATE_MAX
 	};
 
@@ -76,19 +79,17 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Update(void) override;
 	virtual void Draw(void) override;
-	bool Hit(const int nValue);	// ヒット処理
-	STATE GetState(void);		// 状態取得
 
+	bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
+	STATE GetState(void);		// 状態取得
 	void SetState(STATE state, int nCntState = 0);	// 状態設定
 	static CPlayer *Create(int nIdx);	// 生成
-	void UninitByMode(void);			// モード別終了
 	virtual void Kill(void);			// 死亡処理
+	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
 
 protected:
 
 	bool Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move);	// 当たり判定
-
-	void UpdateState(void);	// 状態更新処理
 	void MotionSet(void);	// モーションの設定
 
 	bool m_bJump;				// ジャンプ中かどうか
@@ -103,15 +104,25 @@ protected:
 	SMotionFrag m_sMotionFrag;	// モーションのフラグ
 private:
 
+	// 関数リスト
+	typedef void(CPlayer::* STATE_FUNC)(void);
+	static STATE_FUNC m_StateFunc[];
+
 	// メンバ関数
-	void KnockBack(void);	// ノックバック
-	void Damage(void);		// ダメージ
-	void Dead(void);		// 死亡
-	void FadeOut(void);		// フェードアウト
-	void Invincible(void);	// 無敵
+	void StateNone(void);		// なし
+	void StateInvincible(void);	// 無敵
+	void StateDamage(void);		// ダメージ
+	void StateKnockBack(void);	// ノックバック
+	void StateDead(void);		// 死亡
+	void StateFadeOut(void);	// フェードアウト
+	void StateCounter(void);	// カウンター中
+
 	virtual void Controll(void);	// 操作
-	void LimitPos(void);	// 位置制限
+	void LimitPos(void);			// 位置制限
 	void MotionBySetState(void);	// モーション別の状態設定
+	void ResetFrag(void);			// フラグリセット
+	void RockOn(void);				// ロックオン
+	void SwitchRockOnTarget(void);	// ロック対象切り替え
 
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;			// 攻撃判定中処理
@@ -122,12 +133,13 @@ private:
 	MyLib::Vector3 m_KnokBackMove;	// ノックバックの移動量
 	int m_nCntState;				// 状態遷移カウンター
 	int m_nComboStage;				// コンボの段階
+	int m_nIdxRockOn;				// ロックオン対象のインデックス番号
 	bool m_bAttacking;				// 攻撃中
+	bool m_bCounterAccepting;		// カウンター受付中
 	bool m_bDash;					// ダッシュ判定
 	CTargetPoint *m_pTargetP;		// 目標の地点
 	Effekseer::Handle *m_pWeaponHandle;	// エフェクトの武器ハンドル
-
-	CObjectX* m_pObjX;
+	static CListManager<CPlayer> m_List;	// リスト
 };
 
 

@@ -1248,6 +1248,12 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 							if (nFrag == 0) { m_aLoadAttackData[m_nNumLoad][nIdxMotion][nNowAttackNum].bOnlyOneTime = false; }
 							else { m_aLoadAttackData[m_nNumLoad][nIdxMotion][nNowAttackNum].bOnlyOneTime = true; }
 						}
+
+						if (strcmp(aComment, "ATTACKTYPE") == 0)
+						{// ATTACKTYPE‚ÅUŒ‚‚Ìí—Ş“Ç‚İ‚İ
+							fscanf(pFile, "%s", &aComment[0]);		// =‚Ì•ª
+							fscanf(pFile, "%d", &m_aLoadAttackData[m_nNumLoad][nIdxMotion][nNowAttackNum].AtkType);	// UŒ‚‚Ìí—Ş
+						}
 					}
 
 					// UŒ‚î•ñ‚Ì“o˜^

@@ -57,6 +57,25 @@ namespace
 }
 
 //==========================================================================
+// 関数ポインタ
+//==========================================================================
+CPlayer::STATE_FUNC CPlayer::m_StateFunc[] =
+{
+	&CPlayer::StateNone,		// なし
+	&CPlayer::StateInvincible,	// 無敵
+	&CPlayer::StateDamage,		// ダメージ
+	&CPlayer::StateKnockBack,	// ノックバック
+	&CPlayer::StateDead,		// 死亡
+	&CPlayer::StateFadeOut,		// フェードアウト
+	&CPlayer::StateCounter,		// カウンター中
+};
+
+//==========================================================================
+// 静的メンバ変数
+//==========================================================================
+CListManager<CPlayer> CPlayer::m_List = {};	// リスト
+
+//==========================================================================
 // コンストラクタ
 //==========================================================================
 CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
@@ -81,7 +100,9 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_KnokBackMove = mylib_const::DEFAULT_VECTOR3;	// ノックバックの移動量
 	m_nCntState = 0;								// 状態遷移カウンター
 	m_nComboStage = 0;								// コンボの段階
+	m_nIdxRockOn = 0;								// ロックオン対象のインデックス番号
 	m_bAttacking = false;							// 攻撃中
+	m_bCounterAccepting = false;					// カウンター受付中
 	m_bDash = false;								// ダッシュ判定
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
@@ -151,7 +172,9 @@ HRESULT CPlayer::Init(void)
 
 	// 影の生成
 	//m_pShadow = CShadow::Create(pos, 50.0f);
-	m_pObjX = CObjectX::Create("data\\MODEL\\aaaa.x");
+
+	// 割り当て
+	m_List.Regist(this);
 
 	return S_OK;
 }
@@ -161,7 +184,6 @@ HRESULT CPlayer::Init(void)
 //==========================================================================
 void CPlayer::Uninit(void)
 {
-
 	// 影を消す
 	if (m_pShadow != NULL)
 	{
@@ -172,21 +194,8 @@ void CPlayer::Uninit(void)
 	// 終了処理
 	CObjectChara::Uninit();
 
-	// モード別終了処理
-	UninitByMode();
-}
-
-//==========================================================================
-// モード別終了処理
-//==========================================================================
-void  CPlayer::UninitByMode(void)
-{
-	CScene *pScene = CManager::GetInstance()->GetScene();
-	if (pScene != NULL)
-	{
-		// プレイヤーをNULL
-		CManager::GetInstance()->GetScene()->UninitPlayer(m_nMyPlayerIdx);
-	}
+	// 削除
+	m_List.Delete(this);
 }
 
 //==========================================================================
@@ -238,6 +247,9 @@ void CPlayer::Update(void)
 	// 過去の位置保存
 	SetOldPosition(GetPosition());
 
+	// フラグリセット
+	ResetFrag();
+
 	// 親の更新処理
 	CObjectChara::Update();
 
@@ -251,7 +263,7 @@ void CPlayer::Update(void)
 	MotionBySetState();
 
 	// 状態更新
-	UpdateState();
+	(this->*(m_StateFunc[m_state]))();
 
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -493,7 +505,7 @@ void CPlayer::Controll(void)
 				pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) &&
 				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
 			{
-				pMotion->Set(MOTION_COUNTER);
+				pMotion->Set(MOTION_COUNTER_ACCEPT);
 				m_sMotionFrag.bCounter = true;		// 攻撃判定ON
 
 				if (pInputGamepad->IsTipStick())
@@ -669,6 +681,53 @@ void CPlayer::Controll(void)
 	// 移動量設定
 	SetMove(move);
 
+	// ロックオン対象切り替え
+	if (CManager::GetInstance()->GetCamera()->IsRockOn())
+	{
+		SwitchRockOnTarget();
+	}
+
+	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_RSTICKPUSH, m_nMyPlayerIdx))
+	{
+		if (CManager::GetInstance()->GetCamera()->IsRockOn())
+		{// ロックオン解除
+
+			// ロックオン設定
+			CManager::GetInstance()->GetCamera()->SetRockOn(0.0f, false);
+
+			// リストループ
+			CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+			CEnemy* pEnemy = nullptr;
+			while (enemyList.ListLoop(&pEnemy))
+			{
+				pEnemy->SetEnableRockOn(false);
+			}
+		}
+		else
+		{
+			// ロックオン処理
+			RockOn();
+		}
+	}
+
+	// リストループ
+	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+	CEnemy* pEnemy = nullptr;
+	while (enemyList.ListLoop(&pEnemy))
+	{
+		if (mylib_const::MAX_DISTANCE_ROCKON <= UtilFunc::Calculation::GetPosLength3D(pos, pEnemy->GetPosition()))
+		{
+			if (pEnemy->IsRockOnAccept())
+			{
+				// ロックオン設定
+				CManager::GetInstance()->GetCamera()->SetRockOn(0.0f, false);
+			}
+
+			pEnemy->SetEnableRockOn(false);
+		}
+	}
+
+
 	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
 	{
 		CCollisionObject::Create(GetPosition(), mylib_const::DEFAULT_VECTOR3, 100000.0f, 3, 10000, CCollisionObject::TAG_PLAYER);
@@ -842,10 +901,139 @@ void CPlayer::MotionBySetState(void)
 		m_bAttacking = true;
 		break;
 
-	default:
-		m_bAttacking = false;
-		m_nComboStage = 0;
+	case MOTION_COUNTER_TURN:
+	case MOTION_COUNTER_ATTACK:
+		// カウンター状態に設定
+		m_state = STATE_COUNTER;
 		break;
+
+	default:
+		m_bAttacking = false;	// 攻撃中判定
+		m_nComboStage = 0;		// コンボの段階
+		break;
+	}
+}
+
+//==========================================================================
+// フラグリセット
+//==========================================================================
+void CPlayer::ResetFrag(void)
+{
+	m_bCounterAccepting = false;	// カウンター受付中
+}
+
+//==========================================================================
+// ロックオン
+//==========================================================================
+void CPlayer::RockOn(void)
+{
+	// カメラ取得
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	// 敵のリスト取得
+	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+	CEnemy* pEnemy = nullptr;
+
+	float fNearLen = mylib_const::MAX_DISTANCE_ROCKON;
+	int nMaxIdx = 0;
+	MyLib::Vector3 targetpos(0.0f);
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	// リストループ
+	int i = 0;
+	MyLib::Vector3 enemypos(0.0f);
+	while (enemyList.ListLoop(&pEnemy))
+	{
+		// 敵の位置取得
+		enemypos = pEnemy->GetPosition();
+
+		if (pCamera->IsOnScreen(enemypos))
+		{
+			float len = UtilFunc::Calculation::GetPosLength3D(pos, enemypos);
+			if (fNearLen > len)
+			{
+				fNearLen = len;
+				nMaxIdx = i;
+			}
+		}
+
+		// インデックス加算
+		i++;
+	}
+
+	if (fNearLen < mylib_const::MAX_DISTANCE_ROCKON)
+	{// ロックオン距離内なら
+
+		// ロックオン設定
+		CManager::GetInstance()->GetCamera()->SetRockOn(enemyList.GetData(nMaxIdx)->GetPosition(), true);
+		enemyList.GetData(nMaxIdx)->SetEnableRockOn(true);
+
+		// インデックス番号設定
+		m_nIdxRockOn = nMaxIdx;
+	}
+}
+
+//==========================================================================
+// ロック対象切り替え
+//==========================================================================
+void CPlayer::SwitchRockOnTarget(void)
+{
+	// カメラ取得
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	// ゲームパッド情報取得
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	// 敵のリスト取得
+	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+	CEnemy* pEnemy = nullptr;
+
+	bool bSwitch = true;
+	if (pInputGamepad->GetRStickTrigger(CInputGamepad::STICK_X))
+	{// 左右どちらかに切り替え
+
+		bool bSwitch = true;
+
+		// リストループ
+		int i = 0, nMaxIdx = m_nIdxRockOn;
+		float fNearLen = mylib_const::MAX_DISTANCE_ROCKON;
+		pEnemy = nullptr;
+		MyLib::Vector3 enemypos(0.0f);
+		while (enemyList.ListLoop(&pEnemy))
+		{
+			// 敵の位置取得
+			enemypos = pEnemy->GetPosition();
+
+			if (pCamera->IsOnScreen(enemypos))
+			{
+				float len = UtilFunc::Calculation::GetPosLength3D(pos, enemypos);
+				if (fNearLen > len &&
+					m_nIdxRockOn != i)
+				{
+					fNearLen = len;
+					nMaxIdx = i;
+				}
+			}
+
+			// インデックス加算
+			i++;
+		}
+
+		// 今までロックオンしてた対象リセット
+		enemyList.GetData(m_nIdxRockOn)->SetEnableRockOn(false);
+
+		// ロックオン設定
+		CEnemy* pSetEnemy = enemyList.GetData(nMaxIdx);
+		CManager::GetInstance()->GetCamera()->SetRockOn(pSetEnemy->GetPosition(), true);
+		pSetEnemy->SetEnableRockOn(true);
+
+		// インデックス番号設定
+		m_nIdxRockOn = nMaxIdx;
 	}
 }
 
@@ -889,6 +1077,10 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 	switch (pMotion->GetType())
 	{
 	case MOTION_ATK:
+		break;
+
+	case MOTION_COUNTER_ACCEPT:
+		m_bCounterAccepting = true;	// カウンター受付中
 		break;
 	}
 
@@ -1071,12 +1263,31 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 //==========================================================================
 // ヒット処理
 //==========================================================================
-bool CPlayer::Hit(const int nValue)
+bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 {
 	bool bHit = false;
 
 	// 体力取得
 	int nLife = GetLife();
+
+	if (m_bCounterAccepting)
+	{// カウンター受け付け中
+		
+		if (atkType == CGameManager::ATTACK_NORMAL)
+		{
+			GetMotion()->Set(MOTION_COUNTER_TURN);
+		}
+		else
+		{
+			GetMotion()->Set(MOTION_COUNTER_ATTACK);
+		}
+		return false;
+	}
+	
+	if (m_state == STATE_COUNTER)
+	{// カウンター状態
+		return false;
+	}
 
 	if (m_state != STATE_DMG &&
 		m_state != STATE_KNOCKBACK &&
@@ -1202,43 +1413,18 @@ bool CPlayer::Hit(const int nValue)
 }
 
 //==========================================================================
-// 状態更新処理
+// なし
 //==========================================================================
-void CPlayer::UpdateState(void)
+void CPlayer::StateNone(void)
 {
-	switch (m_state)
-	{
-	case STATE_NONE:
-		// 色設定
-		m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		break;
-
-	case STATE_INVINCIBLE:
-		Invincible();
-		break;
-
-	case STATE_DMG:
-		Damage();
-		break;
-
-	case STATE_DEAD:
-		Dead();
-		break;
-
-	case STATE_FADEOUT:
-		FadeOut();
-		break;
-
-	case STATE_KNOCKBACK:
-		KnockBack();
-		break;
-	}
+	// 色設定
+	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 //==========================================================================
-// 無敵
+// 無敵状態
 //==========================================================================
-void CPlayer::Invincible(void)
+void CPlayer::StateInvincible(void)
 {
 	// 状態遷移カウンター減算
 	m_nCntState--;
@@ -1271,9 +1457,9 @@ void CPlayer::Invincible(void)
 }
 
 //==========================================================================
-// ダメージ
+// ダメージ状態
 //==========================================================================
-void CPlayer::Damage(void)
+void CPlayer::StateDamage(void)
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -1362,9 +1548,9 @@ void CPlayer::Damage(void)
 }
 
 //==========================================================================
-// 死亡
+// 死亡状態
 //==========================================================================
-void CPlayer::Dead(void)
+void CPlayer::StateDead(void)
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -1436,11 +1622,10 @@ void CPlayer::Dead(void)
 }
 
 //==========================================================================
-// フェードアウト
+// フェードアウト状態
 //==========================================================================
-void CPlayer::FadeOut(void)
+void CPlayer::StateFadeOut(void)
 {
-
 	// 状態遷移カウンター減算
 	m_nCntState--;
 
@@ -1462,7 +1647,7 @@ void CPlayer::FadeOut(void)
 //==========================================================================
 // ノックバック
 //==========================================================================
-void CPlayer::KnockBack(void)
+void CPlayer::StateKnockBack(void)
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -1552,6 +1737,36 @@ void CPlayer::KnockBack(void)
 
 	// 目標の向き設定
 	SetRotDest(fRotDest);
+}
+
+//==========================================================================
+// カウンター状態
+//==========================================================================
+void CPlayer::StateCounter(void)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == NULL)
+	{
+		return;
+	}
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	MyLib::Vector3 enemypos = CEnemy::GetListObj().GetData(m_nIdxRockOn)->GetPosition();
+
+	SetRotDest(atan2f((pos.x - enemypos.x), (pos.z - enemypos.z)));
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_COUNTER_ACCEPT &&
+		nType != MOTION_COUNTER_TURN &&
+		nType != MOTION_COUNTER_ATTACK)
+	{// カウンター状態が終了
+
+		m_state = STATE_NONE;
+		return;
+	}
 }
 
 //==========================================================================

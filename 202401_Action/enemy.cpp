@@ -73,7 +73,8 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_nNumChild = 0;		// この数
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
 	m_fActCounter = 0.0f;		// 移動カウンター
-	m_bAddScore = false;	// スコア加算するかの判定
+	m_bAddScore = false;		// スコア加算するかの判定
+	m_bRockOnAccepting = false;	// ロックオン受付
 	m_nBallastEmission = 0;	// 瓦礫の発生カウンター
 	m_sMotionFrag.bJump = false;		// ジャンプ中かどうか
 	m_sMotionFrag.bKnockback = false;	// ノックバック中かどうか
@@ -314,6 +315,13 @@ void CEnemy::Kill(void)
 		m_pShadow->Uninit();
 		m_pShadow = NULL;
 	}
+
+	// ロックオン受付してたら
+	if (m_bRockOnAccepting)
+	{
+		CManager::GetInstance()->GetCamera()->SetRockOn(GetPosition(), false);
+	}
+
 }
 
 //==========================================================================
@@ -418,6 +426,12 @@ void CEnemy::Update(void)
 
 	// 大人の壁
 	LimitArea();
+
+	// ロックオン受付してたら
+	if (m_bRockOnAccepting)
+	{
+		CManager::GetInstance()->GetCamera()->SetRockOn(GetPosition(), true);
+	}
 }
 
 //==========================================================================
@@ -1738,7 +1752,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, ATKInfo.fRangeSize, fRadius))
 		{// 球の判定
 
-			if (pPlayer->Hit(ATKInfo.nDamage) == true)
+			if (pPlayer->Hit(ATKInfo.nDamage, ATKInfo.AtkType))
 			{// 当たってたら
 
 				// プレイヤーの向き

@@ -132,13 +132,18 @@ public:
 	BYTE GetLeftTriggerPress(int nPlayer);
 	BYTE GetRightTriggerPress(int nPlayer);
 	void SetVibration(VIBRATION_STATE VibState, int nCntPlayer);
-	void SetEnableStickSelect(bool bStick, int nXY);
-	bool GetStickSelect(int nXY);
+	bool GetLStickTrigger(STICK XY);	// スティックのトリガー判定
+	bool GetRStickTrigger(STICK XY);	// スティックのトリガー判定
 	void SetEnableVibration(void);
 	bool GetEnableVibration(void);
 	int GetnCntPad(void);
 
 private:
+
+	// 
+	void UpdateStickTrigger(void);
+
+	// メンバ変数
 	XINPUT_STATE m_aGamepadState[mylib_const::MAX_PLAYER];				// プレス情報
 	XINPUT_STATE m_aGamepadStateTrigger[mylib_const::MAX_PLAYER];		// トリガー情報
 	XINPUT_STATE m_aGamepadStateRepeat[mylib_const::MAX_PLAYER];		// リピート情報
@@ -148,8 +153,10 @@ private:
 	int m_nCntVibration[mylib_const::MAX_PLAYER];						// 振動の時間
 	int m_nMaxCntVibration[mylib_const::MAX_PLAYER];					// 振動の時間
 	int m_nCntPadrepeat;									// リピート用カウント
-	int m_nLeftStickCount;									// 左トリガーの選択カウント
 	bool m_bLeftStickSelect[STICK_MAX];						// 左トリガーの選択判定
+	bool m_bLeftStickTrigger[STICK_MAX];					// 左トリガーのトリガー判定
+	bool m_bRightStickSelect[STICK_MAX];					// 右トリガーの選択判定
+	bool m_bRightStickTrigger[STICK_MAX];					// 右トリガーのトリガー判定
 	bool m_bLStickTip;										// 左スティックの傾き判定
 	bool m_bVibrationUse;									// バイブを使用するかどうか
 };

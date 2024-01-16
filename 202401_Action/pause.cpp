@@ -199,11 +199,8 @@ void CPause::Update(void)
 	}
 
 
-	if (pInputGamepad->GetStickSelect(CInputGamepad::STICK_Y) == false && pInputGamepad->GetStickMoveL(0).y > 0)
-	{// 上に倒された, スティックの判定がOFFの場合
-
-		// 左スティックの判定を渡す
-		pInputGamepad->SetEnableStickSelect(true, CInputGamepad::STICK_Y);
+	if (pInputGamepad->GetLStickTrigger(CInputGamepad::STICK_Y) && pInputGamepad->GetStickMoveL(0).y > 0)
+	{// 上に倒された
 
 		// パターンNo.を更新
 		m_nSelect = (m_nSelect + (MENU_MAX - 1)) % MENU_MAX;
@@ -211,11 +208,8 @@ void CPause::Update(void)
 		// サウンド再生
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
 	}
-	else if (pInputGamepad->GetStickSelect(CInputGamepad::STICK_Y) == false && pInputGamepad->GetStickMoveL(0).y < 0)
-	{// 下に倒された, スティックの判定がOFFの場合
-
-		// 左スティックの判定を渡す
-		pInputGamepad->SetEnableStickSelect(true, CInputGamepad::STICK_Y);
+	else if (pInputGamepad->GetLStickTrigger(CInputGamepad::STICK_Y) && pInputGamepad->GetStickMoveL(0).y < 0)
+	{// 下に倒された
 
 		// パターンNo.を更新
 		m_nSelect = (m_nSelect + 1) % MENU_MAX;

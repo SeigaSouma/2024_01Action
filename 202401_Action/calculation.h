@@ -278,6 +278,20 @@ namespace UtilFunc	// 便利関数
 		}
 
 		/**
+		@brief	二点の中心点取得(3D)
+		@param	pos1	[in]	始点
+		@param	pos2	[in]	終点
+		@return	中心点
+		*/
+		inline MyLib::Vector3 GetCenterPosition3D(MyLib::Vector3 pos1, MyLib::Vector3 pos2)
+		{
+			return MyLib::Vector3(
+				(pos1.x + pos2.x),
+				(pos1.y + pos2.y),
+				(pos1.z + pos2.z)) * 0.5f;
+		}
+
+		/**
 		@brief	辺上の位置取得(2D)
 		@param	point1	[in]	始点の頂点座標
 		@param	point2	[in]	終点の頂点座標

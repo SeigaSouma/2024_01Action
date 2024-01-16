@@ -29,6 +29,13 @@ public:
 		SCENE_MAX
 	};
 
+	enum AttackType
+	{
+		ATTACK_NORMAL = 0,	// ’ÊíUŒ‚
+		ATTACK_STRONG,		// ‹­UŒ‚
+		ATTACK_MAX
+	};
+
 	CGameManager();
 	~CGameManager();
 

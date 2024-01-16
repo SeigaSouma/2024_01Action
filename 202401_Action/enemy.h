@@ -79,6 +79,8 @@ public:
 	void SetSpawnPosition(MyLib::Vector3 pos);	// スポーン地点設定
 	MyLib::Vector3 GetSpawnPosition(void);	// スポーン地点取得
 	void SetTargetPosition(MyLib::Vector3 pos) { m_TargetPosition = pos; }	// 目標の位置設定
+	void SetEnableRockOn(bool bSet) { m_bRockOnAccepting = bSet; }
+	bool IsRockOnAccept(void) { return m_bRockOnAccepting; }
 
 	HRESULT RoadText(const char *pFileName);
 	virtual void Kill(void);	// 削除
@@ -146,14 +148,14 @@ protected:
 	STATE m_Oldstate;						// 前回の状態
 	int m_nCntState;						// 状態遷移カウンター
 	int m_nTargetPlayerIndex;				// 追い掛けるプレイヤーのインデックス番号
-	float m_fActCounter;						// 移動カウンター
+	float m_fActCounter;					// 移動カウンター
 	MyLib::Vector3 m_posOrigin;				// 最初の位置
-	MyLib::Vector3 m_posKnokBack;				// ノックバックの位置
+	MyLib::Vector3 m_posKnokBack;			// ノックバックの位置
 	SMotionFrag m_sMotionFrag;				// モーションのフラグ
 	CHP_Gauge *m_pHPGauge;					// HPゲージの情報
-	CEnemy *m_pParent;		// 親のポインタ
-	D3DXCOLOR m_mMatcol;	// マテリアルの色
-	MyLib::Vector3 m_TargetPosition;	// 目標の位置
+	CEnemy *m_pParent;						// 親のポインタ
+	D3DXCOLOR m_mMatcol;					// マテリアルの色
+	MyLib::Vector3 m_TargetPosition;		// 目標の位置
 private:
 
 	enum MOTION
@@ -179,10 +181,11 @@ private:
 	TYPE m_type;			// 種類
 	SFormationInfo m_sFormationInfo;	// 隊列の情報
 	MyLib::Vector3 m_rotOrigin;	// 最初の向き
-	int m_nTexIdx;			// テクスチャのインデックス番号
-	int m_nNumChild;		// 子の数
-	bool m_bAddScore;		// スコア加算するかの判定
-	int m_nBallastEmission;	// 瓦礫の発生カウンター
+	int m_nTexIdx;				// テクスチャのインデックス番号
+	int m_nNumChild;			// 子の数
+	bool m_bAddScore;			// スコア加算するかの判定
+	bool m_bRockOnAccepting;	// ロックオン受付
+	int m_nBallastEmission;		// 瓦礫の発生カウンター
 	CEnemy *m_pChild[mylib_const::MAX_ENEMY];	// 子のポインタ
 	CShadow *m_pShadow;			// 影の情報
 	static CListManager<CEnemy> m_List;	// リスト

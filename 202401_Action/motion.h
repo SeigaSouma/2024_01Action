@@ -8,7 +8,7 @@
 #ifndef _MOTION_H_
 #define _MOTION_H_	// 二重インクルード防止
 
-#include "main.h"
+#include "gamemanager.h"
 #include "constans.h"
 
 class CModel;
@@ -31,7 +31,7 @@ public:
 	{
 		int nCollisionNum;		// 当たり判定のパーツ番号
 		float fRangeSize;		// 判定のサイズ
-		MyLib::Vector3 Offset;		// 判定のオフセット
+		MyLib::Vector3 Offset;	// 判定のオフセット
 		int nMinCnt;			// 判定の最低カウント
 		int nMaxCnt;			// 判定の最大カウント
 		int nDamage;			// ダメージ
@@ -39,6 +39,7 @@ public:
 		bool bInpactAct;		// 衝撃カウントの行動をしたか
 		bool bInpactActSet;		// 衝撃カウントの行動設定したか
 		bool bOnlyOneTime;		// 1度だけかの判定
+		CGameManager::AttackType AtkType;	// 攻撃の種類
 	}AttackInfo;
 
 	// モーションの構造体

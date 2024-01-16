@@ -17,6 +17,7 @@
 #include "title.h"
 #include "instantfade.h"
 #include "light.h"
+#include "3D_effect.h"
 
 //==========================================================================
 // マクロ定義
@@ -54,6 +55,8 @@ namespace
 	const float MULTIPLY_POSV_CORRECTION = 2.1f;	// (ゲーム時)視点の補正係数倍率
 	const float MULTIPLY_POSR_CORRECTION = 2.1f;	// (ゲーム時)注視点の補正係数倍率
 	const float DISATNCE_POSR_PLAYER = 200.0f;		// (ゲーム時)プレイヤーとの注視点距離
+	const float MAX_ROCKONDISTANCE = mylib_const::MAX_DISTANCE_ROCKON;
+	const float MIN_ROCKONDISTANCE = 1.0f;
 
 }
 
@@ -79,6 +82,7 @@ CCamera::CCamera()
 	m_vecU = MyLib::Vector3(0.0f, 1.0f, 0.0f);		// 上方向ベクトル
 	m_move = mylib_const::DEFAULT_VECTOR3;		// 移動量
 	m_rot = mylib_const::DEFAULT_VECTOR3;		// 向き
+	m_rotDest = 0.0f;							// 目標の向き
 	m_Moverot = 0.0f;							// 向きの移動量
 	m_rotVDest = mylib_const::DEFAULT_VECTOR3;	// 目標の視点の向き
 	m_TargetPos = mylib_const::DEFAULT_VECTOR3;	// 追従目標の位置
@@ -91,12 +95,13 @@ CCamera::CCamera()
 	m_fMoveShake = 0.0f;						// 揺れの移動量
 	m_fMoveShakeY = 0.0f;						// Yの揺れの移動量
 	m_fHeightMaxDest = 0.0f;					// カメラの最大高さの目標
-	m_fHeightMax = 0.0f;			// カメラの最大高さ
+	m_fHeightMax = 0.0f;						// カメラの最大高さ
 	m_fDiffHeight = 0.0f;						// 高さの差分
 	m_fDiffHeightSave = 0.0f;					// 高さの差分保存用
 	m_fDiffHeightDest = 0.0f;					// 目標の高さの差分
 	m_bFollow = false;							// 追従するかどうか
 	m_bRotationZ = false;						// Z回転出来るかどうか
+	m_bRockON = false;							// ロックオンするか
 	m_state = CAMERASTATE_NONE;					// 状態
 	m_nCntState = 0;							// 状態カウンター
 	m_nCntDistance = 0;							// 距離カウンター
@@ -262,27 +267,67 @@ void CCamera::MoveCameraStick(int nIdx)
 	// ゲームパッド情報取得
 	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-#if 1
-
-	m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
-
-	if (m_rot.z > MIN_STICKROT &&
-		(m_bRotationZ || pInputGamepad->GetStickMoveR(nIdx).y < 0.0f))
+	if (!m_bRockON)
 	{
-		m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+		m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
+
+		if (m_rot.z > MIN_STICKROT &&
+			(m_bRotationZ || pInputGamepad->GetStickMoveR(nIdx).y < 0.0f))
+		{
+			m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+		}
+		else if (m_rot.z <= MIN_STICKROT && pInputGamepad->GetStickMoveR(nIdx).y > 0.0f)
+		{
+			m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+		}
+
+		// 移動する
+		m_rot += m_Moverot;
+
+		UtilFunc::Correction::InertiaCorrection(m_Moverot.y, 0.0f, 0.25f);
+		UtilFunc::Correction::InertiaCorrection(m_Moverot.z, 0.0f, 0.25f);
 	}
-	else if (m_rot.z <= MIN_STICKROT && pInputGamepad->GetStickMoveR(nIdx).y > 0.0f)
+	else
 	{
-		m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
+		CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nChasePlayerIndex);
+		MyLib::Vector3 playerpos = pPlayer->GetPosition();
+
+		// 目標地点をロックオンとの中心にする
+		m_TargetPos = UtilFunc::Calculation::GetCenterPosition3D(m_RockOnPos, playerpos);
+		CEffect3D::Create(m_TargetPos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.6f, 0.2f, 1.0f), 20.0f, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+
+		// 2点間の距離
+		float fLen = UtilFunc::Calculation::GetFabsPosLength3D(m_RockOnPos, playerpos);
+		float ratio = fLen / MAX_ROCKONDISTANCE;
+
+		if (ratio <= 1.0f)
+		{
+			// 目標の長さ設定
+			SetLenDest(MAX_ROCKONDISTANCE * ratio, 2, 2.0f, 0.1f);
+
+			// 目標の角度を求める
+			m_rotDest.y = D3DX_PI + atan2f((m_TargetPos.x - m_RockOnPos.x), (m_TargetPos.z - m_RockOnPos.z));
+			UtilFunc::Transformation::RotNormalize(m_rotDest);
+
+			// 目標の向き
+			float fRotDiff = m_rotDest.y - m_rot.y;
+			UtilFunc::Transformation::RotNormalize(fRotDiff);
+			m_rot.y += fRotDiff * 0.08f;
+		}
+		else
+		{
+			m_bRockON = false;
+
+			// 目標の長さ設定
+			SetLenDest(MAX_ROCKONDISTANCE * 0.5f, 60, 2.0f, 0.1f);
+		}
+
+		// テキストの描画
+		CManager::GetInstance()->GetDebugProc()->Print(
+			"---------------- カメラ情報 ----------------\n"
+			"【向き】[X：%f Y：%f Z：%f]\n",
+			m_rotDest.x, m_rotDest.y, m_rotDest.z);
 	}
-
-	// 移動する
-	m_rot += m_Moverot;
-
-	UtilFunc::Correction::InertiaCorrection(m_Moverot.y, 0.0f, 0.25f);
-	UtilFunc::Correction::InertiaCorrection(m_Moverot.z, 0.0f, 0.25f);
-#endif
-
 	// 角度の正規化
 	UtilFunc::Transformation::RotNormalize(m_rot);
 
@@ -835,9 +880,20 @@ void CCamera::SetCameraRGame(void)
 		m_fDiffHeight += (m_fDiffHeightDest - m_fDiffHeight) * 0.01f;
 
 		// 注視点の代入処理
-		m_posRDest.x = (m_TargetPos.x + sinf(m_rot.y) * DISATNCE_POSR_PLAYER);
-		m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * DISATNCE_POSR_PLAYER);
-		m_posRDest.y = fYcamera - m_fDiffHeight;
+		if (m_bRockON)
+		{
+			m_posRDest.x = (m_TargetPos.x + sinf(m_rot.y) * 0.0f);
+			m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * 0.0f);
+			m_posRDest.y = fYcamera - m_fDiffHeight;
+		}
+		else
+		{
+			m_posRDest.x = (m_TargetPos.x + sinf(m_rot.y) * DISATNCE_POSR_PLAYER);
+			m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * DISATNCE_POSR_PLAYER);
+			m_posRDest.y = fYcamera - m_fDiffHeight;
+		}
+		
+		CEffect3D::Create(m_posRDest, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20.0f, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 
 		// 補正する
 		m_posR += (m_posRDest - m_posR) * (0.08f * MULTIPLY_POSR_CORRECTION);
@@ -932,15 +988,21 @@ void CCamera::UpdateSpotLightVec(void)
 }
 
 //==================================================================================
-// 目標の長さ設定
-//==================================================================================
+/**
+@brief	目標の長さ設定
+@param	fLength			[in]	目標の長さ
+@param	nCntTime		[in]	減算するまでの時間
+@param	DecrementValue	[in]	減少量
+@param	fCorrection		[in]	減少補正係数
+@return	void
+*/
 void CCamera::SetLenDest(float fLength, int nCntTime, float DecrementValue, float fCorrection)
 {
 	// 目標の距離設定
 	m_fDestDistance = fLength;
 	m_nCntDistance = nCntTime;
-	m_nOriginCntDistance = m_nCntDistance;	// 元の距離カウンター
-	m_fDistanceCorrection = fCorrection;	// 減少補正係数
+	m_nOriginCntDistance = m_nCntDistance;		// 元の距離カウンター
+	m_fDistanceCorrection = fCorrection;		// 減少補正係数
 	m_fDistanceDecrementValue = DecrementValue;	// 減少量
 }
 
@@ -1149,7 +1211,7 @@ void CCamera::ResetBoss(void)
 //==========================================================================
 //  スクリーン内の判定
 //==========================================================================
-bool CCamera::OnScreen(const MyLib::Vector3 pos)
+bool CCamera::IsOnScreen(const MyLib::Vector3 pos)
 {
 	// 返り値用の変数
 	bool bIn = false;
@@ -1351,6 +1413,25 @@ void CCamera::SetTargetPosition(const MyLib::Vector3 pos)
 MyLib::Vector3 CCamera::GetTargetPosition(void)
 {
 	return m_TargetPos;
+}
+
+void CCamera::SetRockOnPosition(const MyLib::Vector3 pos)
+{
+	m_RockOnPos = pos;
+}
+
+MyLib::Vector3 CCamera::GetRockOnPosition(void)
+{
+	return m_RockOnPos;
+}
+
+//==================================================================================
+// ロックオン設定
+//==================================================================================
+void CCamera::SetRockOn(const MyLib::Vector3 pos, bool bSet)
+{
+	m_RockOnPos = pos;
+	m_bRockON = bSet;
 }
 
 //==================================================================================

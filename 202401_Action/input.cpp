@@ -260,7 +260,6 @@ CInputGamepad::CInputGamepad()
 		m_nCntVibration[nCntPlayer] = 0;						// 振動の時間
 		m_nMaxCntVibration[nCntPlayer] = 0;						// 振動の時間
 	}
-	m_nLeftStickCount = 0;					// 左トリガーの選択カウント
 	m_bLeftStickSelect[STICK_X] = false;	// 左トリガーの選択判定
 	m_bLeftStickSelect[STICK_Y] = false;	// 左トリガーの選択判定
 	m_bVibrationUse = false;				// バイブを使用するかどうか
@@ -289,7 +288,6 @@ HRESULT CInputGamepad::Init(HINSTANCE hInstance, HWND hWnd)
 	// 左スティックの情報を初期化
 	m_bLeftStickSelect[STICK_X] = false;				// 左トリガーの選択判定
 	m_bLeftStickSelect[STICK_Y] = false;				// 左トリガーの選択判定
-	m_nLeftStickCount = 0;
 	m_bLStickTip = false;					// 左スティックの傾き判定
 
 	// バイブの情報を初期化
@@ -405,25 +403,79 @@ void CInputGamepad::Update(void)
 		XInputSetState(nCntPlayer, &m_aGamepadStateVib[nCntPlayer]);
 	}
 
-	
-	if (GetStickMoveL(0).y == 0)
-	{// スティックがもとに戻っているとき
+	// スティックのトリガー判定更新
+	UpdateStickTrigger();
+}
 
-		// カウントを初期化
-		m_nLeftStickCount = 0;
+//==================================================================================
+// スティックのトリガー
+//==================================================================================
+void CInputGamepad::UpdateStickTrigger(void)
+{
+	bool bTipX = false, bTipY = false;
+	bTipX = !UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).x, 0.0f, 0.01f);
+	bTipY = !UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).y, 0.0f, 0.01f);
 
-		// 判定をOFF
-		m_bLeftStickSelect[STICK_Y] = false;
+	// 左トリガーのトリガー判定OFF
+	m_bLeftStickTrigger[STICK_X] = false;
+	m_bLeftStickTrigger[STICK_Y] = false;
+
+	if (!m_bLeftStickSelect[STICK_X] && bTipX)
+	{
+		m_bLeftStickSelect[STICK_X] = true;
+		m_bLeftStickTrigger[STICK_X] = true;	// 左トリガーのトリガー判定
 	}
-	if (GetStickMoveL(0).x == 0)
-	{// スティックがもとに戻っているとき
+	if (!m_bLeftStickSelect[STICK_Y] && bTipY)
+	{
+		m_bLeftStickSelect[STICK_Y] = true;
+		m_bLeftStickTrigger[STICK_Y] = true;	// 左トリガーのトリガー判定
+	}
 
-		// カウントを初期化
-		m_nLeftStickCount = 0;
-
-		// 判定をOFF
+	if (m_bLeftStickSelect[STICK_X] &&
+		UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).x, 0.0f, 0.01f))
+	{// スティックが戻っているとき
 		m_bLeftStickSelect[STICK_X] = false;
 	}
+
+	if (m_bLeftStickSelect[STICK_Y] &&
+		UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).y, 0.0f, 0.01f))
+	{// スティックが戻っているとき
+		m_bLeftStickSelect[STICK_Y] = false;
+	}
+
+
+
+	bTipX = false, bTipY = false;
+	bTipX = !UtilFunc::Calculation::IsNearlyTarget(GetStickMoveR(0).x, 0.0f, 0.01f);
+	bTipY = !UtilFunc::Calculation::IsNearlyTarget(GetStickMoveR(0).y, 0.0f, 0.01f);
+
+	// 左トリガーのトリガー判定OFF
+	m_bRightStickTrigger[STICK_X] = false;
+	m_bRightStickTrigger[STICK_Y] = false;
+
+	if (!m_bRightStickSelect[STICK_X] && bTipX)
+	{
+		m_bRightStickSelect[STICK_X] = true;
+		m_bRightStickTrigger[STICK_X] = true;	// 左トリガーのトリガー判定
+	}
+	if (!m_bRightStickSelect[STICK_Y] && bTipY)
+	{
+		m_bRightStickSelect[STICK_Y] = true;
+		m_bRightStickTrigger[STICK_Y] = true;	// 左トリガーのトリガー判定
+	}
+
+	if (m_bRightStickSelect[STICK_X] &&
+		UtilFunc::Calculation::IsNearlyTarget(GetStickMoveR(0).x, 0.0f, 0.01f))
+	{// スティックが戻っているとき
+		m_bRightStickSelect[STICK_X] = false;
+	}
+
+	if (m_bRightStickSelect[STICK_Y] &&
+		UtilFunc::Calculation::IsNearlyTarget(GetStickMoveR(0).y, 0.0f, 0.01f))
+	{// スティックが戻っているとき
+		m_bRightStickSelect[STICK_Y] = false;
+	}
+
 
 	if (UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).x, 0.0f, 0.01f) &&
 		UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).y, 0.0f, 0.01f))
@@ -438,7 +490,7 @@ void CInputGamepad::Update(void)
 }
 
 //==================================================================================
-//バイブの設定処理
+// バイブの設定処理
 //==================================================================================
 void CInputGamepad::SetVibration(VIBRATION_STATE VibState, int nCntPlayer)
 {
@@ -566,7 +618,6 @@ MyLib::Vector3 CInputGamepad::GetStickMoveL(int nCntPlayer)
 //==================================================================================
 MyLib::Vector3 CInputGamepad::GetStickMoveR(int nCntPlayer)
 {
-
 	// Rスティックの移動量
 	MyLib::Vector3 StickMoveR =
 		MyLib::Vector3(
@@ -651,19 +702,19 @@ BYTE CInputGamepad::GetRightTriggerPress(int nPlayer)
 }
 
 //==================================================================================
-// 左スティックの判定を取得
+// スティックのトリガー判定
 //==================================================================================
-bool CInputGamepad::GetStickSelect(int nXY)
+bool CInputGamepad::GetLStickTrigger(STICK XY)
 {
-	return m_bLeftStickSelect[nXY];
+	return m_bLeftStickTrigger[XY];
 }
 
 //==================================================================================
-// 左スティックの判定
+// スティックのトリガー判定
 //==================================================================================
-void CInputGamepad::SetEnableStickSelect(bool bStick, int nXY)
+bool CInputGamepad::GetRStickTrigger(STICK XY)
 {
-	m_bLeftStickSelect[nXY] = bStick;
+	return m_bRightStickTrigger[XY];
 }
 
 //==================================================================================
