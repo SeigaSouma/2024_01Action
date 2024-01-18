@@ -49,7 +49,6 @@ public:
 		STATE_PARENTCHASE,	// 親追い掛け
 		STATE_ATTACK,		// 攻撃
 		STATE_WAIT,			// 待機
-		STATE_BASECHANGE,	// 拠点切り替え
 		STATE_MAX
 	};
 
@@ -73,7 +72,6 @@ public:
 	virtual void Update(void) override;
 	virtual void Draw(void) override;
 	void SetState(STATE state);		// 状態設定
-	void SetState(STATE state, int nCntState);	// 状態設定
 	virtual bool Hit(const int nValue);
 
 	void SetSpawnPosition(MyLib::Vector3 pos);	// スポーン地点設定
@@ -142,13 +140,13 @@ protected:
 	virtual void TriggerChasePlayer(void);	// プレイヤー追従ONにするトリガー
 	virtual void ChangeToAttackState(void);	// 攻撃状態移行処理
 	virtual void StateWait(void);			// 待機処理
-	virtual void ChangeBase(void);			// 拠点切り替え
 
 	STATE m_state;							// 状態
 	STATE m_Oldstate;						// 前回の状態
-	int m_nCntState;						// 状態遷移カウンター
+	float m_fStateTime;						// 状態カウンター
 	int m_nTargetPlayerIndex;				// 追い掛けるプレイヤーのインデックス番号
 	float m_fActCounter;					// 移動カウンター
+	bool m_bActionable;						// 行動可能か
 	MyLib::Vector3 m_posOrigin;				// 最初の位置
 	MyLib::Vector3 m_posKnokBack;			// ノックバックの位置
 	SMotionFrag m_sMotionFrag;				// モーションのフラグ
@@ -163,6 +161,7 @@ private:
 		MOTION_DEF = 0,		// ニュートラルモーション
 		MOTION_WALK,		// 移動モーション
 		MOTION_ATK,			// 攻撃
+		MOTION_DMG,			// ダメージ
 		MOTION_KNOCKBACK,	// やられモーション
 		MOTION_FADEOUT,		// 土帰還
 		MOTION_MAX
@@ -178,6 +177,9 @@ private:
 	void ResetChild(CEnemy *pChild);
 	void LimitArea(void); // 大人の壁判定
 
+	//=============================
+	// メンバ変数
+	//=============================
 	TYPE m_type;			// 種類
 	SFormationInfo m_sFormationInfo;	// 隊列の情報
 	MyLib::Vector3 m_rotOrigin;	// 最初の向き

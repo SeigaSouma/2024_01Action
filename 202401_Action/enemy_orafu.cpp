@@ -111,6 +111,11 @@ void CEnemyOrafu::ActionSet(void)
 //==========================================================================
 void CEnemyOrafu::UpdateAction(void)
 {
+	if (!m_bActionable)
+	{
+		return;
+	}
+
 	// ó‘Ô•Êˆ—
 	(this->*(m_ActFuncList[m_Action]))();
 }

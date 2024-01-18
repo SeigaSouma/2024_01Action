@@ -24,10 +24,11 @@ public:
 	//モーション列挙
 	enum MOTION
 	{
-		MOTION_DEF = 0,			// ニュートラルモーション
-		MOTION_WALK,			// 移動モーション
-		MOTION_PUNCH,			// パンチモーション
-		MOTION_KNOCKBACK,		// やられモーション
+		MOTION_DEF = 0,		// ニュートラルモーション
+		MOTION_WALK,		// 移動モーション
+		MOTION_PUNCH,		// パンチモーション
+		MOTION_DMG,			// ダメージ
+		MOTION_KNOCKBACK,	// やられモーション
 	};
 
 	// 行動列挙

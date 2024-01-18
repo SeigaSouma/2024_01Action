@@ -193,7 +193,7 @@ END_CHARACTERSET
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 12
+NUM_MOTION = 13
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -201,15 +201,16 @@ NUM_MOTION = 12
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_def.txt			# [0]デフォルト
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_walk.txt			# [1]歩き
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dash.txt			# [2]ダッシュ
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack.txt		# [3]攻撃
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack2.txt		# [4]攻撃2
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [5]ジャンプ
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [6]落下中
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [7]ノックバック
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [8]死亡
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_wait.txt		# [9]反撃待機
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_turn.txt		# [10]反撃受け流し
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_attack3.txt		# [11]反撃
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_avoid.txt		# [3]回避
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack.txt		# [4]攻撃
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack2.txt		# [5]攻撃2
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [6]ジャンプ
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [7]落下中
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [8]ノックバック
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [9]死亡
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_wait.txt		# [10]反撃待機
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_turn.txt		# [11]反撃受け流し
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_attack4.txt	# [12]反撃
 
 
 END_SCRIPT		# この行は絶対消さないこと！

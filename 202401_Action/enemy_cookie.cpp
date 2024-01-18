@@ -108,6 +108,11 @@ void CEnemyCookie::ActionSet(void)
 //==========================================================================
 void CEnemyCookie::UpdateAction(void)
 {
+	if (!m_bActionable)
+	{
+		return;
+	}
+
 	// ó‘Ô•Êˆ—
 	(this->*(m_ActFuncList[m_Action]))();
 }

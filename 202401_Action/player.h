@@ -33,6 +33,7 @@ protected:
 		MOTION_DEF = 0,		// ニュートラルモーション
 		MOTION_WALK,		// 移動
 		MOTION_DASH,		// ダッシュ
+		MOTION_AVOID,		// 回避
 		MOTION_ATK,			// 攻撃
 		MOTION_ATK2,		// 攻撃(派生1)
 		MOTION_JUMP,		// ジャンプ
@@ -68,6 +69,7 @@ public:
 		STATE_DEAD,			// 死
 		STATE_FADEOUT,		// フェードアウト
 		STATE_COUNTER,		// 反撃
+		STATE_AVOID,		// 回避
 		STATE_MAX
 	};
 
@@ -83,8 +85,10 @@ public:
 	bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
 	STATE GetState(void);		// 状態取得
 	void SetState(STATE state, int nCntState = 0);	// 状態設定
-	static CPlayer *Create(int nIdx);	// 生成
 	virtual void Kill(void);			// 死亡処理
+	void SwitchRockOnTarget(void);	// ロック対象切り替え
+
+	static CPlayer* Create(int nIdx);	// 生成
 	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
 
 protected:
@@ -116,13 +120,13 @@ private:
 	void StateDead(void);		// 死亡
 	void StateFadeOut(void);	// フェードアウト
 	void StateCounter(void);	// カウンター中
+	void StateAvoid(void);		// 回避
 
 	virtual void Controll(void);	// 操作
 	void LimitPos(void);			// 位置制限
 	void MotionBySetState(void);	// モーション別の状態設定
 	void ResetFrag(void);			// フラグリセット
 	void RockOn(void);				// ロックオン
-	void SwitchRockOnTarget(void);	// ロック対象切り替え
 
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;			// 攻撃判定中処理

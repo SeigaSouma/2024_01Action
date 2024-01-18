@@ -27,6 +27,7 @@ public:
 		MOTION_DEF = 0,			// ニュートラルモーション
 		MOTION_WALK,			// 移動モーション
 		MOTION_PUNCH,			// パンチモーション
+		MOTION_DMG,			// ダメージ
 		MOTION_KNOCKBACK,		// やられモーション
 	};
 

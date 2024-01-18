@@ -31,7 +31,7 @@ MOTIONSET
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.35 -0.35 0.00
 			POS = 0.00 -5.00 0.00
-			SCALE = 1.00 1.00 1.00
+			SCALE = 2.00 2.00 2.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
@@ -71,7 +71,7 @@ MOTIONSET
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.19 -0.19 0.00
 			POS = 0.00 7.00 0.00
-			SCALE = 1.00 1.00 1.00
+			SCALE = 2.00 2.00 2.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
@@ -111,7 +111,7 @@ MOTIONSET
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.35 0.35 0.00
 			POS = 0.00 -5.00 0.00
-			SCALE = 1.00 1.00 1.00
+			SCALE = 2.00 2.00 2.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----
@@ -151,7 +151,7 @@ MOTIONSET
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.19 0.19 0.00
 			POS = 0.00 7.00 0.00
-			SCALE = 1.00 1.00 1.00
+			SCALE = 2.00 2.00 2.00
 		END_PARTS
 
 		PARTS	# ----- [ 1 ] -----

@@ -88,7 +88,7 @@ END_CHARACTERSET
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 5
+NUM_MOTION = 6
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -96,8 +96,9 @@ NUM_MOTION = 5
 MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_def.txt			# [0]デフォルト
 MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_walk.txt		# [1]歩き
 MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_attack.txt		# [2]攻撃
-MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_knockback.txt	# [3]ノックバック
-MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_fadeout.txt	# [4]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_dmg.txt		# [3]ダメージ
+MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_knockback.txt	# [4]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/cookie/motion_fadeout.txt	# [5]フェードアウト
 
 
 END_SCRIPT		# この行は絶対消さないこと！

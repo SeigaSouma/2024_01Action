@@ -16,6 +16,7 @@
 // 定数定義
 namespace mylib_const
 {
+	const int DEFAULT_FPS = 60;			// 通常のFPS
 	const int MAX_OBJ = 1600;			// オブジェクトの最大数
 	const int PRIORITY_NUM = 10;			// 優先順位の最大数
 	const int PRIORITY_DEFAULT = 3;		// 優先順位のデフォルト

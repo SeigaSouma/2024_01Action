@@ -18,6 +18,7 @@
 #include "instantfade.h"
 #include "light.h"
 #include "3D_effect.h"
+#include "calculation.h"
 
 //==========================================================================
 // マクロ定義
@@ -52,15 +53,26 @@
 
 namespace
 {
+	const MyLib::Vector3 DEFAULT_GAMEROT = MyLib::Vector3(0.0f, 0.0f, -0.20f);	// ゲームのデフォルト向き
 	const float MULTIPLY_POSV_CORRECTION = 2.1f;	// (ゲーム時)視点の補正係数倍率
 	const float MULTIPLY_POSR_CORRECTION = 2.1f;	// (ゲーム時)注視点の補正係数倍率
 	const float DISATNCE_POSR_PLAYER = 200.0f;		// (ゲーム時)プレイヤーとの注視点距離
 	const float MAX_ROCKONDISTANCE = mylib_const::MAX_DISTANCE_ROCKON;
 	const float MIN_ROCKONDISTANCE = 1.0f;
-
+	const float ROTDISTANCE_ROCKON = D3DX_PI * 0.095f;	// ロックオン向きのズレ
+	const MyLib::Vector3 ROTDISTANCE_COUNTER = { 0.0f, D3DX_PI * 0.5f, -D3DX_PI * 0.05f };	// 反撃時の向きズレ
+	//const MyLib::Vector3 ROTDISTANCE_COUNTER = { 0.0f, D3DX_PI * 0.5f, D3DX_PI * 0.05f };	// 反撃時の向きズレ
+	const float LENGTH_COUNTER = 400.0f;					// カウンター時のカメラ長さ
 }
 
-
+//==========================================================================
+// 関数ポインタ
+//==========================================================================
+CCamera::ROCKON_STATE_FUNC CCamera::m_RockOnStateFunc[] =	// カウンター状態
+{
+	&CCamera::RockOnStateNormal,	// 通常
+	&CCamera::RockOnStateCounter,	// カウンター
+};
 
 //==========================================================================
 // コンストラクタ
@@ -109,6 +121,8 @@ CCamera::CCamera()
 	m_fDistanceCorrection = 0.0f;				// 距離の慣性補正係数
 	m_fDistanceDecrementValue = 0.0f;			// 距離の減少係数
 	m_nChasePlayerIndex = 0;					// 追従するプレイヤーのインデックス番号
+	m_RockOnDir = ROCKON_DIR_RIGHT;				// ロックオン時の向き
+	m_stateRockOn = ROCKON_NORMAL;				// ロックオン時の状態
 }
 
 //==========================================================================
@@ -203,9 +217,9 @@ void CCamera::Update(void)
 		m_move = MyLib::Vector3(0.0f, 0.0f, 0.0f);					// 移動量
 		m_rot = MyLib::Vector3(m_rot.x, 0.0f, m_rot.z);					// 向き
 		m_rotVDest = m_rot;										// 目標の視点の向き
-		m_fOriginDistance = START_CAMERALEN;					// 元の距離
-		m_fDestDistance = m_fOriginDistance;
-		m_fDistance = m_fOriginDistance;
+		m_fOriginDistance = 0.0f;					// 元の距離
+		m_fDestDistance = START_CAMERALEN;
+		m_fDistance = m_fDestDistance;
 		//m_fDistance = START_CAMERALEN;							// 距離
 		//m_state = CAMERASTATE_NONE;								// 状態
 
@@ -267,7 +281,8 @@ void CCamera::MoveCameraStick(int nIdx)
 	// ゲームパッド情報取得
 	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-	if (!m_bRockON)
+	if (m_stateRockOn != ROCKON_COUNTER &&
+		!m_bRockON)
 	{
 		m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
 
@@ -289,44 +304,13 @@ void CCamera::MoveCameraStick(int nIdx)
 	}
 	else
 	{
-		CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nChasePlayerIndex);
-		MyLib::Vector3 playerpos = pPlayer->GetPosition();
+		// 目標の向き
+		float fRotDiff = m_rotDest.z - m_rot.z;
+		UtilFunc::Transformation::RotNormalize(fRotDiff);
+		m_rot.z += fRotDiff * 0.08f;
 
-		// 目標地点をロックオンとの中心にする
-		m_TargetPos = UtilFunc::Calculation::GetCenterPosition3D(m_RockOnPos, playerpos);
-		CEffect3D::Create(m_TargetPos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.6f, 0.2f, 1.0f), 20.0f, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
-
-		// 2点間の距離
-		float fLen = UtilFunc::Calculation::GetFabsPosLength3D(m_RockOnPos, playerpos);
-		float ratio = fLen / MAX_ROCKONDISTANCE;
-
-		if (ratio <= 1.0f)
-		{
-			// 目標の長さ設定
-			SetLenDest(MAX_ROCKONDISTANCE * ratio, 2, 2.0f, 0.1f);
-
-			// 目標の角度を求める
-			m_rotDest.y = D3DX_PI + atan2f((m_TargetPos.x - m_RockOnPos.x), (m_TargetPos.z - m_RockOnPos.z));
-			UtilFunc::Transformation::RotNormalize(m_rotDest);
-
-			// 目標の向き
-			float fRotDiff = m_rotDest.y - m_rot.y;
-			UtilFunc::Transformation::RotNormalize(fRotDiff);
-			m_rot.y += fRotDiff * 0.08f;
-		}
-		else
-		{
-			m_bRockON = false;
-
-			// 目標の長さ設定
-			SetLenDest(MAX_ROCKONDISTANCE * 0.5f, 60, 2.0f, 0.1f);
-		}
-
-		// テキストの描画
-		CManager::GetInstance()->GetDebugProc()->Print(
-			"---------------- カメラ情報 ----------------\n"
-			"【向き】[X：%f Y：%f Z：%f]\n",
-			m_rotDest.x, m_rotDest.y, m_rotDest.z);
+		// ロックオン状態別処理
+		(this->*(m_RockOnStateFunc[m_stateRockOn]))();
 	}
 	// 角度の正規化
 	UtilFunc::Transformation::RotNormalize(m_rot);
@@ -568,6 +552,88 @@ void CCamera::MoveCameraDistance(void)
 	// 目標の距離へ補正
 	UtilFunc::Correction::InertiaCorrection(m_fDistance, m_fDestDistance, m_fDistanceCorrection);
 
+}
+
+//==================================================================================
+// 通常状態のロックオン処理
+//==================================================================================
+void CCamera::RockOnStateNormal(void)
+{
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nChasePlayerIndex);
+	MyLib::Vector3 playerpos = pPlayer->GetPosition();
+
+	// 目標地点をロックオンとの中心にする
+	m_TargetPosDest = UtilFunc::Calculation::GetCenterPosition3D(m_RockOnPos, playerpos);
+
+	// 慣性補正
+	float factor = 0.2f;
+	UtilFunc::Correction::InertiaCorrection(m_TargetPos.x, m_TargetPosDest.x, factor);
+	UtilFunc::Correction::InertiaCorrection(m_TargetPos.y, m_TargetPosDest.y, factor);
+	UtilFunc::Correction::InertiaCorrection(m_TargetPos.z, m_TargetPosDest.z, factor);
+
+#if _DEBUG
+	CEffect3D::Create(m_TargetPos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.6f, 0.2f, 1.0f), 20.0f, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+#endif
+
+	// 2点間の距離
+	float fLen = UtilFunc::Calculation::GetFabsPosLength3D(m_RockOnPos, playerpos);
+	float ratio = fLen / MAX_ROCKONDISTANCE;
+
+	if (ratio <= 1.0f)
+	{
+		// 目標の長さ設定
+		SetLenDest(MAX_ROCKONDISTANCE * ratio, 2, 2.0f, 0.1f);
+
+		// 目標の角度を求める
+		m_rotDest.y =
+			D3DX_PI +
+			atan2f((m_TargetPos.x - m_RockOnPos.x), (m_TargetPos.z - m_RockOnPos.z)) +
+			((ROTDISTANCE_ROCKON * 2.0f) * (m_RockOnDir - 1)) + ROTDISTANCE_ROCKON;
+		UtilFunc::Transformation::RotNormalize(m_rotDest);
+
+		// 目標の向き
+		float fRotDiff = m_rotDest.y - m_rot.y;
+		UtilFunc::Transformation::RotNormalize(fRotDiff);
+		m_rot.y += fRotDiff * 0.08f;
+	}
+	else
+	{
+		m_bRockON = false;
+
+		// 目標の長さ設定
+		SetLenDest(MAX_ROCKONDISTANCE * 0.5f, 60, 2.0f, 0.1f);
+	}
+
+
+	// テキストの描画
+	CManager::GetInstance()->GetDebugProc()->Print(
+		"---------------- カメラ情報 ----------------\n"
+		"【目標の向き】[X：%f Y：%f Z：%f]\n",
+		m_rotDest.x, m_rotDest.y, m_rotDest.z);
+}
+
+//==================================================================================
+// カウンター状態のロックオン処理
+//==================================================================================
+void CCamera::RockOnStateCounter(void)
+{
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nChasePlayerIndex);
+	MyLib::Vector3 playerpos = pPlayer->GetPosition();
+
+	// 目標地点をロックオンとの中心にする
+	m_TargetPosDest = playerpos;
+
+	// 慣性補正
+	UtilFunc::Correction::InertiaCorrection(m_TargetPos.x, m_TargetPosDest.x, 0.25f);
+	UtilFunc::Correction::InertiaCorrection(m_TargetPos.y, m_TargetPosDest.y, 0.25f);
+	UtilFunc::Correction::InertiaCorrection(m_TargetPos.z, m_TargetPosDest.z, 0.25f);
+
+	// 目標の向き
+	float fRotDiff = m_rotDest.y - m_rot.y;
+	UtilFunc::Transformation::RotNormalize(fRotDiff);
+
+	m_rot.y += fRotDiff * 0.08f;
+	UtilFunc::Transformation::RotNormalize(m_rot.y);
 }
 
 //==================================================================================
@@ -1182,7 +1248,8 @@ void CCamera::ResetGame(void)
 	m_posRDest = m_posR;									// 目標の注視点
 	m_vecU = MyLib::Vector3(0.0f, 1.0f, 0.0f);					// 上方向ベクトル
 	m_move = MyLib::Vector3(0.0f, 0.0f, 0.0f);					// 移動量
-	m_rot = MyLib::Vector3(0.0f, 0.0f, -0.20f);					// 向き
+	m_rot = DEFAULT_GAMEROT;					// 向き
+	m_rotDest = DEFAULT_GAMEROT;							// 目標の向き
 	m_rotVDest = m_rot;										// 目標の視点の向き
 	m_TargetPos = MyLib::Vector3(0.0f, 0.0f, 0.0f);			// 目標の位置
 	m_fDistance = START_CAMERALEN;							// 距離
@@ -1497,4 +1564,34 @@ void CCamera::SetEnableFollow(bool bFollow)
 bool CCamera::IsFollow(void)
 {
 	return m_bFollow;
+}
+
+//==========================================================================
+// ロックオン状態設定
+//==========================================================================
+void CCamera::SetRockOnState(RockOnState state)
+{
+	if (state == ROCKON_COUNTER)
+	{
+		// 目標の角度を求める
+		m_rotDest.y =
+			D3DX_PI +
+			atan2f((m_TargetPos.x - m_RockOnPos.x), (m_TargetPos.z - m_RockOnPos.z)) +
+			((ROTDISTANCE_ROCKON * 2.0f) * (m_RockOnDir - 1)) + ROTDISTANCE_ROCKON;
+		UtilFunc::Transformation::RotNormalize(m_rotDest);
+		
+		m_rotDest.y -= ROTDISTANCE_COUNTER.y + UtilFunc::Transformation::Random(-140, 0) * 0.001f;
+		m_rotDest.z = UtilFunc::Transformation::Random(-100, 80) * 0.001f;
+		m_fOriginDistance = LENGTH_COUNTER;	// 元の距離
+
+		// 目標の長さ設定
+		SetLenDest(LENGTH_COUNTER, 48, 4.0f, 0.25f);
+	}
+	else
+	{
+		m_rotDest.z = DEFAULT_GAMEROT.z;
+		m_fOriginDistance = START_CAMERALEN;	// 元の距離
+	}
+
+	m_stateRockOn = state;
 }

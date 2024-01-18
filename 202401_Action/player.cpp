@@ -68,6 +68,7 @@ CPlayer::STATE_FUNC CPlayer::m_StateFunc[] =
 	&CPlayer::StateDead,		// 死亡
 	&CPlayer::StateFadeOut,		// フェードアウト
 	&CPlayer::StateCounter,		// カウンター中
+	&CPlayer::StateAvoid,		// 回避
 };
 
 //==========================================================================
@@ -370,7 +371,16 @@ void CPlayer::Controll(void)
 	{// 行動できるとき
 
 		// ダッシュ判定
-		m_bDash = pInputGamepad->GetPress(CInputGamepad::BUTTON_LB, m_nMyPlayerIdx);
+		if (pInputGamepad->GetPress(CInputGamepad::BUTTON_LB, m_nMyPlayerIdx) &&
+			pInputGamepad->IsTipStick())
+		{// 左スティックが倒れてる場合
+			m_bDash = true;
+		}
+		else
+		{
+			m_bDash = false;
+		}
+
 		if (m_bDash)
 		{
 			fMove *= MULTIPLIY_DASH;
@@ -568,13 +578,18 @@ void CPlayer::Controll(void)
 		}
 
 		// 攻撃
-		if (pMotion->IsGetCombiable() &&
+		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
 			!m_bJump &&
 			!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) && 
 			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
 		{
 			pMotion->ToggleFinish(true);
 			m_sMotionFrag.bATK = true;		// 攻撃判定ON
+
+			if (m_bDash && m_nComboStage == 0)
+			{// ダッシュ中の初撃は2からスタート
+				m_nComboStage++;
+			}
 
 			if (m_bAttacking)
 			{
@@ -586,6 +601,21 @@ void CPlayer::Controll(void)
 
 				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
+		}
+
+		// 回避
+		if (!m_bJump &&
+			(pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, m_nMyPlayerIdx))
+		{
+			pMotion->Set(MOTION_AVOID);
+
+			if (pInputGamepad->IsTipStick())
+			{// 左スティックが倒れてる場合
+
+				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
+			}
+			m_state = STATE_AVOID;
 		}
 	}
 
@@ -776,11 +806,13 @@ void CPlayer::Controll(void)
 	{
 		fff += 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
+		CManager::GetInstance()->GetCamera()->SetRockDir(CCamera::RockOnDir::ROCKON_DIR_LEFT);	// ロックオン時のズレ向き設定
 	}
 	if (pInputKeyboard->GetTrigger(DIK_DOWN) == true)
 	{
 		fff -= 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
+		CManager::GetInstance()->GetCamera()->SetRockDir(CCamera::RockOnDir::ROCKON_DIR_RIGHT);	// ロックオン時のズレ向き設定
 	}
 
 	if (m_pWeaponHandle != nullptr)
@@ -967,7 +999,7 @@ void CPlayer::RockOn(void)
 	{// ロックオン距離内なら
 
 		// ロックオン設定
-		CManager::GetInstance()->GetCamera()->SetRockOn(enemyList.GetData(nMaxIdx)->GetPosition(), true);
+		pCamera->SetRockOn(enemyList.GetData(nMaxIdx)->GetPosition(), true);
 		enemyList.GetData(nMaxIdx)->SetEnableRockOn(true);
 
 		// インデックス番号設定
@@ -976,7 +1008,7 @@ void CPlayer::RockOn(void)
 }
 
 //==========================================================================
-// ロック対象切り替え
+// ロックオン対象切り替え
 //==========================================================================
 void CPlayer::SwitchRockOnTarget(void)
 {
@@ -1056,6 +1088,14 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_WALK);
 		break;
 
+	case MOTION_COUNTER_ATTACK:
+
+		if (nCntATK != 0)
+		{
+			CManager::GetInstance()->GetCamera()->SetLenDest(200.0f, 3, 4.0f, 0.3f);
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -1107,6 +1147,15 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 			if (pEnemy->Hit(ATKInfo.nDamage) == true)
 			{// 当たってたら
 
+				// 位置
+				MyLib::Vector3 pos = GetPosition();
+				MyLib::Vector3 enemypos = pEnemy->GetPosition();
+
+				// ターゲットと敵との向き
+				float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
+				UtilFunc::Transformation::RotNormalize(fRot);
+
+				pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 6.0f, 0.0f, cosf(fRot) * 6.0f));
 			}
 		}
 	}
@@ -1280,12 +1329,14 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 		else
 		{
 			GetMotion()->Set(MOTION_COUNTER_ATTACK);
+			CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
 		}
 		return false;
 	}
 	
-	if (m_state == STATE_COUNTER)
-	{// カウンター状態
+	if (m_state == STATE_COUNTER ||
+		m_state == STATE_AVOID)
+	{// ダメージ受けない状態
 		return false;
 	}
 
@@ -1764,6 +1815,27 @@ void CPlayer::StateCounter(void)
 		nType != MOTION_COUNTER_ATTACK)
 	{// カウンター状態が終了
 
+		m_state = STATE_NONE;
+		CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
+		return;
+	}
+}
+
+//==========================================================================
+// 回避
+//==========================================================================
+void CPlayer::StateAvoid(void)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == NULL)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_AVOID)
+	{// 回避が終了
 		m_state = STATE_NONE;
 		return;
 	}

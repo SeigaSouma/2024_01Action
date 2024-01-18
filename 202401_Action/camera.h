@@ -36,6 +36,21 @@ public:
 		CHASETYPE_MAX
 	};
 
+	// ロックオン時の向き
+	enum RockOnDir
+	{
+		ROCKON_DIR_RIGHT = 0,
+		ROCKON_DIR_LEFT,
+		ROCKON_DIR_MAX
+	};
+
+	enum RockOnState
+	{
+		ROCKON_NORMAL = 0,	// 通常
+		ROCKON_COUNTER,	// カウンター
+		ROCKON_MAX
+	};
+
 	CCamera();
 	~CCamera();
 
@@ -58,6 +73,7 @@ public:
 	void SetRockOnPosition(const MyLib::Vector3 pos);	// 追従目標の位置設定
 	MyLib::Vector3 GetRockOnPosition(void);			// 追従目標の位置取得
 	void SetRockOn(const MyLib::Vector3 pos, bool bSet);	// ロックオン設定
+	void SetRockDir(RockOnDir dir) { m_RockOnDir = dir; }	// ロックオン時のズレ向き設定
 
 	MyLib::Vector3 GetTargetRotation(void);			// 追従目標の向き取得
 	D3DXMATRIX GetMtxView(void) { return m_mtxView; }
@@ -76,7 +92,14 @@ public:
 	bool IsOnScreen(const MyLib::Vector3 pos);	// スクリーン内の判定
 	void MoveCameraStick(int nIdx = 0);			// スティック操作
 
+	void SetRockOnState(RockOnState state);	// ロックオン状態設定
+	CCamera::RockOnState GetRockOnState(void) { return m_stateRockOn; }	// ロックオン状態取得
+
 private:
+
+	// 関数リスト
+	typedef void(CCamera::* ROCKON_STATE_FUNC)(void);
+	static ROCKON_STATE_FUNC m_RockOnStateFunc[];
 
 	// メンバ変数
 	void UpdateByMode(void);	// モード別更新処理
@@ -100,6 +123,8 @@ private:
 	void Shake(void);
 	void UpdateState(void);
 	void UpdateSpotLightVec(void);
+	void RockOnStateNormal(void);	// 通常状態のロックオン処理
+	void RockOnStateCounter(void);	// カウンター状態のロックオン処理
 
 	// リセット
 	void ResetGame(void);
@@ -121,6 +146,7 @@ private:
 	MyLib::Vector3 m_Moverot;			// 向きの移動量
 	MyLib::Vector3 m_rotVDest;			// 目標の視点の向き
 	MyLib::Vector3 m_TargetPos;			// 追従目標の位置
+	MyLib::Vector3 m_TargetPosDest;		// 目標の追従目標の位置
 	MyLib::Vector3 m_TargetRot;			// 追従目標の向き
 	MyLib::Vector3 m_RockOnPos;			// ロックオン対象の位置
 	float m_fDistance;					// 距離
@@ -151,6 +177,8 @@ private:
 	CHASETYPE m_OldChaseType;			// 前回の追従の種類
 	int m_nCntChaseType;				// 追従のカウンター
 	int m_nChasePlayerIndex;			// 追従するプレイヤーのインデックス番号
+	RockOnDir m_RockOnDir;				// ロックオン時の向き
+	RockOnState m_stateRockOn;			// ロックオン時の状態
 };
 
 #endif

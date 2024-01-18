@@ -45,6 +45,9 @@ namespace
 {
 	const float PLAYER_SERCH = 800.0f;	// プレイヤー探索範囲
 	const float CHACE_DISTABCE = 50.0f;	// 追い掛ける時の間隔
+	const float TIME_DMG = static_cast<float>(10) / static_cast<float>(mylib_const::DEFAULT_FPS);	// ダメージ時間
+	const float TIME_DEAD = static_cast<float>(40) / static_cast<float>(mylib_const::DEFAULT_FPS);	// 死亡時間
+
 }
 
 //==========================================================================
@@ -68,11 +71,12 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// マテリアルの色
 	m_TargetPosition = mylib_const::DEFAULT_VECTOR3;	// 目標の位置
 
-	m_nCntState = 0;		// 状態遷移カウンター
+	m_fStateTime = 0.0f;	// 状態遷移カウンター
 	m_nTexIdx = 0;			// テクスチャのインデックス番号
 	m_nNumChild = 0;		// この数
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
 	m_fActCounter = 0.0f;		// 移動カウンター
+	m_bActionable = false;		// 行動可能か
 	m_bAddScore = false;		// スコア加算するかの判定
 	m_bRockOnAccepting = false;	// ロックオン受付
 	m_nBallastEmission = 0;	// 瓦礫の発生カウンター
@@ -163,7 +167,7 @@ HRESULT CEnemy::Init(void)
 	// 各種変数の初期化
 	m_state = STATE_NONE;	// 状態
 	m_Oldstate = STATE_PLAYERCHASE;
-	m_nCntState = 0;		// 状態遷移カウンター
+	m_fStateTime = 0.0f;			// 状態遷移カウンター
 	m_posKnokBack = m_posOrigin;	// ノックバックの位置
 	m_bAddScore = true;	// スコア加算するかの判定
 
@@ -319,6 +323,11 @@ void CEnemy::Kill(void)
 	// ロックオン受付してたら
 	if (m_bRockOnAccepting)
 	{
+		/*CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
+		if (pPlayer != nullptr)
+		{
+			pPlayer->SwitchRockOnTarget();
+		}*/
 		CManager::GetInstance()->GetCamera()->SetRockOn(GetPosition(), false);
 	}
 
@@ -590,6 +599,8 @@ void CEnemy::ProcessLanding(void)
 //==========================================================================
 bool CEnemy::Hit(const int nValue)
 {
+	bool bHit = false;
+
 	// 向き取得
 	MyLib::Vector3 rot = GetRotation();
 	MyLib::Vector3 pos = GetPosition();
@@ -597,9 +608,11 @@ bool CEnemy::Hit(const int nValue)
 	// 体力取得
 	int nLife = GetLife();
 
-	if ((nValue == mylib_const::DMG_BOUNCE && m_state != STATE_DEAD) ||
-		(m_state != STATE_DMG && m_state != STATE_DEAD && m_state != STATE_SPAWN && m_state != STATE_FADEOUT))
+	if (m_state != STATE_DMG && m_state != STATE_DEAD && m_state != STATE_SPAWN && m_state != STATE_FADEOUT)
 	{// なにもない状態の時
+
+		// 当たった
+		bHit = true;
 
 		// 体力減らす
 		nLife -= nValue;
@@ -633,7 +646,7 @@ bool CEnemy::Hit(const int nValue)
 			m_state = STATE_DEAD;
 
 			// 遷移カウンター設定
-			m_nCntState = 40;
+			m_fStateTime = TIME_DEAD;
 
 			// ノックバックの位置更新
 			m_posKnokBack = GetPosition();
@@ -652,9 +665,6 @@ bool CEnemy::Hit(const int nValue)
 			move.y = UtilFunc::Transformation::Random(0, 5) + 15.0f;
 			move.z = UtilFunc::Transformation::Random(-5, 5) + 20.0f;
 			SetMove(move);
-
-			// 当たった
-			return true;
 		}
 
 		// 補正
@@ -667,36 +677,22 @@ bool CEnemy::Hit(const int nValue)
 		m_state = STATE_DMG;
 
 		// 遷移カウンター設定
-		if (nValue == mylib_const::DMG_SLASH)
-		{
-			m_nCntState = 10;
+		m_fStateTime = TIME_DMG;
 
-			// ヒットストップ
-			//CManager::GetInstance()->SetEnableHitStop(2);
+		// やられモーション
+		GetMotion()->Set(MOTION_DMG);
 
-			// 振動
-			CManager::GetInstance()->GetCamera()->SetShake(5, 8.0f, 0.0f);
-		}
-		else
-		{
-			m_nCntState = 30;
+		// ヒットストップ
+		CManager::GetInstance()->SetEnableHitStop(5);
 
-			// ヒットストップ
-			CManager::GetInstance()->SetEnableHitStop(5);
-
-			// 振動
-			CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);
-		}
+		// 振動
+		CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);
 
 		// ノックバックの位置更新
 		m_posKnokBack = GetPosition();
-
-		// 当たった
-		return true;
 	}
 
-	// 死んでない
-	return false;
+	return bHit;
 }
 
 //==========================================================================
@@ -871,10 +867,6 @@ void CEnemy::UpdateState(void)
 	case STATE_WAIT:
 		StateWait();
 		break;
-
-	case STATE_BASECHANGE:
-		ChangeBase();
-		break;
 	}
 
 	if (m_state != STATE_SPAWNWAIT && IsDisp() == false)
@@ -897,15 +889,18 @@ void CEnemy::UpdateStateByType(void)
 //==========================================================================
 void CEnemy::StateNone(void)
 {
+	// 行動可能判定
+	m_bActionable = true;
+
 	// 色設定
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
-	if (m_nCntState <= 0)
+	if (m_fStateTime <= 0)
 	{// 遷移カウンターが0になったら
-		m_nCntState = 0;
+		m_fStateTime = 0;
 	}
 }
 
@@ -914,8 +909,11 @@ void CEnemy::StateNone(void)
 //==========================================================================
 void CEnemy::SpawnWait(void)
 {
+	// 行動可能判定
+	m_bActionable = false;
+
 	// 状態カウンターリセット
-	m_nCntState = 0;
+	m_fStateTime = 0.0f;
 
 	// 描画しない
 	SetEnableDisp(false);
@@ -926,23 +924,9 @@ void CEnemy::SpawnWait(void)
 //==========================================================================
 void CEnemy::Spawn(void)
 {
-	// 髙田くんへ、コピーしてね
-#if 0
-	int nType = pMotion->GetType();
-	if (nType == MOTION_SPAWN && pMotion->IsFinish() == true)
-	{// 登場が終わってたら
+	// 行動可能判定
+	m_bActionable = false;
 
-		// なにない
-		m_state = STATE_NONE;
-		return;
-	}
-
-	if (nType != MOTION_SPAWN)
-	{
-		// 登場モーション設定
-		pMotion->Set(MOTION_SPAWN);
-	}
-#endif
 }
 
 //==========================================================================
@@ -950,6 +934,9 @@ void CEnemy::Spawn(void)
 //==========================================================================
 void CEnemy::Damage(void)
 {
+	// 行動可能判定
+	m_bActionable = false;
+
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
@@ -977,11 +964,10 @@ void CEnemy::Damage(void)
 #endif
 
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
-	if (m_nCntState <= 0)
-	{// 遷移カウンターが0になったら
-
+	if (m_fStateTime <= 0.0f)
+	{
 		// 過去の状態にする
 		m_state = m_Oldstate;
 	}
@@ -1004,6 +990,9 @@ void CEnemy::Damage(void)
 //==========================================================================
 void CEnemy::Dead(void)
 {
+	// 行動可能判定
+	m_bActionable = false;
+
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
@@ -1026,12 +1015,7 @@ void CEnemy::Dead(void)
 	bool bLen = false;
 
 	// 状態遷移カウンター減算
-	m_nCntState--;
-
-	if (m_nCntState % 6 == 0)
-	{
-		CEffect3D::Create(pos, MyLib::Vector3(UtilFunc::Transformation::Random(-10, 10) * 0.1f, -move.y, UtilFunc::Transformation::Random(-10, 10) * 0.1f), D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f), (float)UtilFunc::Transformation::Random(80, 120), 20, CEffect3D::MOVEEFFECT_ADD, CEffect3D::TYPE_SMOKEBLACK);
-	}
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
 	// 色設定
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_mMatcol.a);
@@ -1075,6 +1059,9 @@ void CEnemy::Dead(void)
 //==========================================================================
 void CEnemy::FadeOut(void)
 {
+	// 行動可能判定
+	m_bActionable = false;
+
 	// 移動量取得
 	float fMove = GetVelocity();
 
@@ -1109,12 +1096,12 @@ void CEnemy::FadeOut(void)
 	m_sMotionFrag.bATK = false;		// 攻撃判定OFF
 
 	// 遷移カウンター加算
-	m_nCntState++;
+	m_fStateTime++;
 
 	// 色設定
-	m_mMatcol.a = 1.0f - ((float)m_nCntState / (float)nAllFrame);
+	m_mMatcol.a = 1.0f - ((float)m_fStateTime / (float)nAllFrame);
 
-	if (m_nCntState >= nAllFrame)
+	if (m_fStateTime >= nAllFrame)
 	{// 遷移カウンターがモーションを超えたら
 
 		// スコア加算の判定オフ
@@ -1132,6 +1119,9 @@ void CEnemy::FadeOut(void)
 //==========================================================================
 void CEnemy::PlayerChase(void)
 {
+	// 行動可能判定
+	m_bActionable = true;
+
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
@@ -1158,11 +1148,11 @@ void CEnemy::PlayerChase(void)
 
 
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
-	if (m_nCntState <= 0)
+	if (m_fStateTime <= 0)
 	{// 遷移カウンターが0になったら
-		m_nCntState = 0;
+		m_fStateTime = 0;
 	}
 
 	if (pPlayer != NULL)
@@ -1219,6 +1209,9 @@ void CEnemy::PlayerChase(void)
 //==========================================================================
 void CEnemy::ParentChase(void)
 {
+	// 行動可能判定
+	m_bActionable = true;
+
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
@@ -1248,11 +1241,11 @@ void CEnemy::ParentChase(void)
 
 
 	// 状態遷移カウンター減算
-	//m_nCntState++;
+	//m_fStateTime++;
 
-	if (m_nCntState <= 0)
+	if (m_fStateTime <= 0)
 	{// 遷移カウンターが0になったら
-		m_nCntState = 0;
+		m_fStateTime = 0;
 	}
 
 	if (m_pParent != NULL)
@@ -1309,10 +1302,11 @@ void CEnemy::ParentChase(void)
 		float fRotDiff = 0.0f;	// 現在と目標の差分
 
 		// 状態遷移カウンター更新
-		m_nCntState = (m_nCntState + 1) % 120;
+		m_fStateTime = static_cast<float>((static_cast<int>(m_fStateTime) + 1) % 120);
 
 		// 目標の角度を求める
-		if (m_nCntState == 0)
+		int stateTime = static_cast<int>(m_fStateTime);
+		if (stateTime == 0)
 		{
 			fRotDest = UtilFunc::Transformation::Random(-31, 31) * 0.1f;
 		}
@@ -1353,6 +1347,9 @@ void CEnemy::ParentChase(void)
 //==========================================================================
 void CEnemy::StateAttack(void)
 {
+	// 行動可能判定
+	m_bActionable = true;
+
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
@@ -1394,7 +1391,7 @@ void CEnemy::StateAttack(void)
 			if (m_pParent->m_state != STATE_DMG && m_pParent->m_state != STATE_DEAD)
 			{
 				m_pParent->m_state = STATE_PLAYERCHASE;
-				m_pParent->m_nCntState = 60;
+				m_pParent->m_fStateTime = 60;
 			}
 
 			for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
@@ -1410,7 +1407,7 @@ void CEnemy::StateAttack(void)
 				}
 
 				m_pParent->m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-				m_pParent->m_pChild[nCntEnemy]->m_nCntState = 60;
+				m_pParent->m_pChild[nCntEnemy]->m_fStateTime = 60;
 			}
 		}
 	}
@@ -1431,7 +1428,7 @@ void CEnemy::StateAttack(void)
 				if (m_pChild[nCntEnemy]->m_state != STATE_DMG && m_pChild[nCntEnemy]->m_state != STATE_DEAD)
 				{
 					m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-					m_pChild[nCntEnemy]->m_nCntState = 60;
+					m_pChild[nCntEnemy]->m_fStateTime = 60;
 				}
 			}
 		}
@@ -1523,18 +1520,13 @@ void CEnemy::StateAttack(void)
 }
 
 //==========================================================================
-// 種類別状態更新処理
+// 待機状態
 //==========================================================================
 void CEnemy::StateWait(void)
 {
-	return;
-}
+	// 行動可能判定
+	m_bActionable = true;
 
-//==========================================================================
-// 拠点切り替え
-//==========================================================================
-void CEnemy::ChangeBase(void)
-{
 	return;
 }
 
@@ -1863,16 +1855,7 @@ MyLib::Vector3 CEnemy::GetSpawnPosition(void)
 //==========================================================================
 void CEnemy::SetState(STATE state)
 {
-	m_state = (STATE)state;
-}
-
-//==========================================================================
-// 状態設定
-//==========================================================================
-void CEnemy::SetState(STATE state, int nCntState)
-{
 	m_state = state;
-	m_nCntState = nCntState;
 }
 
 //==========================================================================
