@@ -44,6 +44,7 @@ namespace mapdate
 //==========================================================================
 vector<std::string> ModelFile;		// モデルファイル名
 vector<std::string> TextureFile;	// テクスチャファイル名
+vector<int> ModelIdx;	// モデルインデックス
 mapdate::SMap g_Map;
 
 //==========================================================================
@@ -58,6 +59,8 @@ HRESULT MyMap::Create(const char *pTextFile)
 
 	memset(&mapdate::pObjX[0], NULL, sizeof(mapdate::pObjX));
 	memset(&mapdate::pObj3DMesh[0], NULL, sizeof(mapdate::pObj3DMesh));	// オブジェクト3Dメッシュ
+	ModelIdx.clear();
+	ModelFile.clear();		// モデルファイル名
 
 	// 外部テキスト読み込み処理
 	HRESULT hr = ReadText(pTextFile);
@@ -79,7 +82,7 @@ void MyMap::Release(void)
 	{
 		if (mapdate::pObjX[nCntObj] != NULL)
 		{
-			mapdate::pObjX[nCntObj]->Uninit();
+			mapdate::pObjX[nCntObj]->Kill();
 			mapdate::pObjX[nCntObj] = NULL;
 		}
 
@@ -91,6 +94,20 @@ void MyMap::Release(void)
 	}
 
 	ModelFile.clear();		// モデルファイル名
+	ModelIdx.clear();
+	mapdate::nNumObjXAll = 0;
+}
+
+//==========================================================================
+// マップ切り替え
+//==========================================================================
+void MyMap::ChangeMap(const char* pTextFile)
+{
+	// 開放処理
+	Release();
+
+	// 外部テキスト読み込み処理
+	ReadText(pTextFile);
 }
 
 //==========================================================================
@@ -102,7 +119,7 @@ HRESULT MyMap::SaveText(void)
 	FILE *pFile = NULL;	// ファイルポインタを宣言
 
 	// ファイルを開く
-	pFile = fopen("data\\TEXT\\map\\info.txt", "w");
+	pFile = fopen("data\\TEXT\\map\\save_info.txt", "w");
 
 	if (pFile == NULL)
 	{// ファイルが開けなかった場合
@@ -307,52 +324,79 @@ HRESULT MyMap::SaveText(void)
 		"# モデルの配置\n"
 		"#==============================================================================\n");
 
-	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+	for (int i = 0; i < mapdate::nNumObjXAll; i++)
 	{
-		// 先頭を保存
-		CObject *pObj = CObject::GetTop(nCntPriority);
+		// Xファイルの情報取得
+		CObjectX* pObjX = mapdate::pObjX[i];
 
-		while (pObj != NULL)
-		{// NULLが来るまで無限ループ
+		int nType = ModelIdx[i];		// 種類
+		MyLib::Vector3 pos = pObjX->GetPosition();	// 位置
+		MyLib::Vector3 rot = pObjX->GetRotation();	// 向き
+		int nShadow = 0;						// 影使うかどうか
 
-			// 次のオブジェクトを一時保存
-			CObject *pObjNext = pObj->GetNext();
-
-			// 種類の取得
-			CObject::TYPE TargetType = pObj->GetType();
-
-			if (TargetType == CObject::TYPE_XFILE)
-			{// Xファイルのモデルだったら
-
-				// Xファイルの情報取得
-				CObjectX *pObjX = pObj->GetObjectX();
-
-				int nType = pObjX->GetIdxXFile();		// 種類
-				MyLib::Vector3 pos = pObjX->GetPosition();	// 位置
-				MyLib::Vector3 rot = pObjX->GetRotation();	// 向き
-				int nShadow = 0;						// 影使うかどうか
-
-				if (pObjX->GetUseShadow() == true)
-				{// 使っている場合
-					nShadow = 1;
-				}
-
-				// 出力
-				fprintf(pFile,
-					"MODELSET\n"
-					"\tTYPE = %d\n"
-					"\tPOS = %.2f %.2f %.2f\n"
-					"\tROT = %.2f %.2f %.2f\n"
-					"\tSHADOW = %d\n"
-					"END_MODELSET\n\n",
-					nType, pos.x, pos.y, pos.z,
-					rot.x, rot.y, rot.z, nShadow);
-			}
-
-			// 次のオブジェクトを代入
-			pObj = pObjNext;
+		if (pObjX->GetUseShadow() == true)
+		{// 使っている場合
+			nShadow = 1;
 		}
+
+		// 出力
+		fprintf(pFile,
+			"MODELSET\n"
+			"\tTYPE = %d\n"
+			"\tPOS = %.2f %.2f %.2f\n"
+			"\tROT = %.2f %.2f %.2f\n"
+			"\tSHADOW = %d\n"
+			"END_MODELSET\n\n",
+			nType, pos.x, pos.y, pos.z,
+			rot.x, rot.y, rot.z, nShadow);
 	}
+
+	//for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+	//{
+	//	// 先頭を保存
+	//	CObject *pObj = CObject::GetTop(nCntPriority);
+
+	//	while (pObj != NULL)
+	//	{// NULLが来るまで無限ループ
+
+	//		// 次のオブジェクトを一時保存
+	//		CObject *pObjNext = pObj->GetNext();
+
+	//		// 種類の取得
+	//		CObject::TYPE TargetType = pObj->GetType();
+
+	//		if (TargetType == CObject::TYPE_XFILE)
+	//		{// Xファイルのモデルだったら
+
+	//			// Xファイルの情報取得
+	//			CObjectX *pObjX = pObj->GetObjectX();
+
+	//			int nType = pObjX->GetIdxXFile();		// 種類
+	//			MyLib::Vector3 pos = pObjX->GetPosition();	// 位置
+	//			MyLib::Vector3 rot = pObjX->GetRotation();	// 向き
+	//			int nShadow = 0;						// 影使うかどうか
+
+	//			if (pObjX->GetUseShadow() == true)
+	//			{// 使っている場合
+	//				nShadow = 1;
+	//			}
+
+	//			// 出力
+	//			fprintf(pFile,
+	//				"MODELSET\n"
+	//				"\tTYPE = %d\n"
+	//				"\tPOS = %.2f %.2f %.2f\n"
+	//				"\tROT = %.2f %.2f %.2f\n"
+	//				"\tSHADOW = %d\n"
+	//				"END_MODELSET\n\n",
+	//				nType, pos.x, pos.y, pos.z,
+	//				rot.x, rot.y, rot.z, nShadow);
+	//		}
+
+	//		// 次のオブジェクトを代入
+	//		pObj = pObjNext;
+	//	}
+	//}
 
 	fprintf(pFile, "\nEND_SCRIPT		# この行は絶対消さないこと！");
 
@@ -796,6 +840,7 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 				// タイプの物を生成
 				mapdate::pObjX[mapdate::nNumObjXAll] = CObjectX::Create(&ModelFile[g_Map.nType][0], g_Map.pos, g_Map.rot, false);
 			}
+			ModelIdx.push_back(g_Map.nType);
 
 			if (mapdate::pObjX[mapdate::nNumObjXAll] == NULL)
 			{// 失敗していたら
@@ -818,6 +863,21 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 	fclose(pFile);
 
 	return S_OK;
+}
+
+void MyMap::Regist(int nType, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShadow)
+{
+	ModelIdx.push_back(nType);
+
+	// タイプの物を生成
+	mapdate::pObjX[mapdate::nNumObjXAll] = CObjectX::Create(ModelFile[nType].c_str(), pos, rot, bShadow);
+	mapdate::pObjX[mapdate::nNumObjXAll]->SetType(CObject::TYPE_XFILE);
+	mapdate::nNumObjXAll++;
+}
+
+std::string MyMap::GetModelFileName(int nIdx)
+{
+	return ModelFile[nIdx];
 }
 
 //==========================================================================

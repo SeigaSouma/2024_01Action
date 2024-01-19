@@ -96,7 +96,7 @@ HRESULT CEnemyBoss::Init(void)
 	m_pBossHPGauge->SetLife(0);
 
 	// 黒フレーム捌ける
-	CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
+	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
 
 	// 行動
 	m_Action = ACTION_WAIT;
@@ -136,11 +136,11 @@ void CEnemyBoss::Update(void)
 	// HP更新
 	m_pBossHPGauge->SetLife(GetLife());
 
-	// 黒フレーム捌ける
-	if (CManager::GetInstance()->GetBlackFrame()->GetState() == CBlackFrame::STATE_INCOMPLETION)
-	{
-		CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
-	}
+	//// 黒フレーム捌ける
+	//if (CManager::GetInstance()->GetBlackFrame()->GetState() == CBlackFrame::STATE_INCOMPLETION)
+	//{
+	//	CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
+	//}
 }
 
 //==========================================================================

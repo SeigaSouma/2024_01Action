@@ -192,17 +192,6 @@ void CScene::ResetScene(void)
 	//**********************************
 	// 破棄フェーズ
 	//**********************************
-	// プレイヤーの破棄
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		if (m_pPlayer[nCntPlayer] != NULL)
-		{// メモリの確保が出来ていたら
-
-			m_pPlayer[nCntPlayer]->Uninit();
-			m_pPlayer[nCntPlayer] = NULL;
-		}
-	}
-
 	// 起伏の地面
 	if (m_pObject3DMesh != NULL)
 	{

@@ -17,6 +17,8 @@
 #include "enemybase.h"
 #include "enemymanager.h"
 #include "stage.h"
+#include "map.h"
+#include "transferBeacon.h"
 
 //==========================================================================
 // コンストラクタ
@@ -117,6 +119,11 @@ void CGameManager::Update(void)
 		m_bControll = true;
 		break;
 
+	case CGameManager::SCENE_ENHANCE:
+		m_bControll = true;
+		SceneEnhance();
+		break;
+
 	case CGameManager::SCENE_BOSS:
 		m_bControll = true;
 		break;
@@ -171,6 +178,46 @@ void CGameManager::Update(void)
 }
 
 //==========================================================================
+// 強化シーン
+//==========================================================================
+void CGameManager::SceneEnhance(void)
+{
+	// 遷移なしフェードの状態取得
+	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
+
+	if (fadestate != CInstantFade::STATE_FADECOMPLETION)
+	{// 完了してない
+		return;
+	}
+
+	// カメラリセット
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	if (pCamera != NULL)
+	{
+		pCamera->Reset(CScene::MODE_GAME);
+	}
+
+	// ステージ切り替え
+	CGame::GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
+
+	// マップ切り替え
+	MyMap::ChangeMap("data\\TEXT\\map\\map_enhance.txt");
+
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
+		pPlayer->SetPosition(0.0f);
+	}
+
+	// 転移ビーコン生成
+	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_GAMEMAIN);
+}
+
+//==========================================================================
 // ボス設定
 //==========================================================================
 void CGameManager::SetBoss(void)
@@ -182,7 +229,7 @@ void CGameManager::SetBoss(void)
 	m_SceneType = SCENE_BOSS;
 
 	// リセット処理
-	CGame::Reset();
+	CGame::ResetBeforeBoss();
 
 	// シーンのリセット
 	CManager::GetInstance()->GetScene()->ResetScene();
@@ -205,7 +252,7 @@ void CGameManager::SetBoss(void)
 	pCamera->ResetBoss();
 
 	// 黒フレーム侵入
-	CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_IN);
+	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_IN);
 
 	// 敵の再配置
 	CEnemyManager* pEnemyManager = CGame::GetEnemyManager();
@@ -221,6 +268,13 @@ void CGameManager::SetBoss(void)
 //==========================================================================
 void CGameManager::SetEnemy(void)
 {
+
+	// ステージ切り替え
+	CGame::GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
+
+	// マップ切り替え
+	MyMap::ChangeMap("data\\TEXT\\map\\info.txt");
+
 	// プレイヤー情報
 	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
 	{

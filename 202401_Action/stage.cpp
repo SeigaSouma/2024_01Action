@@ -13,18 +13,14 @@
 #include "input.h"
 
 //==========================================================================
-// 静的メンバ変数宣言
-//==========================================================================
-
-//==========================================================================
 // コンストラクタ
 //==========================================================================
 CStage::CStage()
 {
-	// ゼロクリア
+	// クリア
 	m_nNumAll = 0;
+	ModelFile.clear();		// モデルファイル名
 	memset(&m_pObjX[0], NULL, sizeof(m_pObjX));	// オブジェクトXのポインタ
-	m_pInjectionTable = NULL;			// 射出台のオブジェクト
 }
 
 //==========================================================================
@@ -98,6 +94,9 @@ void CStage::Uninit(void)
 			m_pObjX[nCntObj] = NULL;
 		}
 	}
+
+	// 総数リセット
+	m_nNumAll = 0;
 }
 
 //==========================================================================
@@ -114,6 +113,9 @@ void CStage::Release(void)
 			m_pObjX[nCntObj] = NULL;
 		}
 	}
+
+	// 総数リセット
+	m_nNumAll = 0;
 }
 
 //==========================================================================
@@ -121,32 +123,7 @@ void CStage::Release(void)
 //==========================================================================
 void CStage::Update(void)
 {
-	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
-	// ゲームパッド情報取得
-	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
-
-	for (int nCntObj = 0; nCntObj < mylib_const::MAX_STAGE; nCntObj++)
-	{
-		if (m_pObjX[nCntObj] == NULL)
-		{
-			continue;
-		}
-
-		MyLib::Vector3 pos = m_pObjX[nCntObj]->GetPosition();
-
-		if (pInputKeyboard->GetPress(DIK_UP) == true || pInputGamepad->GetStickMoveR(0).y > 0)
-		{//←キーが押された,左移動
-			pos.y += 10.0f;
-		}
-		if (pInputKeyboard->GetPress(DIK_DOWN) == true || pInputGamepad->GetStickMoveR(0).y < 0)
-		{//←キーが押された,左移動
-			pos.y -= 10.0f;
-		}
-
-		m_pObjX[nCntObj]->SetPosition(pos);
-	}
 }
 
 //==========================================================================
@@ -155,6 +132,18 @@ void CStage::Update(void)
 void CStage::Draw(void)
 {
 
+}
+
+//==========================================================================
+// ステージ切り替え
+//==========================================================================
+void CStage::ChangeStage(const char* pTextFile)
+{
+	// 削除
+	Release();
+
+	// 外部テキスト読み込み処理
+	ReadText(pTextFile);
 }
 
 //==========================================================================
@@ -411,18 +400,14 @@ HRESULT CStage::ReadText(const char *pTextFile)
 
 			}// END_MODELSETのかっこ
 
+			bool bShadow = false;
 			if (nShadow == 1)
 			{// 影を使用する場合
+				bShadow = true;
 
-				// タイプの物を生成
-				m_pObjX[m_nNumAll] = CObjectX::Create(&ModelFile[nType][0], pos, rot, true);
 			}
-			else
-			{
-				// タイプの物を生成
-				m_pObjX[m_nNumAll] = CObjectX::Create(&ModelFile[nType][0], pos, rot, false);
-			}
-
+			// タイプの物を生成
+			m_pObjX[m_nNumAll] = CObjectX::Create(ModelFile[nType].c_str(), pos, rot, bShadow);
 			if (m_pObjX[m_nNumAll] == NULL)
 			{// 失敗していたら
 				return E_FAIL;
@@ -452,14 +437,6 @@ HRESULT CStage::ReadText(const char *pTextFile)
 CObjectX *CStage::GetObj(int nIdx)
 {
 	return m_pObjX[nIdx];
-}
-
-//==========================================================================
-// 射出台取得
-//==========================================================================
-CInjectionTable *CStage::GetInjectionTable(void)
-{
-	return m_pInjectionTable;
 }
 
 //==========================================================================

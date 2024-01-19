@@ -23,6 +23,7 @@ public:
 	{
 		SCENE_MAIN = 0,			// メイン
 		SCENE_MAINCLEAR,		// メインクリア
+		SCENE_ENHANCE,			// 強化
 		SCENE_BOSS,				// ボス
 		SCENE_TRANSITIONWAIT,	// 遷移待機
 		SCENE_TRANSITION,		// 遷移
@@ -60,6 +61,7 @@ public:
 private:
 
 	// メンバ関数
+	void SceneEnhance(void);
 	void SetEnemy(void);
 	void SetBoss(void);
 

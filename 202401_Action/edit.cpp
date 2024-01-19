@@ -173,8 +173,7 @@ void CEdit::Update(void)
 	{// ENTERで配置
 
 		// タイプの物を生成
-		CObjectX *pObjX = CObjectX::Create(CScene::GetXLoad()->GetMyObject(m_nType)->filename.c_str(), pos, rot, m_bShadow);
-		pObjX->SetType(CObject::TYPE_XFILE);
+		MyMap::Regist(m_nType, pos, rot, m_bShadow);
 	}
 
 	if (pInputKeyboard->GetTrigger(DIK_F9) == true)
@@ -401,8 +400,10 @@ void CEdit::ChangeType(void)
 		// 色の種類更新
 		m_nType = (m_nType + (nNumAll - 1)) % nNumAll;
 
+		int nIdx = CScene::GetXLoad()->XLoad(MyMap::GetModelFileName(m_nType));
+
 		// オブジェクト割り当て
-		m_pObjX->BindXData(m_nType);
+		m_pObjX->BindXData(nIdx);
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_2) == true)
 	{// 2が押された
@@ -411,7 +412,8 @@ void CEdit::ChangeType(void)
 		m_nType = (m_nType + 1) % nNumAll;
 
 		// オブジェクト割り当て
-		m_pObjX->BindXData(m_nType);
+		int nIdx = CScene::GetXLoad()->XLoad(MyMap::GetModelFileName(m_nType));
+		m_pObjX->BindXData(nIdx);
 	}
 
 	if (pInputKeyboard->GetTrigger(DIK_3) == true)

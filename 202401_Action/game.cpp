@@ -403,7 +403,7 @@ CUltWindow *CGame::GetUltWindow(int nIdx)
 //==========================================================================
 // リセット処理
 //==========================================================================
-void CGame::Reset(void)
+void CGame::ResetBeforeBoss(void)
 {
 	// ステージの破棄
 	if (m_pStage != NULL)

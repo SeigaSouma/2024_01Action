@@ -31,15 +31,15 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void ChangeStage(const char* pTextFile);	// ステージ切り替え
 	CObjectX *GetObj(int nIdx);
-	CInjectionTable *GetInjectionTable(void);	// 射出台取得
 	int GetNumAll(void);		// 総数取得
 	static CStage *Create(const char *pTextFile);
 
 private:
 
 	// メンバ関数
-	HRESULT ReadXFile(const char *pTextFile);	// もでる読み込み処理
+	HRESULT ReadXFile(const char *pTextFile);	// モデル読み込み処理
 	HRESULT ReadText(const char *pTextFile);		// 外部ファイル読み込み処理
 	HRESULT SaveText(void);		// 外部ファイル書き込み処理
 
@@ -47,7 +47,6 @@ private:
 	int m_nNumAll;
 	std::vector<std::string> ModelFile;		// モデルファイル名
 	CObjectX *m_pObjX[mylib_const::MAX_STAGE];	// オブジェクトXのポインタ
-	CInjectionTable *m_pInjectionTable;			// 射出台のオブジェクト
 
 };
 

@@ -193,7 +193,7 @@ END_CHARACTERSET
 #------------------------------------------------------------------------------
 # ƒ‚[ƒVƒ‡ƒ“”
 #------------------------------------------------------------------------------
-NUM_MOTION = 13
+NUM_MOTION = 14
 
 #------------------------------------------------------------------------------
 # ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹–¼
@@ -204,6 +204,7 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dash.txt			# [2]ƒ_ƒbƒ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_avoid.txt		# [3]‰ñ”ğ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack.txt		# [4]UŒ‚
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack2.txt		# [5]UŒ‚2
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack3.txt		# [5]UŒ‚3
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [6]ƒWƒƒƒ“ƒv
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [7]—‰º’†
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [8]ƒmƒbƒNƒoƒbƒN

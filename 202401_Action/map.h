@@ -22,6 +22,9 @@ namespace MyMap
 	HRESULT SaveText(void);	// 外部ファイル書き込み処理
 	int GetNumModelAll(void);	// 総数取得
 	void Release(void);
-}
+	void Regist(int nType, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShadow);
+	void ChangeMap(const char* pTextFile);	// マップ切り替え
+	std::string GetModelFileName(int nIdx);
+};
 
 #endif

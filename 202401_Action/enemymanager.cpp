@@ -25,6 +25,7 @@
 #include "instantfade.h"
 #include "stagecleartext.h"
 #include "timer.h"
+#include "transferBeacon.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -155,14 +156,11 @@ void CEnemyManager::Update(void)
 		// 通常クリア状態にする
 		CGame::GetGameManager()->SetType(CGameManager::SCENE_MAINCLEAR);
 
-		//// 遷移なしフェード追加
-		//CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
-
-		//// 遷移状態に変更
-		//CGame::GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
-
 		// クリアテキスト生成
-		CStageClearText::Create(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
+		CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
+
+		// 転移ビーコン生成
+		CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE);
 	}
 
 	// テキストの描画

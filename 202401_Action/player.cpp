@@ -54,6 +54,7 @@ namespace
 	const int FADEOUTTIME = 60;			// フェードアウトの時間
 	const float MULTIPLIY_DASH = 1.875f;	// ダッシュの倍率
 	const float RADIUS_STAGE = 20000.0f;	// ステージの半径
+	const float TIME_DASHATTACK = 0.3f;		// ダッシュ攻撃に必要な時間
 }
 
 //==========================================================================
@@ -105,6 +106,8 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_bAttacking = false;							// 攻撃中
 	m_bCounterAccepting = false;					// カウンター受付中
 	m_bDash = false;								// ダッシュ判定
+	m_fDashTime = 0.0f;								// ダッシュ時間
+	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
 	m_pTargetP = NULL;								// 目標の地点
@@ -320,7 +323,8 @@ void CPlayer::Update(void)
 		"移動量：【X：%f, Y：%f, Z：%f】\n"
 		"体力：【%d】\n"
 		"コンボステージ：【%d】\n"
-		, pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife(), m_nComboStage);
+		"ダッシュ時間：【%f】\n"
+		, pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife(), m_nComboStage, m_fDashTime);
 #endif
 
 }
@@ -383,6 +387,7 @@ void CPlayer::Controll(void)
 
 		if (m_bDash)
 		{
+			// ダッシュ倍率掛ける
 			fMove *= MULTIPLIY_DASH;
 		}
 
@@ -499,7 +504,8 @@ void CPlayer::Controll(void)
 
 			if (m_bJump == false &&
 				(pInputKeyboard->GetTrigger(DIK_SPACE) == true ||
-				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, m_nMyPlayerIdx)))
+				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, m_nMyPlayerIdx)) &&
+				!m_bTouchBeacon)
 			{// ジャンプ
 
 				m_bJump = true;
@@ -583,25 +589,36 @@ void CPlayer::Controll(void)
 			!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) && 
 			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
 		{
-			pMotion->ToggleFinish(true);
-			m_sMotionFrag.bATK = true;		// 攻撃判定ON
+			//pMotion->ToggleFinish(true);
+			//m_sMotionFrag.bATK = true;		// 攻撃判定ON
 
-			if (m_bDash && m_nComboStage == 0)
+			if (m_fDashTime >= TIME_DASHATTACK && m_nComboStage == 0)
 			{// ダッシュ中の初撃は2からスタート
 				m_nComboStage++;
 			}
 
-			if (m_bAttacking)
-			{
-				m_nComboStage++;	// コンボの段階
-			}
-
 			if (pInputGamepad->IsTipStick())
 			{// 左スティックが倒れてる場合
-
 				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
+
+			// コンボ段階分考慮
+			int nSetType = MOTION_ATK + m_nComboStage;
+			pMotion->Set(nSetType, true);
+
+			// コンボの段階加算
+			m_nComboStage++;
+			if (m_nComboStage > MOTION_ATK3 - MOTION_ATK)
+			{
+				m_nComboStage = 0;
+			}
 		}
+
+		// デバッグ表示
+		CManager::GetInstance()->GetDebugProc()->Print(
+			"------------------[プレイヤーの操作]------------------\n"
+			"コンボステージ：【%d】\n"
+			, m_nComboStage);
 
 		// 回避
 		if (!m_bJump &&
@@ -900,7 +917,7 @@ void CPlayer::MotionSet(void)
 			int nSetType = MOTION_ATK + m_nComboStage;
 			pMotion->Set(nSetType, true);
 
-			if (m_nComboStage >= MOTION_ATK2 - MOTION_ATK)
+			if (m_nComboStage >= MOTION_ATK3 - MOTION_ATK)
 			{
 				m_nComboStage = 0;
 			}
@@ -928,8 +945,22 @@ void CPlayer::MotionBySetState(void)
 
 	switch (nType)
 	{
+	case MOTION_DASH:
+
+		// ダッシュ時間加算
+		m_fDashTime += CManager::GetInstance()->GetDeltaTime();
+		break;
+
+	default:
+		m_fDashTime = 0.0f;
+		break;
+	}
+
+	switch (nType)
+	{
 	case MOTION_ATK:
 	case MOTION_ATK2:
+	case MOTION_ATK3:
 		m_bAttacking = true;
 		break;
 
@@ -1155,7 +1186,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 				float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
 				UtilFunc::Transformation::RotNormalize(fRot);
 
-				pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 6.0f, 0.0f, cosf(fRot) * 6.0f));
+				pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
 			}
 		}
 	}
