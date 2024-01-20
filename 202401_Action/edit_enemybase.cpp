@@ -435,7 +435,7 @@ void CEditEnemyBase::Grab(void)
 	for (int i = 0; i < pEnemyBase->GetNumBase(m_nStage); i++)
 	{
 		MyLib::Vector3 TargetPoint = pEnemyBase->GetSpawnPoint(m_nStage, i);
-		if (bAll == true || UtilFunc::Collision::SphereRange(m_pos, TargetPoint, 50.0f, 50.0f))
+		if (bAll == true || UtilFunc::Collision::SphereRange(m_pos, TargetPoint, 50.0f, 50.0f).ishit)
 		{// ãÖÇ…ìñÇΩÇ¡ÇƒÇΩÇÁ
 
 			// ëÄçÏ
@@ -465,7 +465,7 @@ void CEditEnemyBase::Delete(void)
 	for (int i = 0; i < pEnemyBase->GetNumAll(); i++)
 	{
 		MyLib::Vector3 TargetPoint = pEnemyBase->GetSpawnPoint(m_nStage, i);
-		if (UtilFunc::Collision::SphereRange(m_pos, TargetPoint, 50.0f, 50.0f))
+		if (UtilFunc::Collision::SphereRange(m_pos, TargetPoint, 50.0f, 50.0f).ishit)
 		{// ãÖÇ…ìñÇΩÇ¡ÇƒÇΩÇÁ
 			pEnemyBase->DeletePos(m_nStage, i);
 		}

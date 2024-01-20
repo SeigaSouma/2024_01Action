@@ -19,6 +19,45 @@ class CObjectChara : public CObjectHierarchy
 {
 public:
 
+	/**
+	@brief	スフィアコライダー
+	*/
+	struct SphereCollider
+	{
+		MyLib::Vector3 center;		// 中心座標
+		float radius;				// 半径
+		int nParentPartsIdx;		// 親のパーツインデックス番号
+		MyLib::Vector3 offset;		// オフセット位置
+
+		// デフォルトコンストラクタ
+		SphereCollider() : center(), radius(0.0f), nParentPartsIdx(0), offset() {}
+
+		// パラメータつきコンストラクタ
+		SphereCollider(const MyLib::Vector3& center, float radius, int nIdx, const MyLib::Vector3& offset)
+			: center(center), radius(radius), nParentPartsIdx(nIdx), offset(offset) {}
+
+		// JSONからの読み込み
+		void from_json(const json& j)
+		{
+			j.at("center").get_to(center);
+			j.at("radius").get_to(radius);
+			j.at("parent").get_to(nParentPartsIdx);
+			j.at("offset").get_to(offset);
+		}
+
+		// JSONへの書き込み
+		void to_json(json& j) const
+		{
+			j = json
+			{
+				{"center", center},
+				{"radius", radius},
+				{"parent", nParentPartsIdx},
+				{"offset", offset},
+			};
+		}
+	};
+
 	CObjectChara(int nPriority = mylib_const::PRIORITY_DEFAULT);
 	~CObjectChara();
 
@@ -40,9 +79,44 @@ public:
 	int GetMotionStartIdx(void) const;			// モーション開始のインデックス番号取得
 	int GetAddScoreValue(void) const;			// スコア加算量取得
 
+	// コライダー関連
+	SphereCollider GetNowSphereCollider(int nIdx);	// コライダー取得
+
 	HRESULT SetCharacter(const std::string pTextFile) override;	// キャラクター設定
 	CObjectChara *GetObjectChara(void);
-	static CObjectChara *Create(const std::string pTextFile);
+	static CObjectChara *Create(const std::string pTextFile);	// 生成処理
+
+
+	// JSONからの読み込み
+	void from_json(const json& j)
+	{
+		// 基底クラスの読み込み
+		//CObjectHierarchy::from_json(j);
+		
+		for (const auto& colliderData : j.at("colliders")) 
+		{
+			SphereCollider collider;
+			collider.from_json(colliderData);
+			m_SphereColliders.push_back(collider);
+		}
+	}
+
+	// CObjectCharaのJSONへの書き込み
+	void to_json(json& j) const
+	{
+		// 基底クラスの書き込み
+		//CObjectHierarchy::to_json(j);
+
+		j["colliders"] = json::array(); // 空の配列を作成
+
+		for (const auto& collider : m_SphereColliders)
+		{
+			json colliderJson;
+			collider.to_json(colliderJson);
+
+			j["colliders"].emplace_back(colliderJson);
+		}
+	}
 
 protected:
 
@@ -56,6 +130,8 @@ protected:
 private:
 
 	// メンバ関数
+	void LoadSphereColliders(const std::string textfile);
+	void SaveSphereColliders(void);
 	void MotionInProgressAction(void);	// モーション中の行動処理
 
 	// メンバ変数
@@ -66,6 +142,7 @@ private:
 	int m_nMotionStartIdx;		// モーション開始のインデックス番号
 	int m_nAddScore;			// スコア加算量
 	CMotion *m_pMotion;			// モーションの情報
+	std::vector<SphereCollider> m_SphereColliders;	// スフィアコライダー
 };
 
 

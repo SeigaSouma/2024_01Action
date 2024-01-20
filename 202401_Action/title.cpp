@@ -51,7 +51,7 @@ HRESULT CTitle::Init(void)
 	}
 
 	// ƒ^ƒCƒgƒ‹‰æ–Ê
-	CTitleScreen::Create();
+	//CTitleScreen::Create();
 
 	// ¬Œ÷
 	return S_OK;

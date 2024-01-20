@@ -127,7 +127,7 @@ void CEnemyOrafu::ActWait(void)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -166,8 +166,8 @@ void CEnemyOrafu::ActChase(void)
 	MyLib::Vector3 pos = GetPosition();
 
 	// プレイヤー情報
-	CPlayer* pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(m_nTargetPlayerIndex);
-	if (pPlayer == NULL)
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
+	if (pPlayer == nullptr)
 	{
 		return;
 	}
@@ -215,8 +215,8 @@ void CEnemyOrafu::ActAttackProximity(void)
 		MyLib::Vector3 pos = GetPosition();
 
 		// プレイヤー情報
-		CPlayer* pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(m_nTargetPlayerIndex);
-		if (pPlayer == NULL)
+		CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
+		if (pPlayer == nullptr)
 		{
 			return;
 		}
@@ -261,7 +261,7 @@ void CEnemyOrafu::AttackPunch(void)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -307,7 +307,7 @@ void CEnemyOrafu::MotionSet(void)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -386,7 +386,7 @@ void CEnemyOrafu::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -417,7 +417,7 @@ void CEnemyOrafu::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}

@@ -24,6 +24,11 @@
 #include <cmath>
 #include <iterator>
 #include <codecvt>
+#include <fstream>
+#include <thread>
+#include <chrono>
+#include <mutex>
+#include <condition_variable>
 
 #include <d3dx9.h>						// 描画処理に必要
 #define DIRECTINPUT_VERSION	(0x0800)	// ビルド時の警告用マクロ
@@ -50,6 +55,9 @@
 #endif
 #include <EffekseerRendererDX9.h>
 
+// json
+#include <json.hpp>
+using json = nlohmann::json;
 
 // メモリリーク出力用マクロ
 #define _CRTDBG_MAP_ALLOC

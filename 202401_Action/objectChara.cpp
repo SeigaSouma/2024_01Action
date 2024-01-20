@@ -84,6 +84,9 @@ HRESULT CObjectChara::SetCharacter(const std::string pTextFile)
 		m_pMotion->ResetPose(0);
 	}
 
+	// スフィアコライダーデータ読み込み
+	LoadSphereColliders(pTextFile);
+
 	return S_OK;
 }
 
@@ -318,6 +321,92 @@ void CObjectChara::LoadPartsData(FILE* pFile, const char* pComment, int *pCntPar
 {
 	// パーツ毎のデータ読み込み
 	CObjectHierarchy::LoadPartsData(pFile, pComment, pCntParts);
+}
+
+//==========================================================================
+// スフィアコライダー読み込み
+//==========================================================================
+void CObjectChara::LoadSphereColliders(const std::string textfile)
+{
+	// ファイルを開く
+	FILE* pFile = fopen(textfile.c_str(), "r");
+	if (pFile == NULL)
+	{//ファイルが開けなかった場合
+		return;
+	}
+
+	std::string filename;
+
+	// 読み込み用変数
+	char aComment[MAX_COMMENT];	// コメント用
+
+	while (1)
+	{
+		// 文字列の読み込み
+		fscanf(pFile, "%s", &aComment[0]);
+
+		// コライダーファイルの読み込み
+		if (strcmp(aComment, "COLLIDER_FILENAME") == 0)
+		{// COLLIDER_FILENAMEがきたら
+
+			fscanf(pFile, "%s", &aComment[0]);	// =の分
+			fscanf(pFile, "%s", &aComment[0]);	// ファイル名
+
+			// ファイル名保存
+			filename = aComment;
+			break;
+		}
+
+		if (strcmp(aComment, "END_SCRIPT") == 0)
+		{// 終了文字でループを抜ける
+			break;
+		}
+	}
+
+	// ファイルを閉じる
+	fclose(pFile);
+
+
+	// ファイルからJSONを読み込む
+	std::ifstream file(filename);
+	if (!file.is_open()) 
+	{
+		return;
+	}
+
+	nlohmann::json jsonData;
+	file >> jsonData;	// jsonデータを与える
+
+	// jsonデータから読み込む
+	from_json(jsonData);
+}
+
+//==========================================================================
+// スフィアコライダー書き込み
+//==========================================================================
+void CObjectChara::SaveSphereColliders(void)
+{
+	// ファイルにキャラクターのデータを書き込む
+	std::ofstream outFile("character_data.json");
+	if (!outFile.is_open())
+	{
+		return;
+	}
+
+	nlohmann::json outputData;
+	to_json(outputData);
+}
+
+//==========================================================================
+// コライダー取得
+//==========================================================================
+CObjectChara::SphereCollider CObjectChara::GetNowSphereCollider(int nIdx)
+{
+	if (nIdx >= 0 && nIdx < (int)m_SphereColliders.size())
+	{
+		return m_SphereColliders[nIdx];
+	}
+	return SphereCollider();
 }
 
 //==========================================================================

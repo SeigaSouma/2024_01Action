@@ -8,6 +8,7 @@
 #include "main.h"
 #include "manager.h"
 #include "MyEffekseer.h"
+#include "loadmanager.h"
 
 //==========================================================================
 // マクロ定義
@@ -19,11 +20,13 @@
 // プロトタイプ宣言
 //==========================================================================
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void LoadInBackground();
 
 //==========================================================================
 // グローバル変数宣言
 //==========================================================================
 int g_nCountFPS;
+CLoadManager* LoadManager;
 
 //==========================================================================
 // メイン関数
@@ -81,7 +84,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 	DWORD dwFrameCount;						// フレームカウント
 	DWORD dwFPSLastTime;					// 最後にFPSを計測した時刻
 
-
 	// マネージャの生成
 	CManager *pManager = NULL;
 
@@ -92,6 +94,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		// メモリ確保
 		pManager = CManager::Create();
 	}
+
+
+	// ロードマネージャの生成
+	LoadManager = CLoadManager::Create();
 
 	if (pManager != NULL)
 	{// メモリの確保が出来ていたら
@@ -195,6 +201,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 	return (int)msg.wParam;
 }
 
+// バックグラウンドでのロード処理を行う関数
+void LoadInBackground()
+{
+	// ここにロード処理のコードを追加
+	// 例: テクスチャやモデルの読み込みなど
+}
+
 //==========================================================================
 // ウインドウプロシージャ
 //==========================================================================
@@ -251,6 +264,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);	// 既定の処理を返す
+}
+
+CLoadManager* GetLoadManager()
+{
+	return LoadManager;
 }
 
 //==========================================================================

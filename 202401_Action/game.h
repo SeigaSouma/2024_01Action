@@ -59,7 +59,6 @@ public:
 	static EEditType GetEditType(void) { return m_EditType; }
 	static CScore *GetScore(void);
 	static CTimer *GetTimer(void) { return m_pTimer; }	// タイマー取得
-	static CEditEnemyBase *GetEditEnemyBase(void);
 	static CItemManager *GetItemManager(void);
 	static CStage *GetStage(void);
 	static CGameManager *GetGameManager(void);

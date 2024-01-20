@@ -8,24 +8,43 @@
 #ifndef _MYLIB_H_
 #define _MYLIB_H_		// 二重インクルード防止
 
+#include <json.hpp>
+
 /**
 	@brief	マイライブラリ
 */
 namespace MyLib
 {
 
-	//==========================================================================
-	// 
-	// Vector3
-	// Author : 相馬靜雅
-	// 
-	//==========================================================================
+	/**
+	@brief	Vector3 【3次元情報】
+	*/
 	struct Vector3 : public D3DXVECTOR3
 	{
 		using D3DXVECTOR3::D3DXVECTOR3;
 
-		Vector3();					// コンストラクタ
-		Vector3(const float xyz);	// コンストラクタ
+		// デフォルトコンストラクタ
+		Vector3() : D3DXVECTOR3(0.0f, 0.0f, 0.0f) {}
+
+		// 引数付きコンストラクタ
+		Vector3(const float xyz) : D3DXVECTOR3(xyz, xyz, xyz) {}
+		Vector3(float x, float y, float z) : D3DXVECTOR3(x, y, z) {}
+
+		// JSONからの読み込み
+		void from_json(const nlohmann::json& j)
+		{
+			j.at("x").get_to(x);
+			j.at("y").get_to(y);
+			j.at("z").get_to(z);
+		}
+
+		// JSONへの書き込み
+		void to_json(nlohmann::json& j) const
+		{
+			j["x"] = x;
+			j["y"] = y;
+			j["z"] = z;
+		}
 
 		//--------------------------
 		// 加算
@@ -194,7 +213,7 @@ namespace MyLib
 		}
 
 		/**
-		@brief	指定された許容誤差範囲内にあるか判定
+		@brief	要素がゼロか
 		@return	判定結果
 		*/
 		inline bool IsZero(void) const
@@ -220,8 +239,38 @@ namespace MyLib
 		}
 	};
 
+	/**
+	@brief	HitResult【衝突情報】
+	*/
+	struct HitResult
+	{
+		bool ishit;				// 衝突結果
+		MyLib::Vector3 hitpos;	// 衝突地点
+
+		// デフォルトコンストラクタ
+		HitResult() : ishit(false), hitpos() {}
+
+		// パラメータ付きコンストラクタ
+		HitResult(bool bHit, MyLib::Vector3 pos) : ishit(bHit), hitpos(pos) {}
+	};
 }
 
 
+// nlohmann::jsonの特殊化
+namespace nlohmann 
+{
+	template <> struct adl_serializer<MyLib::Vector3>
+	{
+		static void to_json(json& j, const MyLib::Vector3& v)
+		{
+			v.to_json(j);
+		}
+
+		static void from_json(const json& j, MyLib::Vector3& v)
+		{
+			v.from_json(j);
+		}
+	};
+}
 
 #endif

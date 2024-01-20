@@ -8,10 +8,7 @@
 #include "manager.h"
 #include "3D_effect.h"
 #include "camera.h"
-
-//==========================================================================
-// マクロ定義
-//==========================================================================
+#include "MyEffekseer.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -259,6 +256,17 @@ void CObject::DrawAll(void)
 		else
 		{// 通常描画
 			DrawNone(nCntPriority);
+		}
+
+		if (nCntPriority == 1)
+		{
+
+			// エフェクシアの更新兼描画
+			CMyEffekseer* pEffekseer = CMyEffekseer::GetInstance();
+			if (pEffekseer != NULL)
+			{
+				pEffekseer->Update();
+			}
 		}
 	}
 }

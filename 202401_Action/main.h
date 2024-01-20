@@ -60,5 +60,8 @@ typedef struct
 int GetFPS(void);
 
 class CMyEffekseer;
+class CLoadManager;
+
+CLoadManager* GetLoadManager();
 
 #endif

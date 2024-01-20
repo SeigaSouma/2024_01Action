@@ -95,7 +95,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\Libraries\Effekseer\Include\Effekseer;.\Libraries\Effekseer\Include\EffekseerRendererCommon;.\Libraries\Effekseer\Include\EffekseerRendererDX9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Libraries\Effekseer\Include\Effekseer;.\Libraries\Effekseer\Include\EffekseerRendererCommon;.\Libraries\Effekseer\Include\EffekseerRendererDX9;.\Libraries\json\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
     </ClCompile>
@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Libraries\Effekseer\Include\Effekseer;.\Libraries\Effekseer\Include\EffekseerRendererCommon;.\Libraries\Effekseer\Include\EffekseerRendererDX9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Libraries\Effekseer\Include\Effekseer;.\Libraries\Effekseer\Include\EffekseerRendererCommon;.\Libraries\Effekseer\Include\EffekseerRendererDX9;.\Libraries\json\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompile.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -189,6 +189,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="limitarea.cpp" />
     <ClCompile Include="listmanager.cpp" />
+    <ClCompile Include="loadmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="map.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="limitarea.h" />
     <ClInclude Include="listmanager.h" />
+    <ClInclude Include="loadmanager.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="map.h" />

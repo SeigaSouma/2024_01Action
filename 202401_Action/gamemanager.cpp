@@ -234,17 +234,18 @@ void CGameManager::SetBoss(void)
 	// シーンのリセット
 	CManager::GetInstance()->GetScene()->ResetScene();
 
-	// プレイヤー情報
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer* pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
 
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	int i = 0;
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// 位置設定
-		pPlayer->SetPosition(D3DXVECTOR3(-500.0f + nCntPlayer * 50.0f, 5000.0f, 0.0f));
+		pPlayer->SetPosition(D3DXVECTOR3(-500.0f + i * 50.0f, 5000.0f, 0.0f));
+		i++;
 	}
 
 	// カメラの情報取得
@@ -275,17 +276,17 @@ void CGameManager::SetEnemy(void)
 	// マップ切り替え
 	MyMap::ChangeMap("data\\TEXT\\map\\info.txt");
 
-	// プレイヤー情報
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
 
+	// リストループ
+	int i = 0;
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// 位置設定
-		pPlayer->SetPosition(MyLib::Vector3(-500.0f + nCntPlayer * 250.0f, 0.0f, 0.0f));
+		pPlayer->SetPosition(MyLib::Vector3(-500.0f + i * 250.0f, 0.0f, 0.0f));
+		i++;
 	}
 
 	// カメラの情報取得

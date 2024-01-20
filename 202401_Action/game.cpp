@@ -49,6 +49,14 @@ CUltWindow *CGame::m_pUltWindow[mylib_const::MAX_PLAYER] = {};			// 必殺のウィン
 bool CGame::m_bEdit = false;				// エディットの判定
 bool CGame::m_clear = false;				// クリア判定
 
+void UUUU()
+{
+	for (int n = 0; n < 1200; n++)
+	{
+		int nnn = 100;
+	}
+}
+
 //==========================================================================
 // コンストラクタ
 //==========================================================================
@@ -82,6 +90,11 @@ HRESULT CGame::Init(void)
 		return E_FAIL;
 	}
 
+	for (int i = 0; i < 1200; i++)
+	{
+		UUUU();
+	}
+
 	//**********************************
 	// ゲームマネージャ
 	//**********************************
@@ -108,14 +121,15 @@ HRESULT CGame::Init(void)
 	//**********************************
 	// プレイヤー
 	//**********************************
-	for (int nCntPlayer = 0; nCntPlayer < CManager::GetInstance()->GetNumPlayer(); nCntPlayer++)
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
 	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer != NULL)
-		{
-			pPlayer->SetPosition(MyLib::Vector3(0.0f, 10.0f, 0.0f));
-			pPlayer->SetRotation(MyLib::Vector3(0.0f, 0.0f, 0.0f));
-		}
+		pPlayer->SetPosition(MyLib::Vector3(0.0f, 10.0f, 0.0f));
+		pPlayer->SetRotation(MyLib::Vector3(0.0f, 0.0f, 0.0f));
 	}
 
 	// ステージ

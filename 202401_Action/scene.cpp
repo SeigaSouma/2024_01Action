@@ -34,8 +34,6 @@ CScene::CScene()
 {
 	// 変数のクリア
 	m_mode = MODE_TITLE;
-	memset(&m_pPlayer[0], 0, sizeof(m_pPlayer));	// プレイヤーのオブジェクト
-	m_pPlayerUnion = nullptr;	// 合体プレイヤーのオブジェクト
 }
 
 //==========================================================================
@@ -140,8 +138,7 @@ HRESULT CScene::Init(void)
 	// キャラ生成
 	for (int nCntPlayer = 0; nCntPlayer < CManager::GetInstance()->GetNumPlayer(); nCntPlayer++)
 	{
-		m_pPlayer[nCntPlayer] = CPlayer::Create(nCntPlayer);
-		if (m_pPlayer[nCntPlayer] == NULL)
+		if (CPlayer::Create(nCntPlayer) == nullptr)
 		{
 			return E_FAIL;
 		}
@@ -237,44 +234,4 @@ CXLoad *CScene::GetXLoad(void)
 CElevation *CScene::GetElevation(void)
 {
 	return m_pObject3DMesh;
-}
-
-//==========================================================================
-// プレイヤーの取得
-//==========================================================================
-CPlayer **CScene::GetPlayer(void)
-{
-	return &m_pPlayer[0];
-}
-
-//==========================================================================
-// プレイヤーの取得
-//==========================================================================
-CPlayer *CScene::GetPlayer(int nIdx)
-{
-	return m_pPlayer[nIdx];
-}
-
-//==========================================================================
-// 合体プレイヤーの取得
-//==========================================================================
-CPlayerUnion *CScene::GetPlayerUnion(void)
-{
-	return m_pPlayerUnion;
-}
-
-//==========================================================================
-// プレイヤーの終了
-//==========================================================================
-void CScene::UninitPlayer(int nIdx)
-{
-	m_pPlayer[nIdx] = NULL;
-}
-
-//==========================================================================
-// 合体プレイヤーの終了
-//==========================================================================
-void CScene::UninitPlayerUnion(void)
-{
-	m_pPlayerUnion = nullptr;
 }

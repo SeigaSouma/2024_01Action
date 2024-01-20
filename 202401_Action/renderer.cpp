@@ -14,7 +14,6 @@
 #include "blackframe.h"
 #include "pause.h"
 #include "input.h"
-#include "MyEffekseer.h"
 
 //==========================================================================
 // マクロ定義
@@ -190,13 +189,6 @@ void CRenderer::Draw(void)
 		// 全ての描画
 		CObject::DrawAll();
 
-		// エフェクシアの更新兼描画
-		CMyEffekseer* pEffekseer = CMyEffekseer::GetInstance();
-		if (pEffekseer != NULL)
-		{
-			pEffekseer->Update();
-		}
-
 		// カメラの設定
 		CManager::GetInstance()->GetCamera()->SetCamera();
 
@@ -219,7 +211,7 @@ void CRenderer::Draw(void)
 		CManager::GetInstance()->GetInstantFade()->Draw();
 
 		// フェード描画処理
-		CManager::GetInstance()->GetFade()->Draw();
+		//CManager::GetInstance()->GetFade()->Draw();
 
 		// ビューポートを元に戻す
 		m_pD3DDevice->SetViewport(&viewportDef);

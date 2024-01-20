@@ -9,6 +9,7 @@
 #define _MAP_H_	// 二重インクルード防止
 
 #include "main.h"
+#include "listmanager.h"
 
 //==========================================================================
 // 名前空間
@@ -25,6 +26,19 @@ namespace MyMap
 	void Regist(int nType, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShadow);
 	void ChangeMap(const char* pTextFile);	// マップ切り替え
 	std::string GetModelFileName(int nIdx);
+};
+
+namespace MyMyMap
+{
+	// 構造体定義
+	struct sMapModel
+	{
+		int nType;				// 種類
+		int nIdxXFile;			// Xファイルのインデックス番号
+		MyLib::Vector3 pos;		// 位置
+		MyLib::Vector3 rot;		// 向き
+		int nShadow;			// 影使うかどうか
+	};
 };
 
 #endif

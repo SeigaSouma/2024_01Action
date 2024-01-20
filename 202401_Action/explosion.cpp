@@ -281,15 +281,14 @@ void CExplosion::StateFadeout(void)
 //==========================================================================
 void CExplosion::CollisionPlayer(void)
 {
-	// プレイヤー情報取得
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{// NULLだったら
-			continue;
-		}
 
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// プレイヤーの情報取得
 		MyLib::Vector3 PlayerPosition = pPlayer->GetCenterPosition();
 		MyLib::Vector3 PlayerRotation = pPlayer->GetRotation();
@@ -299,7 +298,7 @@ void CExplosion::CollisionPlayer(void)
 		MyLib::Vector3 pos = GetPosition();
 		float fRadius = GetWidthLen();
 
-		if (UtilFunc::Collision::SphereRange(pos, PlayerPosition, fRadius, fPlayerRadius))
+		if (UtilFunc::Collision::SphereRange(pos, PlayerPosition, fRadius, fPlayerRadius).ishit)
 		{// 当たっていたら
 
 			// ヒット処理
@@ -334,7 +333,7 @@ void CExplosion::CollisionEnemy(void)
 		MyLib::Vector3 EnemyPosition = pEnemy->GetCenterPosition();
 		float fEnemyRadius = pEnemy->GetRadius();
 
-		if (UtilFunc::Collision::SphereRange(pos, EnemyPosition, fRadius, fEnemyRadius))
+		if (UtilFunc::Collision::SphereRange(pos, EnemyPosition, fRadius, fEnemyRadius).ishit)
 		{// 当たっていたら
 			bHit = true;
 			break;

@@ -817,6 +817,17 @@ void CPlayer::Controll(void)
 			"data/Effekseer/Laser01.efkefc",
 			spawnpos, UtilFunc::Transformation::GetRandomVecSphere() * D3DX_PI, mylib_const::DEFAULT_VECTOR3, 10.0f);
 	}
+	if (pInputKeyboard->GetTrigger(DIK_L) == true)
+	{
+		MyLib::Vector3 weponpos = pos;
+		weponpos.y += 150.0f;
+
+		MyLib::Vector3 spawnpos = UtilFunc::Transformation::GetRandomPositionSphere(weponpos, 300.0f);
+
+		CMyEffekseer::GetInstance()->SetEffect(
+			"data/Effekseer/CounterParticle_01.efkefc",
+			weponpos, MyLib::Vector3(1.57f, 1.57f, 1.57f), 0.0f, 50.0f);
+	}
 
 	static float fff = 1.0f;
 	if (pInputKeyboard->GetTrigger(DIK_UP) == true)
@@ -1109,6 +1120,9 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 	CMotion* pMotion = GetMotion();
 	int nType = pMotion->GetType();
 
+	// 武器の位置
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+
 	switch (nType)
 	{
 	case MOTION_ATK:	// 雪玉を拾う
@@ -1121,7 +1135,13 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	case MOTION_COUNTER_ATTACK:
 
-		if (nCntATK != 0)
+		if (nCntATK == 0)
+		{
+			CMyEffekseer::GetInstance()->SetEffect(
+				"data/Effekseer/CounterParticle_01.efkefc",
+				weponpos, 0.0f, 0.0f, 50.0f);
+		}
+		else if (nCntATK != 0)
 		{
 			CManager::GetInstance()->GetCamera()->SetLenDest(200.0f, 3, 4.0f, 0.3f);
 		}
@@ -1172,7 +1192,8 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		// 判定サイズ取得
 		float fTargetRadius = pEnemy->GetRadius();
 
-		if (UtilFunc::Collision::SphereRange(weponpos, TargetPos, ATKInfo.fRangeSize, fTargetRadius))
+		MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, TargetPos, ATKInfo.fRangeSize, fTargetRadius);
+		if (hitresult.ishit)
 		{// 球の判定
 
 			if (pEnemy->Hit(ATKInfo.nDamage) == true)
@@ -1187,6 +1208,10 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 				UtilFunc::Transformation::RotNormalize(fRot);
 
 				pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
+
+				CMyEffekseer::GetInstance()->SetEffect(
+					"data/Effekseer/HitParticle_Red_01.efkefc",
+					hitresult.hitpos, 0.0f, 0.0f, 50.0f);
 			}
 		}
 	}

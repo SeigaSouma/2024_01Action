@@ -34,7 +34,7 @@ namespace UtilFunc
 
 	namespace Collision
 	{
-		bool CollisionTriangle(MyLib::Vector3 posCenter, MyLib::Vector3 posLeft, MyLib::Vector3 posRight, MyLib::Vector3 MainPos, MyLib::Vector3 MainPosOld);	// 三角形の内側にいるか判定
+		bool CollisionTriangle(const MyLib::Vector3& posCenter, const MyLib::Vector3& posLeft, const MyLib::Vector3& posRight, const MyLib::Vector3& MainPos, const MyLib::Vector3& MainPosOld);	// 三角形の内側にいるか判定
 
 	}
 }
@@ -450,7 +450,7 @@ namespace UtilFunc	// 便利関数
 		@param	posRight	[out]	着地判定
 		@return	3頂点からなる高さ
 		*/
-		inline float GetVtxHeight(MyLib::Vector3 pos, MyLib::Vector3 posCenter, MyLib::Vector3 posRight, MyLib::Vector3 posLeft, bool* pLand)
+		inline float GetVtxHeight(const MyLib::Vector3& pos, const MyLib::Vector3& posCenter, const MyLib::Vector3& posRight, const MyLib::Vector3& posLeft, bool* pLand)
 		{
 			// 高さ
 			float fHeight = 0.0f;
@@ -525,7 +525,7 @@ namespace UtilFunc	// 便利関数
 		@param	fRadius2	[in]	対象2の半径
 		@return	当たったかのbool値
 		*/
-		inline bool CircleRange2D(MyLib::Vector3 pos1, MyLib::Vector3 pos2, float fRadius1, float fRadius2)
+		inline bool CircleRange2D(const MyLib::Vector3& pos1, const MyLib::Vector3& pos2, float fRadius1, float fRadius2)
 		{
 			float fLength =
 				(pos1.x - pos2.x) * (pos1.x - pos2.x) +
@@ -547,7 +547,7 @@ namespace UtilFunc	// 便利関数
 		@param	fRadius2	[in]	対象2の半径
 		@return	当たったかのbool値
 		*/
-		inline bool CircleRange3D(MyLib::Vector3 pos1, MyLib::Vector3 pos2, float fRadius1, float fRadius2)
+		inline bool CircleRange3D(const MyLib::Vector3& pos1, const MyLib::Vector3& pos2, float fRadius1, float fRadius2)
 		{
 			float fLength =
 				(pos1.x - pos2.x) * (pos1.x - pos2.x) +
@@ -555,6 +555,9 @@ namespace UtilFunc	// 便利関数
 
 			if (fLength <= (fRadius1 + fRadius2) * (fRadius1 + fRadius2))
 			{// 円の中に入ったら
+
+				MyLib::Vector3 collisionPoint = pos1 + (pos2 - pos1).Normal() * fRadius1;
+
 				return true;
 			}
 
@@ -569,7 +572,7 @@ namespace UtilFunc	// 便利関数
 		@param	fRadius2	[in]	対象2の半径
 		@return	当たったかのbool値
 		*/
-		inline bool SphereRange(MyLib::Vector3 pos1, MyLib::Vector3 pos2, float fRadius1, float fRadius2)
+		inline MyLib::HitResult SphereRange(const MyLib::Vector3& pos1, const MyLib::Vector3& pos2, float fRadius1, float fRadius2)
 		{
 			float fLength =
 				(pos1.x - pos2.x) * (pos1.x - pos2.x) +
@@ -577,11 +580,14 @@ namespace UtilFunc	// 便利関数
 				(pos1.z - pos2.z) * (pos1.z - pos2.z);
 
 			if (fLength <= (fRadius1 + fRadius2) * (fRadius1 + fRadius2))
-			{// 円の中に入ったら
-				return true;
+			{// 球の中に入ったら
+
+				MyLib::Vector3 collisionVector = (pos2 - pos1).Normal() * fRadius1;
+				MyLib::Vector3 collisionPoint = pos1 + collisionVector;
+				return MyLib::HitResult(true, collisionPoint);
 			}
 
-			return false;
+			return MyLib::HitResult(false, MyLib::Vector3());
 		}
 
 		/**
@@ -716,7 +722,7 @@ namespace UtilFunc	// 便利関数
 		@param	posOld		[in]	自分の前回位置
 		@return	void
 		*/
-		inline void CollisionLimitLine(MyLib::Vector3 pos0, MyLib::Vector3 pos1, MyLib::Vector3& pPos, MyLib::Vector3 posOld)
+		inline void CollisionLimitLine(const MyLib::Vector3& pos0, const MyLib::Vector3& pos1, MyLib::Vector3& pPos, MyLib::Vector3 posOld)
 		{
 			// 境界線のベクトル
 			MyLib::Vector3 vecLine;
@@ -781,7 +787,7 @@ namespace UtilFunc	// 便利関数
 		@param	MainPos		[in]	判定する対象の前回の位置
 		@return	線分の右側にいるかのbool値
 		*/
-		inline bool CollisionLine2D(MyLib::Vector3 pos0, MyLib::Vector3 pos1, MyLib::Vector3 MainPos, MyLib::Vector3 MainPosOld)
+		inline bool CollisionLine2D(const MyLib::Vector3& pos0, const MyLib::Vector3& pos1, const MyLib::Vector3& MainPos, const MyLib::Vector3& MainPosOld)
 		{
 			// 境界線のベクトル
 			MyLib::Vector3 vecLine;
@@ -810,7 +816,7 @@ namespace UtilFunc	// 便利関数
 		@param	MainPos		[in]	判定する対象の前回の位置
 		@return	線分の右側にいるかのbool値
 		*/
-		inline bool CollisionLine3D(MyLib::Vector3 pos0, MyLib::Vector3 pos1, MyLib::Vector3 MainPos, MyLib::Vector3 MainPosOld)
+		inline bool CollisionLine3D(const MyLib::Vector3& pos0, const MyLib::Vector3& pos1, const MyLib::Vector3& MainPos, const MyLib::Vector3& MainPosOld)
 		{
 			// 境界線のベクトル
 			MyLib::Vector3 vecLine;
@@ -839,7 +845,7 @@ namespace UtilFunc	// 便利関数
 		@param	MainPosOld	[in]	自分の前回位置
 		@return	中にいるかのbool値
 		*/
-		inline bool CollisionTriangle(MyLib::Vector3 posCenter, MyLib::Vector3 posLeft, MyLib::Vector3 posRight, MyLib::Vector3 MainPos, MyLib::Vector3 MainPosOld)
+		inline bool CollisionTriangle(const MyLib::Vector3& posCenter, const MyLib::Vector3& posLeft, const MyLib::Vector3& posRight, const MyLib::Vector3& MainPos, const MyLib::Vector3& MainPosOld)
 		{
 			// 当たったかの判定
 			bool bHit = false;
@@ -873,7 +879,7 @@ namespace UtilFunc	// 便利関数
 		@param	MainPos		[in]	自分の位置
 		@return	中にいるかのbool値
 		*/
-		inline bool CollisionSquare(MyLib::Vector3 posLeftUP, MyLib::Vector3 posRightUP, MyLib::Vector3 posLeftDW, MyLib::Vector3 posRightDW, MyLib::Vector3 MainPos)
+		inline bool CollisionSquare(const MyLib::Vector3& posLeftUP, const MyLib::Vector3& posRightUP, const MyLib::Vector3& posLeftDW, const MyLib::Vector3& posRightDW, const MyLib::Vector3& MainPos)
 		{
 			// 当たったかの判定
 			bool bHit = false;

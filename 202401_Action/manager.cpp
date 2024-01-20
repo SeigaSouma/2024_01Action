@@ -27,6 +27,7 @@
 #include "resultmanager.h"
 #include "rankingmanager.h"
 #include "MyEffekseer.h"
+#include "loadmanager.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -381,6 +382,10 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //==========================================================================
 void CManager::SetMode(CScene::MODE mode)
 {
+
+	m_bHitStop = false;		// ヒットストップの判定
+	m_nCntHitStop = 0;		// ヒットストップのカウンター
+
 	// 前回のモード設定
 	m_OldMode = GetMode();
 
@@ -431,14 +436,17 @@ void CManager::SetMode(CScene::MODE mode)
 	// 生成処理
 	m_pScene = CScene::Create(mode);
 
-	// 初期化処理
-	if (m_pScene != NULL)
-	{
-		m_pScene->Init();
-	}
+	// メインスレッドからバックグラウンドでロード開始
+	GetLoadManager()->StartLoadInBackground(mode);  // 例としてシーン2をロードすると仮定
 
-	m_bHitStop = false;		// ヒットストップの判定
-	m_nCntHitStop = 0;		// ヒットストップのカウンター
+	// シーンのロードを開始
+	GetLoadManager()->LoadScene(mode);
+
+	//// 初期化処理
+	//if (m_pScene != NULL)
+	//{
+	//	m_pScene->Init();
+	//}
 }
 
 //==========================================================================
@@ -675,109 +683,142 @@ void CManager::Update(void)
 	m_CurrentTime = timeGetTime();
 	m_fDeltaTime = (float)(m_CurrentTime - m_OldTime) / 1000;
 
-	// フェードの更新処理
-	m_pFade->Update();
-
-	// 遷移なしフェードの更新処理
-	m_pInstantFade->Update();
-
-	// 黒フレーム
-	if (m_pBlackFrame != NULL)
+	if (!GetLoadManager()->IsLoadComplete())
 	{
-		m_pBlackFrame->Update();
-	}
-
-	// キーボードの更新処理
-	m_pInputKeyboard->Update();
-
-	// ゲームパッドの更新処理
-	m_pInputGamepad->Update();
-
-	// マウスの更新処理
-	m_pInputMouse->Update();
-
-	if ((pInputKeyboard->GetTrigger(DIK_P) == true || m_pInputGamepad->GetTrigger(CInputGamepad::BUTTON_START, 0) == true) &&
-		m_pFade->GetState() == CFade::STATE_NONE &&
-		GetMode() == CScene::MODE_GAME)
-	{// フェード中じゃないとき
-
-		// サウンド再生
-		GetSound()->PlaySound(CSound::LABEL_SE_TUTORIALWINDOW);
-		m_pPause->SetPause();
-	}
-
-	// ポーズの更新処理
-	if (m_pPause->IsPause() == true)
-	{// ポーズ中だったら
-		m_pPause->Update();
-
-#if _DEBUG
-
-		// カメラの更新処理
-		m_pCamera->Update();
-#endif
-
 		return;
 	}
 
-	if (m_bHitStop == true)
-	{// ヒットストップ中は更新停止
+	// メインスレッドでロードが完了したかどうかを確認
+	{
+		/*std::unique_lock<std::mutex> lock(GetLoadManager()->IsLoadMutex());
+		if (GetLoadManager()->IsLoadComplete())
+		{
+			std::cout << "Load complete!" << std::endl;
+		}
+		else {
+			std::cout << "Load incomplete." << std::endl;
+		}*/
+	}
+	std::unique_lock<std::mutex> lock(GetLoadManager()->IsLoadMutex());
+	if (GetLoadManager()->IsLoadComplete())
+	{
+		// フェードの更新処理
+		m_pFade->Update();
 
-		// ヒットストップカウンター減算
-		m_nCntHitStop--;
+		if (!GetLoadManager()->IsLoadComplete())
+		{
+			return;
+		}
 
-		if (m_nCntHitStop <= 0)
-		{// カウンターがなくなったら
-			m_bHitStop = false;
+		// 遷移なしフェードの更新処理
+		m_pInstantFade->Update();
+
+		// 黒フレーム
+		if (m_pBlackFrame != NULL)
+		{
+			m_pBlackFrame->Update();
+		}
+
+		// キーボードの更新処理
+		m_pInputKeyboard->Update();
+
+		// ゲームパッドの更新処理
+		m_pInputGamepad->Update();
+
+		// マウスの更新処理
+		m_pInputMouse->Update();
+
+		if ((pInputKeyboard->GetTrigger(DIK_P) == true || m_pInputGamepad->GetTrigger(CInputGamepad::BUTTON_START, 0) == true) &&
+			m_pFade->GetState() == CFade::STATE_NONE &&
+			GetMode() == CScene::MODE_GAME)
+		{// フェード中じゃないとき
+
+			// サウンド再生
+			GetSound()->PlaySound(CSound::LABEL_SE_TUTORIALWINDOW);
+			m_pPause->SetPause();
+		}
+
+		// ポーズの更新処理
+		if (m_pPause->IsPause() == true)
+		{// ポーズ中だったら
+			m_pPause->Update();
+
+#if _DEBUG
+
+			// カメラの更新処理
+			m_pCamera->Update();
+#endif
+
+			return;
+		}
+
+		if (m_bHitStop == true)
+		{// ヒットストップ中は更新停止
+
+			// ヒットストップカウンター減算
+			m_nCntHitStop--;
+
+			if (m_nCntHitStop <= 0)
+			{// カウンターがなくなったら
+				m_bHitStop = false;
+			}
+		}
+		else
+		{
+			m_nCntHitStop = 20;
+		}
+
+#if _DEBUG
+		if (pInputKeyboard->GetTrigger(DIK_F2) == true)
+		{// F2でワイヤーフレーム切り替え
+			m_bWireframe = m_bWireframe ? false : true;
+		}
+
+		if (pInputKeyboard->GetTrigger(DIK_F8) == true)
+		{// F8でエディットモード切替え
+
+			if (m_pEdit == NULL)
+			{// NULLだったら
+
+				// エディットの生成処理
+				m_pEdit = CEdit::Create();
+			}
+			else
+			{
+				// 終了させる
+				m_pEdit->Release();
+				m_pEdit = NULL;
+			}
+		}
+#endif
+
+		// レンダラーの更新処理
+		if (m_pRenderer != NULL)
+		{
+			m_pRenderer->Update();
+		}
+
+		// ライトの更新処理
+		m_pLight->Update();
+
+		// カメラの更新処理
+		//m_pCamera->Update();
+
+		// デバッグ表示の更新処理
+		m_pDebugProc->Update();
+
+		if (m_pEdit == NULL && m_pScene != NULL)
+		{// メモリの確保が出来ていたら
+			m_pScene->Update();
 		}
 	}
 	else
 	{
-		m_nCntHitStop = 20;
-	}
-
-#if _DEBUG
-	if (pInputKeyboard->GetTrigger(DIK_F2) == true)
-	{// F2でワイヤーフレーム切り替え
-		m_bWireframe = m_bWireframe ? false : true;
-	}
-
-	if (pInputKeyboard->GetTrigger(DIK_F8) == true)
-	{// F8でエディットモード切替え
-
-		if (m_pEdit == NULL)
-		{// NULLだったら
-
-			// エディットの生成処理
-			m_pEdit = CEdit::Create();
-		}
-		else
-		{
-			// 終了させる
-			m_pEdit->Release();
-			m_pEdit = NULL;
-		}
-	}
-#endif
-
-	// レンダラーの更新処理
-	if (m_pRenderer != NULL)
-	{
-		m_pRenderer->Update();
-	}
-
-	// ライトの更新処理
-	m_pLight->Update();
-
-	// カメラの更新処理
-	m_pCamera->Update();
-
-	// デバッグ表示の更新処理
-	m_pDebugProc->Update();
-
-	if (m_pEdit == NULL && m_pScene != NULL)
-	{// メモリの確保が出来ていたら
-		m_pScene->Update();
+	// デバッグ表示
+	GetDebugProc()->Print(
+		"------------------[ 起伏エディット情報 ]------------------\n"
+		"！！！ロード中！！！\n"
+		"------------------[ 起伏エディット情報 ]------------------\n");
 	}
 }
 

@@ -84,9 +84,9 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_sMotionFrag.bKnockback = false;	// ノックバック中かどうか
 	m_sMotionFrag.bMove = false;		// 移動中かどうか
 	m_sMotionFrag.bATK = false;			// 攻撃中かどうか
-	m_pParent = NULL;					// 親のポインタ
-	m_pHPGauge = NULL;					// HPゲージの情報
-	m_pShadow = NULL;
+	m_pParent = nullptr;					// 親のポインタ
+	m_pHPGauge = nullptr;					// HPゲージの情報
+	m_pShadow = nullptr;
 
 	memset(&m_pChild[0], NULL, sizeof(m_pChild));	// 子のポインタ
 }
@@ -105,10 +105,10 @@ CEnemy::~CEnemy()
 CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
 {
 	// 生成用のオブジェクト
-	CEnemy *pEnemy = NULL;
+	CEnemy *pEnemy = nullptr;
 
-	if (pEnemy == NULL)
-	{// NULLだったら
+	if (pEnemy == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		switch (type)
@@ -126,11 +126,11 @@ CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
 			break;
 
 		default:
-			return NULL;
+			return nullptr;
 			break;
 		}
 
-		if (pEnemy != NULL)
+		if (pEnemy != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 種類
@@ -146,7 +146,7 @@ CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
 			HRESULT hr = pEnemy->RoadText(pFileName);
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 初期化処理
@@ -156,7 +156,7 @@ CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
 		return pEnemy;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -208,7 +208,7 @@ void CEnemy::RegistrChild(CEnemy *pChild)
 		return;
 	}
 
-	if (m_pChild[m_nNumChild] == NULL)
+	if (m_pChild[m_nNumChild] == nullptr)
 	{
 		m_pChild[m_nNumChild] = pChild;
 		m_nNumChild++;	// 子の数加算
@@ -228,14 +228,14 @@ void CEnemy::ResetChild(CEnemy *pChild)
 
 	for (int nCntChild = 0; nCntChild < nMax; nCntChild++)
 	{
-		if (m_pChild[nCntChild] == NULL)
+		if (m_pChild[nCntChild] == nullptr)
 		{
 			continue;
 		}
 
 		if (m_pChild[nCntChild] == pChild)
 		{
-			m_pChild[nCntChild] = NULL;
+			m_pChild[nCntChild] = nullptr;
 		}
 	}
 }
@@ -249,7 +249,7 @@ void CEnemy::SetParent(CEnemy *pParent)
 	if (this != nullptr)
 	{
 		// 子の割り当て
-		if (pParent != NULL)
+		if (pParent != nullptr)
 		{
 			pParent->RegistrChild(this);
 		}
@@ -271,9 +271,9 @@ void CEnemy::Uninit(void)
 {
 	
 	// 影を消す
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
 	// リストから削除
@@ -291,33 +291,33 @@ void CEnemy::Kill(void)
 	for (int nCntEnemy = 0; nCntEnemy < mylib_const::MAX_ENEMY; nCntEnemy++)
 	{// 子の数分回す
 
-		if (m_pChild[nCntEnemy] != NULL)
+		if (m_pChild[nCntEnemy] != nullptr)
 		{// 子がいる場合
 
-			// 自分の子の親をNULLにする
-			m_pChild[nCntEnemy]->m_pParent = NULL;
+			// 自分の子の親をnullptrにする
+			m_pChild[nCntEnemy]->m_pParent = nullptr;
 		}
 	}
 
-	if (m_pParent != NULL)
+	if (m_pParent != nullptr)
 	{// 自分に親がいる場合
 
-		// 親の子をNULLにする
+		// 親の子をnullptrにする
 		m_pParent->ResetChild(this);
 	}
 
 	// HPゲージを消す
-	if (m_pHPGauge != NULL)
+	if (m_pHPGauge != nullptr)
 	{
 		m_pHPGauge->Uninit();
-		m_pHPGauge = NULL;
+		m_pHPGauge = nullptr;
 	}
 
 	// 影を消す
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		m_pShadow->Uninit();
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
 	// ロックオン受付してたら
@@ -396,7 +396,7 @@ void CEnemy::Update(void)
 	UpdateByType();
 
 	// HPゲージの位置更新
-	if (m_pHPGauge != NULL)
+	if (m_pHPGauge != nullptr)
 	{
 		// 位置取得
 		MyLib::Vector3 pos = GetPosition();
@@ -408,7 +408,7 @@ void CEnemy::Update(void)
 	}
 
 	// 影の位置更新
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		// 位置取得
 		MyLib::Vector3 pos = GetPosition();
@@ -535,15 +535,13 @@ void CEnemy::CollisionPlayer(void)
 	MyLib::Vector3 pos = GetPosition();
 	float fRadius = GetRadius();
 
-	// プレイヤーの取得
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
 
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// 自分の情報取得
 		MyLib::Vector3 pos = GetPosition();
 		float fRadius = GetRadius();
@@ -554,11 +552,11 @@ void CEnemy::CollisionPlayer(void)
 		CPlayer::STATE PlayerState = (CPlayer::STATE)pPlayer->GetState();
 
 #if _DEBUG
-		//CEffect3D::Create(PlayerPos, mylib_const::DEFAULT_VECTOR3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), PlayerRadius, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NULL);
+		//CEffect3D::Create(PlayerPos, mylib_const::DEFAULT_VECTOR3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), PlayerRadius, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_nullptr);
 #endif
 
 		// 球の判定
-		if (UtilFunc::Collision::SphereRange(pos, PlayerPos, fRadius, PlayerRadius) &&
+		if (UtilFunc::Collision::SphereRange(pos, PlayerPos, fRadius, PlayerRadius).ishit &&
 			PlayerState != CPlayer::STATE_DEAD &&
 			PlayerState != CPlayer::STATE_DMG &&
 			PlayerState != CPlayer::STATE_KNOCKBACK &&
@@ -626,7 +624,7 @@ bool CEnemy::Hit(const int nValue)
 			//// ダメージ音再生
 			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
 
-			if (m_pHPGauge == NULL)
+			if (m_pHPGauge == nullptr)
 			{
 				// 体力ゲージ
 				//m_pHPGauge = CHP_Gauge::Create(50.0f, GetLifeOrigin(), 3.0f);
@@ -720,9 +718,9 @@ void CEnemy::RotationPlayer(void)
 	MyLib::Vector3 pos = GetPosition();
 	MyLib::Vector3 rot = GetRotation();
 
-	// プレイヤー情報
-	CPlayer* pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(m_nTargetPlayerIndex);
-	if (pPlayer == NULL)
+	// プレイヤー取得
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
+	if (pPlayer == nullptr)
 	{
 		return;
 	}
@@ -759,8 +757,8 @@ void CEnemy::RotationPlayer(void)
 bool CEnemy::CalcLenPlayer(float fLen)
 {
 	// プレイヤー情報
-	CPlayer* pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(m_nTargetPlayerIndex);
-	if (pPlayer == NULL)
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
+	if (pPlayer == nullptr)
 	{
 		return false;
 	}
@@ -1070,7 +1068,7 @@ void CEnemy::FadeOut(void)
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -1141,10 +1139,10 @@ void CEnemy::PlayerChase(void)
 	bool bLen = false;
 
 	// プレイヤー情報
-	CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(m_nTargetPlayerIndex);
+	CPlayer *pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
 
 	// オブジェクト情報
-	CObject *pObj = NULL;
+	CObject *pObj = nullptr;
 
 
 	// 状態遷移カウンター減算
@@ -1155,8 +1153,8 @@ void CEnemy::PlayerChase(void)
 		m_fStateTime = 0;
 	}
 
-	if (pPlayer != NULL)
-	{// NULLじゃないとき
+	if (pPlayer != nullptr)
+	{// nullptrじゃないとき
 
 		// 親の位置取得
 		MyLib::Vector3 posPlayer = pPlayer->GetPosition();
@@ -1237,7 +1235,7 @@ void CEnemy::ParentChase(void)
 	bool bLongDistance = true;
 
 	// オブジェクト情報
-	CObject *pObj = NULL;
+	CObject *pObj = nullptr;
 
 
 	// 状態遷移カウンター減算
@@ -1248,7 +1246,7 @@ void CEnemy::ParentChase(void)
 		m_fStateTime = 0;
 	}
 
-	if (m_pParent != NULL)
+	if (m_pParent != nullptr)
 	{// 親がいる場合
 
 		// 親の移動量取得
@@ -1372,17 +1370,17 @@ void CEnemy::StateAttack(void)
 	bool bLen = false;
 
 	// オブジェクト情報
-	CObject *pObj = NULL;
+	CObject *pObj = nullptr;
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
 	int nType = pMotion->GetType();
 
-	if (m_pParent != NULL)
+	if (m_pParent != nullptr)
 	{// 親がいる場合
 
 		// 親も追い掛け状態にする
@@ -1396,7 +1394,7 @@ void CEnemy::StateAttack(void)
 
 			for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
 			{// 子の数分回す
-				if (m_pParent->m_pChild[nCntEnemy] == NULL)
+				if (m_pParent->m_pChild[nCntEnemy] == nullptr)
 				{
 					continue;
 				}
@@ -1417,8 +1415,8 @@ void CEnemy::StateAttack(void)
 		for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
 		{// 子の数分回す
 
-			if (m_pChild[nCntEnemy] == NULL)
-			{// NULLだったら
+			if (m_pChild[nCntEnemy] == nullptr)
+			{// nullptrだったら
 				continue;
 			}
 
@@ -1434,16 +1432,14 @@ void CEnemy::StateAttack(void)
 		}
 	}
 
-	// プレイヤー情報
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
 
-		if (nType == 0 && pPlayer != NULL)
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
+		if (nType == 0 && pPlayer != nullptr)
 		{// ニュートラルに戻れば
 
 			if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), 400.0f, PLAYER_SERCH) == false)
@@ -1458,7 +1454,7 @@ void CEnemy::StateAttack(void)
 
 				m_state = STATE_PLAYERCHASE;
 
-				if (m_pParent != NULL)
+				if (m_pParent != nullptr)
 				{// 親がいる場合
 
 					// 親も追い掛け状態にする
@@ -1470,7 +1466,7 @@ void CEnemy::StateAttack(void)
 					for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
 					{// 子の数分回す
 
-						if (m_pParent->m_pChild[nCntEnemy] == NULL)
+						if (m_pParent->m_pChild[nCntEnemy] == nullptr)
 						{
 							continue;
 						}
@@ -1489,7 +1485,7 @@ void CEnemy::StateAttack(void)
 					for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
 					{// 子の数分回す
 
-						if (m_pChild[nCntEnemy] == NULL)
+						if (m_pChild[nCntEnemy] == nullptr)
 						{
 							continue;
 						}
@@ -1537,75 +1533,79 @@ void CEnemy::StateWait(void)
 void CEnemy::TriggerChasePlayer(void)
 {
 
-	// プレイヤー情報
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
+
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	int i = 0;
+	while (playerList.ListLoop(&pPlayer))
 	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
+		float fRadius = PLAYER_SERCH;
 
-		// 位置取得
-		MyLib::Vector3 pos = GetPosition();
+		if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), 200.0f, fRadius) == true)
+		{// プレイヤーが範囲に入れば
+			m_state = STATE_PLAYERCHASE;
 
-		if (pPlayer != NULL)
-		{// NULLじゃないとき
+			if (m_pParent != nullptr)
+			{// 親がいる場合
 
-			float fRadius = PLAYER_SERCH;
+				// 親も追い掛け状態にする
+				if (m_pParent->m_state != STATE_DMG && m_pParent->m_state != STATE_DEAD)
+				{
+					m_pParent->m_state = STATE_PLAYERCHASE;
+				}
 
-			if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), 200.0f, fRadius) == true)
-			{// プレイヤーが範囲に入れば
-				m_state = STATE_PLAYERCHASE;
+				for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
+				{// 子の数分回す
 
-				if (m_pParent != NULL)
-				{// 親がいる場合
-
-					// 親も追い掛け状態にする
-					if (m_pParent->m_state != STATE_DMG && m_pParent->m_state != STATE_DEAD)
+					if (m_pParent->m_pChild[nCntEnemy] == nullptr)
 					{
-						m_pParent->m_state = STATE_PLAYERCHASE;
+						continue;
 					}
 
-					for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
-					{// 子の数分回す
-
-						if (m_pParent->m_pChild[nCntEnemy] == NULL)
-						{
-							continue;
-						}
-
-						if (m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-						{
-							continue;
-						}
-
-						// 自分の親の子もプレイヤー追い掛け状態
-						m_pParent->m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
+					if (m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DEAD)
+					{
+						continue;
 					}
+
+					// 自分の親の子もプレイヤー追い掛け状態
+					m_pParent->m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
 				}
-				else
-				{// 自分が親な場合
-
-					for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
-					{// 子の数分回す
-
-						if (m_pChild[nCntEnemy] == NULL)
-						{
-							continue;
-						}
-
-						if (m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-						{
-							continue;
-						}
-
-						m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-					}
-				}
-
-				// 追い掛けるプレイヤーの番号設定
-				m_nTargetPlayerIndex = nCntPlayer;
-				break;
 			}
+			else
+			{// 自分が親な場合
+
+				for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
+				{// 子の数分回す
+
+					if (m_pChild[nCntEnemy] == nullptr)
+					{
+						continue;
+					}
+
+					if (m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pChild[nCntEnemy]->m_state == STATE_DEAD)
+					{
+						continue;
+					}
+
+					m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
+				}
+			}
+
+			// 追い掛けるプレイヤーの番号設定
+			m_nTargetPlayerIndex = i;
+			break;
 		}
+
+		i++;	// インデックス加算
 	}
+
 }
 
 //==========================================================================
@@ -1616,15 +1616,14 @@ void CEnemy::ChangeToAttackState(void)
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
-	// プレイヤー情報
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
 
+	// リストループ
+	int i = 0;
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// 親の位置取得
 		MyLib::Vector3 posPlayer = pPlayer->GetPosition();
 
@@ -1636,9 +1635,11 @@ void CEnemy::ChangeToAttackState(void)
 			m_sMotionFrag.bATK = true;
 
 			// 追い掛けるプレイヤーの番号設定
-			m_nTargetPlayerIndex = nCntPlayer;
+			m_nTargetPlayerIndex = i;
 			break;
 		}
+
+		i++;
 	}
 }
 
@@ -1704,7 +1705,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -1727,21 +1728,20 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 	//============================
 	// プレイヤーと判定
 	//============================
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
 
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// プレイヤーの向き
 		MyLib::Vector3 PlayerPos = pPlayer->GetPosition();
 
 		// 判定サイズ取得
 		float fRadius = pPlayer->GetRadius();
 
-		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, ATKInfo.fRangeSize, fRadius))
+		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, ATKInfo.fRangeSize, fRadius).ishit)
 		{// 球の判定
 
 			if (pPlayer->Hit(ATKInfo.nDamage, ATKInfo.AtkType))
@@ -1786,8 +1786,8 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 				pBag->Hit();
 			}
 		}
-
 	}
+
 }
 
 //==========================================================================

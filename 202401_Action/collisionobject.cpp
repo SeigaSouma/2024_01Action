@@ -222,7 +222,7 @@ void CCollisionObject::CollisionEnemy(void)
 		// 判定サイズ取得
 		float fTargetRadius = pEnemy->GetRadius();
 
-		if (UtilFunc::Collision::SphereRange(pos, TargetPos, m_fRadius, fTargetRadius))
+		if (UtilFunc::Collision::SphereRange(pos, TargetPos, m_fRadius, fTargetRadius).ishit)
 		{// 球の判定
 
 			if (pEnemy->Hit(m_nDamage) == true)
@@ -242,22 +242,21 @@ void CCollisionObject::CollisionPlayer(void)
 	// 自分の情報取得
 	MyLib::Vector3 pos = GetPosition();
 
-	// プレイヤーの取得
-	for (int nCntPlayer = 0; nCntPlayer < mylib_const::MAX_PLAYER; nCntPlayer++)
-	{
-		CPlayer *pPlayer = CManager::GetInstance()->GetScene()->GetPlayer(nCntPlayer);
-		if (pPlayer == NULL)
-		{
-			continue;
-		}
 
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
 		// プレイヤー情報取得
 		MyLib::Vector3 PlayerPos = pPlayer->GetPosition();
 		float PlayerRadius = pPlayer->GetRadius();
 		CPlayer::STATE PlayerState = pPlayer->GetState();
 
 		// 球の判定
-		if (UtilFunc::Collision::SphereRange(pos, PlayerPos, m_fRadius, PlayerRadius) &&
+		if (UtilFunc::Collision::SphereRange(pos, PlayerPos, m_fRadius, PlayerRadius).ishit &&
 			PlayerState != CPlayer::STATE_DEAD &&
 			PlayerState != CPlayer::STATE_DMG &&
 			PlayerState != CPlayer::STATE_KNOCKBACK &&
