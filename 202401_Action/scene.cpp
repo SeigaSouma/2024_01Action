@@ -135,15 +135,6 @@ HRESULT CScene::Init(void)
 		return E_FAIL;
 	}
 
-	// ƒLƒƒƒ‰¶¬
-	for (int nCntPlayer = 0; nCntPlayer < CManager::GetInstance()->GetNumPlayer(); nCntPlayer++)
-	{
-		if (CPlayer::Create(nCntPlayer) == nullptr)
-		{
-			return E_FAIL;
-		}
-	}
-
 	return S_OK;
 }
 

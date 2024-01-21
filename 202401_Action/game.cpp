@@ -51,7 +51,7 @@ bool CGame::m_clear = false;				// クリア判定
 
 void UUUU()
 {
-	for (int n = 0; n < 1200; n++)
+	for (int n = 0; n < 999999; n++)
 	{
 		int nnn = 100;
 	}
@@ -121,6 +121,14 @@ HRESULT CGame::Init(void)
 	//**********************************
 	// プレイヤー
 	//**********************************
+	// キャラ生成
+	for (int nCntPlayer = 0; nCntPlayer < 1; nCntPlayer++)
+	{
+		if (CPlayer::Create(nCntPlayer) == nullptr)
+		{
+			return E_FAIL;
+		}
+	}
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
 	CPlayer* pPlayer = nullptr;

@@ -382,6 +382,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //==========================================================================
 void CManager::SetMode(CScene::MODE mode)
 {
+	GetLoadManager()->UnLoad();
 
 	m_bHitStop = false;		// ヒットストップの判定
 	m_nCntHitStop = 0;		// ヒットストップのカウンター
@@ -436,11 +437,8 @@ void CManager::SetMode(CScene::MODE mode)
 	// 生成処理
 	m_pScene = CScene::Create(mode);
 
-	// メインスレッドからバックグラウンドでロード開始
-	GetLoadManager()->StartLoadInBackground(mode);  // 例としてシーン2をロードすると仮定
-
 	// シーンのロードを開始
-	GetLoadManager()->LoadScene(mode);
+	GetLoadManager()->LoadScene();
 
 	//// 初期化処理
 	//if (m_pScene != NULL)
@@ -688,18 +686,6 @@ void CManager::Update(void)
 		return;
 	}
 
-	// メインスレッドでロードが完了したかどうかを確認
-	{
-		/*std::unique_lock<std::mutex> lock(GetLoadManager()->IsLoadMutex());
-		if (GetLoadManager()->IsLoadComplete())
-		{
-			std::cout << "Load complete!" << std::endl;
-		}
-		else {
-			std::cout << "Load incomplete." << std::endl;
-		}*/
-	}
-	std::unique_lock<std::mutex> lock(GetLoadManager()->IsLoadMutex());
 	if (GetLoadManager()->IsLoadComplete())
 	{
 		// フェードの更新処理
@@ -802,7 +788,7 @@ void CManager::Update(void)
 		m_pLight->Update();
 
 		// カメラの更新処理
-		//m_pCamera->Update();
+		m_pCamera->Update();
 
 		// デバッグ表示の更新処理
 		m_pDebugProc->Update();
@@ -827,6 +813,12 @@ void CManager::Update(void)
 //==========================================================================
 void CManager::Draw(void)
 {
+	if (!GetLoadManager()->IsLoadComplete())
+	{
+		GetLoadManager()->Draw();
+		return;
+	}
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = m_pRenderer->GetDevice();
 

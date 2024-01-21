@@ -26,7 +26,7 @@ void LoadInBackground();
 // グローバル変数宣言
 //==========================================================================
 int g_nCountFPS;
-CLoadManager* LoadManager;
+CLoadManager* LoadManager = nullptr;
 
 //==========================================================================
 // メイン関数
@@ -95,6 +95,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		pManager = CManager::Create();
 	}
 
+	if (LoadManager != nullptr)
+	{
+		LoadManager->Uninit();
+		delete LoadManager;
+		LoadManager = nullptr;
+	}
 
 	// ロードマネージャの生成
 	LoadManager = CLoadManager::Create();
@@ -189,6 +195,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		// メモリの開放
 		delete pManager;
 		pManager = NULL;
+	}
+
+	if (LoadManager != nullptr)
+	{
+		LoadManager->Uninit();
+		delete LoadManager;
+		LoadManager = nullptr;
 	}
 	
 

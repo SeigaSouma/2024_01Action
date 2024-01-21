@@ -190,6 +190,7 @@
     <ClCompile Include="limitarea.cpp" />
     <ClCompile Include="listmanager.cpp" />
     <ClCompile Include="loadmanager.cpp" />
+    <ClCompile Include="loadscreen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="map.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="limitarea.h" />
     <ClInclude Include="listmanager.h" />
     <ClInclude Include="loadmanager.h" />
+    <ClInclude Include="loadscreen.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="map.h" />

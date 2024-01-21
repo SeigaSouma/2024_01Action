@@ -14,10 +14,7 @@
 #include "blackframe.h"
 #include "pause.h"
 #include "input.h"
-
-//==========================================================================
-// マクロ定義
-//==========================================================================
+#include "loadmanager.h"
 
 //==========================================================================
 // コンストラクタ
@@ -211,7 +208,7 @@ void CRenderer::Draw(void)
 		CManager::GetInstance()->GetInstantFade()->Draw();
 
 		// フェード描画処理
-		//CManager::GetInstance()->GetFade()->Draw();
+		CManager::GetInstance()->GetFade()->Draw();
 
 		// ビューポートを元に戻す
 		m_pD3DDevice->SetViewport(&viewportDef);
