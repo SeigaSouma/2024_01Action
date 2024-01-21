@@ -19,6 +19,7 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\skillpoint\\cyberwall_03.png";
+	const char* TEXTURE2 = "data\\TEXTURE\\leaf002.png";
 	const char* NUMBER_TEXTURE = "data\\TEXTURE\\number\\number_blackclover_01.png";
 }
 
@@ -88,11 +89,16 @@ HRESULT CSkillPoint::Init(void)
 	D3DXVECTOR2 size;
 	// サイズ取得
 	SetSize(CTexture::GetInstance()->GetImageSize(nIdx) * 0.1f);	// サイズ
+	SetSizeOrigin(GetSize());	// サイズ
 	SetPosition(MyLib::Vector3(1000.0f, 80.0f, 0.0f));	// 位置
 
 
+	//// テクスチャの割り当て
+	//int nMultiIdx = CTexture::GetInstance()->Regist(TEXTURE2);
+	//multi = CTexture::GetInstance()->GetAdress(nMultiIdx);
+
 	// 生成処理
-	m_apNumber = CMultiNumber::Create({1200.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE);
+	m_apNumber = CMultiNumber::Create({1150.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE);
 
 	return S_OK;
 }
@@ -119,11 +125,46 @@ void CSkillPoint::Uninit(void)
 //==========================================================================
 void CSkillPoint::Update(void)
 {
+	// キーボード情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+
+
+
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+
+
+	// ゲージの位置やサイズの更新（ここでゲージの位置やサイズを変更する）
+	D3DXVECTOR2 size = GetSize();
+	D3DXVECTOR2* pTex = GetTex();
+
+	if (pInputKeyboard->GetPress(DIK_UP) == true)
+	{//←キーが押された,左移動]
+		pTex[1].x += 0.01f;
+		pTex[3].x += 0.01f;
+		/*size.x += 1.0f;*/
+	}
+	if (pInputKeyboard->GetPress(DIK_DOWN) == true)
+	{//←キーが押された,左移動
+		//size.x -= 1.0f;
+		pTex[1].x -= 0.01f;
+		pTex[3].x -= 0.01f;
+	}
+	SetSize(size);
+
+
+	// クリッピング領域をゲージの進捗に合わせて変更
+	float clipWidth = 2.0f * (GetSize().x / GetSizeOrigin().x) - 1.0f;
+
+
+
 	// 更新処理
 	CObject2D::Update();
 
 	// 値の設定処理
 	m_apNumber->SetValue(m_nPoint);
+
+
 }
 
 //==========================================================================
@@ -175,17 +216,8 @@ void CSkillPoint::Draw(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
-	// アルファテストを有効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
-
 	// 描画処理
 	CObject2D::Draw();
 
-	// アルファテストを無効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
 }
 

@@ -522,58 +522,6 @@ void CEnemy::Collision(void)
 }
 
 //==========================================================================
-// プレイヤーとの当たり判定
-//==========================================================================
-void CEnemy::CollisionPlayer(void)
-{
-	if (m_state == STATE_SPAWN || m_state == STATE_DEAD || m_state == STATE_FADEOUT)
-	{
-		return;
-	}
-
-	// 自分の情報取得
-	MyLib::Vector3 pos = GetPosition();
-	float fRadius = GetRadius();
-
-	// プレイヤー取得
-	CListManager<CPlayer> playerList = CPlayer::GetListObj();
-	CPlayer* pPlayer = nullptr;
-
-	// リストループ
-	while (playerList.ListLoop(&pPlayer))
-	{
-		// 自分の情報取得
-		MyLib::Vector3 pos = GetPosition();
-		float fRadius = GetRadius();
-
-		// プレイヤー情報取得
-		MyLib::Vector3 PlayerPos = pPlayer->GetPosition();
-		float PlayerRadius = pPlayer->GetRadius();
-		CPlayer::STATE PlayerState = (CPlayer::STATE)pPlayer->GetState();
-
-#if _DEBUG
-		//CEffect3D::Create(PlayerPos, mylib_const::DEFAULT_VECTOR3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), PlayerRadius, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_nullptr);
-#endif
-
-		// 球の判定
-		if (UtilFunc::Collision::SphereRange(pos, PlayerPos, fRadius, PlayerRadius).ishit &&
-			PlayerState != CPlayer::STATE_DEAD &&
-			PlayerState != CPlayer::STATE_DMG &&
-			PlayerState != CPlayer::STATE_KNOCKBACK &&
-			PlayerState != CPlayer::STATE_INVINCIBLE)
-		{
-			// ヒット処理
-			if (pPlayer->Hit(1) == false)
-			{// 死んでなかったら
-
-				// 吹っ飛び移動量設定
-				pPlayer->SetMove(MyLib::Vector3(8.0f, 0.0f, 0.0f));
-			}
-		}
-	}
-}
-
-//==========================================================================
 // 着地時の処理
 //==========================================================================
 void CEnemy::ProcessLanding(void)
@@ -622,12 +570,12 @@ bool CEnemy::Hit(const int nValue)
 		{// 体力がなくなってなかったら
 
 			//// ダメージ音再生
-			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
 
 			if (m_pHPGauge == nullptr)
 			{
 				// 体力ゲージ
-				//m_pHPGauge = CHP_Gauge::Create(50.0f, GetLifeOrigin(), 3.0f);
+				m_pHPGauge = CHP_Gauge::Create(GetHeight(), GetLifeOrigin(), 3.0f);
 			}
 		}
 

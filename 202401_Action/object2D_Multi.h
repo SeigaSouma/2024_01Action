@@ -1,12 +1,12 @@
 //=============================================================================
 // 
-//  オブジェクト2Dヘッダー [object2D.h]
+//  オブジェクト2Dヘッダー [object2D_Multi.h]
 //  Author : 相馬靜雅
 // 
 //=============================================================================
 
-#ifndef _OBJECT2D_H_
-#define _OBJECT2D_H_	// 二重インクルード防止
+#ifndef _OBJECT2D_MULTI_H_
+#define _OBJECT2D_MULTI_H_	// 二重インクルード防止
 
 #include "main.h"
 #include "object.h"
@@ -17,23 +17,21 @@ class CEnemy;
 // クラス定義
 //==========================================================================
 // オブジェクト2Dクラス定義
-class CObject2D : public CObject
+class CObject2DMulti : public CObject
 {
 public:
 
-	CObject2D(int nPriority = mylib_const::PRIORITY_DEF2D);
-	~CObject2D();
+	CObject2DMulti(int nPriority = mylib_const::PRIORITY_DEF2D);
+	~CObject2DMulti();
 
 	// オーバーライドされた関数
 	HRESULT Init(void);
-	HRESULT Init(int nNumVertex);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 	void Draw(int nNumVertex);
 	void Draw(LPDIRECT3DTEXTURE9 mutitex);
 	virtual void SetVtx(void);
-	virtual void SetVtx(int nNumVertex);
 	void BindTexture(int nIdx);
 	int GetIdxTexture(void) { return m_nTexIdx; }
 
@@ -48,12 +46,10 @@ public:
 	virtual MyLib::Vector3 *GetVtxPos(void);				// 頂点座標取得
 	virtual void SetVtxPos(MyLib::Vector3 *pos);			// 頂点座標取得
 	
-	template<class T>T *GetTemplate(void);
 
-	static CObject2D *Create();
-	static CObject2D *Create(int nPriority);
-	static CObject2D *Create(int nPriority, int nNumVtx);
-	CObject2D *GetObject2D(void);
+	static CObject2DMulti *Create();
+	static CObject2DMulti *Create(int nPriority);
+	CObject2DMulti * GetObject2DMulti(void);
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) const;
 protected:
 

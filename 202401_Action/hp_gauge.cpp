@@ -12,7 +12,7 @@
 //==========================================================================
 // マクロ定義
 //==========================================================================
-#define WIDTH			(25.0f)	// 横幅
+#define WIDTH			(35.0f)	// 横幅
 #define HEIGHT			(5.0f)	// 縦幅
 
 //==========================================================================
@@ -20,9 +20,9 @@
 //==========================================================================
 const char *CHP_Gauge::m_apTextureFile[] =					// テクスチャのファイル
 {
-	NULL,
-	NULL,
-	"data\\TEXTURE\\hypnosis_fram.png",
+	"",
+	"",
+	"data\\TEXTURE\\hpgauge\\hypnosis_fram.png",
 };
 int CHP_Gauge::m_nNumAll = 0;	// 総数
 
@@ -59,60 +59,47 @@ CHP_Gauge::~CHP_Gauge()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CHP_Gauge *CHP_Gauge::Create(float fPosLen, int nMaxLife, float fSizeBuff)
+CHP_Gauge* CHP_Gauge::Create(float fPosLen, int nMaxLife, float fSizeBuff)
 {
 	// 生成用のオブジェクト
-	CHP_Gauge *pHPGauge = NULL;
+	CHP_Gauge* pHPGauge = NULL;
 
-	if (pHPGauge == NULL)
-	{// NULLだったら
+	// メモリの確保
+	pHPGauge = DEBUG_NEW CHP_Gauge;
 
-		// メモリの確保
-		pHPGauge = DEBUG_NEW CHP_Gauge;
+	if (pHPGauge != NULL)
+	{// メモリの確保が出来ていたら
 
-		//if (pHPGauge->GetID() < 0)
-		//{// メモリ確保に失敗していたら
+		// 原点からの長さを渡す
+		pHPGauge->m_fPosLength = fPosLen;
 
-		//	delete pHPGauge;
-		//	return NULL;
-		//}
+		// 最大体力
+		pHPGauge->m_nMaxLife = nMaxLife;
 
-		if (pHPGauge != NULL)
-		{// メモリの確保が出来ていたら
+		for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
+		{
+			// 生成処理
+			pHPGauge->m_HPGauge[nCntGauge].pObjBillboard =
+				pHPGauge->m_HPGauge[nCntGauge].pObjBillboard->Create();
 
-			// 原点からの長さを渡す
-			pHPGauge->m_fPosLength = fPosLen;
-
-			// 最大体力
-			pHPGauge->m_nMaxLife = nMaxLife;
-
-			for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
-			{
-				// 生成処理
-				pHPGauge->m_HPGauge[nCntGauge].pObjBillboard = 
-					pHPGauge->m_HPGauge[nCntGauge].pObjBillboard->Create();
-
-				if (pHPGauge->m_HPGauge[nCntGauge].pObjBillboard == NULL)
-				{// NULLだったら
-					pHPGauge->Uninit();
-					return NULL;
-				}
-
-				pHPGauge->m_HPGauge[nCntGauge].pObjBillboard->SetSize(
-					D3DXVECTOR2(WIDTH * fSizeBuff, HEIGHT * fSizeBuff));	// サイズ
+			if (pHPGauge->m_HPGauge[nCntGauge].pObjBillboard == NULL)
+			{// NULLだったら
+				pHPGauge->Uninit();
+				return NULL;
 			}
 
-			// 初期化処理
-			pHPGauge->Init();
-
-			// 種類の設定
-			pHPGauge->SetType(TYPE_HPGAUGE);
+			pHPGauge->m_HPGauge[nCntGauge].pObjBillboard->SetSize(
+				D3DXVECTOR2(WIDTH * fSizeBuff, HEIGHT * fSizeBuff));	// サイズ
 		}
 
-		return pHPGauge;
+		// 初期化処理
+		pHPGauge->Init();
+
+		// 種類の設定
+		pHPGauge->SetType(TYPE_HPGAUGE);
 	}
 
-	return NULL;
+	return pHPGauge;
 }
 
 //==========================================================================

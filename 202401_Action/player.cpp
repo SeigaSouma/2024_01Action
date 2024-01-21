@@ -36,6 +36,7 @@
 #include "particle.h"
 #include "MyEffekseer.h"
 #include "skillpoint.h"
+#include "damagepoint.h"
 
 //==========================================================================
 // 定数定義
@@ -624,19 +625,22 @@ void CPlayer::Controll(void)
 			//pMotion->ToggleFinish(true);
 			//m_sMotionFrag.bATK = true;		// 攻撃判定ON
 
-			if (m_fDashTime >= TIME_DASHATTACK && m_nComboStage == 0)
-			{// ダッシュ中の初撃は2からスタート
-				m_nComboStage++;
-			}
-
 			if (pInputGamepad->IsTipStick())
 			{// 左スティックが倒れてる場合
 				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
 
-			// コンボ段階分考慮
-			int nSetType = MOTION_ATK + m_nComboStage;
-			pMotion->Set(nSetType, true);
+			if (m_fDashTime >= TIME_DASHATTACK && m_nComboStage == 0)
+			{// ダッシュ中の初撃は2からスタート
+				m_nComboStage++;
+				pMotion->Set(MOTION_DASHATK, true);
+			}
+			else
+			{
+				// コンボ段階分考慮
+				int nSetType = MOTION_ATK + m_nComboStage;
+				pMotion->Set(nSetType, true);
+			}
 
 			// コンボの段階加算
 			m_nComboStage++;
@@ -952,19 +956,19 @@ void CPlayer::MotionSet(void)
 			// やられモーション
 			pMotion->Set(MOTION_DEAD);
 		}
-		else if (m_sMotionFrag.bATK == true)
-		{// 攻撃
+		//else if (m_sMotionFrag.bATK == true)
+		//{// 攻撃
 
-			m_sMotionFrag.bATK = false;		// 攻撃判定OFF
+		//	m_sMotionFrag.bATK = false;		// 攻撃判定OFF
 
-			int nSetType = MOTION_ATK + m_nComboStage;
-			pMotion->Set(nSetType, true);
+		//	int nSetType = MOTION_ATK + m_nComboStage;
+		//	pMotion->Set(nSetType, true);
 
-			if (m_nComboStage >= MOTION_ATK3 - MOTION_ATK)
-			{
-				m_nComboStage = 0;
-			}
-		}
+		//	if (m_nComboStage >= MOTION_ATK3 - MOTION_ATK)
+		//	{
+		//		m_nComboStage = 0;
+		//	}
+		//}
 		else
 		{
 			// ニュートラルモーション
@@ -1004,6 +1008,7 @@ void CPlayer::MotionBySetState(void)
 	case MOTION_ATK:
 	case MOTION_ATK2:
 	case MOTION_ATK3:
+	case MOTION_DASHATK:
 		m_bAttacking = true;
 		break;
 
@@ -1244,6 +1249,10 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 				CMyEffekseer::GetInstance()->SetEffect(
 					"data/Effekseer/HitParticle_Red_01.efkefc",
 					hitresult.hitpos, 0.0f, 0.0f, 50.0f);
+
+				enemypos.y += pEnemy->GetHeight() * 0.5f;
+				enemypos += UtilFunc::Transformation::GetRandomPositionSphere(enemypos, fTargetRadius * 0.5f);
+				CDamagePoint::Create(hitresult.hitpos, ATKInfo.nDamage);
 			}
 		}
 	}

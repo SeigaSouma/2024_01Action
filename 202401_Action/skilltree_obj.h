@@ -1,0 +1,71 @@
+//=============================================================================
+// 
+//  スキルツリーオブジェクトヘッダー [skilltree_obj.h]
+//  Author : 相馬靜雅
+// 
+//=============================================================================
+
+#ifndef _SKILLTREE_OBJ_H_
+#define _SKILLTREE_OBJ_H_	// 二重インクルード防止
+
+#include "objectX.h"
+#include "listmanager.h"
+
+//==========================================================================
+// クラス定義
+//==========================================================================
+// スキルツリーオブジェクトクラス
+class CSkillTree_Obj : public CObjectX
+{
+public:
+
+	CSkillTree_Obj(int nPriority = 6);
+	~CSkillTree_Obj();
+
+	// オーバーライドされた関数
+	virtual HRESULT Init(void) override;
+	virtual void Uninit(void) override;
+	virtual void Update(void) override;
+	virtual void Draw(void) override;
+
+	// 静的関数
+	static CSkillTree_Obj *Create(void);
+
+private:
+
+	//=============================
+	// 列挙型定義
+	//=============================
+	enum STATE	// 状態
+	{
+		STATE_NONE = 0,	// 何もなし
+		STATE_TRANSFER,	// 転移
+		STATE_MAX
+	};
+
+	//=============================
+	// 関数リスト
+	//=============================
+	typedef void(CSkillTree_Obj::*STATE_FUNC)(void);
+	static STATE_FUNC m_StateFuncList[];	// 状態関数のリスト
+
+	//=============================
+	// メンバ関数
+	//=============================
+	// 状態関数
+	void StateNone(void);		// なにもなし
+	void StateTransfer(void);	// 転移
+
+	// その他関数
+	void CollisionPlayer(void);	// プレイヤーとの当たり判定処理
+
+	//=============================
+	// メンバ変数
+	//=============================
+	float m_fStateTime;	// 状態カウンター
+	STATE m_state;		// 状態
+
+};
+
+
+#endif

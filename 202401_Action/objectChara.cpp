@@ -99,6 +99,9 @@ void CObjectChara::BindObjectData(int nCntData)
 	// オブジェクト毎のデータ割り当て
 	CObjectHierarchy::BindObjectData(nCntData);
 
+	// 身長
+	m_fHeight = m_aLoadData[nCntData].fHeight;
+
 	// 移動速度
 	m_fVelocity = m_aLoadData[nCntData].fVelocity;
 
@@ -279,6 +282,14 @@ void CObjectChara::LoadObjectData(FILE* pFile, const char* pComment)
 
 	char hoge[MAX_COMMENT];	// コメント
 
+	if (strcmp(pComment, "HEIGHT") == 0)
+	{// HEIGHTで身長
+
+		fscanf(pFile, "%s", &hoge[0]);	// =の分
+		fscanf(pFile, "%f", &m_aLoadData[m_nNumLoad].fHeight);	// 身長
+		m_fHeight = m_aLoadData[m_nNumLoad].fHeight;
+	}
+
 	if (strcmp(pComment, "VELOCITY") == 0)
 	{// VELOCITYで移動速度
 
@@ -407,6 +418,22 @@ CObjectChara::SphereCollider CObjectChara::GetNowSphereCollider(int nIdx)
 		return m_SphereColliders[nIdx];
 	}
 	return SphereCollider();
+}
+
+//==========================================================================
+// 身長設定
+//==========================================================================
+void CObjectChara::SetHeight(const float fHeight)
+{
+	m_fHeight = fHeight;
+}
+
+//==========================================================================
+// 身長取得
+//==========================================================================
+float CObjectChara::GetHeight(void)
+{
+	return m_fHeight;
 }
 
 //==========================================================================

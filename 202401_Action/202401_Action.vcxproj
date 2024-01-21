@@ -166,6 +166,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="collisionobject.cpp" />
+    <ClCompile Include="damagepoint.cpp" />
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="edit_enemybase.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="object.cpp" />
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object2D_Anim.cpp" />
+    <ClCompile Include="object2D_Multi.cpp" />
     <ClCompile Include="object3D.cpp" />
     <ClCompile Include="object3DMesh.cpp" />
     <ClCompile Include="object3D_Anim.cpp" />
@@ -242,6 +244,7 @@
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="skillpoint.cpp" />
+    <ClCompile Include="skilltree_obj.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stagecleartext.cpp" />
@@ -268,6 +271,7 @@
     <ClInclude Include="collision.h" />
     <ClInclude Include="collisionobject.h" />
     <ClInclude Include="constans.h" />
+    <ClInclude Include="damagepoint.h" />
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="edit.h" />
     <ClInclude Include="edit_enemybase.h" />
@@ -316,6 +320,7 @@
     <ClInclude Include="object.h" />
     <ClInclude Include="object2D.h" />
     <ClInclude Include="object2D_Anim.h" />
+    <ClInclude Include="object2D_Multi.h" />
     <ClInclude Include="object3D.h" />
     <ClInclude Include="object3DMesh.h" />
     <ClInclude Include="object3D_Anim.h" />
@@ -341,6 +346,7 @@
     <ClInclude Include="score.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="skillpoint.h" />
+    <ClInclude Include="skilltree_obj.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="stagecleartext.h" />

@@ -24,6 +24,7 @@
 #define SCREEN_WIDTH		(1280)		// ウインドウの幅
 #define SCREEN_HEIGHT		(720)		// ウインドウの高さ
 #define FVF_VERTEX_2D		(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点フォーマット
+#define FVF_VERTEX_2D_MULTITEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX2)
 #define FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)		// 頂点フォーマット3D
 
 #define ACTION_MODE		(0)								// アクション
@@ -44,6 +45,15 @@ typedef struct
 	D3DCOLOR col;		// 頂点カラー
 	D3DXVECTOR2 tex;	// テクスチャ座標
 }VERTEX_2D;
+
+typedef struct
+{
+	D3DXVECTOR3 pos;
+	float rhw;
+	D3DCOLOR col;
+	D3DXVECTOR2 tex;	// テクスチャ座標
+	D3DXVECTOR2 tex2;	// テクスチャ座標
+}VERTEX_2D_MULTITEX;
 
 // 頂点情報[3D]の構造体を定義
 typedef struct

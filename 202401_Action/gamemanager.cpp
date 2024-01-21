@@ -135,6 +135,10 @@ void CGameManager::Update(void)
 		SceneEnhance();
 		break;
 
+	case SCENE_SKILLTREE:		// スキルツリー
+		m_bControll = false;
+		break;
+
 	case CGameManager::SCENE_BOSS:
 		m_bControll = true;
 		break;

@@ -64,6 +64,8 @@ public:
 
 private:
 
+	void SettingDisp(void);
+
 	// ƒƒ“ƒo•Ï”
 	MyLib::Vector3 m_pos;				// ˆÊ’u
 	MyLib::Vector3 m_posOrigin;				// ˆÊ’u

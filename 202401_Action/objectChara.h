@@ -69,6 +69,8 @@ public:
 	void Draw(D3DXCOLOR col) override;
 	void Draw(float fAlpha) override;
 
+	void SetHeight(const float fHeight);		// 身長設定
+	float GetHeight(void);						// 身長取得
 	void SetVelocity(const float fVelocity);	// 移動速度設定
 	float GetVelocity(void) const;				// 移動速度取得
 	void SetRotDest(const float fRotDest);		// 目標の向き設定
@@ -135,6 +137,7 @@ private:
 	void MotionInProgressAction(void);	// モーション中の行動処理
 
 	// メンバ変数
+	float m_fHeight;			// 身長
 	float m_fVelocity;			// 移動速度
 	float m_fRotDest;			// 目標の向き
 	int m_nLife;				// 体力

@@ -11,6 +11,7 @@
 class CMultiNumber;
 
 #include "object2D.h"
+//#include "object2D_Multi.h"
 
 //==========================================================================
 // クラス定義
@@ -40,6 +41,7 @@ private:
 	// メンバ変数
 	int m_nPoint;	// ポイント
 	CMultiNumber* m_apNumber;	// 数字のオブジェクト
+	//LPDIRECT3DTEXTURE9 multi;
 };
 
 

@@ -39,6 +39,7 @@ public:
 		int nNumModel;			// モデル数
 		float fVelocity;		// 移動速度
 		float fRadius;			// 半径
+		float fHeight;			// 身長
 		int nLife;				// 体力
 		int nMotionStartIdx;	// モーション開始のインデックス番号
 		int nAddScore;			// スコア加算量

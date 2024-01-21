@@ -571,10 +571,6 @@ void CCamera::RockOnStateNormal(void)
 	UtilFunc::Correction::InertiaCorrection(m_TargetPos.y, m_TargetPosDest.y, factor);
 	UtilFunc::Correction::InertiaCorrection(m_TargetPos.z, m_TargetPosDest.z, factor);
 
-#if _DEBUG
-	CEffect3D::Create(m_TargetPos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.6f, 0.2f, 1.0f), 20.0f, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
-#endif
-
 	// 2ì_ä‘ÇÃãóó£
 	float fLen = UtilFunc::Calculation::GetFabsPosLength3D(m_RockOnPos, playerpos);
 	float ratio = fLen / MAX_ROCKONDISTANCE;
@@ -958,8 +954,6 @@ void CCamera::SetCameraRGame(void)
 			m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * DISATNCE_POSR_PLAYER);
 			m_posRDest.y = fYcamera - m_fDiffHeight;
 		}
-		
-		CEffect3D::Create(m_posRDest, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20.0f, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 
 		// ï‚ê≥Ç∑ÇÈ
 		m_posR += (m_posRDest - m_posR) * (0.08f * MULTIPLY_POSR_CORRECTION);

@@ -43,6 +43,7 @@ protected:
 		MOTION_COUNTER_ACCEPT,		// 反撃受け付け
 		MOTION_COUNTER_TURN,		// 反撃受け流し
 		MOTION_COUNTER_ATTACK,		// 反撃
+		MOTION_DASHATK,			// ダッシュ攻撃
 		MOTION_MAX
 	};
 
@@ -115,11 +116,16 @@ protected:
 	SMotionFrag m_sMotionFrag;	// モーションのフラグ
 private:
 
+	//=============================
 	// 関数リスト
+	//=============================
 	typedef void(CPlayer::* STATE_FUNC)(void);
 	static STATE_FUNC m_StateFunc[];
 
+	//=============================
 	// メンバ関数
+	//=============================
+	// 状態関数
 	void StateNone(void);		// なし
 	void StateInvincible(void);	// 無敵
 	void StateDamage(void);		// ダメージ
@@ -138,6 +144,9 @@ private:
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;			// 攻撃判定中処理
 
+	//=============================
+	// メンバ変数
+	//=============================
 	STATE m_Oldstate;				// 前回の状態
 	D3DXCOLOR m_mMatcol;			// マテリアルの色
 	MyLib::Vector3 m_posKnokBack;	// ノックバックの位置

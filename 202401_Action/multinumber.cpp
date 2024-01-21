@@ -12,6 +12,7 @@
 #include "objectBillboard.h"
 #include "texture.h"
 #include "calculation.h"
+#include "camera.h"
 
 //==========================================================================
 // マクロ定義
@@ -126,6 +127,7 @@ CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNu
 
 			// 位置
 			pNumber->m_pos = pos;
+			pNumber->SetPosition(pos);
 
 			// 数字の数
 			pNumber->m_nNumNumber = nNum;
@@ -184,13 +186,24 @@ HRESULT CMultiNumber::Init(void)
 			m_ppMultiNumber[nCntNum]->SetSize3D(MyLib::Vector3(m_size.x, m_size.y, 0.0f));
 			m_ppMultiNumber[nCntNum]->SetRotation(m_rot);
 		}
-
 		else
 		{
 			m_ppMultiNumber[nCntNum]->SetType(CObject::TYPE_OBJECT2D);
 		}
+
 		// テクスチャの割り当て
 		m_ppMultiNumber[nCntNum]->BindTexture(m_nTexIdx);
+	}
+
+	// 描画設定
+	SettingDisp();
+
+	if (m_objType == CNumber::OBJECTTYPE_BILLBOARD)
+	{
+		// カメラの向き取得
+		MyLib::Vector3 camerarot = CManager::GetInstance()->GetCamera()->GetRotation();
+
+		SetRotation(MyLib::Vector3(0.0f, camerarot.y, 0.0f));
 	}
 
 	return S_OK;
@@ -254,6 +267,22 @@ void CMultiNumber::Update(void)
 		return;
 	}
 
+	if (m_objType == CNumber::OBJECTTYPE_BILLBOARD)
+	{
+		// カメラの向き取得
+		MyLib::Vector3 camerarot = CManager::GetInstance()->GetCamera()->GetRotation();
+
+		SetRotation(MyLib::Vector3(0.0f, camerarot.y, 0.0f));
+	}
+
+	SettingDisp();
+}
+
+//==========================================================================
+// 描画設定
+//==========================================================================
+void CMultiNumber::SettingDisp(void)
+{
 	int nNumberDigit = UtilFunc::Calculation::GetDigit(m_nNum);
 
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
@@ -313,14 +342,14 @@ void CMultiNumber::Draw(void)
 		nNumNumber = UtilFunc::Calculation::GetDigit(m_nNum);
 	}
 
-	for (int nCntNum = 0; nCntNum < nNumNumber; nCntNum++)
-	{
-		if (m_ppMultiNumber[nCntNum] == NULL)
-		{// NULLだったら
-			continue;
-		}
-		m_ppMultiNumber[nCntNum]->Draw();
-	}
+	//for (int nCntNum = m_nNumNumber - 1; nCntNum >= m_nNumNumber - nNumNumber; nCntNum--)
+	//{
+	//	if (m_ppMultiNumber[nCntNum] == NULL)
+	//	{// NULLだったら
+	//		continue;
+	//	}
+	//	m_ppMultiNumber[nCntNum]->Draw();
+	//}
 }
 
 //==========================================================================

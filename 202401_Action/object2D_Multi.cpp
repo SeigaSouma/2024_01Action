@@ -1,10 +1,10 @@
 //=============================================================================
 // 
-//  オブジェクト2D処理 [object2D.cpp]
+//  オブジェクト2D処理 [object2D_Multi.cpp]
 //  Author : 相馬靜雅
 // 
 //=============================================================================
-#include "object2D.h"
+#include "object2D_Multi.h"
 #include "manager.h"
 #include "renderer.h"
 #include "player.h"
@@ -34,7 +34,7 @@
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CObject2D::CObject2D(int nPriority) : CObject(nPriority)
+CObject2DMulti::CObject2DMulti(int nPriority) : CObject(nPriority)
 {
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
 	m_size = D3DXVECTOR2(0.0f, 0.0f);			// サイズ
@@ -55,7 +55,7 @@ CObject2D::CObject2D(int nPriority) : CObject(nPriority)
 //==========================================================================
 // デストラクタ
 //==========================================================================
-CObject2D::~CObject2D()
+CObject2DMulti::~CObject2DMulti()
 {
 
 }
@@ -63,7 +63,7 @@ CObject2D::~CObject2D()
 //==========================================================================
 // テクスチャの割り当て
 //==========================================================================
-void CObject2D::BindTexture(int nIdx)
+void CObject2DMulti::BindTexture(int nIdx)
 {
 	// 割り当てる
 	m_nTexIdx = nIdx;
@@ -72,16 +72,16 @@ void CObject2D::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject2D *CObject2D::Create(void)
+CObject2DMulti *CObject2DMulti::Create(void)
 {
 	// 生成用のオブジェクト
-	CObject2D *pObject2D = NULL;
+	CObject2DMulti *pObject2D = NULL;
 
 	if (pObject2D == NULL)
 	{// NULLだったら
 
 		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D;
+		pObject2D = DEBUG_NEW CObject2DMulti;
 
 		if (pObject2D != NULL)
 		{// メモリの確保が出来ていたら
@@ -99,49 +99,22 @@ CObject2D *CObject2D::Create(void)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject2D *CObject2D::Create(int nPriority)
+CObject2DMulti *CObject2DMulti::Create(int nPriority)
 {
 	// 生成用のオブジェクト
-	CObject2D *pObject2D = NULL;
+	CObject2DMulti *pObject2D = NULL;
 
 	if (pObject2D == NULL)
 	{// NULLだったら
 
 		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D(nPriority);
+		pObject2D = DEBUG_NEW CObject2DMulti(nPriority);
 
 		if (pObject2D != NULL)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
 			pObject2D->Init();
-		}
-
-		return pObject2D;
-	}
-
-	return NULL;
-}
-
-//==========================================================================
-// 生成処理
-//==========================================================================
-CObject2D *CObject2D::Create(int nPriority, int nNumVtx)
-{
-	// 生成用のオブジェクト
-	CObject2D *pObject2D = NULL;
-
-	if (pObject2D == NULL)
-	{// NULLだったら
-
-		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D(nPriority);
-
-		if (pObject2D != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObject2D->Init(nNumVtx);
 		}
 
 		return pObject2D;
@@ -153,7 +126,7 @@ CObject2D *CObject2D::Create(int nPriority, int nNumVtx)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject2D::Init(void)
+HRESULT CObject2DMulti::Init(void)
 {
 	HRESULT hr;
 
@@ -172,9 +145,9 @@ HRESULT CObject2D::Init(void)
 		return E_FAIL;
 	}
 
-	hr = pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * POLYGON_TOP,
+	hr = pDevice->CreateVertexBuffer(sizeof(VERTEX_2D_MULTITEX) * POLYGON_TOP,
 		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
+		FVF_VERTEX_2D_MULTITEX,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
 		NULL);
@@ -192,50 +165,9 @@ HRESULT CObject2D::Init(void)
 }
 
 //==========================================================================
-// 初期化処理
-//==========================================================================
-HRESULT CObject2D::Init(int nNumVertex)
-{
-	HRESULT hr;
-
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-
-	m_fTex[0] = D3DXVECTOR2(0.0f, 0.0f);	// テクスチャ座標
-	m_fTex[1] = D3DXVECTOR2(1.0f, 0.0f);	// テクスチャ座標
-	m_fTex[2] = D3DXVECTOR2(0.0f, 1.0f);	// テクスチャ座標
-	m_fTex[3] = D3DXVECTOR2(1.0f, 1.0f);	// テクスチャ座標
-
-	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
-	{// 既に情報が入ってる場合
-
-		return E_FAIL;
-	}
-
-	hr = pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * nNumVertex,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&m_pVtxBuff,
-		NULL);
-
-	if (FAILED(hr))
-	{// 失敗したとき
-
-		return E_FAIL;
-	}
-
-	// 頂点情報設定
-	SetVtx(nNumVertex);
-
-	return S_OK;
-}
-
-//==========================================================================
 // 終了処理
 //==========================================================================
-void CObject2D::Uninit(void)
+void CObject2DMulti::Uninit(void)
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -251,7 +183,7 @@ void CObject2D::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject2D::Update(void)
+void CObject2DMulti::Update(void)
 {
 	// 頂点情報設定
 	SetVtx();
@@ -260,17 +192,17 @@ void CObject2D::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObject2D::Draw(void)
+void CObject2DMulti::Draw(void)
 {
 
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D_MULTITEX));
 
 	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+	pDevice->SetFVF(FVF_VERTEX_2D_MULTITEX);
 
 	// テクスチャの設定
 	pDevice->SetTexture(0, CTexture::GetInstance()->GetAdress(m_nTexIdx));
@@ -279,16 +211,30 @@ void CObject2D::Draw(void)
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
-void CObject2D::Draw(LPDIRECT3DTEXTURE9 mutitex)
+void CObject2DMulti::Draw(LPDIRECT3DTEXTURE9 mutitex)
 {
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
+	// テクスチャステージ1の設定
+	pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE); // ブレンディングモードをMODULATEに変更
+	pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_CURRENT);
+	pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+	pDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_MODULATE); // アルファブレンディングもMODULATEに変更
+	pDevice->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
+	pDevice->SetTextureStageState(1, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
+
+	// アルファブレンディングを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
 	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D_MULTITEX));
 
 	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+	pDevice->SetFVF(FVF_VERTEX_2D_MULTITEX);
 
 	// テクスチャの設定
 	pDevice->SetTexture(0, CTexture::GetInstance()->GetAdress(m_nTexIdx));
@@ -296,37 +242,27 @@ void CObject2D::Draw(LPDIRECT3DTEXTURE9 mutitex)
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-}
 
-//==========================================================================
-// 描画処理
-//==========================================================================
-void CObject2D::Draw(int nNumVertex)
-{
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
-	//頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
+	// テクスチャステージ0のデフォルト設定
+	pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	// テクスチャの設定
-	pDevice->SetTexture(0, CTexture::GetInstance()->GetAdress(m_nTexIdx));
-
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
+	// テクスチャステージ1のデフォルト設定
+	pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE); // デフォルトではテクスチャステージ1は無効
+	pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
 }
 
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject2D::SetVtx(void)
+void CObject2DMulti::SetVtx(void)
 {
 
 	// 頂点情報へのポインタ
-	VERTEX_2D *pVtx;
+	VERTEX_2D_MULTITEX *pVtx;
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -372,42 +308,11 @@ void CObject2D::SetVtx(void)
 	pVtx[2].tex = m_fTex[2];
 	pVtx[3].tex = m_fTex[3];
 
-	// 頂点バッファをアンロックロック
-	m_pVtxBuff->Unlock();
-}
-
-//==========================================================================
-// 頂点情報設定処理
-//==========================================================================
-void  CObject2D::SetVtx(int nNumVertex)
-{
-	// 頂点情報へのポインタ
-	VERTEX_2D *pVtx;
-
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 rot = GetRotation();
-	D3DXCOLOR col = GetColor();
-	MyLib::Vector3 *pVtxPos = GetVtxPos();
-
-	// 頂点座標の設定
-	for (int nCntVtx = 0; nCntVtx < nNumVertex; nCntVtx++)
-	{
-		pVtx[nCntVtx].pos.x = pos.x + pVtxPos[nCntVtx].x;
-		pVtx[nCntVtx].pos.y = pos.y + pVtxPos[nCntVtx].y;
-		pVtx[nCntVtx].pos.z = 0.0f;
-
-		// rhwの設定
-		pVtx[nCntVtx].rhw = 1.0f;
-
-		// 頂点カラーの設定
-		pVtx[nCntVtx].col = col;
-
-		// テクスチャ座標の設定
-		pVtx[nCntVtx].tex = D3DXVECTOR2(0.0f, 0.0f);
-	}
+	// テクスチャ座標の設定
+	pVtx[0].tex2 = D3DXVECTOR2(0.0f, 0.0f);
+	pVtx[1].tex2 = D3DXVECTOR2(1.0f, 0.0f);
+	pVtx[2].tex2 = D3DXVECTOR2(0.0f, 1.0f);
+	pVtx[3].tex2 = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点バッファをアンロックロック
 	m_pVtxBuff->Unlock();
@@ -416,7 +321,7 @@ void  CObject2D::SetVtx(int nNumVertex)
 //==========================================================================
 // 色設定
 //==========================================================================
-void CObject2D::SetColor(const D3DXCOLOR col)
+void CObject2DMulti::SetColor(const D3DXCOLOR col)
 {
 	m_col = col;
 }
@@ -424,7 +329,7 @@ void CObject2D::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CObject2D::GetColor(void) const
+D3DXCOLOR CObject2DMulti::GetColor(void) const
 {
 	return m_col;
 }
@@ -432,7 +337,7 @@ D3DXCOLOR CObject2D::GetColor(void) const
 //==========================================================================
 // サイズ設定
 //==========================================================================
-void CObject2D::SetSize(const D3DXVECTOR2 size)
+void CObject2DMulti::SetSize(const D3DXVECTOR2 size)
 {
 	m_size = size;		// サイズ
 	SetLength(sqrtf(m_size.x * m_size.x + m_size.y * m_size.y));	// 対角線の長さ
@@ -442,7 +347,7 @@ void CObject2D::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CObject2D::GetSize(void) const
+D3DXVECTOR2 CObject2DMulti::GetSize(void) const
 {
 	return m_size;
 }
@@ -450,7 +355,7 @@ D3DXVECTOR2 CObject2D::GetSize(void) const
 //==========================================================================
 // 元のサイズの設定
 //==========================================================================
-void CObject2D::SetSizeOrigin(const D3DXVECTOR2 size)
+void CObject2DMulti::SetSizeOrigin(const D3DXVECTOR2 size)
 {
 	m_sizeOrigin = size;
 }
@@ -458,7 +363,7 @@ void CObject2D::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // 元のサイズの取得
 //==========================================================================
-D3DXVECTOR2 CObject2D::GetSizeOrigin(void) const
+D3DXVECTOR2 CObject2DMulti::GetSizeOrigin(void) const
 {
 	return m_sizeOrigin;
 }
@@ -466,7 +371,7 @@ D3DXVECTOR2 CObject2D::GetSizeOrigin(void) const
 //==========================================================================
 // テクスチャ座標設定
 //==========================================================================
-void CObject2D::SetTex(D3DXVECTOR2 *tex)
+void CObject2DMulti::SetTex(D3DXVECTOR2 *tex)
 {
 	memcpy(&m_fTex[0], tex, sizeof(m_fTex));
 }
@@ -474,7 +379,7 @@ void CObject2D::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CObject2D::GetTex(void)
+D3DXVECTOR2 *CObject2DMulti::GetTex(void)
 {
 	return &m_fTex[0];
 }
@@ -482,7 +387,7 @@ D3DXVECTOR2 *CObject2D::GetTex(void)
 //==========================================================================
 // 対角線の長さ設定
 //==========================================================================
-void CObject2D::SetLength(const float fLength)
+void CObject2DMulti::SetLength(const float fLength)
 {
 	m_fLength = fLength;
 }
@@ -490,7 +395,7 @@ void CObject2D::SetLength(const float fLength)
 //==========================================================================
 // 対角線の長さ取得
 //==========================================================================
-float CObject2D::GetLength(void) const
+float CObject2DMulti::GetLength(void) const
 {
 	return m_fLength;
 }
@@ -498,7 +403,7 @@ float CObject2D::GetLength(void) const
 //==========================================================================
 // 対角線の向き取得
 //==========================================================================
-void CObject2D::SetAngle(const float fAngle)
+void CObject2DMulti::SetAngle(const float fAngle)
 {
 	m_fAngle = fAngle;
 }
@@ -506,7 +411,7 @@ void CObject2D::SetAngle(const float fAngle)
 //==========================================================================
 // 対角線の向き取得
 //==========================================================================
-float CObject2D::GetAngle(void) const
+float CObject2DMulti::GetAngle(void) const
 {
 	return m_fAngle;
 }
@@ -515,7 +420,7 @@ float CObject2D::GetAngle(void) const
 //==========================================================================
 // 頂点座標取得
 //==========================================================================
-MyLib::Vector3 *CObject2D::GetVtxPos(void)
+MyLib::Vector3 *CObject2DMulti::GetVtxPos(void)
 {
 	return &m_VtxPos[0];
 }
@@ -523,7 +428,7 @@ MyLib::Vector3 *CObject2D::GetVtxPos(void)
 //==========================================================================
 // 頂点座標設定
 //==========================================================================
-void CObject2D::SetVtxPos(MyLib::Vector3 *pos)
+void CObject2DMulti::SetVtxPos(MyLib::Vector3 *pos)
 {
 	//&m_VtxPos[0] = *pos;
 	memcpy(&m_VtxPos[0], pos, sizeof(m_VtxPos));
@@ -532,7 +437,7 @@ void CObject2D::SetVtxPos(MyLib::Vector3 *pos)
 //==========================================================================
 // 頂点バッファの取得
 //==========================================================================
-LPDIRECT3DVERTEXBUFFER9 CObject2D::GetVtxBuff(void) const
+LPDIRECT3DVERTEXBUFFER9 CObject2DMulti::GetVtxBuff(void) const
 {
 	return m_pVtxBuff;
 }
@@ -540,7 +445,7 @@ LPDIRECT3DVERTEXBUFFER9 CObject2D::GetVtxBuff(void) const
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D *CObject2D::GetObject2D(void)
+CObject2DMulti *CObject2DMulti::GetObject2DMulti(void)
 {
 	return this;
 }
