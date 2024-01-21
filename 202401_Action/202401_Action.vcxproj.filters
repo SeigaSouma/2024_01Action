@@ -387,6 +387,9 @@
     <ClCompile Include="loadscreen.cpp">
       <Filter>ソース ファイル\load</Filter>
     </ClCompile>
+    <ClCompile Include="hp_gauge_player.cpp">
+      <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -676,6 +679,9 @@
     </ClInclude>
     <ClInclude Include="loadscreen.h">
       <Filter>ヘッダー ファイル\load</Filter>
+    </ClInclude>
+    <ClInclude Include="hp_gauge_player.h">
+      <Filter>ヘッダー ファイル\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -692,17 +692,12 @@ void CManager::Update(void)
 
 	if (!GetLoadManager()->IsLoadComplete())
 	{
+		GetLoadManager()->Update();
 		return;
 	}
 
 	if (GetLoadManager()->IsLoadComplete())
 	{
-
-		if (!GetLoadManager()->IsLoadComplete())
-		{
-			return;
-		}
-
 		// •ƒtƒŒ[ƒ€
 		if (m_pBlackFrame != NULL)
 		{

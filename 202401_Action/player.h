@@ -151,6 +151,7 @@ private:
 	float m_fDashTime;				// ダッシュ時間
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
 	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
+	CHP_GaugePlayer* m_pHPGauge;		// HPゲージのポインタ
 	Effekseer::Handle *m_pWeaponHandle;	// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト
 };

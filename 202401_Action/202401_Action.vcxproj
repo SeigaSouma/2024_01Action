@@ -183,6 +183,7 @@
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="hp_gauge.cpp" />
     <ClCompile Include="hp_gauge_boss.cpp" />
+    <ClCompile Include="hp_gauge_player.cpp" />
     <ClCompile Include="impactwave.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="instantfade.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="hp_gauge.h" />
     <ClInclude Include="hp_gauge_boss.h" />
+    <ClInclude Include="hp_gauge_player.h" />
     <ClInclude Include="impactwave.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="instantfade.h" />

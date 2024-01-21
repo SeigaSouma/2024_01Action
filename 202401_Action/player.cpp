@@ -18,6 +18,7 @@
 #include "Xload.h"
 #include "model.h"
 #include "hp_gauge.h"
+#include "hp_gauge_player.h"
 #include "elevation.h"
 #include "shadow.h"
 #include "particle.h"
@@ -106,6 +107,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
 	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
+	m_pHPGauge = nullptr;							// HPゲージのポインタ
 	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
 
@@ -178,6 +180,9 @@ HRESULT CPlayer::Init(void)
 	// スキルポイント生成
 	m_pSkillPoint = CSkillPoint::Create();
 
+	// HPゲージ生成
+	m_pHPGauge = CHP_GaugePlayer::Create({200.0f, 650.0f, 0.0f}, GetLifeOrigin());
+
 	return S_OK;
 }
 
@@ -198,6 +203,13 @@ void CPlayer::Uninit(void)
 		m_pSkillPoint = nullptr;
 	}
 
+	// HPゲージ
+	if (m_pHPGauge != nullptr)
+	{
+		m_pHPGauge = nullptr;
+	}
+
+
 	// 終了処理
 	CObjectChara::Uninit();
 
@@ -217,6 +229,13 @@ void CPlayer::Kill(void)
 	{
 		m_pSkillPoint->Uninit();
 		m_pSkillPoint = nullptr;
+	}
+
+	// HPゲージ
+	if (m_pHPGauge != nullptr)
+	{
+		m_pHPGauge->Kill();
+		m_pHPGauge = nullptr;
 	}
 
 	// 影を消す
@@ -299,6 +318,10 @@ void CPlayer::Update(void)
 		m_pShadow->SetPosition(MyLib::Vector3(pos.x, m_pShadow->GetPosition().y, pos.z));
 	}
 
+	if (m_pHPGauge != nullptr)
+	{
+		m_pHPGauge->SetLife(GetLife());
+	}
 
 
 	int nCntEffect = 0;

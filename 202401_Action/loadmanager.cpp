@@ -81,7 +81,11 @@ void CLoadManager::Uninit(void)
 //==========================================================================
 void CLoadManager::Update(void)
 {
-	
+	if (m_pLoadScreen != nullptr)
+	{
+		m_pLoadScreen->Update();
+	}
+
 }
 
 void CLoadManager::UnLoad(void)
@@ -188,8 +192,7 @@ void CLoadManager::LoadInBackground(void)
 	}
 	catch (const std::exception& e)
 	{
-		// 例外が発生した場合はここでエラーログを出力などの適切な処理を行う
-		std::cerr << "LoadInBackground: Exception caught: " << e.what() << std::endl;
+		return;
 	}
 
 	if (m_LoadingThread.joinable())
@@ -235,11 +238,6 @@ void CLoadManager::Load()
 		std::lock_guard<std::mutex> lock(isLoadedMutex);
 		m_bEndLoad = true;
 	}
-
-
-	//// ロードが完了したらフラグをセット
-	//std::lock_guard<std::mutex> lock(isLoadedMutex);
-	//isLoadComplete = true;
 }
 
 //==========================================================================
@@ -264,7 +262,6 @@ void CLoadManager::Draw(void)
 		{
 			if (m_pLoadScreen != nullptr)
 			{
-				m_pLoadScreen->Update();
 				m_pLoadScreen->Draw();
 			}
 
@@ -281,6 +278,5 @@ void CLoadManager::Draw(void)
 		// バックバッファとフロントバッファの入れ替え
 		pDevice->Present(NULL, NULL, NULL, NULL);
 	}
-
 }
 
