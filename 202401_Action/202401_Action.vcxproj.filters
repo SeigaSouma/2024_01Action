@@ -97,6 +97,12 @@
     <Filter Include="ヘッダー ファイル\mode\tutorial">
       <UniqueIdentifier>{7cb52d46-4d78-4529-9290-13e0209144ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\load">
+      <UniqueIdentifier>{3a50271b-b42d-4458-bd8f-e832d6e0090a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\load">
+      <UniqueIdentifier>{cd94529c-3417-4fdf-b366-4b02298a7678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -372,11 +378,14 @@
     <ClCompile Include="transferBeacon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="loadmanager.cpp">
+    <ClCompile Include="skillpoint.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="loadmanager.cpp">
+      <Filter>ソース ファイル\load</Filter>
+    </ClCompile>
     <ClCompile Include="loadscreen.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\load</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -659,11 +668,14 @@
     <ClInclude Include="transferBeacon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="loadmanager.h">
+    <ClInclude Include="skillpoint.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="loadmanager.h">
+      <Filter>ヘッダー ファイル\load</Filter>
+    </ClInclude>
     <ClInclude Include="loadscreen.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\load</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,9 +16,8 @@
 // 前方宣言
 //==========================================================================
 class CShadow;
-class CTargetPoint;
 class CHP_GaugePlayer;
-class CMeshSphere;
+class CSkillPoint;
 
 //==========================================================================
 // クラス定義
@@ -89,8 +88,12 @@ public:
 	virtual void Kill(void);			// 死亡処理
 	void SwitchRockOnTarget(void);		// ロック対象切り替え
 
+	// 転移ビーコン
 	void SetEnableTouchBeacon(bool bTouch) { m_bTouchBeacon = bTouch; }	// ビーコンに触れてる判定設定
 	bool IsTouchBeacon(void) { return m_bTouchBeacon; }	// ビーコンに触れてる判定取得
+
+	// スキルポイント
+	CSkillPoint* GetSkillPoint(void) { return m_pSkillPoint; }
 
 	static CPlayer* Create(int nIdx);	// 生成
 	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
@@ -147,7 +150,7 @@ private:
 	bool m_bDash;					// ダッシュ判定
 	float m_fDashTime;				// ダッシュ時間
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
-	CTargetPoint *m_pTargetP;		// 目標の地点
+	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
 	Effekseer::Handle *m_pWeaponHandle;	// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト
 };

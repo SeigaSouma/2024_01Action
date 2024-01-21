@@ -28,7 +28,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	void LoadScene(void);
+	void LoadScene(CScene::MODE mode);
 	void UnLoad(void);
 	void ResetLoad();
 
@@ -60,6 +60,8 @@ private:
 
 	std::mutex isLoadedMutex;  // Mutex for isLoadComplete
 	bool isLoadComplete = false;
+	bool m_bEndLoad;	// ÉçÅ[ÉhèIóπ
+	CScene::MODE m_ModeNext;
 	CLoadScreen* m_pLoadScreen;
 };
 

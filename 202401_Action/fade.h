@@ -30,6 +30,7 @@ public:
 		STATE_NONE = 0,	// 何もしていない
 		STATE_FADEOUT,	// フェードアウト
 		STATE_FADEIN,	// フェードイン
+		STATE_FADECOMPLETION,	// フェード完了
 		STATE_MAX
 	};
 

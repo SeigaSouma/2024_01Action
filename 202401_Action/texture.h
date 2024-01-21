@@ -22,6 +22,7 @@ private:
 	{
 		LPDIRECT3DTEXTURE9 pTexture;	// テクスチャのポインタ
 		D3DXIMAGE_INFO imageInfo;		// テクスチャ素材情報
+		D3DXVECTOR2 aspectratio;		// アスペクト比
 		std::string filename;			// ファイル名
 		int nFileNameLen;				// ファイル名の文字数
 	};
@@ -38,6 +39,7 @@ public:
 	int Regist(std::string file);
 	LPDIRECT3DTEXTURE9 GetAdress(int nIdx);
 	D3DXVECTOR2 GetImageSize(int nIdx);		// テクスチャ素材のサイズ取得
+	//D3DXVECTOR2 GetImageAspectRatio(int nIdx);		// テクスチャ素材のアスペクト比取得
 
 	int GetNumAll(void);		// 読み込んだ総数
 	STexture GetTextureInfo(std::string file);	// テクスチャ情報取得

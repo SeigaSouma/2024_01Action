@@ -25,21 +25,16 @@
 #include "ballast.h"
 #include "impactwave.h"
 #include "sound.h"
-#include "enemymanager.h"
-#include "bullet.h"
 #include "stage.h"
 #include "objectX.h"
 #include "instantfade.h"
 #include "fade.h"
 #include "listmanager.h"
-#include "object_circlegauge2D.h"
 #include "collisionobject.h"
 #include "limitarea.h"
-#include "beam.h"
-#include "santabag.h"
-#include "meshsphere.h"
 #include "particle.h"
 #include "MyEffekseer.h"
+#include "skillpoint.h"
 
 //==========================================================================
 // 定数定義
@@ -110,8 +105,8 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
-	m_pTargetP = NULL;								// 目標の地点
-	m_pWeaponHandle = nullptr;	// エフェクトの武器ハンドル
+	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
+	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
 
 //==========================================================================
@@ -180,6 +175,9 @@ HRESULT CPlayer::Init(void)
 	// 割り当て
 	m_List.Regist(this);
 
+	// スキルポイント生成
+	m_pSkillPoint = CSkillPoint::Create();
+
 	return S_OK;
 }
 
@@ -193,6 +191,11 @@ void CPlayer::Uninit(void)
 	{
 		//m_pShadow->Uninit();
 		m_pShadow = NULL;
+	}
+
+	if (m_pSkillPoint != nullptr)
+	{
+		m_pSkillPoint = nullptr;
 	}
 
 	// 終了処理
@@ -209,6 +212,12 @@ void CPlayer::Kill(void)
 {
 
 	my_particle::Create(GetPosition(), my_particle::TYPE_ENEMY_FADE);
+
+	if (m_pSkillPoint != nullptr)
+	{
+		m_pSkillPoint->Uninit();
+		m_pSkillPoint = nullptr;
+	}
 
 	// 影を消す
 	if (m_pShadow != NULL)
@@ -1384,8 +1393,12 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 		}
 		else
 		{
-			GetMotion()->Set(MOTION_COUNTER_ATTACK);
-			CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
+			if (GetMotion()->GetType() != MOTION_COUNTER_ATTACK)
+			{
+				GetMotion()->Set(MOTION_COUNTER_ATTACK);
+				CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
+				m_pSkillPoint->AddPoint();
+			}
 		}
 		return false;
 	}

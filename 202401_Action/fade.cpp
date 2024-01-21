@@ -98,7 +98,7 @@ HRESULT CFade::Init(void)
 	m_aObject2D->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));	// 色設定
 
 	// 最初だけ次の画面へ
-	CManager::GetInstance()->SetMode(m_ModeNext);
+	//CManager::GetInstance()->SetMode(m_ModeNext);
 
 	return S_OK;
 }
@@ -137,12 +137,9 @@ void CFade::Update(void)
 		col.a += ALPHAMOVE;
 
 		if (col.a >= 1.0f)
-		{
+		{// 目標まで行ったら
 			col.a = 1.0f;
-			m_state = STATE_FADEIN;
-
-			// 次の画面へ
-			CManager::GetInstance()->SetMode(m_ModeNext);
+			m_state = STATE_FADECOMPLETION;
 		}
 		break;
 
@@ -152,12 +149,18 @@ void CFade::Update(void)
 		col.a -= ALPHAMOVE;
 
 		if (col.a <= 0.0f)
-		{
+		{// 透明になったら
 			col.a = 0.0f;
 			m_state = STATE_NONE;
 		}
 		break;
+
+	case STATE_FADECOMPLETION:
+		m_state = STATE_FADEIN;
+		CManager::GetInstance()->SetMode(m_ModeNext);
+		break;
 	}
+
 
 	// 色設定
 	m_aObject2D->SetColor(col);
@@ -183,7 +186,7 @@ void CFade::Draw(void)
 //==========================================================================
 void CFade::SetFade(CScene::MODE mode)
 {
-	if (m_state == STATE_NONE)
+	if (m_state != STATE_FADEOUT)
 	{// 何もしていないとき
 
 		// 次のモード設定

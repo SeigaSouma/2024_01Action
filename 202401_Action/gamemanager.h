@@ -56,6 +56,7 @@ public:
 	void SetNumStage(int nStage) { m_nNumStage = nStage; }	// ステージの総数設定
 	int GetNumStage(void) { return m_nNumStage; }			// ステージの総数取得
 
+	void GameClearSettings(void);	// ゲームクリア時の設定
 	static CGameManager *Create(void);	// 生成処理
 
 private:

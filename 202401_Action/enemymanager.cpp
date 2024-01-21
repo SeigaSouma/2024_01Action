@@ -23,9 +23,7 @@
 #include "sound.h"
 #include "enemybase.h"
 #include "instantfade.h"
-#include "stagecleartext.h"
 #include "timer.h"
-#include "transferBeacon.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -155,12 +153,7 @@ void CEnemyManager::Update(void)
 
 		// 通常クリア状態にする
 		CGame::GetGameManager()->SetType(CGameManager::SCENE_MAINCLEAR);
-
-		// クリアテキスト生成
-		CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
-
-		// 転移ビーコン生成
-		CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE);
+		CGame::GetGameManager()->GameClearSettings();
 	}
 
 	// テキストの描画

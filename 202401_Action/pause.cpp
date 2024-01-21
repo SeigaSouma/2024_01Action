@@ -235,6 +235,7 @@ void CPause::Update(void)
 
 			// ゲームをリトライする
 			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_GAME);
+			return;
 			break;
 
 		case MENU_RETURNTITLE:
@@ -244,6 +245,7 @@ void CPause::Update(void)
 
 			// タイトルに戻る
 			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TITLE);
+			return;
 			break;
 		}
 	}

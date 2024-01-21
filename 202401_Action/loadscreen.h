@@ -9,7 +9,7 @@
 #define _LOADSCREEN_H_	// 二重インクルード防止
 
 #include "main.h"
-#include "object2D.h"
+#include "object2D_Anim.h"
 #include "scene.h"
 
 //==========================================================================
@@ -33,12 +33,12 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	CObject2D *GetMyObject(void);
+	CObject2D_Anim*GetMyObject(void);
 	static CLoadScreen *Create(void);
 
 private:
 
-	CObject2D *m_aObject2D;		// オブジェクト2Dのオブジェクト
+	CObject2D_Anim* m_aObject2D;		// オブジェクト2Dのオブジェクト
 };
 
 #endif

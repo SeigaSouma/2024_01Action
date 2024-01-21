@@ -7,12 +7,17 @@
 #include "loadscreen.h"
 #include "manager.h"
 #include "renderer.h"
+#include "texture.h"
 #include "object2D.h"
 
 //==========================================================================
-// マクロ定義
+// 定数定義
 //==========================================================================
-#define ALPHAMOVE	(0.025f)
+namespace
+{
+	const char* TEXTURE = "data\\TEXTURE\\load\\runningman102.png";
+}
+
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -71,7 +76,7 @@ CLoadScreen *CLoadScreen::Create(void)
 HRESULT CLoadScreen::Init(void)
 {
 	// 生成処理
-	m_aObject2D = CObject2D::Create(8);
+	m_aObject2D = CObject2D_Anim::Create(0.0f, 5, 2, 2, false);
 	if (m_aObject2D == NULL)
 	{// 失敗していたら
 		return E_FAIL;
@@ -79,7 +84,13 @@ HRESULT CLoadScreen::Init(void)
 	
 	m_aObject2D->SetSize(D3DXVECTOR2(640.0f, 360.0f));	// サイズ
 	m_aObject2D->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));	// 位置
-	m_aObject2D->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.4f));	// 色設定
+	m_aObject2D->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 色設定
+
+	// テクスチャの割り当て
+	int nIdx = CTexture::GetInstance()->Regist(TEXTURE);
+
+	// テクスチャの割り当て
+	m_aObject2D->BindTexture(nIdx);
 
 	return S_OK;
 }
@@ -94,7 +105,6 @@ void CLoadScreen::Uninit(void)
 
 		// 終了処理
 		m_aObject2D->Uninit();
-		delete m_aObject2D;
 		m_aObject2D = NULL;
 	}
 }
@@ -131,7 +141,7 @@ void CLoadScreen::Draw(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D *CLoadScreen::GetMyObject(void)
+CObject2D_Anim*CLoadScreen::GetMyObject(void)
 {
 	return m_aObject2D;
 }

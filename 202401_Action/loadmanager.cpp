@@ -9,6 +9,8 @@
 #include "renderer.h"
 #include "scene.h"
 #include "loadscreen.h"
+#include "fade.h"
+#include "instantfade.h"
 
 //==========================================================================
 // コンストラクタ
@@ -17,6 +19,9 @@ CLoadManager::CLoadManager()
 {
 	m_LoadingThread;
 	m_pLoadScreen = nullptr;
+	isLoadComplete = false;
+	m_bEndLoad = false;	// ロード終了
+	m_ModeNext = CScene::MODE_NONE;
 }
 
 //==========================================================================
@@ -112,9 +117,6 @@ void CLoadManager::ResetInternalLoad()
 		m_LoadingThread.join();
 	}
 
-	// ここでリソースの解放などを行う
-	// ...
-
 	// ロードが完了していないことを示すフラグをリセット
 	isLoadComplete = false;
 }
@@ -122,11 +124,22 @@ void CLoadManager::ResetInternalLoad()
 //==========================================================================
 // シーンのロードを開始
 //==========================================================================
-void CLoadManager::LoadScene(void)
+void CLoadManager::LoadScene(CScene::MODE mode)
 {
+	// フェード取得
+	CFade* fade = CManager::GetInstance()->GetFade();
+	m_ModeNext = mode;
+	m_bEndLoad = false;
+
 	if (m_pLoadScreen == nullptr)
 	{
 		m_pLoadScreen = CLoadScreen::Create();
+	}
+
+	if (m_LoadingThread.joinable())
+	{
+		// デタッチする前にスレッドが完了するまで待機
+		m_LoadingThread.join();
 	}
 
 	// ResetLoad 関数を呼び出して新しいシーンのロードを準備
@@ -135,18 +148,9 @@ void CLoadManager::LoadScene(void)
 	// ロードが再び始まるのでフラグをリセット
 	isLoadComplete = false;
 
-	// ロード画面を表示
-	//std::cout << "Loading..." << std::endl;
-
 	if (m_LoadingThread.joinable())
 	{
 		m_LoadingThread.join();
-	}
-
-	auto count = std::thread::hardware_concurrency();
-	if (count < 3)
-	{
-
 	}
 
     // ロード処理の開始
@@ -161,10 +165,21 @@ void CLoadManager::LoadScene(void)
 //==========================================================================
 void CLoadManager::LoadInBackground(void)
 {
+	// フェード取得
+	CFade* fade = CManager::GetInstance()->GetFade();
+
 	// ロードが再び始まるのでフラグをリセット
 	{
 		std::lock_guard<std::mutex> lock(isLoadedMutex);
 		isLoadComplete = false;
+	}
+
+	while (1)
+	{
+		if (fade->GetState() == CFade::STATE_NONE)
+		{
+			break;
+		}
 	}
 
 	try
@@ -177,13 +192,29 @@ void CLoadManager::LoadInBackground(void)
 		std::cerr << "LoadInBackground: Exception caught: " << e.what() << std::endl;
 	}
 
-	// スレッドを強制終了する例（Windows用）
-	TerminateThread(m_LoadingThread.native_handle(), 0);
-
-	// ロードが完了したらフラグをセット
+	if (m_LoadingThread.joinable())
 	{
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
-		isLoadComplete = true;
+		m_LoadingThread.join();
+	}
+
+	// スレッドを強制終了する例（Windows用）
+	//TerminateThread(m_LoadingThread.native_handle(), 0);
+
+	if (m_bEndLoad)
+	{
+		CManager::GetInstance()->GetInstantFade()->SetFade();
+	}
+	while (1)
+	{
+		if (CManager::GetInstance()->GetInstantFade()->GetState() == CInstantFade::STATE_FADECOMPLETION)
+		{
+			// ロードが完了したらフラグをセット
+			{
+				std::lock_guard<std::mutex> lock(isLoadedMutex);
+				isLoadComplete = true;
+			}
+			break;
+		}
 	}
 }
 
@@ -192,12 +223,23 @@ void CLoadManager::LoadInBackground(void)
 //==========================================================================
 void CLoadManager::Load()
 {
-	// シーンの初期化処理
-	CManager::GetInstance()->GetScene()->Init();
+	{
+		std::lock_guard<std::mutex> lock(isLoadedMutex);
 
+		// シーンの初期化処理
+		CManager::GetInstance()->GetScene()->Init();
+	}
 
 	// ロードが完了したらフラグをセット
-	isLoadComplete = true;
+	{
+		std::lock_guard<std::mutex> lock(isLoadedMutex);
+		m_bEndLoad = true;
+	}
+
+
+	//// ロードが完了したらフラグをセット
+	//std::lock_guard<std::mutex> lock(isLoadedMutex);
+	//isLoadComplete = true;
 }
 
 //==========================================================================
@@ -220,8 +262,17 @@ void CLoadManager::Draw(void)
 		// 描画開始
 		if (SUCCEEDED(pDevice->BeginScene()))
 		{
-			m_pLoadScreen->Update();
-			m_pLoadScreen->Draw();
+			if (m_pLoadScreen != nullptr)
+			{
+				m_pLoadScreen->Update();
+				m_pLoadScreen->Draw();
+			}
+
+			// フェード描画処理
+			CManager::GetInstance()->GetFade()->Draw();
+
+			// フェード描画処理
+			CManager::GetInstance()->GetInstantFade()->Draw();
 
 			// 描画終了
 			pDevice->EndScene();

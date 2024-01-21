@@ -19,6 +19,17 @@
 #include "stage.h"
 #include "map.h"
 #include "transferBeacon.h"
+#include "stagecleartext.h"
+#include "skillpoint.h"
+
+
+//==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const int POINT_WAVECLEAR = 5;		// ウェーブクリアのポイント
+}
 
 //==========================================================================
 // コンストラクタ
@@ -175,6 +186,28 @@ void CGameManager::Update(void)
 		}
 	}
 
+}
+
+//==========================================================================
+// ゲームクリア時の設定
+//==========================================================================
+void CGameManager::GameClearSettings(void)
+{
+	// クリアテキスト生成
+	CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
+
+	// 転移ビーコン生成
+	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE);
+
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
+		pPlayer->GetSkillPoint()->AddPoint(POINT_WAVECLEAR);
+	}
 }
 
 //==========================================================================

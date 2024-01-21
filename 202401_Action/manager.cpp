@@ -369,6 +369,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	m_pFade = CFade::Create();
 
+	m_pFade->SetFade(CScene::MODE_GAME);
+	//SetMode(CScene::MODE_GAME);
+
 	if (m_pFade == NULL)
 	{// 失敗していたら
 		return E_FAIL;
@@ -438,7 +441,7 @@ void CManager::SetMode(CScene::MODE mode)
 	m_pScene = CScene::Create(mode);
 
 	// シーンのロードを開始
-	GetLoadManager()->LoadScene();
+	GetLoadManager()->LoadScene(mode);
 
 	//// 初期化処理
 	//if (m_pScene != NULL)
@@ -681,6 +684,12 @@ void CManager::Update(void)
 	m_CurrentTime = timeGetTime();
 	m_fDeltaTime = (float)(m_CurrentTime - m_OldTime) / 1000;
 
+	// フェードの更新処理
+	m_pFade->Update();
+
+	// 遷移なしフェードの更新処理
+	m_pInstantFade->Update();
+
 	if (!GetLoadManager()->IsLoadComplete())
 	{
 		return;
@@ -688,16 +697,11 @@ void CManager::Update(void)
 
 	if (GetLoadManager()->IsLoadComplete())
 	{
-		// フェードの更新処理
-		m_pFade->Update();
 
 		if (!GetLoadManager()->IsLoadComplete())
 		{
 			return;
 		}
-
-		// 遷移なしフェードの更新処理
-		m_pInstantFade->Update();
 
 		// 黒フレーム
 		if (m_pBlackFrame != NULL)
@@ -729,6 +733,10 @@ void CManager::Update(void)
 		{// ポーズ中だったら
 			m_pPause->Update();
 
+			if (!GetLoadManager()->IsLoadComplete())
+			{
+				return;
+			}
 #if _DEBUG
 
 			// カメラの更新処理
