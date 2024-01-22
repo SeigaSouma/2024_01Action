@@ -32,6 +32,8 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
+	void Kill(void);
+
 	static CDamagePoint* Create(MyLib::Vector3 pos, int nDamage);
 
 private:

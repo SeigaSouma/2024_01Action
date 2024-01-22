@@ -19,6 +19,7 @@ namespace
 	const float SIZE_NUMBER = 20.0f;	// サイズ
 	const int MAX_DIGIT = 3;			// 最大桁
 	const float MAX_LIFE = 0.7f;		// 最大寿命
+	const float LIFE_DOWNALPHA = 0.1f;	// 透明度減算寿命
 	const float VELOCITY_UP = 40.0f;	// 上昇速度
 }
 
@@ -96,6 +97,20 @@ void CDamagePoint::Uninit(void)
 	Release();
 }
 
+void CDamagePoint::Kill(void)
+{
+	// 数字のオブジェクトの終了処理
+	if (m_apNumber != nullptr)
+	{
+		m_apNumber->Release();
+		delete m_apNumber;
+		m_apNumber = nullptr;
+	}
+
+	// 開放処理
+	Release();
+}
+
 //==========================================================================
 // 更新処理
 //==========================================================================
@@ -112,18 +127,21 @@ void CDamagePoint::Update(void)
 	m_apNumber->SetPosition(GetPosition());
 	m_apNumber->Update();
 
+	// 色設定
+	if (m_fLife <= LIFE_DOWNALPHA)
+	{
+		D3DXCOLOR col = m_apNumber->GetColor();
+		col.a = m_fLife / LIFE_DOWNALPHA;
+		m_apNumber->SetColor(col);
+	}
+
 	// 寿命減算
 	m_fLife -= deltatime;
 	if (m_fLife <= 0.0f)
 	{
-		Uninit();
+		Kill();
 		return;
 	}
-
-	// 色設定
-	D3DXCOLOR col = m_apNumber->GetColor();
-	col.a = m_fLife / MAX_LIFE;
-	m_apNumber->SetColor(col);
 }
 
 //==========================================================================

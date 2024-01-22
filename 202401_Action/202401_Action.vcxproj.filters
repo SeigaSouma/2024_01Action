@@ -103,6 +103,12 @@
     <Filter Include="ヘッダー ファイル\load">
       <UniqueIdentifier>{cd94529c-3417-4fdf-b366-4b02298a7678}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\skilltree">
+      <UniqueIdentifier>{5892a295-d1a3-4e18-85ae-0e1386009c1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\skilltree">
+      <UniqueIdentifier>{d20c49ff-6a6c-498f-883b-024cec978920}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -396,11 +402,23 @@
     <ClCompile Include="damagepoint.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="skilltree_icon.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
     <ClCompile Include="skilltree_obj.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\skilltree</Filter>
     </ClCompile>
     <ClCompile Include="skilltree_screen.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="skilltree.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="skilltree_ability.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="skilltree_cursor.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -701,11 +719,23 @@
     <ClInclude Include="damagepoint.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="skilltree_icon.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
     <ClInclude Include="skilltree_obj.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\skilltree</Filter>
     </ClInclude>
     <ClInclude Include="skilltree_screen.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_ability.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_cursor.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

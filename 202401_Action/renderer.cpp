@@ -183,26 +183,35 @@ void CRenderer::Draw(void)
 		// 現在のビューポートを取得
 		m_pD3DDevice->GetViewport(&viewportDef);
 
-		// 全ての描画
-		CObject::DrawAll();
-
-		// カメラの設定
-		CManager::GetInstance()->GetCamera()->SetCamera();
-
-		// デバッグ表示の描画処理
-		CManager::GetInstance()->GetDebugProc()->Draw();
-
-		// テキストの設定
-		CDebugProc::SetText();
-
-		// ポーズ描画処理
-		if (bDisp)
+		if (CManager::GetInstance()->IsLoadComplete())
 		{
-			CManager::GetInstance()->GetPause()->Draw();
-		}
+			// 全ての描画
+			CObject::DrawAll();
 
-		// 黒フレーム
-		CManager::GetInstance()->GetBlackFrame()->Draw();
+			// カメラの設定
+			CManager::GetInstance()->GetCamera()->SetCamera();
+
+			// デバッグ表示の描画処理
+			CManager::GetInstance()->GetDebugProc()->Draw();
+
+			// テキストの設定
+			CDebugProc::SetText();
+
+			// ポーズ描画処理
+			if (bDisp)
+			{
+				CManager::GetInstance()->GetPause()->Draw();
+			}
+
+			// 黒フレーム
+			CManager::GetInstance()->GetBlackFrame()->Draw();
+		}
+		else
+			// ロードマネージャの更新
+		
+		{
+			GetLoadManager()->Draw();
+		}
 
 		// 遷移なしフェード描画処理
 		CManager::GetInstance()->GetInstantFade()->Draw();

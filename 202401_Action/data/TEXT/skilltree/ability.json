@@ -1,0 +1,20 @@
+{
+    "skillcategorys": [
+        {
+            "categorytype": 0,
+            "skilltypes": [
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0
+                        },
+                        {
+                            "stage": 1
+                        }
+                    ],
+                    "typeName": "Stamina"
+                }
+            ]
+        }
+    ]
+}

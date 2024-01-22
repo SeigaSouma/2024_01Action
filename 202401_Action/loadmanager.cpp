@@ -20,7 +20,6 @@ CLoadManager::CLoadManager()
 	m_LoadingThread;
 	m_pLoadScreen = nullptr;
 	isLoadComplete = false;
-	m_bEndLoad = false;	// ロード終了
 	m_ModeNext = CScene::MODE_NONE;
 }
 
@@ -98,9 +97,6 @@ void CLoadManager::UnLoad(void)
 
 void CLoadManager::ResetLoad()
 {
-	// ロックして安全にリセット処理を行う
-	//std::lock_guard<std::mutex> lock(isLoadedMutex);
-
 	// ResetInternalLoad 関数を呼び出してロードをリセット
 	ResetInternalLoad();
 
@@ -110,10 +106,6 @@ void CLoadManager::ResetInternalLoad()
 {
 	// ロックして安全にリセット処理を行う
 	std::lock_guard<std::mutex> lock(isLoadedMutex);
-
-	// ここで必要なリソースの解放やスレッドの終了処理などを行います
-	// 以下は例として、スレッドの終了処理として join() を使っていますが、
-	// 実際のプロジェクトではスレッドプールの管理やリソースの解放処理を追加してください。
 
 	// スレッドが動作中なら終了を待つ
 	if (m_LoadingThread.joinable())
@@ -130,10 +122,7 @@ void CLoadManager::ResetInternalLoad()
 //==========================================================================
 void CLoadManager::LoadScene(CScene::MODE mode)
 {
-	// フェード取得
-	CFade* fade = CManager::GetInstance()->GetFade();
 	m_ModeNext = mode;
-	m_bEndLoad = false;
 
 	if (m_pLoadScreen == nullptr)
 	{
@@ -150,7 +139,10 @@ void CLoadManager::LoadScene(CScene::MODE mode)
 	ResetLoad();
 
 	// ロードが再び始まるのでフラグをリセット
-	isLoadComplete = false;
+	{
+		std::lock_guard<std::mutex> lock(isLoadedMutex);
+		isLoadComplete = false;
+	}\
 
 	if (m_LoadingThread.joinable())
 	{
@@ -169,21 +161,10 @@ void CLoadManager::LoadScene(CScene::MODE mode)
 //==========================================================================
 void CLoadManager::LoadInBackground(void)
 {
-	// フェード取得
-	CFade* fade = CManager::GetInstance()->GetFade();
-
 	// ロードが再び始まるのでフラグをリセット
 	{
 		std::lock_guard<std::mutex> lock(isLoadedMutex);
 		isLoadComplete = false;
-	}
-
-	while (1)
-	{
-		if (fade->GetState() == CFade::STATE_NONE)
-		{
-			break;
-		}
 	}
 
 	try
@@ -192,7 +173,7 @@ void CLoadManager::LoadInBackground(void)
 		Load();
 	}
 	catch (const std::exception& e)
-	{
+	{// 例外
 		return;
 	}
 
@@ -201,24 +182,15 @@ void CLoadManager::LoadInBackground(void)
 		m_LoadingThread.join();
 	}
 
-	// スレッドを強制終了する例（Windows用）
-	//TerminateThread(m_LoadingThread.native_handle(), 0);
-
-	if (m_bEndLoad)
+	// ロードが完了したらフラグをセット
 	{
-		CManager::GetInstance()->GetInstantFade()->SetFade();
+		std::lock_guard<std::mutex> lock(isLoadedMutex);
+		isLoadComplete = true;
 	}
-	while (1)
+
+	if (m_LoadingThread.joinable())
 	{
-		if (CManager::GetInstance()->GetInstantFade()->GetState() == CInstantFade::STATE_FADECOMPLETION)
-		{
-			// ロードが完了したらフラグをセット
-			{
-				std::lock_guard<std::mutex> lock(isLoadedMutex);
-				isLoadComplete = true;
-			}
-			break;
-		}
+		m_LoadingThread.join();
 	}
 }
 
@@ -227,18 +199,9 @@ void CLoadManager::LoadInBackground(void)
 //==========================================================================
 void CLoadManager::Load()
 {
-	{
-		//std::lock_guard<std::mutex> lock(isLoadedMutex);
-
-		// シーンの初期化処理
-		CManager::GetInstance()->GetScene()->Init();
-	}
-
-	// ロードが完了したらフラグをセット
-	{
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
-		m_bEndLoad = true;
-	}
+	
+	// シーンの初期化処理
+	CManager::GetInstance()->GetScene()->Init();
 }
 
 //==========================================================================
@@ -246,38 +209,9 @@ void CLoadManager::Load()
 //==========================================================================
 void CLoadManager::Draw(void)
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-
-	// ロードが完了していない場合はデバイスアクセスをロック
-	if (!isLoadComplete)
+	if (m_pLoadScreen != nullptr)
 	{
-		// ロックを使ってスレッドセーフにデバイスにアクセス
-		//std::lock_guard<std::mutex> lock(isLoadedMutex);
-
-		// 画面クリア(バックバッファとZバッファのクリア)
-		pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
-
-		// 描画開始
-		if (SUCCEEDED(pDevice->BeginScene()))
-		{
-			if (m_pLoadScreen != nullptr)
-			{
-				m_pLoadScreen->Draw();
-			}
-
-			// フェード描画処理
-			CManager::GetInstance()->GetFade()->Draw();
-
-			// フェード描画処理
-			CManager::GetInstance()->GetInstantFade()->Draw();
-
-			// 描画終了
-			pDevice->EndScene();
-		}
-
-		// バックバッファとフロントバッファの入れ替え
-		pDevice->Present(NULL, NULL, NULL, NULL);
+		m_pLoadScreen->Draw();
 	}
 }
 

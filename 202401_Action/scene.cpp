@@ -117,10 +117,10 @@ HRESULT CScene::Init(void)
 	//**********************************
 	// マップの生成
 	//**********************************
-	if (FAILED(MyMap::Create("data\\TEXT\\map\\info.txt")))
-	{// 失敗した場合
-		return E_FAIL;
-	}
+	//if (FAILED(MyMap::Create("data\\TEXT\\map\\info.txt")))
+	//{// 失敗した場合
+	//	return E_FAIL;
+	//}
 
 	//**********************************
 	// 起伏の地面

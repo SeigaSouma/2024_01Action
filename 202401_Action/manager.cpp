@@ -29,6 +29,11 @@
 #include "MyEffekseer.h"
 #include "loadmanager.h"
 
+namespace
+{
+	const float TIME_LOAD = 2.0f;	// ロード時間
+}
+
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
@@ -65,6 +70,15 @@ CManager::CManager()
 	m_OldTime = 0;					// 過去の時間
 	m_fDeltaTime = 0.0f;			// 経過時間
 	m_nNumPlayer = 0;				// プレイヤーの数
+	m_fLoadTimer = 0.0f;			// ロードのタイマー
+	m_bLoadComplete = false;		// ロード完了のフラグ
+
+	// ロードフラグリセット
+	m_bLoadComplete = false;
+
+	// ロードのフェード設定フラグ
+	m_bLoadFadeSet = false;
+	m_bNowLoading = false;				// ロード完了のフラグ
 }
 
 //==========================================================================
@@ -440,6 +454,16 @@ void CManager::SetMode(CScene::MODE mode)
 	// 生成処理
 	m_pScene = CScene::Create(mode);
 
+	// ロードのタイマーリセット
+	m_fLoadTimer = 0.0f;
+
+	// ロードフラグリセット
+	m_bLoadComplete = false;
+
+	m_bLoadFadeSet =false;				// ロードのフェード設定フラグ
+
+	m_bNowLoading = true;
+
 	// シーンのロードを開始
 	GetLoadManager()->LoadScene(mode);
 
@@ -684,19 +708,55 @@ void CManager::Update(void)
 	m_CurrentTime = timeGetTime();
 	m_fDeltaTime = (float)(m_CurrentTime - m_OldTime) / 1000;
 
+
+	if (m_bNowLoading)
+	{
+		// ロード中
+		if (!m_bLoadComplete)
+		{
+			// ロード時間加算
+			m_fLoadTimer += m_fDeltaTime;
+		}
+
+		bool bComplete = GetLoadManager()->IsLoadComplete();
+
+		if (bComplete &&
+			m_fLoadTimer >= TIME_LOAD &&
+			!m_bLoadFadeSet)
+		{// ロード完了の条件完了
+
+			CManager::GetInstance()->GetInstantFade()->SetFade();
+			m_bLoadFadeSet = true;
+		}
+
+		if (m_bLoadFadeSet)
+		{
+			if (m_pInstantFade->GetState() == CInstantFade::STATE_FADECOMPLETION)
+			{
+				m_bLoadComplete = true;
+				m_bNowLoading = false;
+			}
+		}
+
+		// ロードマネージャの更新
+		if (!m_bLoadComplete)
+		{
+			GetLoadManager()->Update();
+		}
+	}
+
 	// フェードの更新処理
 	m_pFade->Update();
 
 	// 遷移なしフェードの更新処理
 	m_pInstantFade->Update();
 
-	if (!GetLoadManager()->IsLoadComplete())
+	if (!m_bLoadComplete)
 	{
-		GetLoadManager()->Update();
 		return;
 	}
 
-	if (GetLoadManager()->IsLoadComplete())
+	if (m_bLoadComplete)
 	{
 		// 黒フレーム
 		if (m_pBlackFrame != NULL)
@@ -801,14 +861,6 @@ void CManager::Update(void)
 			m_pScene->Update();
 		}
 	}
-	else
-	{
-	// デバッグ表示
-	GetDebugProc()->Print(
-		"------------------[ 起伏エディット情報 ]------------------\n"
-		"！！！ロード中！！！\n"
-		"------------------[ 起伏エディット情報 ]------------------\n");
-	}
 }
 
 //==========================================================================
@@ -816,11 +868,11 @@ void CManager::Update(void)
 //==========================================================================
 void CManager::Draw(void)
 {
-	if (!GetLoadManager()->IsLoadComplete())
+	/*if (!m_bLoadComplete)
 	{
 		GetLoadManager()->Draw();
 		return;
-	}
+	}*/
 
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = m_pRenderer->GetDevice();

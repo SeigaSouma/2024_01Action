@@ -163,10 +163,8 @@ void CObject2D_Anim::SetVtx(void)
 	// 頂点情報へのポインタ
 	VERTEX_2D *pVtx;
 
-	LPDIRECT3DVERTEXBUFFER9 vtxBuff = GetVtxBuff();
-
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	GetVtxBuff()->Lock(0, 0, (void**)&pVtx, 0);
 
 	// テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(m_nPatternAnim * m_fSplitValueU,			(m_nPatternAnim / m_nDivisionU) * m_fSplitValueV);
@@ -175,5 +173,5 @@ void CObject2D_Anim::SetVtx(void)
 	pVtx[3].tex = D3DXVECTOR2((m_nPatternAnim + 1) * m_fSplitValueU,	(m_nPatternAnim / m_nDivisionU) * m_fSplitValueV + m_fSplitValueV);
 
 	// 頂点バッファをアンロックロック
-	vtxBuff->Unlock();
+	GetVtxBuff()->Unlock();
 }

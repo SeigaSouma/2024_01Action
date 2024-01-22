@@ -60,7 +60,6 @@ private:
 
 	std::mutex isLoadedMutex;  // Mutex for isLoadComplete
 	bool isLoadComplete = false;
-	bool m_bEndLoad;	// ÉçÅ[ÉhèIóπ
 	CScene::MODE m_ModeNext;
 	CLoadScreen* m_pLoadScreen;
 };

@@ -1,10 +1,10 @@
 //=============================================================================
 // 
-// スキルツリー画面ト処理 [skilltree_screen.cpp]
+// スキルツリーアイコン処理 [skilltree_icon.cpp]
 // Author : 相馬靜雅
 // 
 //=============================================================================
-#include "skilltree_screen.h"
+#include "skilltree_icon.h"
 #include "renderer.h"
 #include "texture.h"
 #include "manager.h"
@@ -18,21 +18,40 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\sccreen_01.png";
+	const char* TEXTURE[] =
+	{
+		"data\\TEXTURE\\skilltree\\icon_life.png",
+		"data\\TEXTURE\\skilltree\\icon_power.png",
+		"data\\TEXTURE\\skilltree\\icon_stamina.png",
+	};
+	const float SIZE_ICON = 50.0f;		// アイコンサイズ
+	const float TIME_FADE = 0.5f;	// フェードアウト時間
 }
+
+//==========================================================================
+// 関数ポインタ
+//==========================================================================
+CSkillTree_Icon::STATE_FUNC CSkillTree_Icon::m_StateFuncList[] =
+{
+	&CSkillTree_Icon::StateNone,		// なにもなし
+};
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CSkillTree_Screen::CSkillTree_Screen(int nPriority) : CObject2D(nPriority)
+CSkillTree_Icon::CSkillTree_Icon(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
+	m_fStateTime = 0;				// 状態遷移カウンター
+	m_state = STATE_NONE;			// 状態
+	m_Mastering = MASTERING_YET;	// 習得状態
+	m_SkillIconInfo = sSkillIcon();	// スキルアイコン
 }
 
 //==========================================================================
 // デストラクタ
 //==========================================================================
-CSkillTree_Screen::~CSkillTree_Screen()
+CSkillTree_Icon::~CSkillTree_Icon()
 {
 
 }
@@ -40,15 +59,15 @@ CSkillTree_Screen::~CSkillTree_Screen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Screen* CSkillTree_Screen::Create(void)
+CSkillTree_Icon* CSkillTree_Icon::Create(void)
 {
 	// 生成用のオブジェクト
-	CSkillTree_Screen* pEffect = NULL;
+	CSkillTree_Icon* pEffect = nullptr;
 
 	// メモリの確保
-	pEffect = DEBUG_NEW CSkillTree_Screen;
+	pEffect = DEBUG_NEW CSkillTree_Icon;
 
-	if (pEffect != NULL)
+	if (pEffect != nullptr)
 	{
 		// 初期化処理
 		pEffect->Init();
@@ -60,7 +79,7 @@ CSkillTree_Screen* CSkillTree_Screen::Create(void)
 //==================================================================================
 // 初期化処理
 //==================================================================================
-HRESULT CSkillTree_Screen::Init(void)
+HRESULT CSkillTree_Icon::Init(void)
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -73,12 +92,15 @@ HRESULT CSkillTree_Screen::Init(void)
 	SetType(TYPE_OBJECT2D);
 
 	// テクスチャの割り当て
-	int nIdx = CTexture::GetInstance()->Regist(TEXTURE);
+	int nIdx = CTexture::GetInstance()->Regist(TEXTURE[0]);
 	BindTexture(nIdx);
 
 	// サイズ設定
-	SetSize(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
+	SetSize(D3DXVECTOR2(SIZE_ICON, SIZE_ICON));
 	SetSizeOrigin(GetSize());
+
+	// 状態カウンター
+	m_fStateTime = 0.0f;
 
 	// 位置設定
 	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
@@ -89,7 +111,7 @@ HRESULT CSkillTree_Screen::Init(void)
 //==================================================================================
 // 終了処理
 //==================================================================================
-void CSkillTree_Screen::Uninit(void)
+void CSkillTree_Icon::Uninit(void)
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -98,16 +120,35 @@ void CSkillTree_Screen::Uninit(void)
 //==================================================================================
 // 更新処理
 //==================================================================================
-void CSkillTree_Screen::Update(void)
+void CSkillTree_Icon::Update(void)
 {
+	// 状態別処理
+	(this->*(m_StateFuncList[m_state]))();
+
+	if (IsDeath())
+	{
+		return;
+	}
+
+	// アイコンの位置に設定
+	SetPosition(m_SkillIconInfo.pos);
+
 	// 頂点座標の設定
 	SetVtx();
 }
 
 //==================================================================================
+// 何もない状態
+//==================================================================================
+void CSkillTree_Icon::StateNone(void)
+{
+
+}
+
+//==================================================================================
 // 描画処理
 //==================================================================================
-void CSkillTree_Screen::Draw(void)
+void CSkillTree_Icon::Draw(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -127,9 +168,25 @@ void CSkillTree_Screen::Draw(void)
 }
 
 //==========================================================================
+// アイコン情報設定
+//==========================================================================
+void CSkillTree_Icon::SetIconInfo(sSkillIcon iconinfo)
+{
+	m_SkillIconInfo = iconinfo;
+}
+
+//==========================================================================
+// アイコン情報取得
+//==========================================================================
+CSkillTree_Icon::sSkillIcon CSkillTree_Icon::GetIconInfo(void)
+{
+	return m_SkillIconInfo;
+}
+
+//==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CSkillTree_Screen::SetVtx(void)
+void CSkillTree_Icon::SetVtx(void)
 {
 	// 頂点設定
 	CObject2D::SetVtx();

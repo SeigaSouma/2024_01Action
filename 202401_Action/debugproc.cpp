@@ -234,6 +234,7 @@ void CDebugProc::Print(const char *fmt, ...)
 //==========================================================================
 void CDebugProc::SetText(void)
 {
+	return;
 	// デバッグの情報取得
 	CDebugProc *pDebug = CManager::GetInstance()->GetDebugProc();
 

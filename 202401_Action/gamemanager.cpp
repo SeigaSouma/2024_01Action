@@ -22,6 +22,8 @@
 #include "stagecleartext.h"
 #include "skillpoint.h"
 #include "skilltree_obj.h"
+#include "skilltree.h"
+#include "skilltree_ability.h"
 
 
 //==========================================================================
@@ -256,6 +258,8 @@ void CGameManager::SceneEnhance(void)
 
 	// スキルツリーオブジェクト生成
 	CSkillTree_Obj::Create();
+
+	CSkillTree_Ability::Create();
 }
 
 //==========================================================================

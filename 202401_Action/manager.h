@@ -87,6 +87,7 @@ public:
 	bool IsWireframe(void) { return m_bWireframe; }		// ワイヤーフレーム
 	bool IsHitStop(void) { return m_bHitStop; }			// ワイヤーフレーム
 	CScene::MODE GetOldMode(void) { return m_OldMode; }	// 前回のモード取得
+	bool IsLoadComplete(void) { return m_bLoadComplete; }
 private:
 
 	CRenderer *m_pRenderer;				// レンダラーのオブジェクト
@@ -116,6 +117,10 @@ private:
 	DWORD m_OldTime;					// 過去の時間
 	float m_fDeltaTime;					// 経過時間
 	int m_nNumPlayer;					// プレイヤーの数
+	float m_fLoadTimer;					// ロードのタイマー
+	bool m_bLoadComplete;				// ロード完了のフラグ
+	bool m_bLoadFadeSet;				// ロードのフェード設定フラグ
+	bool m_bNowLoading;				// ロード完了のフラグ
 
 	static CManager *m_pManager;	// マネージャのオブジェクト
 };

@@ -244,6 +244,10 @@
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="skillpoint.cpp" />
+    <ClCompile Include="skilltree.cpp" />
+    <ClCompile Include="skilltree_ability.cpp" />
+    <ClCompile Include="skilltree_cursor.cpp" />
+    <ClCompile Include="skilltree_icon.cpp" />
     <ClCompile Include="skilltree_obj.cpp" />
     <ClCompile Include="skilltree_screen.cpp" />
     <ClCompile Include="sound.cpp" />
@@ -347,6 +351,10 @@
     <ClInclude Include="score.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="skillpoint.h" />
+    <ClInclude Include="skilltree.h" />
+    <ClInclude Include="skilltree_ability.h" />
+    <ClInclude Include="skilltree_cursor.h" />
+    <ClInclude Include="skilltree_icon.h" />
     <ClInclude Include="skilltree_obj.h" />
     <ClInclude Include="skilltree_screen.h" />
     <ClInclude Include="sound.h" />

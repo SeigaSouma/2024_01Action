@@ -11,10 +11,9 @@
 #include "sound.h"
 #include "calculation.h"
 #include "game.h"
-#include "fade.h"
-#include "instantfade.h"
 #include "player.h"
 #include "input.h"
+#include "skilltree.h"
 
 //==========================================================================
 // 定数定義
@@ -120,12 +119,6 @@ void CSkillTree_Obj::Update(void)
 
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
-
-	// 遷移なしフェード取得
-	if (CManager::GetInstance()->GetInstantFade()->GetState() == CInstantFade::STATE_FADECOMPLETION)
-	{
-		Uninit();
-	}
 }
 
 //==========================================================================
@@ -166,6 +159,9 @@ void CSkillTree_Obj::CollisionPlayer(void)
 		{
 			// スキルツリーに変更
 			CGame::GetGameManager()->SetType(CGameManager::SCENE_SKILLTREE);
+
+			// スキルツリー生成
+			CSkillTree::Create();
 		}
 	}
 }
