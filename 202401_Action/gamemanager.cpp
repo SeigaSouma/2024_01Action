@@ -21,6 +21,7 @@
 #include "transferBeacon.h"
 #include "stagecleartext.h"
 #include "skillpoint.h"
+#include "skilltree_obj.h"
 
 
 //==========================================================================
@@ -252,6 +253,9 @@ void CGameManager::SceneEnhance(void)
 
 	// 転移ビーコン生成
 	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_GAMEMAIN);
+
+	// スキルツリーオブジェクト生成
+	CSkillTree_Obj::Create();
 }
 
 //==========================================================================

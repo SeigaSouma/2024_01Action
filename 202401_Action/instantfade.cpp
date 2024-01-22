@@ -171,7 +171,7 @@ void CInstantFade::Draw(void)
 //==========================================================================
 void CInstantFade::SetFade(D3DXCOLOR FadeColor, int nDuration)
 {
-	if (m_state == STATE_NONE)
+	//if (m_state == STATE_NONE)
 	{// 何もしていないとき
 
 		m_nDuration = nDuration;	// フェードまでの時間

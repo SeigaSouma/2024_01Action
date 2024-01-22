@@ -21,7 +21,7 @@
 //==========================================================================
 namespace
 {
-	const char* BAGMODEL = "data\\MODEL\\compactcore_01.x";
+	const char* BAGMODEL = "data\\MODEL\\skilltree_obj.x";
 	const MyLib::Vector3 POSITION = MyLib::Vector3(0.0f, 0.0f, 1000.0f);	// îºåa
 	const float RADIUS = 80.0f;	// îºåa
 	const float TIME_DMG = static_cast<float>(30) / static_cast<float>(mylib_const::DEFAULT_FPS);		// É_ÉÅÅ[ÉWéûä‘ 

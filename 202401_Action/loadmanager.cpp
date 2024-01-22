@@ -188,6 +188,7 @@ void CLoadManager::LoadInBackground(void)
 
 	try
 	{
+		// 読み込み処理
 		Load();
 	}
 	catch (const std::exception& e)
@@ -227,7 +228,7 @@ void CLoadManager::LoadInBackground(void)
 void CLoadManager::Load()
 {
 	{
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
+		//std::lock_guard<std::mutex> lock(isLoadedMutex);
 
 		// シーンの初期化処理
 		CManager::GetInstance()->GetScene()->Init();
@@ -252,7 +253,7 @@ void CLoadManager::Draw(void)
 	if (!isLoadComplete)
 	{
 		// ロックを使ってスレッドセーフにデバイスにアクセス
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
+		//std::lock_guard<std::mutex> lock(isLoadedMutex);
 
 		// 画面クリア(バックバッファとZバッファのクリア)
 		pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
