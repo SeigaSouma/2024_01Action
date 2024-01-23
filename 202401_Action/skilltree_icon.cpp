@@ -130,9 +130,6 @@ void CSkillTree_Icon::Update(void)
 		return;
 	}
 
-	// アイコンの位置に設定
-	SetPosition(m_SkillIconInfo.pos);
-
 	// 頂点座標の設定
 	SetVtx();
 }

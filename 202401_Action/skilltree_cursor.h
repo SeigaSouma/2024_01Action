@@ -31,7 +31,18 @@ public:
 	static CSkillTree_Cursor* Create(int nIdx);
 private:
 
+	//=============================
+	// メンバ関数
+	//=============================
+	void CollisionIcon(void);	// アイコンとの当たり判定
+
+	//=============================
+	// メンバ変数
+	//=============================
 	int m_nMyPlayerIdx;		// プレイヤーインデックス番号
+	MyLib::Vector3 m_WorldPos;	// 絶対座標
+	MyLib::Vector3 m_DestPos;	// 目標座標
+	bool m_bHitIcon;			// アイコンの接触フラグ
 };
 
 #endif

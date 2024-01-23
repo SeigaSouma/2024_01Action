@@ -27,6 +27,10 @@ public:
 		SKILLCATEGORY_MAX
 	};
 
+
+	//=============================
+	// 構造体定義
+	//=============================
 	// スキルのステージ
 	struct sSkillStage
 	{
@@ -153,9 +157,7 @@ public:
 				j["skilltypes"].emplace_back(jsonData);
 			}
 		}
-
 	};
-
 
 	// JSONからの読み込み
 	void from_json(const json& j)
@@ -165,7 +167,7 @@ public:
 		{
 			sSkillCategory loacalcategory;
 			loacalcategory.from_json(ability);
-			m_Ability.push_back(loacalcategory);
+			m_SkillCategory.push_back(loacalcategory);
 		}
 	}
 
@@ -176,7 +178,7 @@ public:
 		j["skillcategorys"] = json::array(); // 空の配列を作成
 
 		// スキルのカテゴリー
-		for (const auto& ability : m_Ability)
+		for (const auto& ability : m_SkillCategory)
 		{
 			json jsonData;
 			ability.to_json(jsonData);
@@ -184,7 +186,6 @@ public:
 			j["skillcategorys"].emplace_back(jsonData);
 		}
 	}
-
 	
 
 	CSkillTree_Ability();
@@ -199,14 +200,14 @@ public:
 	void SaveJson(void);	// Jsonへのセーブ
 
 	static CSkillTree_Ability* GetInstance() { return m_pThisPtr; }	// インスタンス取得
-	static CSkillTree_Ability* Create(void);
+	static CSkillTree_Ability* Create(void);	// 生成処理
 
 private:
 
 	//=============================
 	// メンバ変数
 	//=============================
-	std::vector<sSkillCategory> m_Ability;
+	std::vector<sSkillCategory> m_SkillCategory;
 	static CSkillTree_Ability* m_pThisPtr;	// 自身のポインタ
 };
 

@@ -25,6 +25,11 @@ namespace
 }
 
 //==========================================================================
+// 静的メンバ変数定義
+//==========================================================================
+CSkillTree* CSkillTree::m_pThisPtr = nullptr;	// 自身のポインタ
+
+//==========================================================================
 // 関数ポインタ
 //==========================================================================
 CSkillTree::STATE_FUNC CSkillTree::m_StateFuncList[] =
@@ -43,7 +48,7 @@ CSkillTree::CSkillTree(int nPriority) : CObject(nPriority)
 	m_fAlpha = 0.0f;		// 不透明度
 	m_fStateTime = 0.0f;	// 状態遷移カウンター
 	m_state = STATE_NONE;	// 状態
-	m_SkillIcon.clear();	// スキルアイコン
+	m_SkillInfo.clear();	// スキルアイコン
 	m_pScreen = nullptr;	// スクリーンのオブジェクト
 	m_pCursor = nullptr;	// カーソルのオブジェクト
 }
@@ -61,26 +66,22 @@ CSkillTree::~CSkillTree()
 //==========================================================================
 CSkillTree *CSkillTree::Create(void)
 {
-	// 生成用のオブジェクト
-	CSkillTree *pTitleScreen = NULL;
+	if (m_pThisPtr == NULL)
+	{// まだ生成していなかったら
 
-	if (pTitleScreen == NULL)
-	{// NULLだったら
+		// インスタンス生成
+		m_pThisPtr = DEBUG_NEW CSkillTree;
 
-		// メモリの確保
-		pTitleScreen = DEBUG_NEW CSkillTree;
-
-		if (pTitleScreen != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pTitleScreen->Init();
-		}
-
-		return pTitleScreen;
+		// 初期化処理
+		m_pThisPtr->Init();
+	}
+	else
+	{
+		// インスタンス取得
+		m_pThisPtr->GetInstance();
 	}
 
-	return NULL;
+	return m_pThisPtr;
 }
 
 //==========================================================================
@@ -106,11 +107,11 @@ HRESULT CSkillTree::Init(void)
 		info.texID = 0;
 		info.pos = MyLib::Vector3(200.0f+i * 200.0f, 360.0f, 0.0f);
 
-		m_SkillIcon.push_back(info);
+		m_SkillInfo.push_back(info);
 	}
 #endif
 
-	for (auto const& iconinfo : m_SkillIcon)
+	for (auto const& iconinfo : m_SkillInfo)
 	{
 		int nIdx = static_cast<int>(m_pSkillIcon.size());
 		m_pSkillIcon.push_back(nullptr);
@@ -171,6 +172,17 @@ void CSkillTree::Update(void)
 {
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	int i = 0;
+	for (auto const& iconinfo : m_SkillInfo)
+	{
+		// アイコンの位置設定
+		m_pSkillIcon[i]->SetPosition(pos + iconinfo.pos);
+		i++;
+	}
 }
 
 
@@ -283,3 +295,10 @@ void CSkillTree::Draw(void)
 	
 }
 
+//==========================================================================
+// アイコン取得
+//==========================================================================
+std::vector<CSkillTree_Icon*> CSkillTree::GetIcon(void) const
+{
+	return m_pSkillIcon;
+}

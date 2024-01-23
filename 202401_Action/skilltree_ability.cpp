@@ -71,10 +71,17 @@ CSkillTree_Ability* CSkillTree_Ability::Create(void)
 //==================================================================================
 HRESULT CSkillTree_Ability::Init(void)
 {
-	m_Ability.push_back(sSkillCategory());
+#if 1
+
+	// Jsonへ書き込み
+	LoadJson();
+
+#else
+
+	m_SkillCategory.push_back(sSkillCategory());
 
 	// 現在扱うカテゴリーのポインタ
-	sSkillCategory* pCategory = &m_Ability[SKILLCATEGORY_BUFF];
+	sSkillCategory* pCategory = &m_SkillCategory[SKILLCATEGORY_BUFF];
 
 	// 列挙設定
 	pCategory->categoryType = SKILLCATEGORY_BUFF;
@@ -91,11 +98,11 @@ HRESULT CSkillTree_Ability::Init(void)
 	pCategory->type.back().stage.push_back(sSkillStage());
 	pCategory->type.back().stage.back().stage = 1;
 
-
+	// Jsonへ書き込み
 	SaveJson();
-
+#endif
 	//// 現在扱うカテゴリーのポインタ
-	//pCategory = &m_Ability[SKILLCATEGORY_UNLOCK];
+	//pCategory = &m_SkillCategory[SKILLCATEGORY_UNLOCK];
 
 	//// 列挙設定
 	//pCategory->categoryType = SKILLCATEGORY_UNLOCK;

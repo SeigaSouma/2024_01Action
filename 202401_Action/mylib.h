@@ -67,6 +67,11 @@ namespace MyLib
 			return Vector3(x - o, y - o, z - o);
 		}
 
+		inline Vector3 operator - () const
+		{
+			return Vector3(-x, -y, -z);
+		}
+
 		inline Vector3 operator - (const Vector3& o) const
 		{
 			return Vector3(x - o.x, y - o.y, z - o.z);

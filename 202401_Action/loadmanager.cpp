@@ -105,7 +105,7 @@ void CLoadManager::ResetLoad()
 void CLoadManager::ResetInternalLoad()
 {
 	// ロックして安全にリセット処理を行う
-	std::lock_guard<std::mutex> lock(isLoadedMutex);
+	//std::lock_guard<std::mutex> lock(isLoadedMutex);
 
 	// スレッドが動作中なら終了を待つ
 	if (m_LoadingThread.joinable())
@@ -140,14 +140,10 @@ void CLoadManager::LoadScene(CScene::MODE mode)
 
 	// ロードが再び始まるのでフラグをリセット
 	{
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
-		isLoadComplete = false;
-	}\
-
-	if (m_LoadingThread.joinable())
-	{
-		m_LoadingThread.join();
+		//std::lock_guard<std::mutex> lock(isLoadedMutex);
+		//isLoadComplete = false;
 	}
+	isLoadComplete = false;
 
     // ロード処理の開始
 	m_LoadingThread = std::thread(&CLoadManager::LoadInBackground, this);
@@ -163,9 +159,10 @@ void CLoadManager::LoadInBackground(void)
 {
 	// ロードが再び始まるのでフラグをリセット
 	{
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
-		isLoadComplete = false;
+		//std::lock_guard<std::mutex> lock(isLoadedMutex);
+		//isLoadComplete = false;
 	}
+	isLoadComplete = false;
 
 	try
 	{
@@ -184,14 +181,10 @@ void CLoadManager::LoadInBackground(void)
 
 	// ロードが完了したらフラグをセット
 	{
-		std::lock_guard<std::mutex> lock(isLoadedMutex);
-		isLoadComplete = true;
+		//std::lock_guard<std::mutex> lock(isLoadedMutex);
+		//isLoadComplete = true;
 	}
-
-	if (m_LoadingThread.joinable())
-	{
-		m_LoadingThread.join();
-	}
+	isLoadComplete = true;
 }
 
 //==========================================================================
@@ -215,3 +208,11 @@ void CLoadManager::Draw(void)
 	}
 }
 
+//==========================================================================
+// ロードが完了したかどうかを返す
+//==========================================================================
+bool CLoadManager::IsLoadComplete()
+{
+	//std::lock_guard<std::mutex>  lock(isLoadedMutex);
+	return isLoadComplete;
+}

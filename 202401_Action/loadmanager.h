@@ -32,12 +32,7 @@ public:
 	void UnLoad(void);
 	void ResetLoad();
 
-	// ロードが完了したかどうかを返す
-	bool IsLoadComplete()
-	{
-		std::lock_guard<std::mutex>  lock(isLoadedMutex);
-		return isLoadComplete;
-	}
+	bool IsLoadComplete();	// ロードが完了ふらぐ
 
 	// 静的関数
 	static CLoadManager* Create();

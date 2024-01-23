@@ -44,6 +44,8 @@ public:
 	void Draw(void) override;
 
 	void Kill(void);	// 削除
+	std::vector<CSkillTree_Icon*> GetIcon(void) const;	// アイコン取得
+	static CSkillTree* GetInstance() { return m_pThisPtr; }	// インスタンス取得
 	static CSkillTree* Create(void);
 
 	// JSONからの読み込み
@@ -53,7 +55,7 @@ public:
 		{
 			CSkillTree_Icon::sSkillIcon iconinfo;
 			iconinfo.from_json(loadData);
-			m_SkillIcon.push_back(iconinfo);
+			m_SkillInfo.push_back(iconinfo);
 		}
 	}
 
@@ -62,7 +64,7 @@ public:
 	{
 		j["iconinfo"] = json::array(); // 空の配列を作成
 
-		for (const auto& loadData : m_SkillIcon)
+		for (const auto& loadData : m_SkillInfo)
 		{
 			json iconinfo;
 			loadData.to_json(iconinfo);
@@ -87,7 +89,7 @@ private:
 	//=============================
 	// メンバ変数
 	//=============================
-	std::vector<CSkillTree_Icon::sSkillIcon> m_SkillIcon;	// スキルアイコン
+	std::vector<CSkillTree_Icon::sSkillIcon> m_SkillInfo;	// スキルアイコン
 	std::vector<CSkillTree_Icon*> m_pSkillIcon;				// スキルアイコン
 
 	//=============================
@@ -98,6 +100,7 @@ private:
 	eState m_state;		// 状態
 	CSkillTree_Screen* m_pScreen;	// スクリーンのオブジェクト
 	CSkillTree_Cursor* m_pCursor;	// カーソルのオブジェクト
+	static CSkillTree* m_pThisPtr;	// 自身のポインタ
 };
 
 

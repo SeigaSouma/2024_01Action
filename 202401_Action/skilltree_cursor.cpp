@@ -11,7 +11,9 @@
 #include "sound.h"
 #include "input.h"
 #include "fade.h"
-
+#include "calculation.h"
+#include "skilltree.h"
+#include "debugproc.h"
 
 //==========================================================================
 // 定数定義
@@ -19,7 +21,9 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\tyuuni\\tyuuni_face.png";
+	const MyLib::Vector3 LOCK_POSITION = MyLib::Vector3(340.0f, 240.0f, 0.0f);	// 固定の位置
 	const float MOVE_VELOCITY = 50.0f;	// 移動速度
+	const float RADIUS = 60.0f;	// 半径
 }
 
 //==========================================================================
@@ -29,6 +33,9 @@ CSkillTree_Cursor::CSkillTree_Cursor(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
 	m_nMyPlayerIdx = 0;	// プレイヤーインデックス番号
+	m_WorldPos = 0.0f;	// 絶対座標
+	m_DestPos = 0.0f;	// 目標座標
+	m_bHitIcon = false;	// アイコンの接触フラグ
 }
 
 //==========================================================================
@@ -96,6 +103,10 @@ HRESULT CSkillTree_Cursor::Init(void)
 	// サイズ設定
 	SetSize(size);
 
+	// 位置設定
+	SetPosition(LOCK_POSITION);
+	m_WorldPos = 0.0f;
+
 	return S_OK;
 }
 
@@ -118,9 +129,6 @@ void CSkillTree_Cursor::Update(void)
 
 	// 移動速度
 	float velocity = MOVE_VELOCITY * deltatime;
-
-	// 位置取得
-	D3DXVECTOR3 pos = GetPosition();
 
 	// 移動量取得
 	D3DXVECTOR3 move = GetMove();
@@ -192,18 +200,60 @@ void CSkillTree_Cursor::Update(void)
 	}
 
 	// 移動
-	pos += move;
+	m_WorldPos += move;
+
+	// スキルツリーの位置設定
+	MyLib::Vector3 setpos = CSkillTree::GetInstance()->GetPosition();
+	setpos = -m_WorldPos;
+	CSkillTree::GetInstance()->SetPosition(setpos);
 
 	// 慣性
 	move.x += (0.0f - move.x) * 0.2f;
 	move.y += (0.0f - move.y) * 0.2f;
 
 	// 位置・移動量
-	SetPosition(pos);
 	SetMove(move);
 
 	// 頂点座標の設定
 	SetVtx();
+
+	// アイコンとの当たり判定
+	CollisionIcon();
+
+	// デバッグ表示
+	CManager::GetInstance()->GetDebugProc()->Print(
+		"------------------[カー卒]------------------\n"
+		"位置：【X：%f, Y：%f, Z：%f】\n"
+		, m_WorldPos.x, m_WorldPos.y, m_WorldPos.z);
+}
+
+//==================================================================================
+// アイコンとの当たり判定
+//==================================================================================
+void CSkillTree_Cursor::CollisionIcon(void)
+{
+	// アイコン取得
+	std::vector<CSkillTree_Icon*> iconList = CSkillTree::GetInstance()->GetIcon();
+
+	m_bHitIcon = false;
+	for (const auto& icon : iconList)
+	{
+		MyLib::Vector3 iconpos = icon->GetPosition() - LOCK_POSITION;
+		if (UtilFunc::Collision::CircleRange2D(0.0f, iconpos, RADIUS, 1.0f))
+		{// アイコンにヒット
+			
+			m_bHitIcon = true;
+			m_DestPos = m_WorldPos + iconpos;
+			break;
+		}
+	}
+
+	if (m_bHitIcon &&
+		!CManager::GetInstance()->GetInputGamepad()->IsTipStick())
+	{// 接触 && スティックが倒されてない
+		UtilFunc::Correction::InertiaCorrection(m_WorldPos.x, m_DestPos.x, 0.15f);
+		UtilFunc::Correction::InertiaCorrection(m_WorldPos.y, m_DestPos.y, 0.15f);
+	}
 }
 
 //==================================================================================
