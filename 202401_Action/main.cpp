@@ -14,7 +14,7 @@
 // マクロ定義
 //==========================================================================
 #define CLASS_NAME		"WindowsClass"	// ウインドウクラスの名前
-#define WINDOW_NAME		"Effekseerテスト"	// ウインドウの名前(キャプション)
+#define WINDOW_NAME		"就職作品"	// ウインドウの名前(キャプション)
 
 //==========================================================================
 // プロトタイプ宣言
@@ -275,6 +275,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:				// タイマー発行のメッセージ
 		break;
 	}
+
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+		return true;
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);	// 既定の処理を返す
 }

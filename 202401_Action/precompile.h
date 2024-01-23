@@ -59,6 +59,14 @@
 #include <json.hpp>
 using json = nlohmann::json;
 
+// Imgui
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
+#include "imgui_impl_dx9.h"
+#include "imgui_impl_win32.h"
+#include <implot.h>
+#include <implot_internal.h>
+
 // メモリリーク出力用マクロ
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>		// メモリリーク検出に必要

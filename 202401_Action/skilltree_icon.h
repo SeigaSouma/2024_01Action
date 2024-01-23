@@ -9,6 +9,7 @@
 #define _SKILLTREE_ICON_H_		// 二重インクルード防止のマクロを定義する
 
 #include "object2D.h"
+#include "skilltree_ability.h"
 
 //==========================================================================
 // クラス定義
@@ -27,17 +28,17 @@ public:
 		int parentID;		// 親のID
 		int texID;			// テクスチャインデックス
 		int needpoint;		// 必要ポイント
+		CSkillTree_Ability::eSkillCategory skillCategory;	// スキルのカテゴリー
+		int skillType;		// スキルの種類
+		int skillStage;	// スキルのステージ
 		MyLib::Vector3 pos;	// 位置
-		int nSkillCategory;	
-		int nSkillType;
-		int nSkillStage;
 
 		// デフォルトコンストラクタ
-		sSkillIcon() : ID(0), parentID(0), texID(0), needpoint(0), pos() {}
+		sSkillIcon() : ID(0), parentID(0), texID(0), needpoint(0), pos(), skillCategory(), skillType(0), skillStage(0) {}
 
 		// パラメータつきコンストラクタ
-		sSkillIcon(int nID,int nParentID, int nTexID, int nNeedPoint, const MyLib::Vector3& position)
-			: ID(nID), parentID(nParentID), texID(nTexID), needpoint(nNeedPoint), pos(position) {}
+		sSkillIcon(int nID,int nParentID, int nTexID, int nNeedPoint, const MyLib::Vector3& position, const CSkillTree_Ability::eSkillCategory& category, int type, int stage)
+			: ID(nID), parentID(nParentID), texID(nTexID), needpoint(nNeedPoint), pos(position), skillCategory(category), skillType(type), skillStage(stage) {}
 
 		// JSONからの読み込み
 		void from_json(const json& j)
@@ -47,6 +48,9 @@ public:
 			j.at("texID").get_to(texID);
 			j.at("needpoint").get_to(needpoint);
 			j.at("pos").get_to(pos);
+			j.at("skillcategory").get_to(skillCategory);
+			j.at("skilltype").get_to(skillType);
+			j.at("skillstage").get_to(skillStage);
 		}
 
 		// JSONへの書き込み
@@ -59,6 +63,9 @@ public:
 				{"texID", texID},
 				{"needpoint", needpoint},
 				{"pos", pos},
+				{"skillcategory", skillCategory},
+				{"skilltype", skillType},
+				{"skillstage", skillStage},
 			};
 		}
 	};
@@ -71,7 +78,7 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
-	void SetVtx(void);
+	void SetVtx(void) override;
 
 	void SetIconInfo(sSkillIcon iconinfo);	// アイコン情報設定
 	sSkillIcon GetIconInfo(void);			// アイコン情報取得

@@ -44,6 +44,8 @@ public:
 	void Draw(void) override;
 
 	void Kill(void);	// 削除
+	void LoadJson(void);	// Jsonからのロード
+	void SaveJson(void);	// Jsonへのセーブ
 	std::vector<CSkillTree_Icon*> GetIcon(void) const;	// アイコン取得
 	static CSkillTree* GetInstance() { return m_pThisPtr; }	// インスタンス取得
 	static CSkillTree* Create(void);

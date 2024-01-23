@@ -15,6 +15,7 @@
 #include "pause.h"
 #include "input.h"
 #include "loadmanager.h"
+#include "Imguimanager.h"
 
 //==========================================================================
 // コンストラクタ
@@ -225,6 +226,12 @@ void CRenderer::Draw(void)
 		// 描画終了
 		m_pD3DDevice->EndScene();
 	}
+
+
+#if _DEBUG
+	// Imguiの描画
+	ImguiMgr::Draw();
+#endif
 
 	// バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);

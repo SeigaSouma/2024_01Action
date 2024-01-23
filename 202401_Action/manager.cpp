@@ -28,6 +28,7 @@
 #include "rankingmanager.h"
 #include "MyEffekseer.h"
 #include "loadmanager.h"
+#include "Imguimanager.h"
 
 namespace
 {
@@ -219,6 +220,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
+
+	// Imguiの初期化
+	ImguiMgr::Init(hWnd, m_pRenderer->GetDevice());
 
 	//**********************************
 	// サウンド
@@ -549,6 +553,9 @@ void CManager::Uninit(void)
 		m_pRenderer = NULL;
 	}
 
+	// Imguiの終了
+	ImguiMgr::Uninit();
+
 	// ライトの破棄
 	if (m_pLight != NULL)
 	{// メモリの確保が出来ていたら
@@ -750,6 +757,9 @@ void CManager::Update(void)
 
 	// 遷移なしフェードの更新処理
 	m_pInstantFade->Update();
+
+	// Imguiの更新
+	ImguiMgr::Update();
 
 	if (!m_bLoadComplete)
 	{
