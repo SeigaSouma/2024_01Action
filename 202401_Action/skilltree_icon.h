@@ -10,6 +10,9 @@
 
 #include "object2D.h"
 #include "skilltree_ability.h"
+#include "listmanager.h"
+
+class CAbillityStrategy;
 
 //==========================================================================
 // クラス定義
@@ -17,6 +20,27 @@
 // スキルツリーアイコン定義
 class CSkillTree_Icon : public CObject2D
 {
+private:
+
+	//=============================
+	// 列挙型定義
+	//=============================
+	// 習得列挙
+	enum eMastering
+	{
+		MASTERING_YET = 0,	// 未習得
+		MASTERING_DONE,		// 習得済み
+		MASTERING_POSSIBLE,	// 習得可能
+		MASTERING_MAX
+	};
+
+	// 状態列挙
+	enum eState
+	{
+		STATE_NONE = 0,	// なにもない
+		STATE_MAX
+	};
+
 public:
 
 	/**
@@ -82,28 +106,13 @@ public:
 
 	void SetIconInfo(sSkillIcon iconinfo);	// アイコン情報設定
 	sSkillIcon GetIconInfo(void);			// アイコン情報取得
-	static CSkillTree_Icon* Create(void);
+	CSkillTree_Icon::eMastering GetMatering(void) { return m_Mastering; }	// 習得状態取得
+
+	bool BindAvillity(void);				// 能力割り当て
+	static CSkillTree_Icon* Create(sSkillIcon iconinfo);
+	static CListManager<CSkillTree_Icon> GetListObj(void) { return m_List; }	// リスト取得
 
 private:
-
-	//=============================
-	// 列挙型定義
-	//=============================
-	// 習得列挙
-	enum eMastering
-	{
-		MASTERING_YET = 0,	// 未習得
-		MASTERING_DONE,		// 習得済み
-		MASTERING_POSSIBLE,	// 習得可能
-		MASTERING_MAX
-	};
-
-	// 状態列挙
-	enum eState
-	{
-		STATE_NONE = 0,	// なにもない
-		STATE_MAX
-	};
 
 	//=============================
 	// 関数リスト
@@ -115,6 +124,7 @@ private:
 	// メンバ関数
 	//=============================
 	void StateNone(void);	// 何もない状態
+	HRESULT ReadTexture(void);
 
 	//=============================
 	// メンバ変数
@@ -123,6 +133,10 @@ private:
 	eState m_state;				// 状態
 	eMastering m_Mastering;		// 習得状態
 	sSkillIcon m_SkillIconInfo;	// スキルアイコン情報
+	static std::vector<int> m_nTexIdx;	// テクスチャインデックス番号
+	static bool m_bLoadComplete;		// ロード完了のフラグ
+	CAbillityStrategy* m_pAbillity;		// 能力のオブジェクト
+	static CListManager<CSkillTree_Icon> m_List;	// リスト
 
 };
 

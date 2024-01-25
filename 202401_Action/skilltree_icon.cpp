@@ -12,21 +12,29 @@
 #include "input.h"
 #include "game.h"
 #include "calculation.h"
+#include "player.h"
+#include "skillpoint.h"
+#include "skilltree_behavior.h"
 
 //==========================================================================
 // マクロ定義
 //==========================================================================
 namespace
 {
-	const char* TEXTURE[] =
+	const D3DXCOLOR COLOR[MASTERING_MAX] =
 	{
-		"data\\TEXTURE\\skilltree\\icon_life.png",
-		"data\\TEXTURE\\skilltree\\icon_power.png",
-		"data\\TEXTURE\\skilltree\\icon_stamina.png",
+		D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f),	// 未習得
+		D3DXCOLOR(1.0f, 0.4f, 1.0f, 1.0f),	// 習得済み
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),	// 習得可能
 	};
+	const char* LOADTEXT = "data\\TEXT\\skilltree\\texture.txt";
 	const float SIZE_ICON = 50.0f;		// アイコンサイズ
 	const float TIME_FADE = 0.5f;	// フェードアウト時間
 }
+
+std::vector<int> CSkillTree_Icon::m_nTexIdx = {};	// テクスチャインデックス番号
+bool CSkillTree_Icon::m_bLoadComplete = false;		// ロード完了のフラグ
+CListManager<CSkillTree_Icon> CSkillTree_Icon::m_List = {};	// リスト
 
 //==========================================================================
 // 関数ポインタ
@@ -46,6 +54,7 @@ CSkillTree_Icon::CSkillTree_Icon(int nPriority) : CObject2D(nPriority)
 	m_state = STATE_NONE;			// 状態
 	m_Mastering = MASTERING_YET;	// 習得状態
 	m_SkillIconInfo = sSkillIcon();	// スキルアイコン
+	m_pAbillity = nullptr;			// 能力のオブジェクト
 }
 
 //==========================================================================
@@ -59,7 +68,7 @@ CSkillTree_Icon::~CSkillTree_Icon()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Icon* CSkillTree_Icon::Create(void)
+CSkillTree_Icon* CSkillTree_Icon::Create(sSkillIcon iconinfo)
 {
 	// 生成用のオブジェクト
 	CSkillTree_Icon* pEffect = nullptr;
@@ -69,6 +78,9 @@ CSkillTree_Icon* CSkillTree_Icon::Create(void)
 
 	if (pEffect != nullptr)
 	{
+		// アイコン情報設定
+		pEffect->m_SkillIconInfo = iconinfo;
+
 		// 初期化処理
 		pEffect->Init();
 	}
@@ -91,9 +103,14 @@ HRESULT CSkillTree_Icon::Init(void)
 	// 種類の設定
 	SetType(TYPE_OBJECT2D);
 
+	// テクスチャ読み込み
+	if (!m_bLoadComplete)
+	{
+		ReadTexture();
+	}
+
 	// テクスチャの割り当て
-	int nIdx = CTexture::GetInstance()->Regist(TEXTURE[0]);
-	BindTexture(nIdx);
+	BindTexture(m_nTexIdx[m_SkillIconInfo.texID]);
 
 	// サイズ設定
 	SetSize(D3DXVECTOR2(SIZE_ICON, SIZE_ICON));
@@ -108,6 +125,11 @@ HRESULT CSkillTree_Icon::Init(void)
 	// 色設定
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 
+	// 能力割り当て
+	m_pAbillity = CAbillityStrategy::CreateInstance(m_SkillIconInfo, CPlayer::GetListObj().GetData(0));
+
+	// リストに追加
+	m_List.Regist(this);
 	return S_OK;
 }
 
@@ -116,6 +138,10 @@ HRESULT CSkillTree_Icon::Init(void)
 //==========================================================================
 void CSkillTree_Icon::Uninit(void)
 {
+
+	// リストから削除
+	m_List.Delete(this);
+
 	// 終了処理
 	CObject2D::Uninit();
 }
@@ -127,10 +153,17 @@ void CSkillTree_Icon::Update(void)
 {
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
-
 	if (IsDeath())
 	{
 		return;
+	}
+
+	if (m_Mastering != MASTERING_DONE &&
+		(m_SkillIconInfo.parentID == -1 ||
+		m_List.GetData(m_SkillIconInfo.parentID)->GetMatering() == MASTERING_DONE))
+	{
+		// 習得可能！
+		m_Mastering = MASTERING_POSSIBLE;
 	}
 
 	// 頂点座標の設定
@@ -184,6 +217,34 @@ CSkillTree_Icon::sSkillIcon CSkillTree_Icon::GetIconInfo(void)
 }
 
 //==========================================================================
+// 能力割り当て
+//==========================================================================
+bool CSkillTree_Icon::BindAvillity(void)
+{
+	if (m_Mastering != MASTERING_POSSIBLE)
+	{// 習得可能以外はリターン
+		return false;
+	}
+
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
+	if (m_Mastering == MASTERING_POSSIBLE &&
+		pPlayer->GetSkillPoint()->GetPoint() >= m_SkillIconInfo.needpoint)
+	{// 習得可能 && ポイント足りてる
+
+		// 能力割り当て
+		m_pAbillity->BindAbillity();
+
+		// スキルポイント減算
+		pPlayer->GetSkillPoint()->SubPoint(m_SkillIconInfo.needpoint);
+
+		// 習得済みにする
+		m_Mastering = MASTERING_DONE;
+		return true;
+	}
+	return false;
+}
+
+//==========================================================================
 // 頂点情報設定処理
 //==========================================================================
 void CSkillTree_Icon::SetVtx(void)
@@ -192,3 +253,71 @@ void CSkillTree_Icon::SetVtx(void)
 	CObject2D::SetVtx();
 }
 
+
+//==========================================================================
+// テクスチャ読み込み処理
+//==========================================================================
+HRESULT CSkillTree_Icon::ReadTexture(void)
+{
+	char aComment[MAX_COMMENT] = {};	// コメント用
+	int nTexNum = 0;					// ファイルの数
+	int nCntTexture = 0;				// テクスチャ読み込みカウント
+
+	// ファイルポインタ
+	FILE* pFile = NULL;
+
+	//ファイルを開く
+	pFile = fopen(LOADTEXT, "r");
+
+	if (pFile == NULL)
+	{//ファイルが開けた場合
+		return E_FAIL;
+	}
+
+	while (1)
+	{// END_SCRIPTが来るまで繰り返す
+
+		// 文字列の読み込み
+		fscanf(pFile, "%s", &aComment[0]);
+
+		// テクスチャ数の設定
+		if (strcmp(&aComment[0], "NUM_TEXTURE") == 0)
+		{// NUM_MODELがきたら
+
+			fscanf(pFile, "%s", &aComment[0]);	// =の分
+			fscanf(pFile, "%d", &nTexNum);	// テクスチャ数
+		}
+
+		while (nCntTexture != nTexNum)
+		{// テクスチャの数分読み込むまで繰り返し
+
+			fscanf(pFile, "%s", &aComment[0]);	// =の分
+
+			if (strcmp(&aComment[0], "TEXTURE_FILENAME") == 0)
+			{// TEXTURE_FILENAMEがきたら
+
+				fscanf(pFile, "%s", &aComment[0]);	// =の分
+				fscanf(pFile, "%s", &aComment[0]);	// ファイル名
+				
+				// テクスチャの割り当て
+				int nIdx = CTexture::GetInstance()->Regist(&aComment[0]);
+				m_nTexIdx.push_back(nIdx);
+
+				nCntTexture++;	// テクスチャ数加算
+			}
+		}
+
+		if (strcmp(&aComment[0], "END_SCRIPT") == 0)
+		{// 終了文字でループを抜ける
+
+			break;
+		}
+	}
+
+	// ファイルを閉じる
+	fclose(pFile);
+
+	// ロード完了のフラグを立てる
+	m_bLoadComplete = true;
+	return S_OK;
+}

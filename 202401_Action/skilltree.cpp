@@ -127,10 +127,7 @@ HRESULT CSkillTree::Init(void)
 		m_pSkillIcon.push_back(nullptr);
 
 		// スキルアイコン設定
-		m_pSkillIcon[nIdx] = CSkillTree_Icon::Create();
-
-		// 愛好情報設定
-		m_pSkillIcon[nIdx]->SetIconInfo(iconinfo);
+		m_pSkillIcon[nIdx] = CSkillTree_Icon::Create(iconinfo);
 
 		if (iconinfo.parentID != -1)
 		{

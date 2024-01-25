@@ -22,8 +22,8 @@ namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\tyuuni\\tyuuni_face.png";
 	const MyLib::Vector3 LOCK_POSITION = MyLib::Vector3(340.0f, 240.0f, 0.0f);	// 固定の位置
-	const float MOVE_VELOCITY = 70.0f;	// 移動速度
-	const float RADIUS = 60.0f;	// 半径
+	const float MOVE_VELOCITY = 85.0f;	// 移動速度
+	const float RADIUS = 40.0f;	// 半径
 }
 
 //==========================================================================
@@ -105,7 +105,7 @@ HRESULT CSkillTree_Cursor::Init(void)
 
 	// 位置設定
 	SetPosition(LOCK_POSITION);
-	m_WorldPos = 0.0f;
+	m_WorldPos = -LOCK_POSITION;
 
 	return S_OK;
 }
@@ -244,6 +244,13 @@ void CSkillTree_Cursor::CollisionIcon(void)
 			
 			m_bHitIcon = true;
 			m_DestPos = m_WorldPos + iconpos;
+
+			if (CManager::GetInstance()->GetInputGamepad()->GetTrigger(CInputGamepad::BUTTON_A, 0))
+			{
+				// 能力付与
+				icon->BindAvillity();
+			}
+
 			break;
 		}
 	}
@@ -251,8 +258,8 @@ void CSkillTree_Cursor::CollisionIcon(void)
 	if (m_bHitIcon &&
 		!CManager::GetInstance()->GetInputGamepad()->IsTipStick())
 	{// 接触 && スティックが倒されてない
-		UtilFunc::Correction::InertiaCorrection(m_WorldPos.x, m_DestPos.x, 0.15f);
-		UtilFunc::Correction::InertiaCorrection(m_WorldPos.y, m_DestPos.y, 0.15f);
+		UtilFunc::Correction::InertiaCorrection(m_WorldPos.x, m_DestPos.x, 0.25f);
+		UtilFunc::Correction::InertiaCorrection(m_WorldPos.y, m_DestPos.y, 0.25f);
 	}
 }
 

@@ -19,7 +19,7 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\icon_life.png";
+	const char* TEXTURE = "data\\TEXTURE\\skilltree\\line_01.png";
 	const float SIZE_HEIGHT = 15.0f;
 }
 CListManager<CSkillTree_Line> CSkillTree_Line::m_List = {};	// ƒŠƒXƒg

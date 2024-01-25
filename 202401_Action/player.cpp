@@ -686,6 +686,7 @@ void CPlayer::Controll(void)
 			(pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
 			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, m_nMyPlayerIdx))
 		{
+			pMotion->Set(MOTION_DEF);
 			pMotion->Set(MOTION_AVOID);
 
 			if (pInputGamepad->IsTipStick())
@@ -2020,3 +2021,11 @@ CPlayer::STATE CPlayer::GetState(void)
 	return m_state;
 }
 
+//==========================================================================
+// 体力アップグレード
+//==========================================================================
+void CPlayer::UpgradeLife(int addvalue)
+{
+	// アップグレード後の体力に設定
+	SetLife(m_pHPGauge->UpgradeMaxValue(addvalue));
+}

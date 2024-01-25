@@ -202,6 +202,7 @@ public:
 	static CSkillTree_Ability* GetInstance() { return m_pThisPtr; }	// インスタンス取得
 	static CSkillTree_Ability* Create(void);	// 生成処理
 
+
 private:
 
 	//=============================
@@ -210,5 +211,6 @@ private:
 	std::vector<sSkillCategory> m_SkillCategory;
 	static CSkillTree_Ability* m_pThisPtr;	// 自身のポインタ
 };
+
 
 #endif

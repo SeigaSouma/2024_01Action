@@ -6,13 +6,51 @@
                 {
                     "skillstage": [
                         {
-                            "stage": 0
+                            "stage": 0,
+                            "stageName": "AddStamina01"
                         },
                         {
-                            "stage": 1
+                            "stage": 0,
+                            "stageName": "EnhanceAutoHeal01"
                         }
                     ],
                     "typeName": "Stamina"
+                },
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "AddLife01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "AddLife02"
+                        }
+                    ],
+                    "typeName": "Life"
+                },
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "SubNeedStamina"
+                        }
+                    ],
+                    "typeName": "Counter"
+                }
+            ]
+        },
+        {
+            "categorytype": 0,
+            "skilltypes": [
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "normalATK"
+                        }
+                    ],
+                    "typeName": "AddCombo"
                 }
             ]
         }

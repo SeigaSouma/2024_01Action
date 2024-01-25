@@ -30,10 +30,11 @@ public:
 	void Draw(void);
 
 	void SetPoint(int nValue);	// ポイント設定
+	int GetPoint(void) const { return m_nPoint; }		// ポイント取得
 	void AddPoint(void);		// ポイント追加
 	void AddPoint(int nValue);	// ポイント追加
 	void SubPoint(void);		// ポイント削除
-	int GetPoint(void) const { return m_nPoint; }		// ポイント取得
+	void SubPoint(int nValue);	// ポイント削除
 	static CSkillPoint* Create(void);
 
 private:

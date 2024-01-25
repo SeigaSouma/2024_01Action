@@ -462,6 +462,9 @@
     <ClCompile Include="stamina_gauge_player.cpp">
       <Filter>ソース ファイル\player</Filter>
     </ClCompile>
+    <ClCompile Include="skilltree_behavior.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -820,6 +823,9 @@
     </ClInclude>
     <ClInclude Include="stamina_gauge_player.h">
       <Filter>ヘッダー ファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_behavior.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

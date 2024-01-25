@@ -30,7 +30,6 @@ CSkillTree_Ability* CSkillTree_Ability::m_pThisPtr = nullptr;	// 自身のポインタ
 //==========================================================================
 CSkillTree_Ability::CSkillTree_Ability()
 {
-	// 値のクリア
 
 }
 
@@ -101,19 +100,6 @@ HRESULT CSkillTree_Ability::Init(void)
 	// Jsonへ書き込み
 	SaveJson();
 #endif
-	//// 現在扱うカテゴリーのポインタ
-	//pCategory = &m_SkillCategory[SKILLCATEGORY_UNLOCK];
-
-	//// 列挙設定
-	//pCategory->categoryType = SKILLCATEGORY_UNLOCK;
-
-	//// 種類追加
-	//pCategory->type.push_back(sSkillType());
-	//pCategory->type.back().typeName = "Combo";
-
-	//// ステージ追加
-	//pCategory->type.back().stage.push_back(sSkillStage());
-	//pCategory->type.back().stage.back().stage = 0;
 
 	return S_OK;
 }
@@ -135,7 +121,18 @@ void CSkillTree_Ability::Uninit(void)
 //==========================================================================
 void CSkillTree_Ability::Update(void)
 {
-	
+	for (const auto& category : m_SkillCategory)
+	{
+		category.categoryType;
+		for (const auto& type : category.type)
+		{
+			type.typeName;
+			for (const auto& stage : type.stage)
+			{
+				stage.stage;
+			}
+		}
+	}
 }
 
 //==========================================================================
@@ -184,5 +181,3 @@ void CSkillTree_Ability::Draw(void)
 {
 
 }
-
-

@@ -9,6 +9,7 @@
 #define _HP_GAUGE_PLAYER_H_	// 二重インクルード防止
 
 #include "object2D.h"
+#include "object2D_gauge.h"
 
 //==========================================================================
 // クラス定義
@@ -21,29 +22,31 @@ public:
 	CHP_GaugePlayer(int nPriority = 7);
 	~CHP_GaugePlayer();
 
-	static CHP_GaugePlayer *Create(MyLib::Vector3 pos, int nMaxLife);
 
 	// オーバーライドされた関数
 	HRESULT Init(void) override;
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
-	void SetVtx(void) override;
-	void SetVtx(int nCntGauge);
+
+
+	// 強化関数
+	int UpgradeMaxValue(int addvalue);	// 最大値のアップグレード
 
 	void Kill(void);
 	void SetLife(int nLife);
+	static CHP_GaugePlayer* Create(MyLib::Vector3 pos, int nMaxLife);
 
 private:
 
 	// 列挙型定義
-	typedef enum
+	enum VTXTYPE
 	{
 		VTXTYPE_BLACK = 0,	// 黒ゲージ
 		VTXTYPE_PINK,		// ピンクゲージ
 		VTXTYPE_FRAM,		// 枠
 		VTXTYPE_MAX
-	}VTXTYPE;
+	};
 
 	// 構造体定義
 	struct SHP_Gauge
@@ -56,15 +59,12 @@ private:
 
 	// メンバ関数
 	void ChangeColor(int nCntGauge);		// 色変更
-	void GaugeDecrement(int nCntGauge);		// 減少処理
 
 	// メンバ変数
-	static const char *m_apTextureFile[];	// テクスチャのファイル
-	SHP_Gauge m_HPGauge[VTXTYPE_MAX];		// HPゲージの情報
-	int m_nCntTkTk;							// チカチカのカウント
-	int m_nLife;							// 体力
-	int m_nMaxLife;							// 最大体力
-	int m_nTexIdx[VTXTYPE_MAX];				// テクスチャのインデックス番号
+	int m_nLifeValue;			// 値
+	int m_nMaxLifeValue;		// 最大値
+	int m_nOriginLifeValue;	// 初期値
+	CObject2D_Gauge* m_pObj2DGauge[VTXTYPE_MAX];	// HPゲージのオブジェクト
 };
 
 

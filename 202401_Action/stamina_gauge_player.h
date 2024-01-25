@@ -21,8 +21,6 @@ public:
 	CStaminaGauge_Player(int nPriority = 7);
 	~CStaminaGauge_Player();
 
-	static CStaminaGauge_Player *Create(MyLib::Vector3 pos, int maxvalue);
-
 	// オーバーライドされた関数
 	HRESULT Init(void) override;
 	void Uninit(void) override;
@@ -40,6 +38,7 @@ public:
 	void SetValue(float value);	// 値設定
 	float GetValue(void);		// 値取得
 
+	static CStaminaGauge_Player* Create(MyLib::Vector3 pos, int maxvalue);
 private:
 
 	//=============================
@@ -82,12 +81,12 @@ private:
 	//=============================
 	// メンバ変数
 	//=============================
-	STATE m_state;				// 状態
-	float m_fStateTime;			// 状態のカウンター
-	float m_fStaminaValue;	// スタミナの値
-	float m_fMaxStaminaValue;	// スタミナの最大値
+	STATE m_state;					// 状態
+	float m_fStateTime;				// 状態のカウンター
+	float m_fStaminaValue;			// スタミナの値
+	float m_fMaxStaminaValue;		// スタミナの最大値
 	float m_fOriginStaminaValue;	// スタミナの初期値
-	float m_fAutoHeal;		// 自動回復
+	float m_fAutoHeal;				// 自動回復
 	CObject2D_Gauge* m_pObj2DGauge[VTXTYPE_MAX];	// HPゲージのオブジェクト
 };
 

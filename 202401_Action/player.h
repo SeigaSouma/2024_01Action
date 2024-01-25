@@ -97,6 +97,9 @@ public:
 	// スキルポイント
 	CSkillPoint* GetSkillPoint(void) { return m_pSkillPoint; }
 
+	// スキルツリー用関数
+	void UpgradeLife(int addvalue);	// 体力アップグレード
+
 	static CPlayer* Create(int nIdx);	// 生成
 	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
 
@@ -136,12 +139,14 @@ private:
 	void StateCounter(void);	// カウンター中
 	void StateAvoid(void);		// 回避
 
+	// その他関数
 	virtual void Controll(void);	// 操作
 	void LimitPos(void);			// 位置制限
 	void MotionBySetState(void);	// モーション別の状態設定
 	void ResetFrag(void);			// フラグリセット
 	void RockOn(void);				// ロックオン
 
+	// モーション系関数
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;			// 攻撃判定中処理
 

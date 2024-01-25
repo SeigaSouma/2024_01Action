@@ -201,10 +201,10 @@ MyLib::Vector3 CObject2D_Gauge::UpgradeMaxValue(int addvalue)
 	// 最大の長さ
 	m_fMaxWidth = nowlen;
 
-	// ゲージリセット
-	D3DXVECTOR2 size = GetSize();
-	size.x = nowlen;
-	SetSize(size);
+	//// ゲージリセット
+	//D3DXVECTOR2 size = GetSize();
+	//size.x = nowlen;
+	//SetSize(size);
 
 	// 値設定
 	SetValue(m_nMaxValue);

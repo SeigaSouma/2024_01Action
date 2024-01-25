@@ -257,6 +257,7 @@
     <ClCompile Include="skillpoint.cpp" />
     <ClCompile Include="skilltree.cpp" />
     <ClCompile Include="skilltree_ability.cpp" />
+    <ClCompile Include="skilltree_behavior.cpp" />
     <ClCompile Include="skilltree_cursor.cpp" />
     <ClCompile Include="skilltree_icon.cpp" />
     <ClCompile Include="skilltree_line.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="skillpoint.h" />
     <ClInclude Include="skilltree.h" />
     <ClInclude Include="skilltree_ability.h" />
+    <ClInclude Include="skilltree_behavior.h" />
     <ClInclude Include="skilltree_cursor.h" />
     <ClInclude Include="skilltree_icon.h" />
     <ClInclude Include="skilltree_line.h" />
