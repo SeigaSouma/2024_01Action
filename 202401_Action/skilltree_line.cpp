@@ -1,10 +1,10 @@
 //=============================================================================
 // 
-// スキルツリー画面ト処理 [skilltree_screen.cpp]
+// スキルツリーライン処理 [skilltree_line.cpp]
 // Author : 相馬靜雅
 // 
 //=============================================================================
-#include "skilltree_screen.h"
+#include "skilltree_line.h"
 #include "renderer.h"
 #include "texture.h"
 #include "manager.h"
@@ -12,27 +12,31 @@
 #include "input.h"
 #include "game.h"
 #include "calculation.h"
+#include "skilltree_icon.h"
 
 //==========================================================================
 // マクロ定義
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\sccreen_01.png";
+	const char* TEXTURE = "data\\TEXTURE\\skilltree\\icon_life.png";
+	const float SIZE_HEIGHT = 15.0f;
 }
+CListManager<CSkillTree_Line> CSkillTree_Line::m_List = {};	// リスト
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CSkillTree_Screen::CSkillTree_Screen(int nPriority) : CObject2D(nPriority)
+CSkillTree_Line::CSkillTree_Line(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
+	m_SkillLine = sSkillLine();	// スキルライン
 }
 
 //==========================================================================
 // デストラクタ
 //==========================================================================
-CSkillTree_Screen::~CSkillTree_Screen()
+CSkillTree_Line::~CSkillTree_Line()
 {
 
 }
@@ -40,16 +44,20 @@ CSkillTree_Screen::~CSkillTree_Screen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Screen* CSkillTree_Screen::Create(void)
+CSkillTree_Line* CSkillTree_Line::Create(const MyLib::Vector3& myposition, const MyLib::Vector3& parentposition)
 {
 	// 生成用のオブジェクト
-	CSkillTree_Screen* pEffect = NULL;
+	CSkillTree_Line* pEffect = nullptr;
 
 	// メモリの確保
-	pEffect = DEBUG_NEW CSkillTree_Screen;
+	pEffect = DEBUG_NEW CSkillTree_Line;
 
-	if (pEffect != NULL)
+	if (pEffect != nullptr)
 	{
+		// スキルラインの情報
+		pEffect->m_SkillLine.mypos = myposition;
+		pEffect->m_SkillLine.parentpos = parentposition;
+
 		// 初期化処理
 		pEffect->Init();
 	}
@@ -60,7 +68,7 @@ CSkillTree_Screen* CSkillTree_Screen::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Screen::Init(void)
+HRESULT CSkillTree_Line::Init(void)
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -76,24 +84,45 @@ HRESULT CSkillTree_Screen::Init(void)
 	int nIdx = CTexture::GetInstance()->Regist(TEXTURE);
 	BindTexture(nIdx);
 
+	float fSize = UtilFunc::Calculation::GetFabsPosLength2D(m_SkillLine.mypos, m_SkillLine.parentpos);
+	fSize *= 0.5f;
+
 	// サイズ設定
-	SetSize(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
+	SetSize(D3DXVECTOR2(fSize, SIZE_HEIGHT));
 	SetSizeOrigin(GetSize());
 
-	// 位置設定
-	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
+
+	// 目標の角度を求める
+	float rotZ = atan2f((m_SkillLine.mypos.x - m_SkillLine.parentpos.x), (m_SkillLine.mypos.y - m_SkillLine.parentpos.y));
+	rotZ += D3DX_PI * 0.5f;
+	UtilFunc::Transformation::RotNormalize(rotZ);
+
+	// 向き設定
+	SetRotation(MyLib::Vector3(0.0f, 0.0f, rotZ));
+
+
+	MyLib::Vector3 distance = m_SkillLine.parentpos - m_SkillLine.mypos;
+	distance *= 0.5f;
+	SetPosition(m_SkillLine.mypos + distance);
+	SetOriginPosition(GetPosition());
+
 
 	// 色設定
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 
+	// 追加
+	m_List.Regist(this);
 	return S_OK;
 }
 
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Screen::Uninit(void)
+void CSkillTree_Line::Uninit(void)
 {
+	// 削除
+	m_List.Delete(this);
+
 	// 終了処理
 	CObject2D::Uninit();
 }
@@ -101,16 +130,43 @@ void CSkillTree_Screen::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Screen::Update(void)
+void CSkillTree_Line::Update(void)
 {
-	// 頂点座標の設定
-	SetVtx();
+	MyLib::Vector3 distance = m_SkillLine.parentpos - m_SkillLine.mypos;
+	distance *= 0.5f;
+	SetOriginPosition(m_SkillLine.mypos + distance);
+
+	SetPosition(GetPosition() + GetOriginPosition());
+
+	// 更新処理
+	CObject2D::Update();
+}
+
+//==========================================================================
+// 頂点更新
+//==========================================================================
+void CSkillTree_Line::SetVtx(void)
+{
+	MyLib::Vector3 distance = m_SkillLine.parentpos - m_SkillLine.mypos;
+	distance *= 0.5f;
+	SetOriginPosition(m_SkillLine.mypos + distance);
+
+	SetPosition(GetPosition() + GetOriginPosition());
+
+	CObject2D::SetVtx();
+}
+
+void CSkillTree_Line::SetSkillLineInfo(const MyLib::Vector3& myposition, const MyLib::Vector3& parentposition)
+{
+	// スキルラインの情報
+	m_SkillLine.mypos = myposition;
+	m_SkillLine.parentpos = parentposition;
 }
 
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Screen::Draw(void)
+void CSkillTree_Line::Draw(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -127,14 +183,5 @@ void CSkillTree_Screen::Draw(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
-}
-
-//==========================================================================
-// 頂点情報設定処理
-//==========================================================================
-void CSkillTree_Screen::SetVtx(void)
-{
-	// 頂点設定
-	CObject2D::SetVtx();
 }
 

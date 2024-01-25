@@ -225,6 +225,7 @@
     <ClCompile Include="object.cpp" />
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object2D_Anim.cpp" />
+    <ClCompile Include="object2D_gauge.cpp" />
     <ClCompile Include="object2D_Multi.cpp" />
     <ClCompile Include="object3D.cpp" />
     <ClCompile Include="object3DMesh.cpp" />
@@ -258,11 +259,13 @@
     <ClCompile Include="skilltree_ability.cpp" />
     <ClCompile Include="skilltree_cursor.cpp" />
     <ClCompile Include="skilltree_icon.cpp" />
+    <ClCompile Include="skilltree_line.cpp" />
     <ClCompile Include="skilltree_obj.cpp" />
     <ClCompile Include="skilltree_screen.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stagecleartext.cpp" />
+    <ClCompile Include="stamina_gauge_player.cpp" />
     <ClCompile Include="targetpoint.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="timer.cpp" />
@@ -346,6 +349,7 @@
     <ClInclude Include="object.h" />
     <ClInclude Include="object2D.h" />
     <ClInclude Include="object2D_Anim.h" />
+    <ClInclude Include="object2D_gauge.h" />
     <ClInclude Include="object2D_Multi.h" />
     <ClInclude Include="object3D.h" />
     <ClInclude Include="object3DMesh.h" />
@@ -376,11 +380,13 @@
     <ClInclude Include="skilltree_ability.h" />
     <ClInclude Include="skilltree_cursor.h" />
     <ClInclude Include="skilltree_icon.h" />
+    <ClInclude Include="skilltree_line.h" />
     <ClInclude Include="skilltree_obj.h" />
     <ClInclude Include="skilltree_screen.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="stagecleartext.h" />
+    <ClInclude Include="stamina_gauge_player.h" />
     <ClInclude Include="targetpoint.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="timer.h" />

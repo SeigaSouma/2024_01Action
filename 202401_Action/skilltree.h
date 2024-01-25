@@ -13,6 +13,7 @@
 
 class CSkillTree_Screen;
 class CSkillTree_Cursor;
+class CSkillTree_Line;
 
 //==========================================================================
 // ƒNƒ‰ƒX’è‹`

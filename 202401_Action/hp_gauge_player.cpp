@@ -11,13 +11,25 @@
 #include "calculation.h"
 
 //==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const float DEFAULT_WIDTH = 120.0f;
+	const float DEFAULT_HEIGHT = 15.0f;
+}
+
+//==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
 const char *CHP_GaugePlayer::m_apTextureFile[] =	// テクスチャのファイル
 {
-	"data\\TEXTURE\\hpgauge\\gaugeMoto.png",
+	/*"data\\TEXTURE\\hpgauge\\gaugeMoto.png",
 	"data\\TEXTURE\\hpgauge\\gauge.png",
-	"data\\TEXTURE\\hpgauge\\Fram.png",
+	"data\\TEXTURE\\hpgauge\\Fram.png",*/
+	"",
+	"",
+	"data\\TEXTURE\\hpgauge\\hypnosis_fram.png",
 };
 
 //==========================================================================
@@ -130,12 +142,7 @@ HRESULT CHP_GaugePlayer::Init(void)
 		}
 
 		m_HPGauge[nCntGauge].pObj2D->SetType(CObject::TYPE_OBJECT2D);
-	}
-
-	D3DXVECTOR2 texsize = CTexture::GetInstance()->GetImageSize(m_nTexIdx[VTXTYPE_FRAM]);
-	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
-	{
-		m_HPGauge[nCntGauge].pObj2D->SetSize(texsize * 0.4f);
+		m_HPGauge[nCntGauge].pObj2D->SetSize(D3DXVECTOR2(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
 		// 各種変数の初期化
 		m_HPGauge[nCntGauge].fMaxWidth = m_HPGauge[nCntGauge].pObj2D->GetSize().x;		// 幅の最大値
@@ -203,7 +210,7 @@ void CHP_GaugePlayer::Update(void)
 				col = UtilFunc::Transformation::HSVtoRGB(0.0f, 0.0f, 1.0f + sinf(D3DX_PI * ((float)m_nCntTkTk / 60.0f)) * 0.3f);
 
 				// 色設定
-				m_HPGauge[nCntGauge].pObj2D->SetColor(col);
+				//m_HPGauge[nCntGauge].pObj2D->SetColor(col);
 
 				// 減少処理
 				GaugeDecrement(nCntGauge);

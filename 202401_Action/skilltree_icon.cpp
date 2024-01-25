@@ -105,6 +105,9 @@ HRESULT CSkillTree_Icon::Init(void)
 	// à íuê›íË
 	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
 
+	// êFê›íË
+	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+
 	return S_OK;
 }
 

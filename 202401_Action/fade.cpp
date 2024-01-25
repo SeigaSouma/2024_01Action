@@ -186,7 +186,8 @@ void CFade::Draw(void)
 //==========================================================================
 void CFade::SetFade(CScene::MODE mode)
 {
-	if (m_state != STATE_FADEOUT)
+	if (m_state != STATE_FADEOUT &&
+		m_state != STATE_FADECOMPLETION)
 	{// âΩÇ‡ÇµÇƒÇ¢Ç»Ç¢Ç∆Ç´
 
 		// éüÇÃÉÇÅ[Éhê›íË

@@ -255,6 +255,17 @@ namespace UtilFunc	// 便利関数
 		}
 
 		/**
+		@brief	二点間の長さの絶対値取得(2D)
+		@param	pos1	[in]	始点
+		@param	pos2	[in]	終点
+		@return	長さの絶対値
+		*/
+		inline float GetFabsPosLength2D(MyLib::Vector3 pos1, MyLib::Vector3 pos2)
+		{
+			return fabsf(GetPosLength2D(pos1, pos2));
+		}
+
+		/**
 		@brief	二点間の長さ取得(3D)
 		@param	pos1	[in]	始点
 		@param	pos2	[in]	終点

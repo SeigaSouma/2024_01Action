@@ -19,6 +19,7 @@
 #include "model.h"
 #include "hp_gauge.h"
 #include "hp_gauge_player.h"
+#include "stamina_gauge_player.h"
 #include "elevation.h"
 #include "shadow.h"
 #include "particle.h"
@@ -52,6 +53,10 @@ namespace
 	const float MULTIPLIY_DASH = 1.875f;	// ダッシュの倍率
 	const float RADIUS_STAGE = 20000.0f;	// ステージの半径
 	const float TIME_DASHATTACK = 0.3f;		// ダッシュ攻撃に必要な時間
+	const int DEFAULT_STAMINA = 200;	// スタミナのデフォルト値
+	const float SUBVALUE_DASH = 0.3f;		// ダッシュの減算量
+	const float SUBVALUE_AVOID = 30.0f;		// 回避の減算量
+	const float SUBVALUE_COUNTER = 40.0f;	// カウンターの減算量
 }
 
 //==========================================================================
@@ -109,6 +114,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_pShadow = NULL;								// 影の情報
 	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
 	m_pHPGauge = nullptr;							// HPゲージのポインタ
+	m_pStaminaGauge = nullptr;						// スタミナゲージのポインタ
 	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
 
@@ -182,7 +188,10 @@ HRESULT CPlayer::Init(void)
 	m_pSkillPoint = CSkillPoint::Create();
 
 	// HPゲージ生成
-	m_pHPGauge = CHP_GaugePlayer::Create({200.0f, 650.0f, 0.0f}, GetLifeOrigin());
+	m_pHPGauge = CHP_GaugePlayer::Create({200.0f, 630.0f, 0.0f}, GetLifeOrigin());
+
+	// スタミナゲージ生成
+	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
 
 	return S_OK;
 }
@@ -237,6 +246,13 @@ void CPlayer::Kill(void)
 	{
 		m_pHPGauge->Kill();
 		m_pHPGauge = nullptr;
+	}
+
+	// スタミナゲージ
+	if (m_pStaminaGauge != nullptr)
+	{
+		m_pStaminaGauge->Uninit();
+		m_pStaminaGauge = nullptr;
 	}
 
 	// 影を消す
@@ -548,21 +564,6 @@ void CPlayer::Controll(void)
 				// サウンド再生
 				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_JUMP);
 			}
-
-			// カウンター
-			if (!m_bJump &&
-				pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) &&
-				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
-			{
-				pMotion->Set(MOTION_COUNTER_ACCEPT);
-				m_sMotionFrag.bCounter = true;		// 攻撃判定ON
-
-				if (pInputGamepad->IsTipStick())
-				{// 左スティックが倒れてる場合
-
-					fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
-				}
-			}
 		}
 		else if (pMotion->IsGetMove(nMotionType) == 0 &&
 			m_state != STATE_DEAD &&
@@ -650,6 +651,30 @@ void CPlayer::Controll(void)
 			}
 		}
 
+		// カウンター
+		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
+			!m_bJump &&
+			pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) &&
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
+		{
+			pMotion->Set(MOTION_DEF);
+			pMotion->Set(MOTION_COUNTER_ACCEPT);
+			m_sMotionFrag.bCounter = true;		// 攻撃判定ON
+
+			if (pInputGamepad->IsTipStick())
+			{// 左スティックが倒れてる場合
+
+				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
+			}
+
+			// スタミナ減算
+			if (m_pStaminaGauge != nullptr)
+			{
+				m_pStaminaGauge->SubValue(SUBVALUE_COUNTER);
+			}
+		}
+
+
 		// デバッグ表示
 		CManager::GetInstance()->GetDebugProc()->Print(
 			"------------------[プレイヤーの操作]------------------\n"
@@ -669,6 +694,12 @@ void CPlayer::Controll(void)
 				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
 			m_state = STATE_AVOID;
+
+			// スタミナ減算
+			if (m_pStaminaGauge != nullptr)
+			{
+				m_pStaminaGauge->SubValue(SUBVALUE_AVOID);
+			}
 		}
 	}
 
@@ -870,13 +901,17 @@ void CPlayer::Controll(void)
 	{
 		fff += 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
-		CManager::GetInstance()->GetCamera()->SetRockDir(CCamera::RockOnDir::ROCKON_DIR_LEFT);	// ロックオン時のズレ向き設定
+
+		// スタミナ減算
+		if (m_pStaminaGauge != nullptr)
+		{
+			m_pStaminaGauge->UpgradeMaxValue(20);
+		}
 	}
 	if (pInputKeyboard->GetTrigger(DIK_DOWN) == true)
 	{
 		fff -= 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
-		CManager::GetInstance()->GetCamera()->SetRockDir(CCamera::RockOnDir::ROCKON_DIR_RIGHT);	// ロックオン時のズレ向き設定
 	}
 
 	if (m_pWeaponHandle != nullptr)
@@ -996,6 +1031,11 @@ void CPlayer::MotionBySetState(void)
 
 		// ダッシュ時間加算
 		m_fDashTime += CManager::GetInstance()->GetDeltaTime();
+
+		if (m_pStaminaGauge != nullptr)
+		{
+			m_pStaminaGauge->SubValue(SUBVALUE_DASH);
+		}
 		break;
 
 	default:

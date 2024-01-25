@@ -13,6 +13,7 @@
 #include "input.h"
 #include "skilltree_screen.h"
 #include "skilltree_cursor.h"
+#include "skilltree_line.h"
 #include "game.h"
 
 //==========================================================================
@@ -21,7 +22,7 @@
 namespace
 {
 	const char* LOADTEXT = "data\\TEXT\\skilltree\\iconinfo.json";
-	const float TIME_FADE = 0.5f;	// フェードアウト時間
+	const float TIME_FADE = 0.4f;	// フェードアウト時間
 	const int MAX_ICON = 4;		// アイコン
 }
 
@@ -74,11 +75,13 @@ CSkillTree *CSkillTree::Create(void)
 		m_pThisPtr = DEBUG_NEW CSkillTree;
 
 		// 初期化処理
+		m_pThisPtr->LoadJson();
 		m_pThisPtr->Init();
 	}
 	else
 	{
 		// インスタンス取得
+		m_pThisPtr->Init();
 		m_pThisPtr->GetInstance();
 	}
 
@@ -128,15 +131,19 @@ HRESULT CSkillTree::Init(void)
 
 		// 愛好情報設定
 		m_pSkillIcon[nIdx]->SetIconInfo(iconinfo);
+
+		if (iconinfo.parentID != -1)
+		{
+			CSkillTree_Line::Create(iconinfo.pos, m_SkillInfo[iconinfo.parentID].pos);
+		}
 	}
 
+	// カーソル生成
+	m_pCursor = CSkillTree_Cursor::Create(0);
 
 	// 状態カウンター
 	m_fStateTime = 0.0f;
 	m_state = STATE_FADEIN;
-
-	// カーソル生成
-	m_pCursor = CSkillTree_Cursor::Create(0);
 
 	return S_OK;
 }
@@ -161,13 +168,17 @@ void CSkillTree::Kill(void)
 	{
 		iconinfo->Uninit();
 	}
+	m_pSkillIcon.clear();	// スキルアイコン
 
 	// スクリーンの終了
 	m_pScreen->Uninit();
+	m_pScreen = nullptr;
 
 	// カーソル終了
 	m_pCursor->Uninit();
+	m_pCursor = nullptr;
 
+	m_pThisPtr = nullptr;
 	// 情報削除
 	Release();
 }
@@ -177,19 +188,40 @@ void CSkillTree::Kill(void)
 //==========================================================================
 void CSkillTree::Update(void)
 {
+	if (IsDeath())
+	{
+		return;
+	}
+
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
 
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
-	int i = 0;
-	for (auto const& iconinfo : m_SkillInfo)
+	if (!m_pSkillIcon.empty())
 	{
-		// アイコンの位置設定
-		m_pSkillIcon[i]->SetPosition(pos + iconinfo.pos);
-		i++;
+		int i = 0;
+		for (auto const& iconinfo : m_SkillInfo)
+		{
+			// アイコンの位置設定
+			m_pSkillIcon[i]->SetPosition(pos + iconinfo.pos);
+			i++;
+		}
 	}
+
+
+	// ラインのリスト取得
+	CListManager<CSkillTree_Line> lineList = CSkillTree_Line::GetListObj();
+	CSkillTree_Line* pLine = nullptr;
+
+	// リストループ
+	while (lineList.ListLoop(&pLine))
+	{
+		pLine->SetPosition(pos);
+		pLine->SetVtx();
+	}
+
 }
 
 
@@ -240,6 +272,21 @@ void CSkillTree::StateFadeIn(void)
 	col.a = m_fAlpha;
 	m_pCursor->SetColor(col);
 
+
+	// ラインのリスト取得
+	CListManager<CSkillTree_Line> lineList = CSkillTree_Line::GetListObj();
+	CSkillTree_Line* pLine = nullptr;
+
+	// リストループ
+	while (lineList.ListLoop(&pLine))
+	{
+		// カーソルの透明度設定
+		col = pLine->GetColor();
+		col.a = m_fAlpha;
+		pLine->SetColor(col);
+	}
+
+
 	if (m_fStateTime >= TIME_FADE)
 	{
 		m_fStateTime = TIME_FADE;
@@ -280,6 +327,20 @@ void CSkillTree::StateFadeOut(void)
 	col = m_pCursor->GetColor();
 	col.a = m_fAlpha;
 	m_pCursor->SetColor(col);
+
+
+	// ラインのリスト取得
+	CListManager<CSkillTree_Line> lineList = CSkillTree_Line::GetListObj();
+	CSkillTree_Line* pLine = nullptr;
+
+	// リストループ
+	while (lineList.ListLoop(&pLine))
+	{
+		// カーソルの透明度設定
+		col = pLine->GetColor();
+		col.a = m_fAlpha;
+		pLine->SetColor(col);
+	}
 
 	if (m_fStateTime <= 0)
 	{

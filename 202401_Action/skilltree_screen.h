@@ -18,7 +18,7 @@ class CSkillTree_Screen : public CObject2D
 {
 public:
 
-	CSkillTree_Screen(int nPriority = 8);
+	CSkillTree_Screen(int nPriority = 7);
 	~CSkillTree_Screen();
 
 	

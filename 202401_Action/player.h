@@ -17,6 +17,7 @@
 //==========================================================================
 class CShadow;
 class CHP_GaugePlayer;
+class CStaminaGauge_Player;
 class CSkillPoint;
 
 //==========================================================================
@@ -161,7 +162,8 @@ private:
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
 	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
 	CHP_GaugePlayer* m_pHPGauge;		// HPゲージのポインタ
-	Effekseer::Handle *m_pWeaponHandle;	// エフェクトの武器ハンドル
+	CStaminaGauge_Player* m_pStaminaGauge;	// スタミナゲージのポインタ
+	Effekseer::Handle *m_pWeaponHandle;		// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト
 };
 

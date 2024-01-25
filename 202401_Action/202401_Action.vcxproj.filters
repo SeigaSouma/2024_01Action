@@ -453,6 +453,15 @@
     <ClCompile Include="Imguimanager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="skilltree_line.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="object2D_gauge.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="stamina_gauge_player.cpp">
+      <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -802,6 +811,15 @@
     </ClInclude>
     <ClInclude Include="Imguimanager.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_line.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="object2D_gauge.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="stamina_gauge_player.h">
+      <Filter>ヘッダー ファイル\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
