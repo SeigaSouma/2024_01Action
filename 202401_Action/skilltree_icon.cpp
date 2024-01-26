@@ -21,14 +21,14 @@
 //==========================================================================
 namespace
 {
-	const D3DXCOLOR COLOR[MASTERING_MAX] =
+	const D3DXCOLOR COLOR[] =
 	{
 		D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f),	// 未習得
 		D3DXCOLOR(1.0f, 0.4f, 1.0f, 1.0f),	// 習得済み
 		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),	// 習得可能
 	};
 	const char* LOADTEXT = "data\\TEXT\\skilltree\\texture.txt";
-	const float SIZE_ICON = 50.0f;		// アイコンサイズ
+	const float SIZE_ICON = 50.0f;	// アイコンサイズ
 	const float TIME_FADE = 0.5f;	// フェードアウト時間
 }
 
@@ -165,6 +165,8 @@ void CSkillTree_Icon::Update(void)
 		// 習得可能！
 		m_Mastering = MASTERING_POSSIBLE;
 	}
+
+	SetColor(COLOR[m_Mastering]);
 
 	// 頂点座標の設定
 	SetVtx();

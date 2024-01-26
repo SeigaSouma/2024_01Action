@@ -22,6 +22,7 @@
 namespace
 {
 	const char* LOADTEXT = "data\\TEXT\\skilltree\\iconinfo.json";
+	const char* AUTOSAVE_MASTERING = "data\\TEXT\\skilltree\\mastering.json";
 	const float TIME_FADE = 0.4f;	// フェードアウト時間
 	const int MAX_ICON = 4;		// アイコン
 }
@@ -75,7 +76,6 @@ CSkillTree *CSkillTree::Create(void)
 		m_pThisPtr = DEBUG_NEW CSkillTree;
 
 		// 初期化処理
-		m_pThisPtr->LoadJson();
 		m_pThisPtr->Init();
 	}
 	else

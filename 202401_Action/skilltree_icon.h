@@ -34,6 +34,21 @@ private:
 		MASTERING_MAX
 	};
 
+	// JSONからの読み込み
+	void from_json(const json& j)
+	{
+		j.at("mastering").get_to(m_Mastering);
+	}
+
+	// JSONへの書き込み
+	void to_json(json& j) const
+	{
+		j = json
+		{
+			{"mastering", m_Mastering},
+		};
+	}
+
 	// 状態列挙
 	enum eState
 	{
@@ -54,15 +69,16 @@ public:
 		int needpoint;		// 必要ポイント
 		CSkillTree_Ability::eSkillCategory skillCategory;	// スキルのカテゴリー
 		int skillType;		// スキルの種類
-		int skillStage;	// スキルのステージ
+		int skillStage;		// スキルのステージ
 		MyLib::Vector3 pos;	// 位置
+		eMastering mastering;	// 習得状態
 
 		// デフォルトコンストラクタ
-		sSkillIcon() : ID(0), parentID(0), texID(0), needpoint(0), pos(), skillCategory(), skillType(0), skillStage(0) {}
+		sSkillIcon() : ID(0), parentID(0), texID(0), needpoint(0), pos(), skillCategory(), skillType(0), skillStage(0), mastering() {}
 
 		// パラメータつきコンストラクタ
-		sSkillIcon(int nID,int nParentID, int nTexID, int nNeedPoint, const MyLib::Vector3& position, const CSkillTree_Ability::eSkillCategory& category, int type, int stage)
-			: ID(nID), parentID(nParentID), texID(nTexID), needpoint(nNeedPoint), pos(position), skillCategory(category), skillType(type), skillStage(stage) {}
+		sSkillIcon(int nID,int nParentID, int nTexID, int nNeedPoint, const MyLib::Vector3& position, const CSkillTree_Ability::eSkillCategory& category, int type, int stage, const eMastering& master)
+			: ID(nID), parentID(nParentID), texID(nTexID), needpoint(nNeedPoint), pos(position), skillCategory(category), skillType(type), skillStage(stage), mastering(master) {}
 
 		// JSONからの読み込み
 		void from_json(const json& j)
