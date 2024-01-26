@@ -54,6 +54,7 @@ CSkillTree::CSkillTree(int nPriority) : CObject(nPriority)
 	m_SkillInfo.clear();	// スキルアイコン
 	m_pScreen = nullptr;	// スクリーンのオブジェクト
 	m_pCursor = nullptr;	// カーソルのオブジェクト
+	m_bOnScreen = false;	// スクリーン上にいるかのフラグ
 }
 
 //==========================================================================
@@ -96,9 +97,6 @@ HRESULT CSkillTree::Init(void)
 	// 種類の設定
 	SetType(CObject::TYPE_OBJECT2D);
 
-	// 画面生成
-	m_pScreen = CSkillTree_Screen::Create();
-
 	// 後でjson読み込みに変更する
 #if 0
 	CSkillTree_Icon::sSkillIcon info = CSkillTree_Icon::sSkillIcon();
@@ -121,26 +119,16 @@ HRESULT CSkillTree::Init(void)
 	LoadJson();
 #endif
 
+	// スキルアイコンの習得状況
 	for (auto const& iconinfo : m_SkillInfo)
 	{
-		int nIdx = static_cast<int>(m_pSkillIcon.size());
-		m_pSkillIcon.push_back(nullptr);
-
-		// スキルアイコン設定
-		m_pSkillIcon[nIdx] = CSkillTree_Icon::Create(iconinfo);
-
-		if (iconinfo.parentID != -1)
-		{
-			CSkillTree_Line::Create(iconinfo.pos, m_SkillInfo[iconinfo.parentID].pos);
-		}
+		m_SkillIconMastering.push_back(CSkillTree_Icon::MASTERING_YET);
 	}
-
-	// カーソル生成
-	m_pCursor = CSkillTree_Cursor::Create(0);
 
 	// 状態カウンター
 	m_fStateTime = 0.0f;
-	m_state = STATE_FADEIN;
+	m_state = STATE_NONE;
+	m_bOnScreen = false;	// スクリーン上にいるかのフラグ
 
 	return S_OK;
 }
@@ -150,7 +138,8 @@ HRESULT CSkillTree::Init(void)
 //==========================================================================
 void CSkillTree::Uninit(void)
 {
-	
+	m_pThisPtr = nullptr;
+
 	// 情報削除
 	Release();
 }
@@ -190,6 +179,11 @@ void CSkillTree::Update(void)
 		return;
 	}
 
+	if (!m_bOnScreen)
+	{
+		return;
+	}
+
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
 
@@ -221,12 +215,15 @@ void CSkillTree::Update(void)
 
 }
 
-
 //==========================================================================
 // 何もない状態
 //==========================================================================
 void CSkillTree::StateNone(void)
 {
+	if (!m_bOnScreen)
+	{
+		return;
+	}
 
 	// ゲームパッド情報取得
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
@@ -346,8 +343,11 @@ void CSkillTree::StateFadeOut(void)
 		// スキルツリーに変更
 		CGame::GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
 
+		// スクリーンから捌ける
+		OutScreen();
+
 		// 削除
-		Kill();
+		//Kill();
 		return;
 	}
 }
@@ -406,4 +406,90 @@ void CSkillTree::Draw(void)
 std::vector<CSkillTree_Icon*> CSkillTree::GetIcon(void) const
 {
 	return m_pSkillIcon;
+}
+
+//==========================================================================
+// 習得状況設定
+//==========================================================================
+void CSkillTree::SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering)
+{
+	if (m_SkillIconMastering.empty() ||
+		m_SkillIconMastering.size() <= nIdx)
+	{
+		return;
+	}
+
+	// 習得状況設定
+	m_SkillIconMastering[nIdx] = mastering;
+
+}
+
+//==========================================================================
+// スクリーン上に設定
+//==========================================================================
+void CSkillTree::SetScreen(void)
+{
+	if (m_bOnScreen)
+	{
+		return;
+	}
+
+	// 画面生成
+	m_pScreen = CSkillTree_Screen::Create();
+
+	for (auto const& iconinfo : m_SkillInfo)
+	{
+		int nIdx = static_cast<int>(m_pSkillIcon.size());
+		m_pSkillIcon.push_back(nullptr);
+
+		// スキルアイコン設定
+		m_pSkillIcon[nIdx] = CSkillTree_Icon::Create(iconinfo);
+
+		// 習得済みのものは能力付与
+		m_pSkillIcon[nIdx]->SetMastering(m_SkillIconMastering[nIdx]);
+
+		if (iconinfo.parentID != -1)
+		{
+			CSkillTree_Line::Create(iconinfo.pos, m_SkillInfo[iconinfo.parentID].pos);
+		}
+	}
+
+	// カーソル生成
+	m_pCursor = CSkillTree_Cursor::Create(0);
+
+	// 状態カウンター
+	m_fStateTime = 0.0f;
+	m_state = STATE_FADEIN;
+
+	// スクリーン上にいるかのフラグ
+	m_bOnScreen = true;
+}
+
+//==========================================================================
+// スクリーンから捌ける
+//==========================================================================
+void CSkillTree::OutScreen(void)
+{
+	if (!m_bOnScreen)
+	{
+		return;
+	}
+
+	// アイコンの終了
+	for (auto const& iconinfo : m_pSkillIcon)
+	{
+		iconinfo->Uninit();
+	}
+	m_pSkillIcon.clear();
+
+	// スクリーンの終了
+	m_pScreen->Uninit();
+	m_pScreen = nullptr;
+
+	// カーソル終了
+	m_pCursor->Uninit();
+	m_pCursor = nullptr;
+
+	// スクリーン上にいるかのフラグ
+	m_bOnScreen = false;
 }

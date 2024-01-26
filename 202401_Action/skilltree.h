@@ -47,6 +47,9 @@ public:
 	void Kill(void);	// 削除
 	void LoadJson(void);	// Jsonからのロード
 	void SaveJson(void);	// Jsonへのセーブ
+	void SetScreen(void);	// スクリーン上に設定
+	void OutScreen(void);	// スクリーンから捌ける
+	void SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering);	// 習得状況設定
 	std::vector<CSkillTree_Icon*> GetIcon(void) const;	// アイコン取得
 	static CSkillTree* GetInstance() { return m_pThisPtr; }	// インスタンス取得
 	static CSkillTree* Create(void);
@@ -94,6 +97,7 @@ private:
 	//=============================
 	std::vector<CSkillTree_Icon::sSkillIcon> m_SkillInfo;	// スキルアイコン
 	std::vector<CSkillTree_Icon*> m_pSkillIcon;				// スキルアイコン
+	std::vector<CSkillTree_Icon::eMastering> m_SkillIconMastering;	// スキルアイコンの習得状況
 
 	//=============================
 	// メンバ変数
@@ -103,6 +107,7 @@ private:
 	eState m_state;		// 状態
 	CSkillTree_Screen* m_pScreen;	// スクリーンのオブジェクト
 	CSkillTree_Cursor* m_pCursor;	// カーソルのオブジェクト
+	bool m_bOnScreen;				// スクリーン上にいるかのフラグ
 	static CSkillTree* m_pThisPtr;	// 自身のポインタ
 };
 

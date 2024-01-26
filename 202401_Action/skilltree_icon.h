@@ -20,17 +20,17 @@ class CAbillityStrategy;
 // スキルツリーアイコン定義
 class CSkillTree_Icon : public CObject2D
 {
-private:
-
+public:
 	//=============================
 	// 列挙型定義
 	//=============================
 	// 習得列挙
 	enum eMastering
 	{
-		MASTERING_YET = 0,	// 未習得
-		MASTERING_DONE,		// 習得済み
-		MASTERING_POSSIBLE,	// 習得可能
+		MASTERING_YET = 0,		// 未習得
+		MASTERING_DONE,			// 習得済み
+		MASTERING_POSSIBLE,		// 習得可能
+		MASTERING_SAMPLEDONE,	// お試し習得
 		MASTERING_MAX
 	};
 
@@ -55,8 +55,6 @@ private:
 		STATE_NONE = 0,	// なにもない
 		STATE_MAX
 	};
-
-public:
 
 	/**
 	@brief	スキルアイコン
@@ -122,8 +120,10 @@ public:
 
 	void SetIconInfo(sSkillIcon iconinfo);	// アイコン情報設定
 	sSkillIcon GetIconInfo(void);			// アイコン情報取得
-	CSkillTree_Icon::eMastering GetMatering(void) { return m_Mastering; }	// 習得状態取得
+	void SetMastering(eMastering mastering) { m_Mastering = mastering; }	// 習得状況設定
+	CSkillTree_Icon::eMastering GetMastering(void) { return m_Mastering; }	// 習得状態取得
 
+	void BindStartAvillity(void);			// 初期能力割り当て
 	bool BindAvillity(void);				// 能力割り当て
 	static CSkillTree_Icon* Create(sSkillIcon iconinfo);
 	static CListManager<CSkillTree_Icon> GetListObj(void) { return m_List; }	// リスト取得

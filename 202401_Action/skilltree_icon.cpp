@@ -13,6 +13,7 @@
 #include "game.h"
 #include "calculation.h"
 #include "player.h"
+#include "skilltree.h"
 #include "skillpoint.h"
 #include "skilltree_behavior.h"
 
@@ -160,13 +161,18 @@ void CSkillTree_Icon::Update(void)
 
 	if (m_Mastering != MASTERING_DONE &&
 		(m_SkillIconInfo.parentID == -1 ||
-		m_List.GetData(m_SkillIconInfo.parentID)->GetMatering() == MASTERING_DONE))
+		m_List.GetData(m_SkillIconInfo.parentID)->GetMastering() == MASTERING_DONE))
 	{
 		// 習得可能！
 		m_Mastering = MASTERING_POSSIBLE;
 	}
 
-	SetColor(COLOR[m_Mastering]);
+	D3DXCOLOR col = COLOR[m_Mastering];
+	col.a = GetColor().a;
+	SetColor(col);
+
+	// 状態保存
+	CSkillTree::GetInstance()->SetMastering(m_SkillIconInfo.ID, m_Mastering);
 
 	// 頂点座標の設定
 	SetVtx();
@@ -216,6 +222,18 @@ void CSkillTree_Icon::SetIconInfo(sSkillIcon iconinfo)
 CSkillTree_Icon::sSkillIcon CSkillTree_Icon::GetIconInfo(void)
 {
 	return m_SkillIconInfo;
+}
+
+//==========================================================================
+// 初期能力割り当て
+//==========================================================================
+void CSkillTree_Icon::BindStartAvillity(void)
+{
+	// 能力割り当て
+	m_pAbillity->BindAbillity();
+
+	// 習得済みにする
+	m_Mastering = MASTERING_DONE;
 }
 
 //==========================================================================

@@ -89,8 +89,8 @@ class CAbillityStamina : public CEnhance
 	// ƒƒ“ƒoŠÖ”
 	//=============================
 	// ’iŠK•Ê
-	void Add01(void) { }
-	void AutoHeal01(void){}
+	void Add01(void) { m_pPlayer->UpgradeMaxStamina(20); }
+	void AutoHeal01(void){ m_pPlayer->UpgradeAutoHealStamina(1.5f); }
 
 };
 

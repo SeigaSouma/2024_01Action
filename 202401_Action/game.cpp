@@ -24,6 +24,7 @@
 #include "edit_enemybase.h"
 #include "stage.h"
 #include "santabag.h"
+#include "skilltree.h"
 
 #include "enemymanager.h"
 #include "player.h"
@@ -158,6 +159,9 @@ HRESULT CGame::Init(void)
 	info.fMinZ = -1200.0f;
 	m_pLimitArea = CLimitArea::Create(info);
 	m_pLimitArea->SetEnableDisp(false);
+
+	// スキルツリー生成
+	CSkillTree::Create();
 
 	// クリアの判定
 	SetEnableClear(true);

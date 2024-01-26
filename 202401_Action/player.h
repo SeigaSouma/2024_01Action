@@ -99,6 +99,8 @@ public:
 
 	// スキルツリー用関数
 	void UpgradeLife(int addvalue);	// 体力アップグレード
+	void UpgradeMaxStamina(int addvalue);		// スタミナ最大値アップグレード
+	void UpgradeAutoHealStamina(float ratio);	// スタミナ自動回復アップグレード
 
 	static CPlayer* Create(int nIdx);	// 生成
 	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得

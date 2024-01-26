@@ -902,12 +902,6 @@ void CPlayer::Controll(void)
 	{
 		fff += 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
-
-		// スタミナ減算
-		if (m_pStaminaGauge != nullptr)
-		{
-			m_pStaminaGauge->UpgradeMaxValue(20);
-		}
 	}
 	if (pInputKeyboard->GetTrigger(DIK_DOWN) == true)
 	{
@@ -2028,4 +2022,28 @@ void CPlayer::UpgradeLife(int addvalue)
 {
 	// アップグレード後の体力に設定
 	SetLife(m_pHPGauge->UpgradeMaxValue(addvalue));
+}
+
+//==========================================================================
+// スタミナアップグレード
+//==========================================================================
+void CPlayer::UpgradeMaxStamina(int addvalue)
+{
+	// スタミナ最大値上昇
+	if (m_pStaminaGauge != nullptr)
+	{
+		m_pStaminaGauge->UpgradeMaxValue(addvalue);
+	}
+}
+
+//==========================================================================
+// スタミナ自動回復アップグレード
+//==========================================================================
+void CPlayer::UpgradeAutoHealStamina(float ratio)
+{
+	// スタミナ自動回復値上昇
+	if (m_pStaminaGauge != nullptr)
+	{
+		m_pStaminaGauge->UpgradeAutoHeal(ratio);
+	}
 }

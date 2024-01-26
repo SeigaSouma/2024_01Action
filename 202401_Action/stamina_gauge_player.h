@@ -30,7 +30,8 @@ public:
 	void Kill(void);	// 削除
 
 	// 強化関数
-	void UpgradeMaxValue(int addvalue);	// 最大値のアップグレード
+	void UpgradeMaxValue(int addvalue);		// 最大値のアップグレード
+	void UpgradeAutoHeal(float multiply);	// 自動回復のアップグレード
 
 	// 値の関数
 	void AddValue(float value);	// 値加算

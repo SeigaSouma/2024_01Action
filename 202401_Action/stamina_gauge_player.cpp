@@ -366,6 +366,15 @@ void CStaminaGauge_Player::UpgradeMaxValue(int addvalue)
 }
 
 //==========================================================================
+// 自動回復のアップグレード
+//==========================================================================
+void CStaminaGauge_Player::UpgradeAutoHeal(float multiply)
+{
+	// 自動回復強化
+	m_fAutoHeal = DEFAULT_AUTOHEAL * multiply;
+}
+
+//==========================================================================
 // 値の補正
 //==========================================================================
 void CStaminaGauge_Player::CorrectionValue(void)
