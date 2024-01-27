@@ -340,6 +340,17 @@ namespace UtilFunc	// 便利関数
 			return pos;
 		}
 
+		// 比率を計算する関数
+		/**
+		@brief	比率を計算
+		@param	size		[in]	二次元サイズ
+		@return	比率
+		*/
+		inline float AspectRatio(const D3DXVECTOR2& size) 
+		{
+			return size.x / size.y;
+		}
+
 		/**
 		@brief	モデルの頂点情報計算
 		@param	RotY		[in]	モデルのY軸向き
@@ -1520,6 +1531,38 @@ namespace UtilFunc	// 便利関数
 			spherepos += pos;
 
 			return spherepos;
+		}
+
+		/**
+		@brief	高さを基準に幅を自動変換
+		@param	size		[in]	元のサイズ
+		@param	height		[in]	変更後の高さ
+		@return	二次元サイズ
+		*/
+		inline D3DXVECTOR2 AdjustSizeByHeight(D3DXVECTOR2 size, float height)
+		{
+			D3DXVECTOR2 result = size;
+			result.y = height;
+
+			// 高さと比率から幅を計算
+			result.x = height * UtilFunc::Calculation::AspectRatio(size);
+			return result;
+		}
+
+		/**
+		@brief	幅を基準に高さを自動計算
+		@param	size		[in]	元のサイズ
+		@param	width		[in]	変更後の幅
+		@return	二次元サイズ
+		*/
+		inline D3DXVECTOR2 AdjustSizeByWidth(D3DXVECTOR2 size, float width)
+		{
+			D3DXVECTOR2 result = size;
+			result.x = width;
+
+			// 幅と比率から高さを計算
+			result.y = width / UtilFunc::Calculation::AspectRatio(size);
+			return result;
 		}
 
 		/**

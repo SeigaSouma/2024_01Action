@@ -38,6 +38,7 @@
 #include "MyEffekseer.h"
 #include "skillpoint.h"
 #include "damagepoint.h"
+#include "deadmanager.h"
 
 //==========================================================================
 // 定数定義
@@ -69,6 +70,7 @@ CPlayer::STATE_FUNC CPlayer::m_StateFunc[] =
 	&CPlayer::StateDamage,		// ダメージ
 	&CPlayer::StateKnockBack,	// ノックバック
 	&CPlayer::StateDead,		// 死亡
+	&CPlayer::StateDeadWait,	// 死亡待機
 	&CPlayer::StateFadeOut,		// フェードアウト
 	&CPlayer::StateCounter,		// カウンター中
 	&CPlayer::StateAvoid,		// 回避
@@ -729,7 +731,7 @@ void CPlayer::Controll(void)
 	SetRotation(rot);
 
 	// 重力処理
-	if (m_state != STATE_KNOCKBACK && m_state != STATE_DMG && m_state != STATE_DEAD && m_state != STATE_FADEOUT)
+	if (m_state != STATE_KNOCKBACK && m_state != STATE_DMG && m_state != STATE_DEAD && m_state != STATE_FADEOUT && m_state != STATE_DEADWAIT)
 	{
 		move.y -= mylib_const::GRAVITY;
 
@@ -1760,7 +1762,10 @@ void CPlayer::StateDead(void)
 	if ((CManager::GetInstance()->GetScene()->GetElevation()->IsHit(pos) || m_bHitStage) && m_nCntState >= 10)
 	{// 地面と当たっていたら
 
-		m_state = STATE_FADEOUT;	// フェードアウト
+		// 死亡マネージャ生成
+		CDeadManager::Create();
+
+		m_state = STATE_DEADWAIT;	// 死亡待機状態
 		m_nCntState = FADEOUTTIME;
 		m_KnokBackMove.y = 0.0f;	// 移動量ゼロ
 		m_bLandOld = true;
@@ -1806,6 +1811,15 @@ void CPlayer::StateDead(void)
 
 	// 移動量設定
 	SetMove(move);
+}
+
+//==========================================================================
+// 死亡待機
+//==========================================================================
+void CPlayer::StateDeadWait(void)
+{
+	// ぶっ倒れモーション
+	GetMotion()->Set(MOTION_DEAD);
 }
 
 //==========================================================================

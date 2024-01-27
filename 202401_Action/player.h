@@ -69,6 +69,7 @@ public:
 		STATE_DMG,			// ダメージ
 		STATE_KNOCKBACK,	// ノックバック
 		STATE_DEAD,			// 死
+		STATE_DEADWAIT,		// 死亡待機
 		STATE_FADEOUT,		// フェードアウト
 		STATE_COUNTER,		// 反撃
 		STATE_AVOID,		// 回避
@@ -137,6 +138,7 @@ private:
 	void StateDamage(void);		// ダメージ
 	void StateKnockBack(void);	// ノックバック
 	void StateDead(void);		// 死亡
+	void StateDeadWait(void);	// 死亡待機
 	void StateFadeOut(void);	// フェードアウト
 	void StateCounter(void);	// カウンター中
 	void StateAvoid(void);		// 回避

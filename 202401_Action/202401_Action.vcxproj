@@ -167,6 +167,9 @@
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="collisionobject.cpp" />
     <ClCompile Include="damagepoint.cpp" />
+    <ClCompile Include="deadmanager.cpp" />
+    <ClCompile Include="deadscreen.cpp" />
+    <ClCompile Include="deadtext.cpp" />
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="edit_enemybase.cpp" />
@@ -250,6 +253,8 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="resultmanager.cpp" />
     <ClCompile Include="resultscore.cpp" />
+    <ClCompile Include="revivalpercent_text.cpp" />
+    <ClCompile Include="revivaltime_gauge.cpp" />
     <ClCompile Include="santabag.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="score.cpp" />
@@ -291,6 +296,9 @@
     <ClInclude Include="collisionobject.h" />
     <ClInclude Include="constans.h" />
     <ClInclude Include="damagepoint.h" />
+    <ClInclude Include="deadmanager.h" />
+    <ClInclude Include="deadscreen.h" />
+    <ClInclude Include="deadtext.h" />
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="edit.h" />
     <ClInclude Include="edit_enemybase.h" />
@@ -372,6 +380,8 @@
     <ClInclude Include="result.h" />
     <ClInclude Include="resultmanager.h" />
     <ClInclude Include="resultscore.h" />
+    <ClInclude Include="revivalpercent_text.h" />
+    <ClInclude Include="revivaltime_gauge.h" />
     <ClInclude Include="santabag.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="score.h" />

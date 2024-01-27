@@ -98,7 +98,7 @@ HRESULT CSkillPoint::Init(void)
 	//multi = CTexture::GetInstance()->GetAdress(nMultiIdx);
 
 	// ¶¬ˆ—
-	m_apNumber = CMultiNumber::Create({1150.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE);
+	m_apNumber = CMultiNumber::Create({1150.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true);
 
 	return S_OK;
 }
@@ -112,7 +112,6 @@ void CSkillPoint::Uninit(void)
 	if (m_apNumber != NULL)
 	{
 		m_apNumber->Uninit();
-		delete m_apNumber;
 		m_apNumber = NULL;
 	}
 
@@ -162,6 +161,7 @@ void CSkillPoint::Update(void)
 	CObject2D::Update();
 
 	// ’l‚ÌÝ’èˆ—
+	m_apNumber->Update();
 	m_apNumber->SetValue(m_nPoint);
 
 

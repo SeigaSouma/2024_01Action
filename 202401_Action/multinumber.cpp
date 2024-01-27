@@ -195,8 +195,11 @@ HRESULT CMultiNumber::Init(void)
 		m_ppMultiNumber[nCntNum]->BindTexture(m_nTexIdx);
 	}
 
-	// ï`âÊê›íË
-	SettingDisp();
+	if (m_bDigitDraw)
+	{
+		// ï`âÊê›íË
+		SettingDisp();
+	}
 
 	if (m_objType == CNumber::OBJECTTYPE_BILLBOARD)
 	{
@@ -231,6 +234,8 @@ void CMultiNumber::Uninit(void)
 		delete[] m_ppMultiNumber;
 		m_ppMultiNumber = NULL;
 	}
+
+	delete this;
 }
 
 //==========================================================================

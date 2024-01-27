@@ -1115,7 +1115,8 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 	AttackInfo InitAttackInfo = {};
 
 	// キャンセル可能フレームリセット
-	InitInfo.nCancelableFrame = 0;
+	InitInfo.nCancelableFrame = -1;
+	InitInfo.nCombolableFrame = -1;
 
 	// スケール値リセット
 	for (int key = 0; key < MAX_KEY; key++)

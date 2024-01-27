@@ -128,7 +128,6 @@ void CScore::Uninit(void)
 	if (m_apNumber != NULL)
 	{
 		m_apNumber->Uninit();
-		delete m_apNumber;
 		m_apNumber = NULL;
 	}
 }

@@ -42,7 +42,7 @@ CObject2D_Gauge::~CObject2D_Gauge()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject2D_Gauge *CObject2D_Gauge::Create(float width, float height, int maxvalue, std::string texturepath)
+CObject2D_Gauge *CObject2D_Gauge::Create(float width, float height, int maxvalue, std::string texturepath, int nPriority)
 {
 	// 生成用のオブジェクト
 	CObject2D_Gauge *pObject2D = NULL;
@@ -51,7 +51,7 @@ CObject2D_Gauge *CObject2D_Gauge::Create(float width, float height, int maxvalue
 	{// NULLだったら
 
 		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D_Gauge;
+		pObject2D = DEBUG_NEW CObject2D_Gauge(nPriority);
 
 		if (pObject2D != NULL)
 		{// メモリの確保が出来ていたら
@@ -108,6 +108,8 @@ HRESULT CObject2D_Gauge::Init(void)
 	m_nMaxValue = m_nOriginValue;	// 最大値
 	m_nValue = m_nOriginValue;		// 現在の値
 
+	// 値設定
+	SetSize(D3DXVECTOR2(m_fMaxWidth, m_fMaxHeight));
 	return S_OK;
 }
 
@@ -143,6 +145,10 @@ HRESULT CObject2D_Gauge::Init(float width, float height, int maxvalue, std::stri
 		// テクスチャの割り当て
 		BindTexture(nIdx);
 	}
+
+
+	// 値設定
+	SetSize(D3DXVECTOR2(m_fMaxWidth, m_fMaxHeight));
 
 	// 頂点情報設定
 	SetVtx();

@@ -41,7 +41,7 @@ public:
 	void SetMoveFactor(float factor) { m_fMoveFactor = factor; }	// ˆÚ“®‚ÌŒW”İ’è
 
 	// Ã“IŠÖ”
-	static CObject2D_Gauge *Create(float width, float height, int maxvalue, std::string texturepath = "");	// ¶¬ˆ—
+	static CObject2D_Gauge *Create(float width, float height, int maxvalue, std::string texturepath = "", int nPriority = 6);	// ¶¬ˆ—
 	CObject2D_Gauge *GetObject2Dgauge(void) { return this; }
 protected:
 

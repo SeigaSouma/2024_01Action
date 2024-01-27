@@ -112,6 +112,12 @@
     <Filter Include="Imgui">
       <UniqueIdentifier>{156cf12c-aec8-49bf-8959-10a8998b33e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\dead">
+      <UniqueIdentifier>{358af573-3110-4e4d-ae0e-6a536973a4fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\dead">
+      <UniqueIdentifier>{ca34581e-e635-42b5-b176-6275a90d3d95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -369,9 +375,6 @@
     <ClCompile Include="player.cpp">
       <Filter>ソース ファイル\player</Filter>
     </ClCompile>
-    <ClCompile Include="targetpoint.cpp">
-      <Filter>ソース ファイル\mesh</Filter>
-    </ClCompile>
     <ClCompile Include="light.cpp">
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
@@ -464,6 +467,24 @@
     </ClCompile>
     <ClCompile Include="skilltree_behavior.cpp">
       <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="deadscreen.cpp">
+      <Filter>ソース ファイル\dead</Filter>
+    </ClCompile>
+    <ClCompile Include="targetpoint.cpp">
+      <Filter>ソース ファイル\mode\game</Filter>
+    </ClCompile>
+    <ClCompile Include="deadmanager.cpp">
+      <Filter>ソース ファイル\dead</Filter>
+    </ClCompile>
+    <ClCompile Include="deadtext.cpp">
+      <Filter>ソース ファイル\dead</Filter>
+    </ClCompile>
+    <ClCompile Include="revivalpercent_text.cpp">
+      <Filter>ソース ファイル\dead</Filter>
+    </ClCompile>
+    <ClCompile Include="revivaltime_gauge.cpp">
+      <Filter>ソース ファイル\dead</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -826,6 +847,21 @@
     </ClInclude>
     <ClInclude Include="skilltree_behavior.h">
       <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="deadscreen.h">
+      <Filter>ヘッダー ファイル\dead</Filter>
+    </ClInclude>
+    <ClInclude Include="deadmanager.h">
+      <Filter>ヘッダー ファイル\dead</Filter>
+    </ClInclude>
+    <ClInclude Include="deadtext.h">
+      <Filter>ヘッダー ファイル\dead</Filter>
+    </ClInclude>
+    <ClInclude Include="revivalpercent_text.h">
+      <Filter>ヘッダー ファイル\dead</Filter>
+    </ClInclude>
+    <ClInclude Include="revivaltime_gauge.h">
+      <Filter>ヘッダー ファイル\dead</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -89,7 +89,6 @@ void CDamagePoint::Uninit(void)
 	if (m_apNumber != nullptr)
 	{
 		m_apNumber->Uninit();
-		delete m_apNumber;
 		m_apNumber = nullptr;
 	}
 
@@ -103,7 +102,6 @@ void CDamagePoint::Kill(void)
 	if (m_apNumber != nullptr)
 	{
 		m_apNumber->Release();
-		delete m_apNumber;
 		m_apNumber = nullptr;
 	}
 
