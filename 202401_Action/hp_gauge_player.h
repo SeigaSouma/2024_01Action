@@ -35,6 +35,7 @@ public:
 
 	void Kill(void);
 	void SetLife(int nLife);
+	int GetMaxLife() { return m_nMaxLifeValue; }
 	static CHP_GaugePlayer* Create(MyLib::Vector3 pos, int nMaxLife);
 
 private:

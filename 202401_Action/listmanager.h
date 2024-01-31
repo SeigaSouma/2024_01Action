@@ -25,7 +25,8 @@ public:
 	void Regist(T* pList);				// 割り当て
 	void Delete(T* pList);				// 削除
 	bool ListLoop(T** ppList);			// リストループ処理
-	T* GetData(int nIdx);			// データ取得
+	T* GetData(int nIdx);				// データ取得
+	int FindIdx(T* pList);				// リストからインデックス検索
 	void KillAll(void);					// 全て削除
 	int GetNumAll(void);				// アイテムの総数取得
 	std::list<T*> GetList(void) const;	// アイテムのリスト取得
@@ -145,10 +146,31 @@ template<class T> bool CListManager<T>::ListLoop(T** ppList)
 //==========================================================================
 template<class T> T* CListManager<T>::GetData(int nIdx)
 {
+	if (m_ListObj.empty())
+	{// 空の場合即終了
+		return nullptr;
+	}
+
 	// インデックス分進んだ要素を渡す
 	Iterator it = m_ListObj.begin();
 	std::advance(it, nIdx);
 	return (*it);
+}
+
+//==========================================================================
+// リストからインデックス検索
+//==========================================================================
+template<class T> int CListManager<T>::FindIdx(T* pList)
+{
+	if (m_ListObj.empty())
+	{// 空の場合即終了
+		return -1;
+	}
+
+	// 自分自身をリストから探す
+	Iterator itr = std::find(m_ListObj.begin(), m_ListObj.end(), pList);
+
+	return static_cast<int>(std::distance(m_ListObj.begin(), itr));
 }
 
 //==========================================================================

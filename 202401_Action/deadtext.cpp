@@ -32,7 +32,7 @@ CDeadText::STATE_FUNC CDeadText::m_StateFunc[] =
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CDeadText::CDeadText(float fadetime, int nPriority) : m_fFadeTime(fadetime), CObject2D(nPriority)
+CDeadText::CDeadText(float fadein, float fadeout, int nPriority) : m_fFadeInTime(fadein), m_fFadeOutTime(fadeout), CObject2D(nPriority)
 {
 	// 値のクリア
 	m_state = STATE_NONE;	// 状態
@@ -50,13 +50,13 @@ CDeadText::~CDeadText()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CDeadText* CDeadText::Create(const float fadetime)
+CDeadText* CDeadText::Create(const float fadein, const float fadeout)
 {
 	// 生成用のオブジェクト
 	CDeadText* pScreen = NULL;
 
 	// メモリの確保
-	pScreen = DEBUG_NEW CDeadText(fadetime);
+	pScreen = DEBUG_NEW CDeadText(fadein, fadeout);
 
 	if (pScreen != NULL)
 	{
@@ -118,6 +118,10 @@ void CDeadText::Update(void)
 {
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
+	if (IsDeath())
+	{
+		return;
+	}
 
 	// 更新処理
 	CObject2D::Update();
@@ -141,12 +145,12 @@ void CDeadText::StateFadeIn(void)
 
 	// 不透明度更新
 	D3DXCOLOR col = GetColor();
-	col.a = m_fStateTime / m_fFadeTime;
+	col.a = m_fStateTime / m_fFadeInTime;
 	SetColor(col);
 
-	if (m_fStateTime >= m_fFadeTime)
+	if (m_fStateTime >= m_fFadeInTime)
 	{
-		m_fStateTime = m_fFadeTime;
+		m_fStateTime = m_fFadeOutTime;
 		m_state = STATE_NONE;
 		return;
 	}
@@ -162,7 +166,7 @@ void CDeadText::StateFadeOut(void)
 
 	// 不透明度更新
 	D3DXCOLOR col = GetColor();
-	col.a = m_fStateTime / m_fFadeTime;
+	col.a = m_fStateTime / m_fFadeOutTime;
 	SetColor(col);
 
 	if (m_fStateTime <= 0)

@@ -45,8 +45,7 @@ CHARACTERSET
 	JUMP = 0.00		
 	RADIUS = 60.00		
 	HEIGHT = 0.00		
-	LIFE = 10		
-	##LIFE = 50		
+	LIFE = 50		
 
 	PARTSSET						# [0]˜
 		INDEX = 0
@@ -202,7 +201,7 @@ COLLIDER_FILENAME = data/TEXT/character/player/tyuuni/sphere_collider.json
 #------------------------------------------------------------------------------
 # ƒ‚[ƒVƒ‡ƒ“”
 #------------------------------------------------------------------------------
-NUM_MOTION = 15
+NUM_MOTION = 16
 
 #------------------------------------------------------------------------------
 # ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹–¼
@@ -218,6 +217,7 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [6]ƒWƒƒƒ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [7]—‰º’†
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [8]ƒmƒbƒNƒoƒbƒN
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [9]€–S
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_respawn.txt			# [9]•œŠˆ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_wait.txt		# [10]”½Œ‚‘Ò‹@
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_turn.txt		# [11]”½Œ‚ó‚¯—¬‚µ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_attack.txt	# [12]”½Œ‚

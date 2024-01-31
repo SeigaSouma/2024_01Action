@@ -212,7 +212,7 @@ END_CHARACTERSET
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 11
+NUM_MOTION = 8
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -222,12 +222,9 @@ MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_walk.txt			# [1]歩き
 MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_dash.txt			# [2]ダッシュ
 MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_guard.txt			# [3]ガード
 MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_punch.txt			# [4]パンチ
-MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_kick.txt			# [5]キック
-MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_beam.txt			# [6]ビーム
-MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_charge_tackle.txt	# [7]タックルチャージ
-MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_tackle.txt			# [8]タックル
-MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_knockback.txt		# [9]ノックバック
-MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_fadeout.txt			# [10]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_kick.txt			# [5]瓦礫飛ばし
+MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_knockback.txt		# [6]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/boss/motion_fadeout.txt			# [7]フェードアウト
 
 
 END_SCRIPT		# この行は絶対消さないこと！

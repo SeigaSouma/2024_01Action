@@ -19,6 +19,8 @@ class CShadow;
 class CHP_GaugePlayer;
 class CStaminaGauge_Player;
 class CSkillPoint;
+class CEnemy;
+class CEndCounterSetting;
 
 //==========================================================================
 // クラス定義
@@ -27,6 +29,19 @@ class CSkillPoint;
 class CPlayer : public CObjectChara
 {
 protected:
+
+	// モーションの判定
+	struct SMotionFrag
+	{
+		bool bJump;			// ジャンプ中
+		bool bATK;			// 攻撃中
+		bool bCounter;		// カウンター中
+		bool bKnockBack;	// ノックバック中
+		bool bDead;			// 死亡中
+		bool bMove;			// 移動中
+	};
+
+public:
 	// 列挙型定義
 	enum MOTION
 	{
@@ -41,25 +56,13 @@ protected:
 		MOTION_FALL,		// 落下中
 		MOTION_KNOCKBACK,	// ノックバック
 		MOTION_DEAD,		// 死亡
+		MOTION_RESPAWN,		// 復活
 		MOTION_COUNTER_ACCEPT,		// 反撃受け付け
 		MOTION_COUNTER_TURN,		// 反撃受け流し
 		MOTION_COUNTER_ATTACK,		// 反撃
 		MOTION_DASHATK,			// ダッシュ攻撃
 		MOTION_MAX
 	};
-
-	// モーションの判定
-	struct SMotionFrag
-	{
-		bool bJump;			// ジャンプ中
-		bool bATK;			// 攻撃中
-		bool bCounter;		// カウンター中
-		bool bKnockBack;	// ノックバック中
-		bool bDead;			// 死亡中
-		bool bMove;			// 移動中
-	};
-
-public:
 
 	// 状態定義
 	enum STATE
@@ -71,6 +74,7 @@ public:
 		STATE_DEAD,			// 死
 		STATE_DEADWAIT,		// 死亡待機
 		STATE_FADEOUT,		// フェードアウト
+		STATE_RESPAWN,		// 復活
 		STATE_COUNTER,		// 反撃
 		STATE_AVOID,		// 回避
 		STATE_MAX
@@ -86,10 +90,17 @@ public:
 	virtual void Draw(void) override;
 
 	bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
+	bool Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
+	bool ProcessHit(const int nValue);
+
 	STATE GetState(void);		// 状態取得
 	void SetState(STATE state, int nCntState = 0);	// 状態設定
 	virtual void Kill(void);			// 死亡処理
 	void SwitchRockOnTarget(void);		// ロック対象切り替え
+
+	// モーション
+	void SetMotion(int motionIdx);	// モーションの設定
+
 
 	// 転移ビーコン
 	void SetEnableTouchBeacon(bool bTouch) { m_bTouchBeacon = bTouch; }	// ビーコンに触れてる判定設定
@@ -102,6 +113,16 @@ public:
 	void UpgradeLife(int addvalue);	// 体力アップグレード
 	void UpgradeMaxStamina(int addvalue);		// スタミナ最大値アップグレード
 	void UpgradeAutoHealStamina(float ratio);	// スタミナ自動回復アップグレード
+
+	// リスポーン
+	void RespawnSetting(void);	// リスポーン時の設定
+	int GetRespawnPercent(void) { return m_nRespawnPercent; }	// リスポーン確率取得
+	void SetRespawnPercent(int value);	// リスポーン確率設定
+
+	// 反撃
+	bool IsLockOnAtStart() { return m_bLockOnAtStart; }	// 反撃開始時にロックオンしていたか
+	void EndCounterSetting(void);	// 反撃終了時の設定
+
 
 	static CPlayer* Create(int nIdx);	// 生成
 	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
@@ -140,6 +161,7 @@ private:
 	void StateDead(void);		// 死亡
 	void StateDeadWait(void);	// 死亡待機
 	void StateFadeOut(void);	// フェードアウト
+	void StateRespawn(void);	// リスポーン
 	void StateCounter(void);	// カウンター中
 	void StateAvoid(void);		// 回避
 
@@ -164,18 +186,41 @@ private:
 	int m_nCntState;				// 状態遷移カウンター
 	int m_nComboStage;				// コンボの段階
 	int m_nIdxRockOn;				// ロックオン対象のインデックス番号
+	bool m_bLockOnAtStart;			// カウンター開始時にロックオンしていたか
 	bool m_bAttacking;				// 攻撃中
 	bool m_bCounterAccepting;		// カウンター受付中
 	bool m_bDash;					// ダッシュ判定
 	float m_fDashTime;				// ダッシュ時間
+	int m_nRespawnPercent;			// リスポーン確率
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
 	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
 	CHP_GaugePlayer* m_pHPGauge;		// HPゲージのポインタ
 	CStaminaGauge_Player* m_pStaminaGauge;	// スタミナゲージのポインタ
+	CEndCounterSetting* m_pEndCounterSetting;	// カウンター終了時の設定
 	Effekseer::Handle *m_pWeaponHandle;		// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト
 };
 
+
+//==========================================================================
+// カウンター終了時の設定
+class CEndCounterSetting
+{
+public:
+	CEndCounterSetting() {}
+
+	virtual void EndSetting(CPlayer* player);	// 終了時の設定
+};
+
+class CEndTurn : public CEndCounterSetting
+{
+	//void EndSetting(CPlayer* player) override {}
+};
+
+class CEndAttack : public CEndCounterSetting
+{
+	void EndSetting(CPlayer* player) override;
+};
 
 
 #endif

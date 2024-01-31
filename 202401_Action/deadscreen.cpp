@@ -10,6 +10,7 @@
 #include "manager.h"
 #include "sound.h"
 #include "calculation.h"
+#include "deadmanager.h"
 
 //==========================================================================
 // 定数定義
@@ -34,7 +35,7 @@ CDeadScreen::STATE_FUNC CDeadScreen::m_StateFunc[] =
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CDeadScreen::CDeadScreen(int nPriority) : CObject2D(nPriority)
+CDeadScreen::CDeadScreen(float fadetime, int nPriority) : m_fFadeOutTime(fadetime), CObject2D(nPriority)
 {
 	// 値のクリア
 	m_state = STATE_NONE;	// 状態
@@ -52,13 +53,13 @@ CDeadScreen::~CDeadScreen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CDeadScreen* CDeadScreen::Create(void)
+CDeadScreen* CDeadScreen::Create(float fadetime)
 {
 	// 生成用のオブジェクト
 	CDeadScreen* pScreen = NULL;
 
 	// メモリの確保
-	pScreen = DEBUG_NEW CDeadScreen;
+	pScreen = DEBUG_NEW CDeadScreen(fadetime);
 
 	if (pScreen != NULL)
 	{
@@ -99,7 +100,7 @@ HRESULT CDeadScreen::Init(void)
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 
 	// 状態カウンター
-	m_fStateTime = 0.0f;
+	m_fStateTime = TIME_FADE;
 	m_state = STATE_FADEIN;
 	return S_OK;
 }
@@ -120,6 +121,10 @@ void CDeadScreen::Update(void)
 {
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
+	if (IsDeath())
+	{
+		return;
+	}
 
 	// 更新処理
 	CObject2D::Update();
@@ -139,17 +144,22 @@ void CDeadScreen::StateNone(void)
 void CDeadScreen::StateFadeIn(void)
 {
 	// 状態遷移カウンター減算
-	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
 	// 不透明度更新
 	D3DXCOLOR col = GetColor();
-	col.a = FADE_ALPHA * (m_fStateTime / TIME_FADE);
+	col.a = FADE_ALPHA * (1.0f - (m_fStateTime / TIME_FADE));
 	SetColor(col);
 
-	if (m_fStateTime >= TIME_FADE)
+	if (m_fStateTime <= 0.0f)
 	{
-		m_fStateTime = TIME_FADE;
+		m_fStateTime = 0.0f;
 		m_state = STATE_NONE;
+
+		// 不透明度更新
+		D3DXCOLOR col = GetColor();
+		col.a = FADE_ALPHA;
+		SetColor(col);
 		return;
 	}
 }
@@ -160,19 +170,27 @@ void CDeadScreen::StateFadeIn(void)
 void CDeadScreen::StateFadeOut(void)
 {
 	// 状態遷移カウンター減算
-	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
 
 	// 不透明度更新
 	D3DXCOLOR col = GetColor();
-	col.a = FADE_ALPHA * (m_fStateTime / TIME_FADE);
+	col.a = FADE_ALPHA * (1.0f - (m_fStateTime / m_fFadeOutTime));
 	SetColor(col);
 
-	if (m_fStateTime <= 0)
+	if (m_fStateTime >= m_fFadeOutTime)
 	{
-		m_fStateTime = 0.0f;
+		m_fStateTime = m_fFadeOutTime;
+		m_state = STATE_NONE;
+
+		// 不透明度更新
+		D3DXCOLOR col = GetColor();
+		col.a = 0.0f;
+		SetColor(col);
 
 		// 削除
 		Uninit();
+
+		CDeadManager::GetInstance()->Uninit();
 		return;
 	}
 }

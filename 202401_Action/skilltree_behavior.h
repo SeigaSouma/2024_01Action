@@ -145,7 +145,30 @@ class CAbillityCounter : public CEnhance
 
 };
 
+//==========================================================================
+// リスポーン強化
+//==========================================================================
+class CAbillityRespawn : public CEnhance
+{
+	virtual void BindAbillity() override	// 能力を付与する関数
+	{
+		// 状態別処理
+		(this->*(m_StageFunc[m_nStage]))();
+	}
 
+	//=============================
+	// ステージ関数リスト
+	//=============================
+	typedef void(CAbillityRespawn::* STAGE_FUNC)(void);
+	static STAGE_FUNC m_StageFunc[];
+
+	//=============================
+	// メンバ関数
+	//=============================
+	// 段階別
+	void AddRespawnPercent(void) {}
+
+};
 
 
 

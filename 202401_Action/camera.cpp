@@ -1185,6 +1185,7 @@ void CCamera::Reset(CScene::MODE mode)
 {
 	
 	m_bFollow = true;	// í«è]Ç∑ÇÈÇ©Ç«Ç§Ç©
+	m_bRockON = false;	// ÉçÉbÉNÉIÉìÇ∑ÇÈÇ©
 
 	switch (mode)
 	{

@@ -10,6 +10,8 @@
 
 #include "constans.h"
 
+class CSkillTree_Ability;
+
 //==========================================================================
 // クラス定義
 //==========================================================================
@@ -35,6 +37,7 @@ public:
 	{
 		ATTACK_NORMAL = 0,	// 通常攻撃
 		ATTACK_STRONG,		// 強攻撃
+		ATTACK_COUNTER,		// 反撃攻撃
 		ATTACK_MAX
 	};
 
@@ -68,6 +71,7 @@ private:
 	void SetBoss(void);
 
 	// メンバ変数
+	CSkillTree_Ability* m_pSkilltreeAbillity;	// スキルツリー能力のポインタ
 	SceneType m_SceneType;	// シーンの種類
 	bool m_bEndRush;		// ラッシュが終了したか
 	bool m_bControll;		// 操作できるか

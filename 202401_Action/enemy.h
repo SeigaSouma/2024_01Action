@@ -49,6 +49,7 @@ public:
 		STATE_PARENTCHASE,	// 親追い掛け
 		STATE_ATTACK,		// 攻撃
 		STATE_WAIT,			// 待機
+		STATE_DOWN,			// ダウン
 		STATE_MAX
 	};
 
@@ -71,14 +72,21 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Update(void) override;
 	virtual void Draw(void) override;
+
 	void SetState(STATE state);		// 状態設定
-	virtual bool Hit(const int nValue);
+	virtual bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);
+	virtual void NormalHitResponse();	// ヒット時の反応
+	virtual void CounterHitResponse();	// ヒット時の反応
 
 	void SetSpawnPosition(MyLib::Vector3 pos);	// スポーン地点設定
 	MyLib::Vector3 GetSpawnPosition(void);	// スポーン地点取得
 	void SetTargetPosition(MyLib::Vector3 pos) { m_TargetPosition = pos; }	// 目標の位置設定
 	void SetEnableRockOn(bool bSet) { m_bRockOnAccepting = bSet; }
 	bool IsRockOnAccept(void) { return m_bRockOnAccepting; }
+
+
+	// モーション
+	void SetMotion(int motionIdx);	// モーションの設定
 
 	HRESULT RoadText(const char *pFileName);
 	virtual void Kill(void);	// 削除
@@ -140,6 +148,7 @@ protected:
 	virtual void TriggerChasePlayer(void);	// プレイヤー追従ONにするトリガー
 	virtual void ChangeToAttackState(void);	// 攻撃状態移行処理
 	virtual void StateWait(void);			// 待機処理
+	virtual void StateDown(void);			// ダウン状態
 
 	STATE m_state;							// 状態
 	STATE m_Oldstate;						// 前回の状態
@@ -147,6 +156,7 @@ protected:
 	int m_nTargetPlayerIndex;				// 追い掛けるプレイヤーのインデックス番号
 	float m_fActCounter;					// 移動カウンター
 	bool m_bActionable;						// 行動可能か
+	float m_fDownTime;						// ダウンカウンター
 	MyLib::Vector3 m_posOrigin;				// 最初の位置
 	MyLib::Vector3 m_posKnokBack;			// ノックバックの位置
 	SMotionFrag m_sMotionFrag;				// モーションのフラグ
@@ -162,6 +172,7 @@ private:
 		MOTION_WALK,		// 移動モーション
 		MOTION_ATK,			// 攻撃
 		MOTION_DMG,			// ダメージ
+		MOTION_DOWN,		// ダウン
 		MOTION_KNOCKBACK,	// やられモーション
 		MOTION_FADEOUT,		// 土帰還
 		MOTION_MAX

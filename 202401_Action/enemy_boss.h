@@ -12,6 +12,8 @@
 
 // 前方宣言
 class CHP_GaugeBoss;
+class CBossState;
+class CBossAttack;
 
 //==========================================================================
 // クラス定義
@@ -32,38 +34,12 @@ public:
 		MOTION_DASH,			// ダッシュ移動モーション
 		MOTION_GUARD,			// ガードモーション
 		MOTION_PUNCH,			// パンチモーション
-		MOTION_KICK,			// キックモーション
-		MOTION_BEAM,			// ビームモーション
-		MOTION_CHARGE_TACKLE,	// タックルチャージモーション
-		MOTION_TACKLE,			// タックルモーション
+		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
 		MOTION_KNOCKBACK,		// やられモーション
 		MOTION_FADEOUT,			// 帰還モーション
+		MOTION_MAX
 	};
 
-	// 行動分岐
-	enum eActionBranch
-	{
-		ACTBRANCH_CHASE_SLOW = 0,	// 歩き追従
-		ACTBRANCH_CHASE_DASH,		// ダッシュ追従
-		ACTBRANCH_PROXIMITY_PUNCH,	// 近接攻撃(パンチ)
-		ACTBRANCH_PROXIMITY_KICK,	// 近接攻撃(キック)
-		ACTBRANCH_REMOTE_BEAM,		// 遠距離攻撃(ビーム)
-		ACTBRANCH_ASSAULT_CHARGE,	// 突撃攻撃(溜め)
-		ACTBRANCH_ASSAULT_TACKLE,	// 突撃攻撃(タックル)
-	};
-
-	// 行動列挙
-	enum ACTION
-	{
-		ACTION_CHASE = 0,		// 追従
-		ACTION_PROXIMITY,		// 近接攻撃
-		ACTION_REMOTE,			// 遠隔攻撃
-		ACTION_ASSAULT,			// 突撃攻撃
-		ACTION_WAIT,			// 待機
-		ACTION_GUARD,			// ガード
-		ACTION_SELFEXPLOSION,	// 自爆
-		ACTION_MAX
-	};
 
 	CEnemyBoss(int nPriority = mylib_const::ENEMY_PRIORITY);
 	~CEnemyBoss();
@@ -75,9 +51,33 @@ public:
 	void Draw(void) override;
 	void Kill(void) override;
 
-	void SetAction(ACTION action) { m_Action = action; }	// アクション設定
 	void SetTargetPosition(MyLib::Vector3 pos);	// 目標の位置設定
 
+	// 攻撃状態切り替え
+	void ChangeATKState(CBossState* state);
+	void ChangeNextATKState(CBossState* state) 
+	{ 
+		/*delete m_pNextATKState;
+		m_pNextATKState = state;*/
+	}
+
+
+	void ChangeATKType(int pattern)
+	{
+		//m_nIdxAtkPattern
+	}
+
+	void performRandomAction();
+
+
+	void ActChase(void);				// 追い掛け
+
+	// 攻撃を実行する
+	void performAttack();
+
+	bool IsCatchUp() { return m_bCatchUp; }
+
+	CBossState* GetNextATKState() { return m_pNextATKState; }
 private:
 
 
@@ -92,24 +92,9 @@ private:
 	//=============================
 	// 行動関数
 	void ActionSet(void) override;		// 行動の設定
-	void DrawingAction(void);			// 行動抽選
 	void UpdateAction(void) override;	// 行動更新
-	void ActChase(void);				// 追い掛け
-	void ActAttackProximity(void);		// 近接攻撃
-	void ActAttackRemote(void);			// 遠隔攻撃
-	void ActAttackAssault(void);		// 突撃攻撃
+	//void ActChase(void);				// 追い掛け
 	void ActWait(void);					// 待機
-	void ActGuard(void);				// ガード
-	void ActAttackExplosion(void);		// 自爆攻撃
-
-	// 行動内関数
-	void ChaseSlow(void);		// 歩き追い掛け
-	void ChaseDash(void);		// ダッシュ追い掛け
-	void AttackPunch(void);		// パンチ攻撃
-	void AttackKick(void);		// キック攻撃
-	void AttackBeam(void);		// ビーム攻撃
-	void ChargeTackle(void);	// タックルチャージ
-	void AttackTackle(void);	// タックル攻撃
 
 	// その他関数
 	void MotionSet(void) override;	// モーションの設定
@@ -120,17 +105,131 @@ private:
 	//=============================
 	// メンバ変数
 	//=============================
-	ACTION m_Action;		// 行動
-	eActionBranch m_ActionBranch;	// 行動分岐
-	eActionBranch m_MakeForActionBranch;	// 行動する為の行動
 	MyLib::Vector3 m_TargetPosition;	// 目標の位置
 	float m_fActTime;		// 行動カウンター
-	float m_fAssultLength;		// 突撃長さ
-	float m_fAssultLengthDest;	// 目標の突撃長さ
 	bool m_bCatchUp;	// 追い着き判定
 	CHP_GaugeBoss *m_pBossHPGauge;	// ボスのHPゲージ
+
+
+
+	CBossState* m_pATKState;		// 今の行動ポインタ
+	CBossState* m_pNextATKState;	// 次の行動ポインタ
+
+	int m_nIdxAtkPattern;
+	std::vector<CBossAttack*> m_pAtkPattern;
 };
 
+
+
+// ボスステート
+class CBossState
+{
+public:
+	virtual void Action(CEnemyBoss* boss) = 0;	// 行動
+
+	virtual void Attack(CEnemyBoss* boss) = 0;	// 攻撃処理
+
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) = 0;
+};
+
+class CBossStep : public CBossState
+{
+public:
+	// 行動
+	virtual void Action(CEnemyBoss* boss) override
+	{
+		// 追い掛ける
+		boss->ActChase();
+
+		if (boss->IsCatchUp())
+		{
+			boss->ChangeATKState(boss->GetNextATKState());
+		}
+	}
+};
+
+
+// 攻撃
+class CBossAttack : public CBossState
+{
+public:
+
+	CBossAttack() : m_nIdxMotion(0) {}
+
+	virtual void Action(CEnemyBoss* boss) override = 0;	// 行動
+
+
+	virtual void Attack(CEnemyBoss* boss) override;	// 攻撃処理
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		// 派生クラスでインデックス設定されてる前提
+		boss->SetMotion(m_nIdxMotion);
+	}
+
+protected:
+	int m_nIdxMotion;
+};
+
+// 近接攻撃
+class CBossProximity : public CBossAttack
+{
+public:
+
+	CBossProximity() {}
+	
+	virtual void Action(CEnemyBoss* boss) override;	// 行動
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override = 0;
+};
+
+// 遠距離攻撃
+class CBossRemote : public CBossAttack
+{
+public:
+	CBossRemote() {}
+
+	virtual void Action(CEnemyBoss* boss) override;	// 行動
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override = 0;
+};
+
+
+
+
+// 横なぎコンボ
+class CBossSideSwipeCombo : public CBossProximity
+{
+public:
+	CBossSideSwipeCombo() {}
+	
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION_PUNCH;
+		CBossAttack::ChangeMotionIdx(boss);
+	}
+};
+
+
+// 瓦礫飛ばし
+class CBossLaunchBallast : public CBossRemote
+{
+public:
+	CBossLaunchBallast() {}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION_LAUNCHBALLAST;
+		CBossAttack::ChangeMotionIdx(boss);
+	}
+};
 
 
 #endif

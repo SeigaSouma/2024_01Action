@@ -20,7 +20,7 @@ MODEL_FILENAME = data/MODEL/bossstage_01.x		# [0]
 #==============================================================================
 MODELSET
 	TYPE = 0
-	POS = 0.00 -100.00 0.00
+	POS = 0.00 -1800.00 0.00
 	ROT = 0.00 0.00 0.00
 	SHADOW = 0
 END_MODELSET

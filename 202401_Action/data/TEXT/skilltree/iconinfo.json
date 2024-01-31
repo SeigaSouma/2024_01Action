@@ -75,14 +75,28 @@
             "needpoint": 0,
             "parentID": -1,
             "pos": {
-                "x": 40.0,
-                "y": 75.0,
+                "x": -165.0,
+                "y": 0.0,
                 "z": 0.0
             },
             "skillcategory": 1,
             "skillstage": 0,
             "skilltype": 0,
             "texID": 1
+        },
+        {
+            "ID": 6,
+            "needpoint": 2,
+            "parentID": -1,
+            "pos": {
+                "x": 55.0,
+                "y": 105.0,
+                "z": 0.0
+            },
+            "skillcategory": 0,
+            "skillstage": 0,
+            "skilltype": 3,
+            "texID": 0
         }
     ]
 }

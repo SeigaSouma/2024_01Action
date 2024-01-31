@@ -37,6 +37,15 @@
                         }
                     ],
                     "typeName": "Counter"
+                },
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "AddRespawnPercent"
+                        }
+                    ],
+                    "typeName": "respawn"
                 }
             ]
         },

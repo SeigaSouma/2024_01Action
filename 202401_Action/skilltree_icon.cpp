@@ -143,6 +143,12 @@ void CSkillTree_Icon::Uninit(void)
 	// ƒŠƒXƒg‚©‚çíœ
 	m_List.Delete(this);
 
+	if (m_pAbillity != nullptr)
+	{
+		delete m_pAbillity;
+		m_pAbillity = nullptr;
+	}
+
 	// I—¹ˆ—
 	CObject2D::Uninit();
 }

@@ -157,8 +157,11 @@ void CSkillTree::Kill(void)
 	m_pSkillIcon.clear();	// スキルアイコン
 
 	// スクリーンの終了
-	m_pScreen->Uninit();
-	m_pScreen = nullptr;
+	if (m_pScreen != nullptr)
+	{
+		m_pScreen->Uninit();
+		m_pScreen = nullptr;
+	}
 
 	// カーソル終了
 	m_pCursor->Uninit();

@@ -72,7 +72,12 @@ HRESULT CLoadManager::Init(void)
 //==========================================================================
 void CLoadManager::Uninit(void)
 {
-	
+	if (m_pLoadScreen != nullptr)
+	{
+		m_pLoadScreen->Kill();
+		delete m_pLoadScreen;
+		m_pLoadScreen = nullptr;
+	}
 }
 
 //==========================================================================

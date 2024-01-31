@@ -47,6 +47,7 @@ namespace
 	const float CHACE_DISTABCE = 50.0f;	// 追い掛ける時の間隔
 	const float TIME_DMG = static_cast<float>(10) / static_cast<float>(mylib_const::DEFAULT_FPS);	// ダメージ時間
 	const float TIME_DEAD = static_cast<float>(40) / static_cast<float>(mylib_const::DEFAULT_FPS);	// 死亡時間
+	const float TIME_DOWN = static_cast<float>(150) / static_cast<float>(mylib_const::DEFAULT_FPS);	// ダウン時間
 
 }
 
@@ -77,6 +78,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
 	m_fActCounter = 0.0f;		// 移動カウンター
 	m_bActionable = false;		// 行動可能か
+	m_fDownTime = 0.0f;			// ダウンカウンター
 	m_bAddScore = false;		// スコア加算するかの判定
 	m_bRockOnAccepting = false;	// ロックオン受付
 	m_nBallastEmission = 0;	// 瓦礫の発生カウンター
@@ -543,7 +545,7 @@ void CEnemy::ProcessLanding(void)
 //==========================================================================
 // ヒット処理
 //==========================================================================
-bool CEnemy::Hit(const int nValue)
+bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 {
 	bool bHit = false;
 
@@ -562,6 +564,7 @@ bool CEnemy::Hit(const int nValue)
 
 		// 体力減らす
 		nLife -= nValue;
+		UtilFunc::Transformation::ValueNormalize(nLife, GetLifeOrigin(), 0);
 
 		// 体力設定
 		SetLife(nLife);
@@ -569,7 +572,7 @@ bool CEnemy::Hit(const int nValue)
 		if (nLife > 0)
 		{// 体力がなくなってなかったら
 
-			//// ダメージ音再生
+			// ダメージ音再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
 
 			if (m_pHPGauge == nullptr)
@@ -613,32 +616,79 @@ bool CEnemy::Hit(const int nValue)
 			SetMove(move);
 		}
 
-		// 補正
-		UtilFunc::Transformation::ValueNormalize(nLife, GetLifeOrigin(), 0);
-
 		// 過去の状態保存
 		m_Oldstate = m_state;
 
-		// ダメージ状態にする
-		m_state = STATE_DMG;
+		switch (atkType)
+		{
+		case CGameManager::ATTACK_NORMAL:
+			NormalHitResponse();
+			break;
 
-		// 遷移カウンター設定
-		m_fStateTime = TIME_DMG;
+		case CGameManager::ATTACK_STRONG:
+			break;
 
-		// やられモーション
-		GetMotion()->Set(MOTION_DMG);
+		case CGameManager::ATTACK_COUNTER:
+			CounterHitResponse();
+			break;
 
-		// ヒットストップ
-		CManager::GetInstance()->SetEnableHitStop(5);
-
-		// 振動
-		CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);
-
-		// ノックバックの位置更新
-		m_posKnokBack = GetPosition();
+		default:
+			break;
+		}
 	}
 
 	return bHit;
+}
+
+//==========================================================================
+// 通常ヒット時の反応
+//==========================================================================
+void CEnemy::NormalHitResponse()
+{
+	// ダメージ状態にする
+	m_state = STATE_DMG;
+
+	// 遷移カウンター設定
+	m_fStateTime = TIME_DMG;
+
+	// やられモーション
+	GetMotion()->Set(MOTION_DMG);
+
+	// ヒットストップ
+	CManager::GetInstance()->SetEnableHitStop(5);
+
+	// 振動
+	CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);
+
+	// ノックバックの位置更新
+	m_posKnokBack = GetPosition();
+}
+
+//==========================================================================
+// カウンターヒット時の反応
+//==========================================================================
+void CEnemy::CounterHitResponse()
+{
+	// ダウン状態にする
+	m_state = STATE_DOWN;
+
+	// 遷移カウンター設定
+	m_fStateTime = TIME_DMG;
+
+	// ダウンカウンター設定
+	m_fDownTime = TIME_DOWN;
+
+	// やられモーション
+	GetMotion()->Set(MOTION_DOWN);
+
+	// ヒットストップ
+	CManager::GetInstance()->SetEnableHitStop(5);
+
+	// 振動
+	CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);
+
+	// ノックバックの位置更新
+	m_posKnokBack = GetPosition();
 }
 
 //==========================================================================
@@ -772,6 +822,10 @@ void CEnemy::UpdateState(void)
 	// 色設定
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_mMatcol.a);
 
+	// ダウンカウンター減算
+	m_fDownTime -= CManager::GetInstance()->GetDeltaTime();
+	UtilFunc::Transformation::ValueNormalize(m_fDownTime, TIME_DOWN, 0.0f);
+
 	switch (m_state)
 	{
 	case STATE_NONE:
@@ -812,6 +866,10 @@ void CEnemy::UpdateState(void)
 
 	case STATE_WAIT:
 		StateWait();
+		break;
+
+	case STATE_DOWN:
+		StateDown();
 		break;
 	}
 
@@ -1474,6 +1532,39 @@ void CEnemy::StateWait(void)
 	return;
 }
 
+//==========================================================================
+// ダウン状態
+//==========================================================================
+void CEnemy::StateDown(void)
+{
+	// 行動可能判定
+	m_bActionable = false;
+
+	// 色設定
+	m_mMatcol = D3DXCOLOR(1.0f, 0.5f, 0.1f, 1.0f);
+
+	if (m_fDownTime <= 0.0f)
+	{
+		m_state = STATE_NONE;
+		// 行動可能判定
+		m_bActionable = true;
+		return;
+	}
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_DOWN)
+	{
+		// ダウンモーション設定
+		pMotion->Set(MOTION_DOWN);
+	}
+}
 
 //==========================================================================
 // プレイヤー追従ONにするトリガー
@@ -1637,6 +1728,19 @@ void CEnemy::LimitArea(void)
 	SetPosition(pos);
 }
 
+//==========================================================================
+// モーションの設定
+//==========================================================================
+void CEnemy::SetMotion(int motionIdx)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+	pMotion->Set(motionIdx);
+}
 
 //==========================================================================
 // 攻撃時処理
@@ -1692,7 +1796,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, ATKInfo.fRangeSize, fRadius).ishit)
 		{// 球の判定
 
-			if (pPlayer->Hit(ATKInfo.nDamage, ATKInfo.AtkType))
+			if (pPlayer->Hit(ATKInfo.nDamage, this, ATKInfo.AtkType))
 			{// 当たってたら
 
 				// プレイヤーの向き

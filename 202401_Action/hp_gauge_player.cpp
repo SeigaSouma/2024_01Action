@@ -267,7 +267,7 @@ int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
 {
 	int oldMaxLife = m_nMaxLifeValue;
 
-	// スタミナの最大値上昇
+	// 体力の最大値上昇
 	m_nMaxLifeValue += addvalue;
 
 	for (const auto& gauge : m_pObj2DGauge)

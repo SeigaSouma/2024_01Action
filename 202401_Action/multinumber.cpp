@@ -260,6 +260,7 @@ void CMultiNumber::Release(void)
 		delete m_ppMultiNumber;
 		m_ppMultiNumber = NULL;
 	}
+	delete this;
 }
 
 //==========================================================================

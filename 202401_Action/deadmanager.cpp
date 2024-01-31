@@ -13,6 +13,7 @@
 #include "deadscreen.h"
 #include "deadtext.h"
 #include "revivalpercent_text.h"
+#include "player.h"
 
 //==========================================================================
 // 定数定義
@@ -37,6 +38,10 @@ CDeadManager::CDeadManager(int nPriority) : CObject(nPriority)
 	m_bSetScreen = false;		// スクリーンのセットフラグ
 	m_bSetText = false;			// テキストのセットフラグ
 	m_bSetRevivalText = false;	// 復活確率テキストのセットフラグ
+	m_bRespawnPossible = false;	// 復活できるか
+	m_pScreen = nullptr;		// スクリーンのオブジェ
+	m_pText = nullptr;			// 数字のオブジェクト
+	m_pRespawnPercent = nullptr;	// リスポーン確率
 }
 
 //==========================================================================
@@ -64,7 +69,7 @@ CDeadManager* CDeadManager::GetInstance(void)
 //==========================================================================
 CDeadManager* CDeadManager::Create(void)
 {
-	if (m_pThisPtr == NULL)
+	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
 
 		// インスタンス生成
@@ -81,9 +86,14 @@ CDeadManager* CDeadManager::Create(void)
 //==========================================================================
 HRESULT CDeadManager::Init(void)
 {
-	
 	// 種類の設定
 	SetType(TYPE_OBJECT2D);
+
+	m_fTime = 0.0f;	// カウンターリセット
+
+	// リスポーン抽選
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
+	m_bRespawnPossible = DrawingRevival(pPlayer->GetRespawnPercent());
 
 	return S_OK;
 }
@@ -96,6 +106,9 @@ void CDeadManager::Uninit(void)
 	// 開放処理
 	Release();
 	m_pThisPtr = nullptr;
+	m_pScreen = nullptr;			// スクリーンのオブジェ
+	m_pText = nullptr;				// 数字のオブジェクト
+	m_pRespawnPercent = nullptr;	// リスポーン確率
 }
 
 //==========================================================================
@@ -110,7 +123,8 @@ void CDeadManager::Update(void)
 	if (TIME_SET_SCREEN <= m_fTime &&
 		!m_bSetScreen)
 	{
-		CDeadScreen::Create();
+		m_pScreen = CDeadScreen::Create(TIME_FADE_REVIVALPERCENT_TEXT);
+
 		m_bSetScreen = true;
 	}
 
@@ -118,7 +132,7 @@ void CDeadManager::Update(void)
 	if (TIME_SET_TEXT <= m_fTime &&
 		!m_bSetText)
 	{
-		CDeadText::Create(TIME_FADE_TEXT);
+		m_pText = CDeadText::Create(TIME_FADE_TEXT, TIME_FADE_REVIVALPERCENT_TEXT);
 		m_bSetText = true;
 	}
 
@@ -126,9 +140,28 @@ void CDeadManager::Update(void)
 	if (TIME_SET_REVIVALPERCENT_TEXT <= m_fTime &&
 		!m_bSetRevivalText)
 	{
-		CRevivalPercentText::Create(TIME_FADE_REVIVALPERCENT_TEXT);
+		CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
+		m_pRespawnPercent = CRevivalPercentText::Create(pPlayer->GetRespawnPercent(), TIME_FADE_REVIVALPERCENT_TEXT);
 		m_bSetRevivalText = true;
 	}
+}
+
+//==========================================================================
+// フェードアウト設定
+//==========================================================================
+void CDeadManager::SetFadeOut(void)
+{
+	m_pScreen->SetState(CDeadScreen::STATE_FADEOUT);		// スクリーンのオブジェ
+	m_pText->SetState(CDeadText::STATE_FADEOUT);			// 数字のオブジェクト
+	m_pRespawnPercent->SetState(CRevivalPercentText::STATE_FADEOUT);	// リスポーン確率
+}
+
+//==========================================================================
+// 復活抽選
+//==========================================================================
+bool CDeadManager::DrawingRevival(int winningPercent)
+{
+	return UtilFunc::Transformation::Random(0, 99) < winningPercent;
 }
 
 //==========================================================================

@@ -32,6 +32,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void Kill(void);
 
 	CObject2D_Anim*GetMyObject(void);
 	static CLoadScreen *Create(void);

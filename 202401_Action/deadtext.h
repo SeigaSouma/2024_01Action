@@ -18,19 +18,6 @@ class CDeadText : public CObject2D
 {
 public:
 
-	CDeadText(float fadetime, int nPriority = 8);
-	~CDeadText();
-	
-	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-
-	static CDeadText* Create(const float fadetime);	// 生成処理
-
-private:
-
 	//=============================
 	// メンバ関数
 	//=============================
@@ -41,6 +28,20 @@ private:
 		STATE_FADEOUT,	// フェードアウト
 		STATE_MAX
 	};
+
+	CDeadText(float fadein, float fadeout, int nPriority = 8);
+	~CDeadText();
+	
+	//  オーバーライドされた関数
+	HRESULT Init(void) override;
+	void Uninit(void) override;
+	void Update(void) override;
+	void Draw(void) override;
+
+	void SetState(eState state) { m_state = state; }	// 状態設定
+	static CDeadText* Create(const float fadein, const float fadeout);		// 生成処理
+
+private:
 
 	//=============================
 	// 関数ポインタ
@@ -60,7 +61,8 @@ private:
 	//=============================
 	eState m_state;		// 状態
 	float m_fStateTime;	// 状態カウンター
-	const float m_fFadeTime;	// フェードにかかる時間
+	const float m_fFadeInTime;	// フェードにかかる時間
+	const float m_fFadeOutTime;	// フェードにかかる時間
 
 
 };

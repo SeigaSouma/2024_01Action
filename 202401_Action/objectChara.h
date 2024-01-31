@@ -77,6 +77,7 @@ public:
 	float GetRotDest(void) const;				// 目標の向き取得
 	void SetLife(const int nLife);				// 体力設定
 	int GetLife(void) const;					// 体力取得
+	void SetLifeOrigin(const int nLife);		// 元の体力設定
 	int GetLifeOrigin(void) const;				// 元の体力取得
 	int GetMotionStartIdx(void) const;			// モーション開始のインデックス番号取得
 	int GetAddScoreValue(void) const;			// スコア加算量取得
@@ -86,6 +87,7 @@ public:
 
 	HRESULT SetCharacter(const std::string pTextFile) override;	// キャラクター設定
 	CObjectChara *GetObjectChara(void);
+	CMotion* GetMotion(void);	// モーションオブジェクト取得
 	static CObjectChara *Create(const std::string pTextFile);	// 生成処理
 
 
@@ -128,7 +130,6 @@ protected:
 	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK);	// 攻撃時処理
 	virtual void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK);			// 攻撃判定中処理
 	void ChangeMotion(const char* pMotionFile);	// モーションファイル変更
-	CMotion* GetMotion(void);	// モーションオブジェクト取得
 private:
 
 	// メンバ関数

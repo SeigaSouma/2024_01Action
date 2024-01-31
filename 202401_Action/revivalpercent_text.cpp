@@ -52,7 +52,7 @@ CRevivalPercentText::~CRevivalPercentText()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CRevivalPercentText* CRevivalPercentText::Create(const float fadetime)
+CRevivalPercentText* CRevivalPercentText::Create(int respawnpercent, const float fadetime)
 {
 	// 生成用のオブジェクト
 	CRevivalPercentText* pScreen = NULL;
@@ -64,6 +64,7 @@ CRevivalPercentText* CRevivalPercentText::Create(const float fadetime)
 	{
 		// 初期化処理
 		pScreen->Init();
+		pScreen->SetNumberObj(respawnpercent);
 	}
 
 	return pScreen;
@@ -104,17 +105,23 @@ HRESULT CRevivalPercentText::Init(void)
 	m_fStateTime = 0.0f;
 	m_state = STATE_FADEIN;
 
-
+	// ゲージ生成
 	MyLib::Vector3 spawnpos = GetPosition();
-	spawnpos.x += 100.0f;
-	m_apNumber = CMultiNumber::Create(spawnpos, D3DXVECTOR2(setsize.y, setsize.y) * 0.6f, 3, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true);	// 数字のオブジェクト
-	m_apNumber->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-	m_apNumber->SetValue(100);
-
-	spawnpos = GetPosition();
 	spawnpos.y += 100.0f;
 	CRevivalTimeGauge::Create(m_fFadeTime, spawnpos);
 	return S_OK;
+}
+
+//==========================================================================
+// 数字オブジェクト設定
+//==========================================================================
+void CRevivalPercentText::SetNumberObj(int number)
+{
+	MyLib::Vector3 spawnpos = GetPosition();
+	spawnpos.x += 100.0f;
+	m_apNumber = CMultiNumber::Create(spawnpos, D3DXVECTOR2(35.0f, 35.0f), 3, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true);	// 数字のオブジェクト
+	m_apNumber->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	m_apNumber->SetValue(number);
 }
 
 //==========================================================================
@@ -133,12 +140,31 @@ void CRevivalPercentText::Uninit(void)
 }
 
 //==========================================================================
+// 削除処理
+//==========================================================================
+void CRevivalPercentText::Kill(void)
+{
+	// 終了処理
+	CObject2D::Uninit();
+
+	if (m_apNumber != nullptr)
+	{
+		m_apNumber->Release();
+		m_apNumber = nullptr;
+	}
+}
+
+//==========================================================================
 // 更新処理
 //==========================================================================
 void CRevivalPercentText::Update(void)
 {
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
+	if (IsDeath())
+	{
+		return;
+	}
 
 	// 更新処理
 	CObject2D::Update();
@@ -198,7 +224,7 @@ void CRevivalPercentText::StateFadeOut(void)
 		m_fStateTime = 0.0f;
 
 		// 削除
-		Uninit();
+		Kill();
 		return;
 	}
 }

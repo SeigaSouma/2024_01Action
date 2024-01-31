@@ -25,9 +25,10 @@ std::vector<CAbillityStrategy::CREATE_FUNC> CAbillityStrategy::m_CreateFunc =
 //=============================
 std::vector<CEnhance::CREATE_FUNC> CEnhance::m_CreateFunc =
 {
-	[](CSkillTree_Icon::sSkillIcon iconinfo) { return new CAbillityStamina(); },
-	[](CSkillTree_Icon::sSkillIcon iconinfo) { return new CAbillityLife(); },
-	[](CSkillTree_Icon::sSkillIcon iconinfo) { return new CAbillityCounter(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityStamina(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityLife(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityCounter(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityRespawn(); },
 };
 
 //=============================
@@ -56,6 +57,15 @@ CAbillityCounter::STAGE_FUNC CAbillityCounter::m_StageFunc[] =
 	&CAbillityCounter::SubNeedStamina,
 };
 
+//=============================
+// リスポーンのステージ
+//=============================
+CAbillityRespawn::STAGE_FUNC CAbillityRespawn::m_StageFunc[] =
+{
+	&CAbillityRespawn::AddRespawnPercent,	// リスポーン確率加算
+};
+
+
 
 
 //=============================
@@ -63,7 +73,7 @@ CAbillityCounter::STAGE_FUNC CAbillityCounter::m_StageFunc[] =
 //=============================
 std::vector<CUnlock::CREATE_FUNC> CUnlock::m_CreateFunc =
 {
-	[](CSkillTree_Icon::sSkillIcon iconinfo) { return new CUnlockCombo(); }
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CUnlockCombo(); }
 };
 
 //=============================

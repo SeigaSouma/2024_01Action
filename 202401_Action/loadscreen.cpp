@@ -109,6 +109,17 @@ void CLoadScreen::Uninit(void)
 	}
 }
 
+void CLoadScreen::Kill(void)
+{
+	if (m_aObject2D != NULL)
+	{
+		// èIóπèàóù
+		m_aObject2D->Uninit();
+		delete m_aObject2D;
+		m_aObject2D = NULL;
+	}
+}
+
 //==========================================================================
 // çXêVèàóù
 //==========================================================================

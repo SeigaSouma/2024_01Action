@@ -46,6 +46,7 @@ CGameManager::CGameManager()
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 	m_nNowStage = 0;			// 現在のステージ
 	m_nNumStage = 0;			// ステージの総数
+	m_pSkilltreeAbillity = nullptr;	// スキルツリー能力のポインタ
 }
 
 //==========================================================================
@@ -106,7 +107,11 @@ HRESULT CGameManager::Init(void)
 //==========================================================================
 void CGameManager::Uninit(void)
 {
-	
+	if (m_pSkilltreeAbillity != nullptr)
+	{
+		m_pSkilltreeAbillity->Uninit();
+		m_pSkilltreeAbillity = nullptr;
+	}
 }
 
 //==========================================================================
@@ -259,7 +264,13 @@ void CGameManager::SceneEnhance(void)
 	// スキルツリーオブジェクト生成
 	CSkillTree_Obj::Create();
 
-	CSkillTree_Ability::Create();
+	// スキルツリー能力生成
+	if (m_pSkilltreeAbillity != nullptr)
+	{
+		m_pSkilltreeAbillity->Uninit();
+		m_pSkilltreeAbillity = nullptr;
+	}
+	m_pSkilltreeAbillity = CSkillTree_Ability::Create();
 }
 
 //==========================================================================

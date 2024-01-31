@@ -58,6 +58,7 @@ namespace
 	const float SUBVALUE_DASH = 0.3f;		// ダッシュの減算量
 	const float SUBVALUE_AVOID = 30.0f;		// 回避の減算量
 	const float SUBVALUE_COUNTER = 40.0f;	// カウンターの減算量
+	const int DEFAULT_RESPAWN_PERCENT = 80;	// 復活確率のデフォルト値
 }
 
 //==========================================================================
@@ -72,6 +73,7 @@ CPlayer::STATE_FUNC CPlayer::m_StateFunc[] =
 	&CPlayer::StateDead,		// 死亡
 	&CPlayer::StateDeadWait,	// 死亡待機
 	&CPlayer::StateFadeOut,		// フェードアウト
+	&CPlayer::StateRespawn,		// リスポーン
 	&CPlayer::StateCounter,		// カウンター中
 	&CPlayer::StateAvoid,		// 回避
 };
@@ -107,16 +109,19 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_nCntState = 0;								// 状態遷移カウンター
 	m_nComboStage = 0;								// コンボの段階
 	m_nIdxRockOn = 0;								// ロックオン対象のインデックス番号
+	m_bLockOnAtStart = false;						// カウンター開始時にロックオンしていたか
 	m_bAttacking = false;							// 攻撃中
 	m_bCounterAccepting = false;					// カウンター受付中
 	m_bDash = false;								// ダッシュ判定
 	m_fDashTime = 0.0f;								// ダッシュ時間
+	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
 	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
 	m_pHPGauge = nullptr;							// HPゲージのポインタ
 	m_pStaminaGauge = nullptr;						// スタミナゲージのポインタ
+	m_pEndCounterSetting = nullptr;					// カウンター終了時の設定
 	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
 
@@ -169,6 +174,7 @@ HRESULT CPlayer::Init(void)
 	m_state = STATE_NONE;	// 状態
 	m_nCntState = 0;		// 状態遷移カウンター
 	m_bLandOld = true;		// 前回の着地状態
+	m_nRespawnPercent = DEFAULT_RESPAWN_PERCENT;	// リスポーン確率
 
 	// キャラ作成
 	HRESULT hr = SetCharacter(CHARAFILE);
@@ -221,6 +227,12 @@ void CPlayer::Uninit(void)
 		m_pHPGauge = nullptr;
 	}
 
+	// 反撃終了時の設定
+	if (m_pEndCounterSetting != nullptr)
+	{
+		delete m_pEndCounterSetting;
+		m_pEndCounterSetting = nullptr;
+	}
 
 	// 終了処理
 	CObjectChara::Uninit();
@@ -253,7 +265,7 @@ void CPlayer::Kill(void)
 	// スタミナゲージ
 	if (m_pStaminaGauge != nullptr)
 	{
-		m_pStaminaGauge->Uninit();
+		m_pStaminaGauge->Kill();
 		m_pStaminaGauge = nullptr;
 	}
 
@@ -263,6 +275,29 @@ void CPlayer::Kill(void)
 		m_pShadow->Uninit();
 		m_pShadow = NULL;
 	}
+
+	// 反撃終了時の設定
+	if (m_pEndCounterSetting != nullptr)
+	{
+		delete m_pEndCounterSetting;
+		m_pEndCounterSetting = nullptr;
+	}
+
+	// ロックオン設定
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	if (pCamera != nullptr)
+	{
+		pCamera->SetRockOn(0.0f, false);
+	}
+
+	// リストループ
+	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+	CEnemy* pEnemy = nullptr;
+	while (enemyList.ListLoop(&pEnemy))
+	{
+		pEnemy->SetEnableRockOn(false);
+	}
+
 }
 
 //==========================================================================
@@ -929,6 +964,20 @@ void CPlayer::Controll(void)
 //==========================================================================
 // モーションの設定
 //==========================================================================
+void CPlayer::SetMotion(int motionIdx)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+	pMotion->Set(motionIdx);
+}
+
+//==========================================================================
+// モーションの設定
+//==========================================================================
 void CPlayer::MotionSet(void)
 {
 	// モーション取得
@@ -945,7 +994,7 @@ void CPlayer::MotionSet(void)
 		int nType = pMotion->GetType();
 		int nOldType = pMotion->GetOldType();
 
-		if (m_sMotionFrag.bMove == true && m_sMotionFrag.bKnockBack == false && m_sMotionFrag.bDead == false && m_bJump == false &&
+		if (m_sMotionFrag.bMove == true && m_sMotionFrag.bKnockBack == false && m_bJump == false &&
 			m_sMotionFrag.bATK == false && m_sMotionFrag.bATK == false)
 		{// 移動していたら
 
@@ -981,12 +1030,6 @@ void CPlayer::MotionSet(void)
 
 			// やられモーション
 			pMotion->Set(MOTION_KNOCKBACK);
-		}
-		else if (m_sMotionFrag.bDead == true)
-		{// 死亡中だったら
-
-			// やられモーション
-			pMotion->Set(MOTION_DEAD);
 		}
 		//else if (m_sMotionFrag.bATK == true)
 		//{// 攻撃
@@ -1218,6 +1261,9 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		else if (nCntATK != 0)
 		{
 			CManager::GetInstance()->GetCamera()->SetLenDest(200.0f, 3, 4.0f, 0.3f);
+
+			// 敵へダウン状態
+			CEnemy::GetListObj().GetData(m_nIdxRockOn)->Hit(10, CGameManager::ATTACK_COUNTER);
 		}
 		break;
 
@@ -1450,28 +1496,113 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 {
 	bool bHit = false;
 
-	// 体力取得
-	int nLife = GetLife();
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 
 	if (m_bCounterAccepting)
 	{// カウンター受け付け中
 		
 		if (atkType == CGameManager::ATTACK_NORMAL)
 		{
+			// 受け流し
 			GetMotion()->Set(MOTION_COUNTER_TURN);
+
+			// 受け流しの設定
+			m_pEndCounterSetting = DEBUG_NEW CEndTurn;
 		}
 		else
 		{
 			if (GetMotion()->GetType() != MOTION_COUNTER_ATTACK)
 			{
+				// 開始時のフラグコピー
+				m_bLockOnAtStart = pCamera->IsRockOn();
+
+				// 反撃
 				GetMotion()->Set(MOTION_COUNTER_ATTACK);
-				CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
+				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
 				m_pSkillPoint->AddPoint();
+
+				// 攻撃の設定
+				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
 			}
 		}
 		return false;
 	}
 	
+	// 共通のヒット処理
+	bHit = ProcessHit(nValue);
+
+	// 当たった判定を返す
+	return bHit;
+}
+
+//==========================================================================
+// ヒット処理
+//==========================================================================
+bool CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType)
+{
+	bool bHit = false;
+
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	if (m_bCounterAccepting)
+	{// カウンター受け付け中
+
+		if (atkType == CGameManager::ATTACK_NORMAL)
+		{
+			// 受け流し
+			GetMotion()->Set(MOTION_COUNTER_TURN);
+
+			// 受け流しの設定
+			m_pEndCounterSetting = DEBUG_NEW CEndTurn;
+		}
+		else
+		{
+			if (GetMotion()->GetType() != MOTION_COUNTER_ATTACK)
+			{
+
+				// 開始時のフラグコピー
+				m_bLockOnAtStart = pCamera->IsRockOn();
+				if (!pCamera->IsRockOn())
+				{
+					// ロックオン設定
+					pCamera->SetRockOn(pEnemy->GetPosition(), true);
+					pEnemy->SetEnableRockOn(true);
+
+					// インデックス番号設定
+					m_nIdxRockOn = CEnemy::GetListObj().FindIdx(pEnemy);
+				}
+
+				// 反撃
+				GetMotion()->Set(MOTION_COUNTER_ATTACK);
+				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
+				m_pSkillPoint->AddPoint();
+
+				// 攻撃の設定
+				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
+			}
+		}
+		return false;
+	}
+
+	// 共通のヒット処理
+	bHit = ProcessHit(nValue);
+
+	// 当たった判定を返す
+	return bHit;
+}
+
+//==========================================================================
+// 共通のヒット処理
+//==========================================================================
+bool CPlayer::ProcessHit(const int nValue)
+{
+	bool bHit = false;
+
+	// 体力取得
+	int nLife = GetLife();
+
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
 	if (m_state == STATE_COUNTER ||
 		m_state == STATE_AVOID)
 	{// ダメージ受けない状態
@@ -1492,7 +1623,7 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 		nLife -= nValue;
 
 		// ゲームパッド情報取得
-		CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 		pInputGamepad->SetVibration(CInputGamepad::VIBRATION_STATE_DMG, 0);
 
 		m_KnokBackMove.y += 18.0f;
@@ -1544,7 +1675,7 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 			CManager::GetInstance()->SetEnableHitStop(18);
 
 			// 振動
-			CManager::GetInstance()->GetCamera()->SetShake(21, 30.0f, 0.0f);
+			pCamera->SetShake(21, 30.0f, 0.0f);
 
 			// 死んだ
 			return true;
@@ -1591,13 +1722,12 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 		CManager::GetInstance()->SetEnableHitStop(12);
 
 		// 振動
-		CManager::GetInstance()->GetCamera()->SetShake(12, 25.0f, 0.0f);
+		pCamera->SetShake(12, 25.0f, 0.0f);
 
 		// サウンド再生
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_PLAYERDMG);
 	}
 
-	// 当たった判定を返す
 	return bHit;
 }
 
@@ -1833,6 +1963,9 @@ void CPlayer::StateFadeOut(void)
 	// 色設定
 	m_mMatcol.a = (float)m_nCntState / (float)FADEOUTTIME;
 
+	// ぶっ倒れモーション
+	GetMotion()->Set(MOTION_DEAD);
+
 	if (m_nCntState <= 0)
 	{// 遷移カウンターが0になったら
 
@@ -1941,6 +2074,32 @@ void CPlayer::StateKnockBack(void)
 }
 
 //==========================================================================
+// リスポーン
+//==========================================================================
+void CPlayer::StateRespawn(void)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_RESPAWN)
+	{// 復活が終了
+		m_state = STATE_NONE;
+		return;
+	}
+
+	if (nType != MOTION_RESPAWN)
+	{
+		// 復活モーション設定
+		pMotion->Set(MOTION_RESPAWN);
+	}
+}
+
+//==========================================================================
 // カウンター状態
 //==========================================================================
 void CPlayer::StateCounter(void)
@@ -1965,8 +2124,13 @@ void CPlayer::StateCounter(void)
 		nType != MOTION_COUNTER_ATTACK)
 	{// カウンター状態が終了
 
-		m_state = STATE_NONE;
-		CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
+		// 終了時の設定
+		if (m_pEndCounterSetting != nullptr)
+		{
+			m_pEndCounterSetting->EndSetting(this);
+			delete m_pEndCounterSetting;
+			m_pEndCounterSetting = nullptr;
+		}
 		return;
 	}
 }
@@ -2036,6 +2200,7 @@ void CPlayer::UpgradeLife(int addvalue)
 {
 	// アップグレード後の体力に設定
 	SetLife(m_pHPGauge->UpgradeMaxValue(addvalue));
+	SetLifeOrigin(m_pHPGauge->GetMaxLife());
 }
 
 //==========================================================================
@@ -2059,5 +2224,62 @@ void CPlayer::UpgradeAutoHealStamina(float ratio)
 	if (m_pStaminaGauge != nullptr)
 	{
 		m_pStaminaGauge->UpgradeAutoHeal(ratio);
+	}
+}
+
+//==========================================================================
+// リスポーン時の設定
+//==========================================================================
+void CPlayer::RespawnSetting()
+{
+	SetMotion(CPlayer::MOTION_RESPAWN);
+	m_state = STATE_RESPAWN;
+
+	m_nRespawnPercent -= 30;
+	UtilFunc::Transformation::ValueNormalize(m_nRespawnPercent, 100, 0);
+
+	SetLife(GetLifeOrigin());
+}
+
+//==========================================================================
+// リスポーン確率設定
+//==========================================================================
+void CPlayer::SetRespawnPercent(int value)
+{
+	m_nRespawnPercent = value;
+	UtilFunc::Transformation::ValueNormalize(m_nRespawnPercent, 100, 0);
+}
+
+
+//==========================================================================
+// カウンター終了時の設定
+//==========================================================================
+void CEndCounterSetting::EndSetting(CPlayer* player)
+{
+	player->SetState(CPlayer::STATE_NONE);
+	CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
+}
+
+void CEndAttack::EndSetting(CPlayer* player)
+{
+	// 親の処理
+	CEndCounterSetting::EndSetting(player);
+
+	if (!player->IsLockOnAtStart())
+	{
+		if (CManager::GetInstance()->GetCamera()->IsRockOn())
+		{// ロックオン解除
+
+			// ロックオン設定
+			CManager::GetInstance()->GetCamera()->SetRockOn(0.0f, false);
+
+			// リストループ
+			CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+			CEnemy* pEnemy = nullptr;
+			while (enemyList.ListLoop(&pEnemy))
+			{
+				pEnemy->SetEnableRockOn(false);
+			}
+		}
 	}
 }

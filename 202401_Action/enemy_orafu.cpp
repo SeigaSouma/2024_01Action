@@ -148,6 +148,13 @@ void CEnemyOrafu::ActWait(void)
 		m_fActTime = 0.0f;
 		m_Action = ACTION_PROXIMITY;
 
+		// プレイヤー情報
+		CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
+		if (pPlayer != nullptr)
+		{
+			m_TargetPosition = pPlayer->GetPosition();
+		}
+
 		// 追い着き判定
 		m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
 	}
@@ -220,12 +227,7 @@ void CEnemyOrafu::ActAttackProximity(void)
 		{
 			return;
 		}
-
-		// 円の判定
-		if (UtilFunc::Collision::CircleRange3D(GetPosition(), pPlayer->GetPosition(), LENGTH_PLAYERCHASE, 0.0f))
-		{
-			m_TargetPosition = pPlayer->GetPosition();
-		}
+		m_TargetPosition = pPlayer->GetPosition();
 
 		// ターゲットの方を向く
 		RotationTarget();

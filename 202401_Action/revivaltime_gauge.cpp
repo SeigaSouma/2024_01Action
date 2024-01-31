@@ -8,7 +8,10 @@
 #include "texture.h"
 #include "manager.h"
 #include "renderer.h"
+#include "input.h"
 #include "calculation.h"
+#include "deadmanager.h"
+#include "player.h"
 
 //==========================================================================
 // 定数定義
@@ -184,11 +187,22 @@ void CRevivalTimeGauge::Update(void)
 //==========================================================================
 void CRevivalTimeGauge::StateNone(void)
 {
+
 	m_fValue -= CManager::GetInstance()->GetDeltaTime();
 	m_pObj2DGauge[VTXTYPE_GAUGE]->SetValue(static_cast<int>(m_fValue * 60));
 	if (m_fValue <= 0.0f)
 	{
 		m_fValue = 0.0f;
+		m_state = STATE_TIMECOMPLETE;
+		return;
+	}
+
+	// インプット情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+	if (pInputKeyboard->GetTrigger(DIK_RETURN) ||
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0))
+	{
 		m_state = STATE_TIMECOMPLETE;
 	}
 }
@@ -222,7 +236,7 @@ void CRevivalTimeGauge::StateFadeOut(void)
 		m_fStateTime = 0.0f;
 
 		// 削除
-		Uninit();
+		Kill();
 		return;
 	}
 }
@@ -232,7 +246,20 @@ void CRevivalTimeGauge::StateFadeOut(void)
 //==========================================================================
 void CRevivalTimeGauge::StateTimeComplete(void)
 {
+	CDeadManager* pDeadMgr = CDeadManager::GetInstance();
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
 
+	if (CDeadManager::GetInstance()->IsRespawnPossible())
+	{// 復活できる時
+		pPlayer->RespawnSetting();
+
+	}
+	else
+	{
+		pPlayer->SetState(CPlayer::STATE_FADEOUT, 60);
+	}
+	pDeadMgr->SetFadeOut();
+	m_state = STATE_FADEOUT;
 }
 
 //==========================================================================
