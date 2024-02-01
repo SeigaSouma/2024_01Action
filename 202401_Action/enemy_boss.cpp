@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "sound.h"
 #include "player.h"
+#include "3D_effect.h"
 
 //==========================================================================
 // 定数定義
@@ -57,6 +58,7 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
 	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
 	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
+	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());	// ローリング
 }
 
 //==========================================================================
@@ -376,7 +378,19 @@ void CEnemyBoss::ActChase(void)
 	SetMove(move);
 
 	// 追い着き判定
-	m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
+	bool bCatch = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
+
+	// 視界判定
+	bool bRange = UtilFunc::Collision::CollisionFan3D(GetPosition(), m_TargetPosition, rot.y, 90.0f);
+
+	// 追い着き判定設定
+	m_bCatchUp = (bCatch && bRange);
+
+
+	if (!m_bCatchUp && UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, 200.0f, 0.0f))
+	{
+		m_bCatchUp = true;
+	}
 }
 
 

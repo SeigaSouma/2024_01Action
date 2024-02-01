@@ -102,10 +102,10 @@ HRESULT CEnemyManager::Init(void)
 	m_bChangeStage = false;
 
 	// 遷移状態に変更
-	//CGame::GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
+	//CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
 
 	// 敵拠点データ取得
-	CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
+	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 
 	if (pEnemyBase == NULL)
 	{
@@ -152,8 +152,8 @@ void CEnemyManager::Update(void)
 		m_bChangeStage = true;
 
 		// 通常クリア状態にする
-		CGame::GetGameManager()->SetType(CGameManager::SCENE_MAINCLEAR);
-		CGame::GetGameManager()->GameClearSettings();
+		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_MAINCLEAR);
+		CGame::GetInstance()->GetGameManager()->GameClearSettings();
 	}
 
 	// テキストの描画
@@ -168,7 +168,7 @@ void CEnemyManager::Update(void)
 void CEnemyManager::SetStageEnemy(void)
 {
 	// ゲームマネージャ取得
-	CGameManager* pGameManager = CGame::GetGameManager();
+	CGameManager* pGameManager = CGame::GetInstance()->GetGameManager();
 
 	if (pGameManager == NULL)
 	{
@@ -190,7 +190,7 @@ void CEnemyManager::SetStageEnemy(void)
 	}
 
 	// 敵拠点データ取得
-	CEnemyBase* pEnemyBase = CGame::GetEnemyBase();
+	CEnemyBase* pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 	if (pEnemyBase == NULL)
 	{
 		return;
@@ -218,7 +218,7 @@ void CEnemyManager::SetStageEnemy(void)
 void CEnemyManager::SetStageBoss(void)
 {
 	// 敵拠点データ取得
-	CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
+	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 	if (pEnemyBase == NULL)
 	{
 		return;

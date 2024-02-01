@@ -319,13 +319,13 @@ void CPlayer::Update(void)
 	}
 
 	// エディット中は抜ける
-	if (CGame::GetElevation()->IsEdit())
+	if (CGame::GetInstance()->GetElevation()->IsEdit())
 	{
 		return;
 	}
 
 	// エディット中は抜ける
-	if (CGame::GetEditType() != CGame::EDITTYPE_OFF)
+	if (CGame::GetInstance()->GetEditType() != CGame::GetInstance()->EDITTYPE_OFF)
 	{
 		return;
 	}
@@ -457,7 +457,7 @@ void CPlayer::Controll(void)
 	// 経過時間取得
 	float fCurrentTime = CManager::GetInstance()->GetDeltaTime();
 
-	if (CGame::GetGameManager()->IsControll())
+	if (CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できるとき
 
 		// ダッシュ判定
@@ -765,6 +765,7 @@ void CPlayer::Controll(void)
 	// 向き設定
 	SetRotation(rot);
 
+
 	// 重力処理
 	if (m_state != STATE_KNOCKBACK && m_state != STATE_DMG && m_state != STATE_DEAD && m_state != STATE_FADEOUT && m_state != STATE_DEADWAIT)
 	{
@@ -867,7 +868,7 @@ void CPlayer::Controll(void)
 	CEnemy* pEnemy = nullptr;
 	while (enemyList.ListLoop(&pEnemy))
 	{
-		if (mylib_const::MAX_DISTANCE_ROCKON <= UtilFunc::Calculation::GetPosLength3D(pos, pEnemy->GetPosition()))
+		if (CGame::GetInstance()->GetRockOnDistance() <= UtilFunc::Calculation::GetPosLength3D(pos, pEnemy->GetPosition()))
 		{
 			if (pEnemy->IsRockOnAccept())
 			{
@@ -1125,7 +1126,7 @@ void CPlayer::RockOn(void)
 	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
 	CEnemy* pEnemy = nullptr;
 
-	float fNearLen = mylib_const::MAX_DISTANCE_ROCKON;
+	float fNearLen = CGame::GetInstance()->GetRockOnDistance();
 	int nMaxIdx = 0;
 	MyLib::Vector3 targetpos(0.0f);
 
@@ -1154,7 +1155,7 @@ void CPlayer::RockOn(void)
 		i++;
 	}
 
-	if (fNearLen < mylib_const::MAX_DISTANCE_ROCKON)
+	if (fNearLen < CGame::GetInstance()->GetRockOnDistance())
 	{// ロックオン距離内なら
 
 		// ロックオン設定
@@ -1192,7 +1193,7 @@ void CPlayer::SwitchRockOnTarget(void)
 
 		// リストループ
 		int i = 0, nMaxIdx = m_nIdxRockOn;
-		float fNearLen = mylib_const::MAX_DISTANCE_ROCKON;
+		float fNearLen = CGame::GetInstance()->GetRockOnDistance();
 		pEnemy = nullptr;
 		MyLib::Vector3 enemypos(0.0f);
 		while (enemyList.ListLoop(&pEnemy))
@@ -1295,8 +1296,17 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		break;
 	}
 
+	if (ATKInfo.fRangeSize == 0.0f)
+	{
+		return;
+	}
+
 #if _DEBUG
-	CEffect3D::Create(weponpos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), ATKInfo.fRangeSize, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+	CEffect3D::Create(
+		weponpos,
+		MyLib::Vector3(0.0f, 0.0f, 0.0f),
+		D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
+		ATKInfo.fRangeSize, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 #endif
 
 	// 敵のリスト取得
@@ -1403,7 +1413,7 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 
 
 	// Xファイルとの判定
-	CStage *pStage = CGame::GetStage();
+	CStage *pStage = CGame::GetInstance()->GetStage();
 	if (pStage == NULL)
 	{// NULLだったら
 		return false;
@@ -1824,7 +1834,7 @@ void CPlayer::StateDamage(void)
 
 
 		// Xファイルとの判定
-		CStage *pStage = CGame::GetStage();
+		CStage *pStage = CGame::GetInstance()->GetStage();
 		if (pStage == NULL)
 		{// NULLだったら
 			return;
@@ -1913,7 +1923,7 @@ void CPlayer::StateDead(void)
 		//pMotion->Set(MOTION_DEAD);
 
 		// Xファイルとの判定
-		CStage *pStage = CGame::GetStage();
+		CStage *pStage = CGame::GetInstance()->GetStage();
 		if (pStage == NULL)
 		{// NULLだったら
 			return;
@@ -2036,7 +2046,7 @@ void CPlayer::StateKnockBack(void)
 		pMotion->ToggleFinish(true);
 
 		// Xファイルとの判定
-		CStage *pStage = CGame::GetStage();
+		CStage *pStage = CGame::GetInstance()->GetStage();
 		if (pStage == NULL)
 		{// NULLだったら
 			return;

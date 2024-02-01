@@ -22,10 +22,7 @@ class CPowerGauge;
 class CEditEnemyBase;
 class CStage;
 class CHitScore;
-class CStatusWindow;
-class CUltWindow;
 class CEnemyManager;
-class CItemManager;
 class CLimitArea;
 class CPlayer;
 class CEnemyBase;
@@ -50,26 +47,27 @@ public:
 	~CGame();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init(void) override;
+	void Uninit(void) override;
+	void Update(void) override;
+	void Draw(void) override;
 
-	static void ResetBeforeBoss(void);
-	static EEditType GetEditType(void) { return m_EditType; }
-	static CScore *GetScore(void);
-	static CTimer *GetTimer(void) { return m_pTimer; }	// タイマー取得
-	static CItemManager *GetItemManager(void);
-	static CStage *GetStage(void);
-	static CGameManager *GetGameManager(void);
-	static CStatusWindow *GetStatusWindow(int nIdx);
-	static CUltWindow *GetUltWindow(int nIdx);		// 必殺のウィンドウ取得
-	static void SetEnableClear(bool bClear) { m_clear = bClear; }	// クリアのフラグ
-	static bool IsClearFrag(void) { return m_clear; } // クリアフラグの取得
+	void ResetBeforeBoss(void);
+	EEditType GetEditType(void) { return m_EditType; }
+	CScore *GetScore(void);
+	CTimer *GetTimer(void) { return m_pTimer; }	// タイマー取得
+	CStage *GetStage(void);
+	CGameManager *GetGameManager(void);
+	void SetEnableClear(bool bClear) { m_clear = bClear; }	// クリアのフラグ
+	bool IsClearFrag(void) { return m_clear; } // クリアフラグの取得
+	CEnemyManager* GetEnemyManager(void);
+	CEnemyBase* GetEnemyBase(void);		// 敵の拠点
+	bool IsEdit(void) { return m_bEdit; }	// エディットの判定
+	float GetRockOnDistance() { return m_fMaxRokOnDistance; }	// ロックオンの最大距離取得
 
-	static CEnemyManager *GetEnemyManager(void);
-	static CEnemyBase *GetEnemyBase(void);		// 敵の拠点
-	static bool IsEdit(void) { return m_bEdit; }	// エディットの判定
+	// 静的関数
+	static CGame* GetInstance(void);	// インスタンス取得
+	static CGame* Create(void);		// 生成処理
 
 private:
 
@@ -77,21 +75,20 @@ private:
 	void EditReset(void);
 
 	// メンバ変数
-	static CScore *m_pScore;						// スコアのオブジェクト
-	static CTimer *m_pTimer;						// タイマーのオブジェクト
-	static CItemManager *m_pItemManager;			// アイテムマネージャのオブジェクト
-	static CLimitArea *m_pLimitArea;				// エリア制限のオブジェクト
-	static CEditEnemyBase *m_pEditEnemyBase;		// 敵の拠点エディター
-	static CStage *m_pStage;						// ステージのオブジェクト
-	static CGameManager *m_pGameManager;			// ゲームマネージャのオブジェクト
-	static EEditType m_EditType;					// エディットの種類
-	static CEnemyManager *m_pEnemyManager;			// 敵マネージャのオブジェクト
-	static CEnemyBase *m_pEnemyBase;				// 敵の拠点
-	static CStatusWindow *m_pStatusWindow[mylib_const::MAX_PLAYER];	// ステータスウィンドウのオブジェクト
-	static CUltWindow *m_pUltWindow[mylib_const::MAX_PLAYER];		// 必殺のウィンドウ
-	static bool m_bEdit;				// エディットの判定
-	static bool m_clear; // クリア判定
+	CScore *m_pScore;						// スコアのオブジェクト
+	CTimer *m_pTimer;						// タイマーのオブジェクト
+	CLimitArea *m_pLimitArea;				// エリア制限のオブジェクト
+	CEditEnemyBase *m_pEditEnemyBase;		// 敵の拠点エディター
+	CStage *m_pStage;						// ステージのオブジェクト
+	CGameManager *m_pGameManager;			// ゲームマネージャのオブジェクト
+	EEditType m_EditType;					// エディットの種類
+	CEnemyManager *m_pEnemyManager;			// 敵マネージャのオブジェクト
+	CEnemyBase *m_pEnemyBase;				// 敵の拠点
+	bool m_bEdit;				// エディットの判定
+	bool m_clear; // クリア判定
+	float m_fMaxRokOnDistance;			// ロックオンの最大距離
 
+	static CGame* m_pThisPtr;	// 自身のポインタ
 };
 
 

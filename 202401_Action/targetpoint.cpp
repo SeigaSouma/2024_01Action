@@ -232,7 +232,7 @@ void CTargetPoint::Control(void)
 
 	// çÇÇ≥éÊìæ
 	bool bLand = false;
-	pos.y = CGame::GetElevation()->GetHeight(pos, &bLand);
+	pos.y = CGame::GetInstance()->GetElevation()->GetHeight(pos, &bLand);
 
 	// à íuê›íË
 	SetPosition(pos);

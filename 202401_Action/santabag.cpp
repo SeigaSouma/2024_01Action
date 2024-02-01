@@ -137,7 +137,7 @@ void CSantaBag::Update(void)
 	if (m_nLife < 0)
 	{
 		// ƒNƒŠƒA¸”s
-		CGame::SetEnableClear(false);
+		CGame::GetInstance()->SetEnableClear(false);
 
 		// I—¹ˆ—
 		Uninit();

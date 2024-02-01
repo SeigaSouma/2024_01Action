@@ -57,7 +57,6 @@ namespace
 	const float MULTIPLY_POSV_CORRECTION = 2.1f;	// (ゲーム時)視点の補正係数倍率
 	const float MULTIPLY_POSR_CORRECTION = 2.1f;	// (ゲーム時)注視点の補正係数倍率
 	const float DISATNCE_POSR_PLAYER = 200.0f;		// (ゲーム時)プレイヤーとの注視点距離
-	const float MAX_ROCKONDISTANCE = mylib_const::MAX_DISTANCE_ROCKON;
 	const float MIN_ROCKONDISTANCE = 1.0f;
 	const float ROTDISTANCE_ROCKON = D3DX_PI * 0.095f;	// ロックオン向きのズレ
 	const MyLib::Vector3 ROTDISTANCE_COUNTER = { 0.0f, D3DX_PI * 0.5f, -D3DX_PI * 0.05f };	// 反撃時の向きズレ
@@ -573,12 +572,15 @@ void CCamera::RockOnStateNormal(void)
 
 	// 2点間の距離
 	float fLen = UtilFunc::Calculation::GetFabsPosLength3D(m_RockOnPos, playerpos);
-	float ratio = fLen / MAX_ROCKONDISTANCE;
+	float ratio = fLen / CGame::GetInstance()->GetRockOnDistance();
+
+	// 最大ロックオン距離
+	float maxRockOnDistance = CGame::GetInstance()->GetRockOnDistance();
 
 	if (ratio <= 1.0f)
 	{
 		// 目標の長さ設定
-		SetLenDest(MAX_ROCKONDISTANCE * ratio, 2, 2.0f, 0.1f);
+		SetLenDest(maxRockOnDistance * ratio, 2, 2.0f, 0.1f);
 
 		// 目標の角度を求める
 		m_rotDest.y =
@@ -597,7 +599,7 @@ void CCamera::RockOnStateNormal(void)
 		m_bRockON = false;
 
 		// 目標の長さ設定
-		SetLenDest(MAX_ROCKONDISTANCE * 0.5f, 60, 2.0f, 0.1f);
+		SetLenDest(maxRockOnDistance * 0.5f, 60, 2.0f, 0.1f);
 	}
 
 
@@ -702,7 +704,7 @@ void CCamera::SetCameraVTitle(void)
 
 			// 高さ取得
 			bool bLand = false;
-			float fHeight = CGame::GetElevation()->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
+			float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
 
 			if (m_fHeightMaxDest <= fHeight)
 			{// 最大の高さを更新したら
@@ -778,7 +780,7 @@ void CCamera::SetCameraVGame(void)
 
 			// 高さ取得
 			bool bLand = false;
-			float fHeight = CGame::GetElevation()->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
+			float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
 
 			if (m_fHeightMaxDest <= fHeight)
 			{// 最大の高さを更新したら

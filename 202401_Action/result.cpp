@@ -66,7 +66,7 @@ HRESULT CResult::Init(void)
 	CManager::GetInstance()->SetNumPlayer(0);
 
 	// クリア判定の取得
-	m_clear = CGame::IsClearFrag();
+	m_clear = CGame::GetInstance()->IsClearFrag();
 
 	// 初期化処理
 	if (FAILED(CScene::Init()))
@@ -78,7 +78,7 @@ HRESULT CResult::Init(void)
 	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_BGM_RESULT);
 
 	// メッセージを生成
-	if (CGame::IsClearFrag())
+	if (CGame::GetInstance()->IsClearFrag())
 	{
 		CMessageWin::Create();
 		CMessageWin::Create();

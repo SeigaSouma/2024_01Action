@@ -46,7 +46,7 @@ CHARACTERSET
 	JUMP = 8.65						# ジャンプ量
 	RADIUS = 300.0					# 半径
 	HEIGHT = 80.0					# 高さ
-	LIFE = 40						# 体力
+	LIFE = 600						# 体力
 	NUM_PARTS = 5					# パーツ数
 
 	PARTSSET
@@ -211,7 +211,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/gorira/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 7
+NUM_MOTION = 8
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -221,6 +221,7 @@ MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_walk.txt				# [1]歩き
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_overheadattack.txt	# [2]振り下ろし
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_sideswipe.txt			# [3]横なぎ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_launchballast.txt		# [4]瓦礫飛ばし
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_rolling.txt		# [4]ローリング
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_knockback.txt			# [5]ノックバック
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_fadeout.txt			# [6]フェードアウト
 

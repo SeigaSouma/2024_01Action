@@ -34,6 +34,7 @@ public:
 		MOTION_OVERHEADATK,		// 振り下ろし
 		MOTION_SIDESWIPE,		// 横なぎ
 		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
+		MOTION_ROLLING,			// ローリング
 		MOTION_KNOCKBACK,		// やられモーション
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
@@ -218,6 +219,19 @@ public:
 	}
 };
 
+// ローリング
+class CBossRolling : public CBossProximity
+{
+public:
+	CBossRolling() {}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION_ROLLING;
+		CBossAttack::ChangeMotionIdx(boss);
+	}
+};
 
 // 瓦礫飛ばし
 class CBossLaunchBallast : public CBossRemote

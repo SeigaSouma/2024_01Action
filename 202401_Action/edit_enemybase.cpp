@@ -151,7 +151,7 @@ void CEditEnemyBase::Update(void)
 	{// ENTERで配置
 
 		// 敵の拠点の取得
-		CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
+		CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 		if (pEnemyBase == NULL)
 		{
 			return;
@@ -169,7 +169,7 @@ void CEditEnemyBase::Update(void)
 	{// セーブ
 
 		// 敵の拠点の取得
-		CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
+		CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 		if (pEnemyBase == NULL)
 		{
 			return;
@@ -340,7 +340,7 @@ void CEditEnemyBase::Control(MyLib::Vector3 &pos)
 //==========================================================================
 void CEditEnemyBase::ChangeType(void)
 {
-	int nNumAll = CGame::GetEnemyManager()->GetPatternNum();
+	int nNumAll = CGame::GetInstance()->GetEnemyManager()->GetPatternNum();
 
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -394,7 +394,7 @@ void CEditEnemyBase::ChangeType(void)
 			}
 		}
 
-		CEnemyManager *pEnemyManager = CGame::GetEnemyManager();
+		CEnemyManager *pEnemyManager = CGame::GetInstance()->GetEnemyManager();
 
 		// 敵配置
 		CEnemy **ppEnemy = pEnemyManager->SetEnemy(m_pos, m_rot, m_nEnemyType);
@@ -420,7 +420,7 @@ void CEditEnemyBase::Grab(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// 敵の拠点の取得
-	CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
+	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 	if (pEnemyBase == NULL)
 	{
 		return;
@@ -456,7 +456,7 @@ void CEditEnemyBase::Delete(void)
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// 敵の拠点の取得
-	CEnemyBase *pEnemyBase = CGame::GetEnemyBase();
+	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 	if (pEnemyBase == NULL)
 	{
 		return;

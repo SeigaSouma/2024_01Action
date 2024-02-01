@@ -226,7 +226,7 @@ void CBallast::Update(void)
 
 		MyLib::Vector3 HitPos = pos;
 		HitPos.y = pos.y;
-		if (CGame::GetElevation()->IsHit(HitPos) == true || GetPosition().y <= mylib_const::KILL_Y)
+		if (CGame::GetInstance()->GetElevation()->IsHit(HitPos) == true || GetPosition().y <= mylib_const::KILL_Y)
 		{// ’n–Ê‚ð‰º‰ñ‚Á‚½‚ç
 
 			// Žõ–½XV

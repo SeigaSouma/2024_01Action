@@ -35,28 +35,7 @@
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-CScore *CGame::m_pScore = NULL;					// スコアのオブジェクト
-CTimer *CGame::m_pTimer = NULL;						// タイマーのオブジェクト
-CItemManager *CGame::m_pItemManager = nullptr;			// アイテムマネージャのオブジェクト
-CLimitArea *CGame::m_pLimitArea = NULL;					// エリア制限のオブジェクト
-CEditEnemyBase *CGame::m_pEditEnemyBase = NULL;		// 敵の拠点エディター
-CStage *CGame::m_pStage = NULL;						// ステージのオブジェクト
-CGameManager *CGame::m_pGameManager = NULL;			// ゲームマネージャのオブジェクト
-CGame::EEditType CGame::m_EditType = EDITTYPE_OFF;		// エディットの種類
-CEnemyBase *CGame::m_pEnemyBase = NULL;	// 敵の拠点
-CEnemyManager *CGame::m_pEnemyManager = NULL;	// 敵マネージャのオブジェクト
-CStatusWindow *CGame::m_pStatusWindow[mylib_const::MAX_PLAYER] = {};	// ステータスウィンドウのオブジェクト
-CUltWindow *CGame::m_pUltWindow[mylib_const::MAX_PLAYER] = {};			// 必殺のウィンドウ
-bool CGame::m_bEdit = false;				// エディットの判定
-bool CGame::m_clear = false;				// クリア判定
-
-void UUUU()
-{
-	for (int n = 0; n < 999999; n++)
-	{
-		int nnn = 100;
-	}
-}
+CGame* CGame::m_pThisPtr = nullptr;	// 自身のポインタ
 
 //==========================================================================
 // コンストラクタ
@@ -64,6 +43,18 @@ void UUUU()
 CGame::CGame()
 {
 	// 値のクリア
+	m_pScore = nullptr;				// スコアのオブジェクト
+	m_pTimer = nullptr;				// タイマーのオブジェクト
+	m_pLimitArea = nullptr;			// エリア制限のオブジェクト
+	m_pEditEnemyBase = nullptr;		// 敵の拠点エディター
+	m_pStage = nullptr;				// ステージのオブジェクト
+	m_pGameManager = nullptr;		// ゲームマネージャのオブジェクト
+	m_EditType = EDITTYPE_OFF;		// エディットの種類
+	m_pEnemyBase = nullptr;			// 敵の拠点
+	m_pEnemyManager = nullptr;		// 敵マネージャのオブジェクト
+	m_bEdit = false;				// エディットの判定
+	m_clear = false;				// クリア判定
+	m_fMaxRokOnDistance = 0.0f;		// ロックオンの最大距離
 }
 
 //==========================================================================
@@ -75,12 +66,47 @@ CGame::~CGame()
 }
 
 //==========================================================================
+// 生成処理
+//==========================================================================
+CGame* CGame::Create(void)
+{
+	if (m_pThisPtr == nullptr)
+	{// まだ生成していなかったら
+
+		// インスタンス生成
+		m_pThisPtr = DEBUG_NEW CGame;
+	}
+	else
+	{
+		// インスタンス取得
+		m_pThisPtr->GetInstance();
+	}
+
+	return m_pThisPtr;
+}
+
+//==========================================================================
+// インスタンス取得
+//==========================================================================
+CGame* CGame::GetInstance(void)
+{
+	if (m_pThisPtr == nullptr)
+	{
+		m_pThisPtr = Create();
+	}
+	return m_pThisPtr;
+}
+
+//==========================================================================
 // 初期化処理
 //==========================================================================
 HRESULT CGame::Init(void)
 {
 	// エディット判定OFF
 	m_bEdit = false;
+
+	// ロックオンの最大距離
+	m_fMaxRokOnDistance = mylib_const::MAX_ROCKONDISTANCE_GAME;
 
 	// プレイヤーの数設定
 	CManager::GetInstance()->SetNumPlayer(1);
@@ -89,11 +115,6 @@ HRESULT CGame::Init(void)
 	if (FAILED(CScene::Init()))
 	{// 失敗した場合
 		return E_FAIL;
-	}
-
-	for (int i = 0; i < 1200; i++)
-	{
-		UUUU();
 	}
 
 	//**********************************
@@ -105,8 +126,8 @@ HRESULT CGame::Init(void)
 	// 敵の拠点
 	//**********************************
 	m_pEnemyBase = CEnemyBase::Create("data\\TEXT\\enemydata\\base.txt");
-	if (m_pEnemyBase == NULL)
-	{// NULLだったら
+	if (m_pEnemyBase == nullptr)
+	{// nullptrだったら
 		return E_FAIL;
 	}
 
@@ -114,8 +135,8 @@ HRESULT CGame::Init(void)
 	// 敵マネージャ
 	//**********************************
 	m_pEnemyManager = CEnemyManager::Create("data\\TEXT\\enemydata\\manager.txt");
-	if (m_pEnemyManager == NULL)
-	{// NULLだったら
+	if (m_pEnemyManager == nullptr)
+	{// nullptrだったら
 		return E_FAIL;
 	}
 
@@ -177,7 +198,7 @@ void CGame::Uninit(void)
 {
 
 	// スコアの破棄
-	if (m_pScore != NULL)
+	if (m_pScore != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -185,62 +206,68 @@ void CGame::Uninit(void)
 
 		// メモリの開放
 		delete m_pScore;
-		m_pScore = NULL;
+		m_pScore = nullptr;
 	}
 
 	// タイマーの破棄
-	if (m_pTimer != NULL)
+	if (m_pTimer != nullptr)
 	{
 		// 終了処理
 		m_pTimer->Uninit();
 		delete m_pTimer;
-		m_pTimer = NULL;
+		m_pTimer = nullptr;
 	}
 
-	if (m_pEditEnemyBase != NULL)
+	if (m_pEditEnemyBase != nullptr)
 	{
 		// 終了させる
 		m_pEditEnemyBase->Uninit();
 		delete m_pEditEnemyBase;
-		m_pEditEnemyBase = NULL;
+		m_pEditEnemyBase = nullptr;
 	}
 
 	// ステージの破棄
-	if (m_pStage != NULL)
+	if (m_pStage != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
 		m_pStage->Uninit();
 		delete m_pStage;
-		m_pStage = NULL;
+		m_pStage = nullptr;
 	}
 
-	if (m_pGameManager != NULL)
+	if (m_pGameManager != nullptr)
 	{
 		// 終了処理
 		m_pGameManager->Uninit();
 		delete m_pGameManager;
-		m_pGameManager = NULL;
+		m_pGameManager = nullptr;
 	}
 
 	// 敵マネージャ
-	if (m_pEnemyManager != NULL)
+	if (m_pEnemyManager != nullptr)
 	{
 		m_pEnemyManager->Uninit();
 		delete m_pEnemyManager;
-		m_pEnemyManager = NULL;
+		m_pEnemyManager = nullptr;
 	}
 
 	// 敵の拠点
-	if (m_pEnemyBase != NULL)
+	if (m_pEnemyBase != nullptr)
 	{
 		m_pEnemyBase->Uninit();
 		delete m_pEnemyBase;
-		m_pEnemyBase = NULL;
+		m_pEnemyBase = nullptr;
 	}
 
 	// 終了処理
 	CScene::Uninit();
+
+	if (m_pThisPtr != nullptr)
+	{
+		//delete m_pThisPtr;
+		m_pThisPtr = nullptr;
+	}
 }
 
 //==========================================================================
@@ -250,7 +277,7 @@ void CGame::Update(void)
 {
 
 	// ゲームマネージャ
-	if (m_pGameManager != NULL)
+	if (m_pGameManager != nullptr)
 	{
 		// 更新処理
 		m_pGameManager->Update();
@@ -267,9 +294,9 @@ void CGame::Update(void)
 	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
 #if 1
-	if (m_pScore != NULL &&
-		CManager::GetInstance()->GetEdit() == NULL &&
-		m_pEnemyManager != NULL)
+	if (m_pScore != nullptr &&
+		CManager::GetInstance()->GetEdit() == nullptr &&
+		m_pEnemyManager != nullptr)
 	{
 		// スコアの更新処理
 		m_pScore->Update();
@@ -297,8 +324,8 @@ void CGame::Update(void)
 			break;
 
 		case EDITTYPE_ENEMYBASE:
-			if (m_pEditEnemyBase == NULL)
-			{// NULLだったら
+			if (m_pEditEnemyBase == nullptr)
+			{// nullptrだったら
 
 				// エディットの生成処理
 				m_pEditEnemyBase = CEditEnemyBase::Create();
@@ -309,31 +336,31 @@ void CGame::Update(void)
 	}
 #endif
 
-	if (GetEnemyManager() != NULL)
+	if (GetEnemyManager() != nullptr)
 	{// 敵マネージャの更新処理
 		GetEnemyManager()->Update();
 	}
 
-	if (m_pEditEnemyBase != NULL)
+	if (m_pEditEnemyBase != nullptr)
 	{// 敵の拠点エディターの更新処理
 		m_pEditEnemyBase->Update();
 	}
 
 	// 敵の拠点
-	if (m_pEnemyBase != NULL)
+	if (m_pEnemyBase != nullptr)
 	{
 		m_pEnemyBase->Update();
 	}
 
 	// ステージの更新
-	if (m_pStage != NULL)
+	if (m_pStage != nullptr)
 	{
 		m_pStage->Update();
 	}
 
 
 	// タイマー更新
-	if (m_pTimer != NULL &&
+	if (m_pTimer != nullptr &&
 		!CManager::GetInstance()->GetPause()->IsPause())
 	{
 		m_pTimer->Update();
@@ -395,14 +422,6 @@ CEnemyManager *CGame::GetEnemyManager(void)
 }
 
 //==========================================================================
-// アイテムマネージャの取得
-//==========================================================================
-CItemManager *CGame::GetItemManager(void)
-{
-	return m_pItemManager;
-}
-
-//==========================================================================
 // 敵の拠点
 //==========================================================================
 CEnemyBase *CGame::GetEnemyBase(void)
@@ -411,49 +430,33 @@ CEnemyBase *CGame::GetEnemyBase(void)
 }
 
 //==========================================================================
-// ステータスウィンドウ
-//==========================================================================
-CStatusWindow *CGame::GetStatusWindow(int nIdx)
-{
-	return m_pStatusWindow[nIdx];
-}
-
-//==========================================================================
-// 必殺のウィンドウ取得
-//==========================================================================
-CUltWindow *CGame::GetUltWindow(int nIdx)
-{
-	return m_pUltWindow[nIdx];
-}
-
-//==========================================================================
 // リセット処理
 //==========================================================================
 void CGame::ResetBeforeBoss(void)
 {
 	// ステージの破棄
-	if (m_pStage != NULL)
+	if (m_pStage != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
 		m_pStage->Release();
 		delete m_pStage;
-		m_pStage = NULL;
+		m_pStage = nullptr;
 	}
 
 	// 敵の拠点
-	if (m_pEnemyBase != NULL)
+	if (m_pEnemyBase != nullptr)
 	{
 		m_pEnemyBase->Uninit();
 		delete m_pEnemyBase;
-		m_pEnemyBase = NULL;
+		m_pEnemyBase = nullptr;
 	}
 
 	// エリア制限
-	if (m_pLimitArea != NULL)
+	if (m_pLimitArea != nullptr)
 	{
 		m_pLimitArea->Uninit();
-		m_pLimitArea = NULL;
+		m_pLimitArea = nullptr;
 	}
 
 	// ステージ
@@ -463,10 +466,13 @@ void CGame::ResetBeforeBoss(void)
 	// 敵の拠点
 	//**********************************
 	m_pEnemyBase = CEnemyBase::Create("data\\TEXT\\enemydata\\base_boss.txt");
-	if (m_pEnemyBase == NULL)
-	{// NULLだったら
+	if (m_pEnemyBase == nullptr)
+	{// nullptrだったら
 		return;
 	}
+
+	// ロックオンの最大距離
+	m_fMaxRokOnDistance = mylib_const::MAX_ROCKONDISTANCE_BOSS;
 }
 
 //==========================================================================
@@ -475,13 +481,13 @@ void CGame::ResetBeforeBoss(void)
 void CGame::EditReset(void)
 {
 	
-	if (m_pEditEnemyBase != NULL)
+	if (m_pEditEnemyBase != nullptr)
 	{
 		// 終了させる
 		m_pEditEnemyBase->Release();
 		m_pEditEnemyBase->Uninit();
 		delete m_pEditEnemyBase;
-		m_pEditEnemyBase = NULL;
+		m_pEditEnemyBase = nullptr;
 	}
 
 }

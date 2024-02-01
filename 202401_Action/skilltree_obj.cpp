@@ -133,7 +133,7 @@ void CSkillTree_Obj::Update(void)
 //==========================================================================
 void CSkillTree_Obj::CollisionPlayer(void)
 {
-	if (!CGame::GetGameManager()->IsControll())
+	if (!CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できないとき
 		return;
 	}
@@ -165,7 +165,7 @@ void CSkillTree_Obj::CollisionPlayer(void)
 		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0))
 		{
 			// スキルツリーに変更
-			CGame::GetGameManager()->SetType(CGameManager::SCENE_SKILLTREE);
+			CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_SKILLTREE);
 
 			// スキルツリー生成
 			CSkillTree::GetInstance()->SetScreen();

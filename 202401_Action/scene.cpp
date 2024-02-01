@@ -22,6 +22,15 @@
 #include "ranking.h"
 
 //==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const char* MAP_TEXT = "data\\TEXT\\map\\info.txt";
+	const char* ELEVATION_TEXT = "data\\TEXT\\elevation\\field_mountain.txt";
+}
+
+//==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
 CXLoad *CScene::m_pXLoad = NULL;				// Xファイルのオブジェクト
@@ -67,7 +76,7 @@ CScene *CScene::Create(CScene::MODE mode)
 			break;
 
 		case CScene::MODE_GAME:
-			pScene = DEBUG_NEW CGame;
+			pScene = CGame::Create();
 			break;
 
 		case CScene::MODE_RESULT:
@@ -117,7 +126,7 @@ HRESULT CScene::Init(void)
 	//**********************************
 	// マップの生成
 	//**********************************
-	if (FAILED(MyMap::Create("data\\TEXT\\map\\info.txt")))
+	if (FAILED(MyMap::Create(MAP_TEXT)))
 	{// 失敗した場合
 		return E_FAIL;
 	}
@@ -125,7 +134,7 @@ HRESULT CScene::Init(void)
 	//**********************************
 	// 起伏の地面
 	//**********************************
-	m_pObject3DMesh = CElevation::Create("data\\TEXT\\elevation\\field_mountain.txt");
+	m_pObject3DMesh = CElevation::Create(ELEVATION_TEXT);
 
 	// 初期化処理
 	hr = m_pXLoad->Init();
@@ -194,13 +203,13 @@ void CScene::ResetScene(void)
 	// 生成フェーズ
 	//**********************************
 	// マップ
-	if (FAILED(MyMap::Create("data\\TEXT\\map\\info_boss.txt")))
+	if (FAILED(MyMap::Create(MAP_TEXT)))
 	{// 失敗した場合
 		return;
 	}
 
 	// ボスステージの起伏生成
-	m_pObject3DMesh = CElevation::Create("data\\TEXT\\elevation\\field_city.txt");
+	m_pObject3DMesh = CElevation::Create(ELEVATION_TEXT);
 }
 
 //==========================================================================

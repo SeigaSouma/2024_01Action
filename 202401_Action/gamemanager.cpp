@@ -60,33 +60,24 @@ CGameManager::~CGameManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CGameManager *CGameManager::Create(void)
+CGameManager* CGameManager::Create(void)
 {
-	// 生成用のオブジェクト
-	CGameManager *pManager = NULL;
+	// メモリ確保
+	CGameManager* pManager = DEBUG_NEW CGameManager;
 
-	if (pManager == NULL)
-	{// NULLだったら
+	if (pManager != NULL)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pManager = DEBUG_NEW CGameManager;
+		// 初期化処理
+		HRESULT hr = pManager->Init();
 
-		if (pManager != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			HRESULT hr = pManager->Init();
-
-			if (FAILED(hr))
-			{// 失敗していたら
-				return NULL;
-			}
+		if (FAILED(hr))
+		{// 失敗していたら
+			return NULL;
 		}
-
-		return pManager;
 	}
 
-	return NULL;
+	return pManager;
 }
 
 //==========================================================================
@@ -125,9 +116,9 @@ void CGameManager::Uninit(void)
 //==========================================================================
 void CGameManager::Update(void)
 {
-	if (CGame::GetEnemyBase()->GetNumStage() - 1 <= m_nNowStage)
+	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1 <= m_nNowStage)
 	{// 総ステージ数を超えたら
-		m_nNowStage = CGame::GetEnemyBase()->GetNumStage() - 1;
+		m_nNowStage = CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1;
 
 		// 通常ステージが終了判定
 		m_bEndNormalStage = true;
@@ -249,7 +240,7 @@ void CGameManager::SceneEnhance(void)
 	}
 
 	// ステージ切り替え
-	CGame::GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
+	CGame::GetInstance()->GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
 
 	// マップ切り替え
 	MyMap::ChangeMap("data\\TEXT\\map\\map_enhance.txt");
@@ -291,7 +282,7 @@ void CGameManager::SetBoss(void)
 	m_SceneType = SCENE_BOSS;
 
 	// リセット処理
-	CGame::ResetBeforeBoss();
+	CGame::GetInstance()->ResetBeforeBoss();
 
 	// シーンのリセット
 	CManager::GetInstance()->GetScene()->ResetScene();
@@ -318,7 +309,7 @@ void CGameManager::SetBoss(void)
 	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_IN);
 
 	// 敵の再配置
-	CEnemyManager* pEnemyManager = CGame::GetEnemyManager();
+	CEnemyManager* pEnemyManager = CGame::GetInstance()->GetEnemyManager();
 	if (pEnemyManager != NULL)
 	{
 		// 敵の再配置
@@ -333,7 +324,7 @@ void CGameManager::SetEnemy(void)
 {
 
 	// ステージ切り替え
-	CGame::GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
+	CGame::GetInstance()->GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
 
 	// マップ切り替え
 	MyMap::ChangeMap("data\\TEXT\\map\\info.txt");
@@ -362,7 +353,7 @@ void CGameManager::SetEnemy(void)
 	m_SceneType = SCENE_MAIN;
 
 	// 敵の再配置
-	CEnemyManager *pEnemyManager = CGame::GetEnemyManager();
+	CEnemyManager *pEnemyManager = CGame::GetInstance()->GetEnemyManager();
 	if (pEnemyManager != NULL)
 	{
 		// 敵の再配置
@@ -381,9 +372,9 @@ void CGameManager::AddNowStage(void)
 	// 加算
 	m_nNowStage++;
 
-	if (CGame::GetEnemyBase()->GetNumStage() <= m_nNowStage)
+	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() <= m_nNowStage)
 	{// 総ステージ数を超えたら
-		m_nNowStage = CGame::GetEnemyBase()->GetNumStage();
+		m_nNowStage = CGame::GetInstance()->GetEnemyBase()->GetNumStage();
 
 		// 通常ステージが終了判定
 		m_bEndNormalStage = true;

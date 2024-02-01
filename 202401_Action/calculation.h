@@ -30,6 +30,7 @@ namespace UtilFunc
 	namespace Transformation
 	{
 		template<class T> void ValueNormalize(T& Value, T MaxValue, T MinValue);	// 値の正規化処理
+		MyLib::Vector3 RotationChangeToForwardVector(float rot);
 	}
 
 	namespace Collision
@@ -1332,6 +1333,37 @@ namespace UtilFunc	// 便利関数
 
 			return bHit;
 		}
+
+		/**
+		@brief	扇の当たり判定(3D)
+		@param	posMain			[in]	中心となる人の位置
+		@param	posTarget		[in]	対象の位置
+		@param	mainRotY		[in]	向き
+		@param	fieldofview		[in]	視野角
+		@return	衝突したかのbool値
+		*/
+		inline bool CollisionFan3D(const MyLib::Vector3& posMain, MyLib::Vector3& posTarget, float mainRotY, float fieldofview)
+		{
+
+			// 2キャラのベクトル
+			D3DXVECTOR3 toPlayer = posTarget - posMain;
+
+			// 前方ベクトル
+			D3DXVECTOR3 forward = UtilFunc::Transformation::RotationChangeToForwardVector(mainRotY);
+
+			// ベクトルと前方ベクトルの角度計算
+			float angle = D3DXVec3Dot(&toPlayer, &forward) / (D3DXVec3Length(&toPlayer) * D3DXVec3Length(&forward));
+			angle = acos(angle);
+
+			// 視界の中にいるか判定
+			fieldofview = D3DXToRadian(fieldofview);
+			if (angle <= fieldofview / 2.0f)
+			{
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	/**
@@ -1459,6 +1491,16 @@ namespace UtilFunc	// 便利関数
 			// rot.y = acosf(worldmtx._33);
 			// rot.z = atan2f(worldmtx._23, -worldmtx._13);
 			return rot;
+		}
+
+		/**
+		@brief	向きを前方ベクトルに変換
+		@param	rot	[in]	向き
+		@return	前方ベクトル
+		*/
+		inline MyLib::Vector3 RotationChangeToForwardVector(float rot)
+		{
+			return MyLib::Vector3(sinf(D3DX_PI + rot), 0.0f, cosf(D3DX_PI + rot));
 		}
 
 		/**

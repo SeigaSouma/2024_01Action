@@ -276,7 +276,7 @@ void CTimer::StatAddLittle(void)
 		// ó‘Ô‘JˆÚ
 		m_state = STATE_ADJ;
 		m_fStateTime = 0.0f;
-		CGame::GetGameManager()->SetType(CGameManager::SCENE_MAIN);
+		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_MAIN);
 	}
 }
 

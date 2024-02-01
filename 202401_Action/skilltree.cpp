@@ -344,7 +344,7 @@ void CSkillTree::StateFadeOut(void)
 		m_fStateTime = 0.0f;
 
 		// スキルツリーに変更
-		CGame::GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
+		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
 
 		// スクリーンから捌ける
 		OutScreen();

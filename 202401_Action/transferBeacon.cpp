@@ -145,7 +145,7 @@ void CTransferBeacon::Update(void)
 //==========================================================================
 void CTransferBeacon::CollisionPlayer(void)
 {
-	if (!CGame::GetGameManager()->IsControll())
+	if (!CGame::GetInstance()->GetGameManager()->IsControll())
 	{// s“®‚Å‚«‚È‚¢‚Æ‚«
 		return;
 	}
@@ -183,12 +183,12 @@ void CTransferBeacon::CollisionPlayer(void)
 			{
 			case CTransferBeacon::TRANSTYPE_ENHANCE:
 				// ‹­‰»ó‘Ô‚É•ÏX
-				CGame::GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
+				CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
 				break;
 
 			case CTransferBeacon::TRANSTYPE_GAMEMAIN:
 				// ‘JˆÚó‘Ô‚É•ÏX
-				CGame::GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
+				CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
 				break;
 			}
 

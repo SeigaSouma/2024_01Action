@@ -347,12 +347,12 @@ void CEnemy::Update(void)
 	}
 
 	// エディット中は抜ける
-	if (CGame::GetElevation()->IsEdit())
+	if (CGame::GetInstance()->GetElevation()->IsEdit())
 	{
 		return;
 	}
 
-	if (!CGame::GetGameManager()->IsControll())
+	if (!CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できるとき
 		return;
 	}
@@ -484,7 +484,7 @@ void CEnemy::Collision(void)
 
 	// 高さ取得
 	bool bLand = false;
-	float fHeight = CGame::GetElevation()->GetHeight(pos, &bLand);
+	float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(pos, &bLand);
 
 	if (fHeight > pos.y)
 	{// 地面の方が自分より高かったら
@@ -1019,7 +1019,7 @@ void CEnemy::Dead(void)
 	rot.y += D3DX_PI * 0.025f;
 	rot.x += D3DX_PI * (UtilFunc::Transformation::Random(5, 25) * 0.001f);
 
-	if(CGame::GetElevation()->IsHit(pos))
+	if(CGame::GetInstance()->GetElevation()->IsHit(pos))
 	{
 		// パーティクル生成
 		my_particle::Create(pos, my_particle::TYPE_ENEMY_FADE);
@@ -1080,7 +1080,7 @@ void CEnemy::FadeOut(void)
 
 	// 高さ取得
 	bool bLand = false;
-	float fHeight = CGame::GetElevation()->GetHeight(pos, &bLand);
+	float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(pos, &bLand);
 
 	m_sMotionFrag.bMove = false;	// 移動判定OFF
 	m_sMotionFrag.bATK = false;		// 攻撃判定OFF

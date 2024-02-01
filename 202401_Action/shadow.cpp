@@ -168,7 +168,7 @@ void CShadow::Update(void)
 		return;
 	}
 
-	/*if (!CGame::GetElevation()->IsChange())
+	/*if (!CGame::GetInstance()->GetElevation()->IsChange())
 	{
 		return;
 	}*/
@@ -178,7 +178,7 @@ void CShadow::Update(void)
 
 	// çÇÇ≥éÊìæ
 	bool bLand = false;
-	pos.y = CGame::GetElevation()->GetHeight(pos, &bLand);
+	pos.y = CGame::GetInstance()->GetElevation()->GetHeight(pos, &bLand);
 
 	// à íuê›íË
 	SetPosition(pos);

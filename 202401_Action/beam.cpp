@@ -258,7 +258,7 @@ void CBeam::UpdateEffect(void)
 		// ˆÊ’uæ“¾
 		MyLib::Vector3 pos = m_pEffect[i]->GetPosition();
 
-		if (CGame::GetElevation()->IsHit(pos) == true)
+		if (CGame::GetInstance()->GetElevation()->IsHit(pos) == true)
 		{
 			// U“®
 			CManager::GetInstance()->GetCamera()->SetShake(6, 4.0f, 0.0f);
@@ -365,7 +365,7 @@ void CBeam::UpdateBillboard(void)
 		// ‹——£‰ÁZ
 		fLen += fDistance;
 
-		if (CGame::GetElevation()->IsHit(pos) == true)
+		if (CGame::GetInstance()->GetElevation()->IsHit(pos) == true)
 		{
 			// U“®
 			CManager::GetInstance()->GetCamera()->SetShake(6, 4.0f, 0.0f);

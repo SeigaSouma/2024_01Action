@@ -92,7 +92,7 @@ CEnemyBase *CEnemyBase::Create(const char *pFileName)
 HRESULT CEnemyBase::Init(void)
 {
 	// 敵マネージャ取得
-	CEnemyManager *pEnemyManager = CGame::GetEnemyManager();
+	CEnemyManager *pEnemyManager = CGame::GetInstance()->GetEnemyManager();
 
 	//// 生成する
 	//for (int i = 0; i < m_nNumAll; i++)
@@ -200,7 +200,7 @@ void CEnemyBase::Update(void)
 #endif
 
 	// ステージの総数設定
-	CGame::GetGameManager()->SetNumStage(m_nNumStage);
+	CGame::GetInstance()->GetGameManager()->SetNumStage(m_nNumStage);
 
 }
 
@@ -316,7 +316,7 @@ HRESULT CEnemyBase::ReadText(const char *pFileName)
 	if (CManager::GetInstance()->GetScene()->GetMode() != CScene::MODE_TUTORIAL)
 	{
 		// ステージの総数設定
-		CGame::GetGameManager()->SetNumStage(m_nNumStage);
+		CGame::GetInstance()->GetGameManager()->SetNumStage(m_nNumStage);
 	}
 
 	return S_OK;

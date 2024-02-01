@@ -364,7 +364,7 @@ void CEdit::Control(CObjectX *pObjX)
 	//bool bLand = false;
 
 	//// ‚‚³Žæ“¾
-	//float fHeight = CGame::GetElevation()->GetHeight(pos, bLand);
+	//float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(pos, bLand);
 
 	//if (bLand == true)
 	//{
