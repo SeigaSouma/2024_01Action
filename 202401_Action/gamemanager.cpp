@@ -96,7 +96,13 @@ HRESULT CGameManager::Init(void)
 {
 	m_bControll = true;			// 操作できるか
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
+
+#if _DEBUG
+	m_nNowStage = 2;			// 現在のステージ
+#else
 	m_nNowStage = 0;			// 現在のステージ
+#endif
+
 	m_SceneType = SCENE_MAIN;	// シーンの種類
 
 	return S_OK;

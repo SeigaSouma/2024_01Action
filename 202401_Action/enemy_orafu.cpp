@@ -178,11 +178,12 @@ void CEnemyOrafu::ActChase(void)
 	{
 		return;
 	}
+	m_TargetPosition = pPlayer->GetPosition();
 
 	// 円の判定
 	if (UtilFunc::Collision::CircleRange3D(GetPosition(), pPlayer->GetPosition(), LENGTH_PLAYERCHASE, 0.0f))
 	{
-		m_TargetPosition = pPlayer->GetPosition();
+
 	}
 
 	// ターゲットの方を向く
@@ -350,35 +351,6 @@ void CEnemyOrafu::MotionSet(void)
 		//	pMotion->Set(MOTION_DEF);
 		//}
 	}
-}
-
-//==========================================================================
-// ターゲットの方を向く
-//==========================================================================
-void CEnemyOrafu::RotationTarget(void)
-{
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の角度を求める
-	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
-
-	// 目標との差分
-	float fRotDiff = fRotDest - rot.y;
-
-	//角度の正規化
-	UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-	//角度の補正をする
-	rot.y += fRotDiff * 0.1f;
-	UtilFunc::Transformation::RotNormalize(rot.y);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
 }
 
 //==========================================================================

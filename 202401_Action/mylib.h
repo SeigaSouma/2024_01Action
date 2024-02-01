@@ -258,6 +258,22 @@ namespace MyLib
 		// パラメータ付きコンストラクタ
 		HitResult(bool bHit, MyLib::Vector3 pos) : ishit(bHit), hitpos(pos) {}
 	};
+
+	/**
+	@brief	HitResult_Character【キャラクターの衝突情報】
+	*/
+	struct HitResult_Character
+	{
+		bool ishit;				// 衝突結果
+		bool isdeath;			// 死亡したか
+		MyLib::Vector3 hitpos;	// 衝突地点
+
+		// デフォルトコンストラクタ
+		HitResult_Character() : ishit(false), hitpos() {}
+
+		// パラメータ付きコンストラクタ
+		HitResult_Character(bool bHit, MyLib::Vector3 pos) : ishit(bHit), hitpos(pos) {}
+	};
 }
 
 

@@ -52,7 +52,7 @@ namespace
 	const int DEADTIME = 120;			// 死亡時の時間
 	const int FADEOUTTIME = 60;			// フェードアウトの時間
 	const float MULTIPLIY_DASH = 1.875f;	// ダッシュの倍率
-	const float RADIUS_STAGE = 20000.0f;	// ステージの半径
+	const float RADIUS_STAGE = 2300.0f;	// ステージの半径
 	const float TIME_DASHATTACK = 0.3f;		// ダッシュ攻撃に必要な時間
 	const int DEFAULT_STAMINA = 200;	// スタミナのデフォルト値
 	const float SUBVALUE_DASH = 0.3f;		// ダッシュの減算量
@@ -2114,7 +2114,20 @@ void CPlayer::StateCounter(void)
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
-	MyLib::Vector3 enemypos = CEnemy::GetListObj().GetData(m_nIdxRockOn)->GetPosition();
+	CEnemy* pEnemy = CEnemy::GetListObj().GetData(m_nIdxRockOn);
+	if (pEnemy == nullptr)
+	{
+		// 終了時の設定
+		if (m_pEndCounterSetting != nullptr)
+		{
+			m_pEndCounterSetting->EndSetting(this);
+			delete m_pEndCounterSetting;
+			m_pEndCounterSetting = nullptr;
+		}
+		return;
+	}
+
+	MyLib::Vector3 enemypos = pEnemy->GetPosition();
 
 	SetRotDest(atan2f((pos.x - enemypos.x), (pos.z - enemypos.z)));
 

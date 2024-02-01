@@ -152,13 +152,13 @@ HRESULT CGame::Init(void)
 	// BGM再生
 	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
 
-	CLimitArea::sLimitEreaInfo info;
+	/*CLimitArea::sLimitEreaInfo info;
 	info.fMaxX = 13000.0f;
 	info.fMaxZ = 1200.0f;
 	info.fMinX = -1200.0f;
 	info.fMinZ = -1200.0f;
 	m_pLimitArea = CLimitArea::Create(info);
-	m_pLimitArea->SetEnableDisp(false);
+	m_pLimitArea->SetEnableDisp(false);*/
 
 	// スキルツリー生成
 	CSkillTree::Create();

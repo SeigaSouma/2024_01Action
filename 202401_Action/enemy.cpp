@@ -570,8 +570,7 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 		SetLife(nLife);
 
 		if (nLife > 0)
-		{// 体力がなくなってなかったら
-
+		{
 			// ダメージ音再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
 
@@ -581,8 +580,7 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 				m_pHPGauge = CHP_Gauge::Create(GetHeight(), GetLifeOrigin(), 3.0f);
 			}
 		}
-
-		if (nLife <= 0)
+		else
 		{// 体力がなくなったら
 
 			// ヒットストップ
@@ -609,11 +607,12 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 			// 爆発再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_ENEMYEXPLOSION);
 
-			MyLib::Vector3 move = GetMove();
+			/*MyLib::Vector3 move = GetMove();
 			move.x = UtilFunc::Transformation::Random(-5, 5) + 20.0f;
 			move.y = UtilFunc::Transformation::Random(0, 5) + 15.0f;
 			move.z = UtilFunc::Transformation::Random(-5, 5) + 20.0f;
-			SetMove(move);
+			SetMove(move);*/
+			return true;
 		}
 
 		// 過去の状態保存
@@ -708,26 +707,16 @@ void CEnemy::UpdateAction(void)
 }
 
 //==========================================================================
-// プレイヤーを向く処理
+// ターゲットの方を向く
 //==========================================================================
-void CEnemy::RotationPlayer(void)
+void CEnemy::RotationTarget(void)
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 	MyLib::Vector3 rot = GetRotation();
 
-	// プレイヤー取得
-	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-	if (pPlayer == nullptr)
-	{
-		return;
-	}
-
-	// プレイヤーの位置取得
-	MyLib::Vector3 posPlayer = pPlayer->GetPosition();
-
 	// 目標の角度を求める
-	float fRotDest = atan2f((pos.x - posPlayer.x), (pos.z - posPlayer.z));
+	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
 
 	// 目標との差分
 	float fRotDiff = fRotDest - rot.y;
@@ -736,9 +725,7 @@ void CEnemy::RotationPlayer(void)
 	UtilFunc::Transformation::RotNormalize(fRotDiff);
 
 	//角度の補正をする
-	rot.y += fRotDiff * 0.025f;
-
-	// 角度の正規化
+	rot.y += fRotDiff * 0.1f;
 	UtilFunc::Transformation::RotNormalize(rot.y);
 
 	// 向き設定
@@ -747,7 +734,6 @@ void CEnemy::RotationPlayer(void)
 	// 目標の向き設定
 	SetRotDest(fRotDest);
 }
-
 
 //==========================================================================
 // プレイヤーとの距離を判定

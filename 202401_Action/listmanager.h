@@ -147,7 +147,12 @@ template<class T> bool CListManager<T>::ListLoop(T** ppList)
 template<class T> T* CListManager<T>::GetData(int nIdx)
 {
 	if (m_ListObj.empty())
-	{// 空の場合即終了
+	{// 例外は即終了
+		return nullptr;
+	}
+
+	if (nIdx >= static_cast<int>(m_ListObj.size()))
+	{// 例外は即終了
 		return nullptr;
 	}
 

@@ -31,12 +31,11 @@ public:
 	{
 		MOTION_DEF = 0,			// ニュートラルモーション
 		MOTION_WALK,			// 移動モーション
-		MOTION_DASH,			// ダッシュ移動モーション
-		MOTION_GUARD,			// ガードモーション
-		MOTION_PUNCH,			// パンチモーション
+		MOTION_OVERHEADATK,		// 振り下ろし
+		MOTION_SIDESWIPE,		// 横なぎ
 		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
 		MOTION_KNOCKBACK,		// やられモーション
-		MOTION_FADEOUT,			// 帰還モーション
+		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
 	};
 
@@ -50,8 +49,8 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	void Kill(void) override;
-
-	void SetTargetPosition(MyLib::Vector3 pos);	// 目標の位置設定
+	void NormalHitResponse() override;	// ヒット時の反応
+	void CounterHitResponse() override;	// ヒット時の反応
 
 	// 攻撃状態切り替え
 	void ChangeATKState(CBossState* state);
@@ -67,13 +66,12 @@ public:
 		//m_nIdxAtkPattern
 	}
 
-	void performRandomAction();
 
 
-	void ActChase(void);				// 追い掛け
+	void ActChase(void);		// 追い掛け
 
-	// 攻撃を実行する
-	void performAttack();
+	void PerformAttack();		// 攻撃実行処理
+	void DrawingRandomAction();	// 攻撃ランダム抽選
 
 	bool IsCatchUp() { return m_bCatchUp; }
 
@@ -84,8 +82,6 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CEnemyBoss::*ACT_FUNC)(void);
-	static ACT_FUNC m_ActFuncList[];	// 行動関数リスト
 
 	//=============================
 	// メンバ関数
@@ -93,7 +89,6 @@ private:
 	// 行動関数
 	void ActionSet(void) override;		// 行動の設定
 	void UpdateAction(void) override;	// 行動更新
-	//void ActChase(void);				// 追い掛け
 	void ActWait(void);					// 待機
 
 	// その他関数
@@ -105,17 +100,12 @@ private:
 	//=============================
 	// メンバ変数
 	//=============================
-	MyLib::Vector3 m_TargetPosition;	// 目標の位置
 	float m_fActTime;		// 行動カウンター
 	bool m_bCatchUp;	// 追い着き判定
 	CHP_GaugeBoss *m_pBossHPGauge;	// ボスのHPゲージ
-
-
-
 	CBossState* m_pATKState;		// 今の行動ポインタ
 	CBossState* m_pNextATKState;	// 次の行動ポインタ
 
-	int m_nIdxAtkPattern;
 	std::vector<CBossAttack*> m_pAtkPattern;
 };
 
@@ -126,9 +116,7 @@ class CBossState
 {
 public:
 	virtual void Action(CEnemyBoss* boss) = 0;	// 行動
-
 	virtual void Attack(CEnemyBoss* boss) = 0;	// 攻撃処理
-
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) = 0;
@@ -211,7 +199,21 @@ public:
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
 	{
-		m_nIdxMotion = CEnemyBoss::MOTION_PUNCH;
+		m_nIdxMotion = CEnemyBoss::MOTION_SIDESWIPE;
+		CBossAttack::ChangeMotionIdx(boss);
+	}
+};
+
+// 振り下ろし
+class CBossOverHead : public CBossProximity
+{
+public:
+	CBossOverHead() {}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION_OVERHEADATK;
 		CBossAttack::ChangeMotionIdx(boss);
 	}
 };

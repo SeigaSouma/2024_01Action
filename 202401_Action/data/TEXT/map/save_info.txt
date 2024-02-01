@@ -62,7 +62,7 @@ MODEL_FILENAME = data/MODEL/map_object/rock_03_superhuge.x		# [22]
 MODEL_FILENAME = data/MODEL/map_object/rock_04_superhuge.x		# [23]
 MODEL_FILENAME = data/MODEL/map_object/rock_05_superhuge.x		# [24]
 MODEL_FILENAME = data/MODEL/map_object/tree_03_huge.x		# [25]
-MODEL_FILENAME = data/MODEL/map_object/enhanceobj.x		# [26]
+MODEL_FILENAME = data/MODEL/stage/tougijo_001.x		# [26]
 
 #==============================================================================
 # 空情報
@@ -76,4 +76,15 @@ MODEL_FILENAME = data/MODEL/map_object/enhanceobj.x		# [26]
 # 地面情報
 #==============================================================================
 
-#=============
+#==============================================================================
+# モデルの配置
+#==============================================================================
+MODELSET
+	TYPE = 26
+	POS = 0.00 20.00 0.00
+	ROT = 0.00 0.00 0.00
+	SHADOW = 1
+END_MODELSET
+
+
+END_SCRIPT		# この行は絶対消さないこと！

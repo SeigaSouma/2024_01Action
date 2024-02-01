@@ -17,7 +17,7 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/walkroad_01.jpg		# [7]
 TEXTURE_FILENAME = data/TEXTURE/FIELD/tile_04.jpg		# [8]
 TEXTURE_FILENAME = data/TEXTURE/FIELD/tile_03.jpg		# [9]
 TEXTURE_FILENAME = data/TEXTURE/FIELD/water_02.jpg		# [10]
-TEXTURE_FILENAME = data/TEXTURE/sky_06.jpg		# [11]
+TEXTURE_FILENAME = data/TEXTURE/sky/sky_06.jpg		# [11]
 TEXTURE_FILENAME = data/TEXTURE/forest_02.jpg		# [12]
 TEXTURE_FILENAME = data/TEXTURE/line.png		# [13]
 TEXTURE_FILENAME = data/TEXTURE/glass.jpg		# [14]
@@ -31,12 +31,12 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/forest_01.png		# [20]
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 26
+NUM_MODEL = 27
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/mark_01.x						# [0]
+MODEL_FILENAME = data/MODEL/mark_01.x		# [0]
 MODEL_FILENAME = data/MODEL/map_object/tree_01_small.x		# [1]
 MODEL_FILENAME = data/MODEL/map_object/tree_01_normal.x		# [2]
 MODEL_FILENAME = data/MODEL/map_object/tree_01_big.x		# [3]
@@ -46,31 +46,49 @@ MODEL_FILENAME = data/MODEL/map_object/tree_02_big.x		# [6]
 MODEL_FILENAME = data/MODEL/map_object/tree_03_big.x		# [7]
 MODEL_FILENAME = data/MODEL/map_object/treegroup_02.x		# [8]
 MODEL_FILENAME = data/MODEL/map_object/treegroup_01.x		# [9]
-MODEL_FILENAME = data/MODEL/map_object/rock_01.x			# [10]
-MODEL_FILENAME = data/MODEL/map_object/rock_02.x			# [11]
-MODEL_FILENAME = data/MODEL/map_object/rock_03.x			# [12]
-MODEL_FILENAME = data/MODEL/map_object/rock_04.x			# [13]
-MODEL_FILENAME = data/MODEL/map_object/rock_05.x			# [14]
+MODEL_FILENAME = data/MODEL/map_object/rock_01.x		# [10]
+MODEL_FILENAME = data/MODEL/map_object/rock_02.x		# [11]
+MODEL_FILENAME = data/MODEL/map_object/rock_03.x		# [12]
+MODEL_FILENAME = data/MODEL/map_object/rock_04.x		# [13]
+MODEL_FILENAME = data/MODEL/map_object/rock_05.x		# [14]
 MODEL_FILENAME = data/MODEL/map_object/rock_01_huge.x		# [15]
 MODEL_FILENAME = data/MODEL/map_object/rock_02_huge.x		# [16]
 MODEL_FILENAME = data/MODEL/map_object/rock_03_huge.x		# [17]
 MODEL_FILENAME = data/MODEL/map_object/rock_04_huge.x		# [18]
 MODEL_FILENAME = data/MODEL/map_object/rock_05_huge.x		# [19]
 MODEL_FILENAME = data/MODEL/map_object/rock_06_huge.x		# [20]
-MODEL_FILENAME = data/MODEL/map_object/rock_02_superhuge.x	# [21]
-MODEL_FILENAME = data/MODEL/map_object/rock_03_superhuge.x	# [22]
-MODEL_FILENAME = data/MODEL/map_object/rock_04_superhuge.x	# [23]
-MODEL_FILENAME = data/MODEL/map_object/rock_05_superhuge.x	# [24]
+MODEL_FILENAME = data/MODEL/map_object/rock_02_superhuge.x		# [21]
+MODEL_FILENAME = data/MODEL/map_object/rock_03_superhuge.x		# [22]
+MODEL_FILENAME = data/MODEL/map_object/rock_04_superhuge.x		# [23]
+MODEL_FILENAME = data/MODEL/map_object/rock_05_superhuge.x		# [24]
 MODEL_FILENAME = data/MODEL/map_object/tree_03_huge.x		# [25]
+MODEL_FILENAME = data/MODEL/stage/tougijo_001.x		# [26]
+
+#==============================================================================
+# 空情報
+#==============================================================================
+SKYSET
+	TEXTYPE = 11
+	MOVE = 0.000200
+END_SKYSET
 
 #==============================================================================
 # 山情報
 #==============================================================================
 
+#==============================================================================
+# 地面情報
+#==============================================================================
 
 #==============================================================================
 # モデルの配置
 #==============================================================================
+MODELSET
+	TYPE = 26
+	POS = 0.00 20.00 0.00
+	ROT = 0.00 0.00 0.00
+	SHADOW = 0
+END_MODELSET
 
 
 END_SCRIPT		# この行は絶対消さないこと！
