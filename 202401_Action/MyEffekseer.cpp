@@ -15,6 +15,17 @@
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
+std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェクトのファイル名
+{
+	"data/Effekseer/Laser01.efkefc",	// サンプルのレーザー
+	"data/Effekseer/CounterParticle_01.efkefc",	// カウンターの線
+	"data/Effekseer/counter2.efkefc",			// カウンターの線2
+	"data/Effekseer/CounterParticle_02.efkefc",	// カウンターのキラキラ
+	"data/Effekseer/BackgroundFire.efkefc",		// 背景の炎
+	"data/Effekseer/HitParticle_Red_01.efkefc",	// ヒットマーク[赤]
+	"data/Effekseer/strongATK.efkefc",			// 強攻撃のサイン
+	"data/Effekseer/SonicBoom.efkefc",			// ボスのローリング
+};
 CMyEffekseer* CMyEffekseer::m_pMyEffekseer = nullptr;	// 自身のポインタ
 
 //==========================================================================
@@ -97,12 +108,12 @@ HRESULT CMyEffekseer::Init(void)
 //==========================================================================
 // エフェクトの設定
 //==========================================================================
-Effekseer::Handle CMyEffekseer::SetEffect(std::string efkpath, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath)
+Effekseer::Handle CMyEffekseer::SetEffect(EFKLABEL label, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath)
 {
 	MyEffekseerInfo loacalInfo = {};
 
 	// 読み込み
-	loacalInfo.efcRef = LoadEffect(efkpath);
+	loacalInfo.efcRef = LoadEffect(m_EffectName[label]);
 
 	// エフェクトの再生
 	loacalInfo.handle = efkManager->Play(m_LoadEffect, 0.0f, 0.0f, 0.0f);
@@ -127,12 +138,12 @@ Effekseer::Handle CMyEffekseer::SetEffect(std::string efkpath, MyLib::Vector3 po
 //==========================================================================
 // エフェクトの設定
 //==========================================================================
-Effekseer::Handle CMyEffekseer::SetEffect(Effekseer::Handle** pHandle, std::string efkpath, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath)
+Effekseer::Handle CMyEffekseer::SetEffect(Effekseer::Handle** pHandle, EFKLABEL label, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath)
 {
 	MyEffekseerInfo loacalInfo = {};
 
 	// 読み込み
-	loacalInfo.efcRef = LoadEffect(efkpath);
+	loacalInfo.efcRef = LoadEffect(m_EffectName[label]);
 
 	// エフェクトの再生
 	loacalInfo.handle = efkManager->Play(m_LoadEffect, 0.0f, 0.0f, 0.0f);
@@ -242,7 +253,8 @@ void CMyEffekseer::Update(void)
 				}
 			}
 			else
-			{
+			{// 再生中
+
 				if (!m_EffectObj[i].move.IsNearlyZero(0.01f))
 				{
 					// エフェクトの移動
@@ -250,6 +262,13 @@ void CMyEffekseer::Update(void)
 						loacalhandle,
 						Effekseer::Vector3D(m_EffectObj[i].move.x, m_EffectObj[i].move.y, m_EffectObj[i].move.z));
 				}
+
+
+				Effekseer::Vector3D scale;
+
+				efkManager->GetMatrix(m_EffectObj[i].handle).GetScale(scale);
+
+				efkManager->SetScale(m_EffectObj[i].handle, m_EffectObj[i].scale, m_EffectObj[i].scale, m_EffectObj[i].scale);
 			}
 		}
 

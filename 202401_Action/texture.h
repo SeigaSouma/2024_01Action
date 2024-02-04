@@ -18,6 +18,10 @@
 class CTexture
 {
 private:
+
+	//=============================
+	// 構造体定義
+	//=============================
 	struct STexture
 	{
 		LPDIRECT3DTEXTURE9 pTexture;	// テクスチャのポインタ
@@ -33,13 +37,11 @@ public:
 	~CTexture();
 
 	void Init(void);	// 初期化処理
-	HRESULT Load(void);
-	HRESULT LoadAll(void);
+	HRESULT LoadAll(void);	// 全てのテクスチャ読み込み
 	void Unload(void);
-	int Regist(std::string file);
+	int Regist(std::string file);	// 読み込み
 	LPDIRECT3DTEXTURE9 GetAdress(int nIdx);
 	D3DXVECTOR2 GetImageSize(int nIdx);		// テクスチャ素材のサイズ取得
-	//D3DXVECTOR2 GetImageAspectRatio(int nIdx);		// テクスチャ素材のアスペクト比取得
 
 	int GetNumAll(void);		// 読み込んだ総数
 	STexture GetTextureInfo(std::string file);	// テクスチャ情報取得
@@ -49,12 +51,17 @@ public:
 	static CTexture* GetInstance(void) { return m_pTexture; }
 private:
 
+	//=============================
 	// メンバ関数
+	//=============================
 	HRESULT LoadTex(std::string file);
+	void SearchAllImages(const std::wstring& folderPath, std::vector<std::string>& imageNames);
 
+	//=============================
 	// メンバ変数
+	//=============================
 	std::vector<STexture> m_TexInfo;	// テクスチャの情報
-	static CTexture* m_pTexture;	// 自身のポインタ
+	static CTexture* m_pTexture;		// 自身のポインタ
 };
 
 

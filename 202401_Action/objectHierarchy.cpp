@@ -646,8 +646,8 @@ void CObjectHierarchy::LoadObjectData(FILE *pFile, const char* pComment)
 //==========================================================================
 void CObjectHierarchy::LoadPartsData(FILE* pFile, const char* pComment, int *pCntParts)
 {
-	char CheckText[MAX_COMMENT];	// チェック用
-	char hoge[MAX_COMMENT];	// コメント
+	char CheckText[MAX_COMMENT] = {};	// チェック用
+	char hoge[MAX_COMMENT] = {};	// コメント
 
 	int nCntSetParts = *pCntParts;
 

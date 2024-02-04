@@ -486,6 +486,12 @@
     <ClCompile Include="revivaltime_gauge.cpp">
       <Filter>ソース ファイル\dead</Filter>
     </ClCompile>
+    <ClCompile Include="bullet_obstacle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="skilltree_command.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -862,6 +868,12 @@
     </ClInclude>
     <ClInclude Include="revivaltime_gauge.h">
       <Filter>ヘッダー ファイル\dead</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet_obstacle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_command.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

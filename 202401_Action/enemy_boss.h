@@ -35,7 +35,7 @@ public:
 		MOTION_SIDESWIPE,		// 横なぎ
 		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
 		MOTION_ROLLING,			// ローリング
-		MOTION_KNOCKBACK,		// やられモーション
+		MOTION_DOWN,			// ダウンモーション
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
 	};
@@ -70,11 +70,13 @@ public:
 
 
 	void ActChase(void);		// 追い掛け
+	void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
 
 	void PerformAttack();		// 攻撃実行処理
 	void DrawingRandomAction();	// 攻撃ランダム抽選
 
-	bool IsCatchUp() { return m_bCatchUp; }
+	bool IsCatchUp() { return m_bCatchUp; }	// 追い着き判定
+	bool IsInSight() { return m_bInSight; }	// 視界内判定
 
 	CBossState* GetNextATKState() { return m_pNextATKState; }
 private:
@@ -92,9 +94,12 @@ private:
 	void UpdateAction(void) override;	// 行動更新
 	void ActWait(void);					// 待機
 
+	// 状態関数
+	virtual void StateDown(void) override;	// ダウン状態
+
+
 	// その他関数
 	void MotionSet(void) override;	// モーションの設定
-	void RotationTarget(void);		// ターゲットの方を向く
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃判定中処理
 
@@ -103,6 +108,7 @@ private:
 	//=============================
 	float m_fActTime;		// 行動カウンター
 	bool m_bCatchUp;	// 追い着き判定
+	bool m_bInSight;	// 視界内判定
 	CHP_GaugeBoss *m_pBossHPGauge;	// ボスのHPゲージ
 	CBossState* m_pATKState;		// 今の行動ポインタ
 	CBossState* m_pNextATKState;	// 次の行動ポインタ
@@ -160,7 +166,7 @@ public:
 	}
 
 protected:
-	int m_nIdxMotion;
+	int m_nIdxMotion;	// モーション番号
 };
 
 // 近接攻撃

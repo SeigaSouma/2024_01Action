@@ -80,7 +80,7 @@ public:
 		STATE_MAX
 	};
 
-	CPlayer(int nPriority = mylib_const::PRIORITY_DEF2D);
+	CPlayer(int nPriority = 2);
 	~CPlayer();
 
 	// オーバーライドされた関数
@@ -111,8 +111,11 @@ public:
 
 	// スキルツリー用関数
 	void UpgradeLife(int addvalue);	// 体力アップグレード
+	void DowngradeLife(int addvalue);	// 体力ダウングレード
 	void UpgradeMaxStamina(int addvalue);		// スタミナ最大値アップグレード
+	void DowngradeMaxStamina(int addvalue);		// スタミナ最大値ダウングレード
 	void UpgradeAutoHealStamina(float ratio);	// スタミナ自動回復アップグレード
+	void DowngradeAutoHealStamina(float ratio);	// スタミナ自動回復ダウングレード
 
 	// リスポーン
 	void RespawnSetting(void);	// リスポーン時の設定

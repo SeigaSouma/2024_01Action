@@ -29,7 +29,7 @@ namespace mylib_const
 	const int MAX_WAVE_ENEMY = 32;		// 敵の最大パターン
 	const int MAX_BASE_ENEMY = 32;		// 敵の拠点最大数
 	const int MAX_ENEMY = 256;			// 敵の最大数
-	const int ENEMY_PRIORITY = 4;		// 敵の優先順位
+	const int ENEMY_PRIORITY = 2;		// 敵の優先順位
 	const int MAX_FIXEDMOVE = 32;		// 一定の動き最大数
 	const int MAX_FIXEDMOVE_INFO = 16;	// 一定の動き情報最大数
 	const int MAX_CAMERAAXIS = 62;		// カメラ軸の最大数
@@ -46,6 +46,7 @@ namespace mylib_const
 	const int SHAPE_LIMITEREA = 4;		// エリア制限の多角形
 	const float MAX_ROCKONDISTANCE_GAME = 1600.0f;		// (ゲーム時)最大ロックオン距離
 	const float MAX_ROCKONDISTANCE_BOSS = 2500.0f;		// (ボス戦時)最大ロックオン距離
+	const float RADIUS_STAGE = 2300.0f;					// ステージの半径
 	const D3DXCOLOR DEFAULT_COLOR = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// デフォルトの色
 	const D3DXCOLOR FIELDCOLOR_01 = D3DXCOLOR(0.6f, 0.4f, 0.1f, 1.0f);	// フィールドの色
 	const D3DXCOLOR PLAYERBEAM_COLOR = D3DXCOLOR(0.5f, 0.5f, 0.9f, 1.0f);	// プレイヤーのビーム色

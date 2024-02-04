@@ -43,6 +43,7 @@ CBallast::CBallast(int nPriority) : CObject(nPriority)
 	m_nNumAll = 0;		// 総数
 	m_nLife = 0;		// 寿命
 	m_nMaxLife = 0;		// 最大寿命
+	m_fScale = 0.0f;
 	m_type =TYPE_STONE;	// 種類
 	memset(&m_pObjX[0], NULL, sizeof(m_pObjX));	// オブジェクトXのポインタ
 }
@@ -58,7 +59,7 @@ CBallast::~CBallast()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CBallast *CBallast::Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum, float fAlpha, TYPE type)
+CBallast *CBallast::Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum, float scale, float fAlpha, TYPE type)
 {
 	// 生成用のオブジェクト
 	CBallast *pBallast = NULL;
@@ -91,6 +92,8 @@ CBallast *CBallast::Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum, fl
 
 			// 原色設定
 			pBallast->m_colOrigin.a = fAlpha;
+
+			pBallast->m_fScale = scale;
 
 			// 初期化処理
 			HRESULT hr = pBallast->Init();
@@ -146,18 +149,17 @@ HRESULT CBallast::Init(void)
 		switch (m_type)
 		{
 		case TYPE_STONE:
-
-			m_pObjX[nCntBallast]->SetScale(MyLib::Vector3(
-				(float)UtilFunc::Transformation::Random(-20, 20) * 0.05f,
-				(float)UtilFunc::Transformation::Random(-20, 20) * 0.05f,
-				(float)UtilFunc::Transformation::Random(-20, 20) * 0.05f));
+		{
+			float scale = (float)UtilFunc::Transformation::Random(1, 20) * 0.05f;
+			m_pObjX[nCntBallast]->SetScale(scale * m_fScale);
+		}
 			break;
 
 		case TYPE_ICE:
 			m_pObjX[nCntBallast]->SetScale(MyLib::Vector3(
 				(float)UtilFunc::Transformation::Random(-10, 10) * 0.1f,
 				(float)UtilFunc::Transformation::Random(-10, 10) * 0.1f,
-				(float)UtilFunc::Transformation::Random(-10, 10) * 0.1f));
+				(float)UtilFunc::Transformation::Random(-10, 10) * 0.1f) * m_fScale);
 			break;
 		}
 	}
@@ -226,7 +228,8 @@ void CBallast::Update(void)
 
 		MyLib::Vector3 HitPos = pos;
 		HitPos.y = pos.y;
-		if (CGame::GetInstance()->GetElevation()->IsHit(HitPos) == true || GetPosition().y <= mylib_const::KILL_Y)
+		if (m_nMaxLife - 5 >= m_nLife &&
+			(CGame::GetInstance()->GetElevation()->IsHit(HitPos) == true || GetPosition().y <= mylib_const::KILL_Y))
 		{// 地面を下回ったら
 
 			// 寿命更新

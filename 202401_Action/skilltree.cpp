@@ -14,6 +14,7 @@
 #include "skilltree_screen.h"
 #include "skilltree_cursor.h"
 #include "skilltree_line.h"
+#include "skilltree_command.h"
 #include "game.h"
 
 //==========================================================================
@@ -54,6 +55,7 @@ CSkillTree::CSkillTree(int nPriority) : CObject(nPriority)
 	m_SkillInfo.clear();	// スキルアイコン
 	m_pScreen = nullptr;	// スクリーンのオブジェクト
 	m_pCursor = nullptr;	// カーソルのオブジェクト
+	m_pCommand = nullptr;	// コマンドのオブジェクト
 	m_bOnScreen = false;	// スクリーン上にいるかのフラグ
 }
 
@@ -167,6 +169,13 @@ void CSkillTree::Kill(void)
 	m_pCursor->Uninit();
 	m_pCursor = nullptr;
 
+	// コマンド終了
+	if (m_pCommand != nullptr)
+	{
+		m_pCommand->Uninit();
+		m_pCommand = nullptr;
+	}
+
 	m_pThisPtr = nullptr;
 	// 情報削除
 	Release();
@@ -269,6 +278,9 @@ void CSkillTree::StateFadeIn(void)
 	col.a = m_fAlpha;
 	m_pCursor->SetColor(col);
 
+	// コマンドの透明度設定
+	m_pCommand->SetAlpha(m_fAlpha);
+
 
 	// ラインのリスト取得
 	CListManager<CSkillTree_Line> lineList = CSkillTree_Line::GetListObj();
@@ -324,6 +336,9 @@ void CSkillTree::StateFadeOut(void)
 	col = m_pCursor->GetColor();
 	col.a = m_fAlpha;
 	m_pCursor->SetColor(col);
+
+	// コマンドの透明度設定
+	m_pCommand->SetAlpha(m_fAlpha);
 
 
 	// ラインのリスト取得
@@ -460,6 +475,9 @@ void CSkillTree::SetScreen(void)
 	// カーソル生成
 	m_pCursor = CSkillTree_Cursor::Create(0);
 
+	// コマンド生成
+	m_pCommand = CSkillTree_Command::Create();
+
 	// 状態カウンター
 	m_fStateTime = 0.0f;
 	m_state = STATE_FADEIN;
@@ -492,6 +510,10 @@ void CSkillTree::OutScreen(void)
 	// カーソル終了
 	m_pCursor->Uninit();
 	m_pCursor = nullptr;
+
+	// コマンド終了
+	m_pCommand->Uninit();
+	m_pCommand = nullptr;
 
 	// スクリーン上にいるかのフラグ
 	m_bOnScreen = false;

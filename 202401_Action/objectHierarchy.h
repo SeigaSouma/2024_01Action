@@ -66,6 +66,7 @@ public:
 	virtual void Draw(float fAlpha);
 
 	void SetmtxWorld(const D3DXMATRIX mtxWorld);
+	D3DXMATRIX GetWorldMtx(void) const { return m_mtxWorld; }			// マトリックス取得
 	D3DXMATRIX GetmtxWorld(void) const;			// ワールドマトリックス取得
 	MyLib::Vector3 GetCenterPosition(void) const;		// 中心の位置取得
 	void SetOriginPosition(const MyLib::Vector3 pos);	// 最初の位置設定

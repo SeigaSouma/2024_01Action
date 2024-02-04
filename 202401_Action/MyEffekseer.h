@@ -38,6 +38,19 @@ public:
 		bool bAutoDeath;			// 自動削除のフラグ
 	};
 
+	enum EFKLABEL
+	{
+		EFKLABEL_SAMPLE_LASER = 0,		// サンプルのレーザー
+		EFKLABEL_COUNTERLINE,	// カウンターの線
+		EFKLABEL_COUNTERLINE2,		// カウンターの線2
+		EFKLABEL_COUNTER_KRKR,		// カウンターのキラキラ
+		EFKLABEL_BGFIRE,		// 背景の炎
+		EFKLABEL_HITMARK_RED,		// ヒットマーク[赤]
+		EFKLABEL_STRONGATK_SIGN,		// 強攻撃のサイン
+		EFKLABEL_BOSS_ROLLING,		// ボスのローリング
+		EFKLABEL_MAX
+	};
+
 	template <typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -58,8 +71,8 @@ public:
 	@param	bAutoDeath	[in]	自動削除
 	@return	Effekseer::Handle
 	*/
-	Effekseer::Handle SetEffect(std::string efkpath, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath = true);
-	Effekseer::Handle SetEffect(Effekseer::Handle **pHandle, std::string efkpath, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath = true);
+	Effekseer::Handle SetEffect(EFKLABEL label, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath = true);
+	Effekseer::Handle SetEffect(Effekseer::Handle **pHandle, EFKLABEL label, MyLib::Vector3 pos, MyLib::Vector3 rot, MyLib::Vector3 move, float scale, bool bAutoDeath = true);
 	void SetPosition(Effekseer::Handle handle, MyLib::Vector3 pos);	// 位置設定
 	void SetRotation(Effekseer::Handle handle, MyLib::Vector3 rot);	// 向き設定
 	void SetMatrix(Effekseer::Handle handle, D3DXMATRIX mtx);	// マトリックス設定
@@ -95,6 +108,7 @@ private:
 	Effekseer::EffectRef m_LoadEffect;				// 読み込んだエフェクトのスマートポインタ
 	std::vector<MyEffekseerInfo> m_EffectObj;		// エフェクトのオブジェクト
 	std::vector<Effekseer::Handle> m_Handle;		// エフェクトのハンドル
+	static std::string m_EffectName[EFKLABEL_MAX];	// エフェクトのファイル名
 	static CMyEffekseer* m_pMyEffekseer;			// 自身のポインタ
 };
 

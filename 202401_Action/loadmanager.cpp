@@ -17,10 +17,9 @@
 //==========================================================================
 CLoadManager::CLoadManager()
 {
-	m_LoadingThread;
-	m_pLoadScreen = nullptr;
-	isLoadComplete = false;
+	m_bLoadComplete = false;
 	m_ModeNext = CScene::MODE_NONE;
+	m_pLoadScreen = nullptr;
 }
 
 //==========================================================================
@@ -29,7 +28,8 @@ CLoadManager::CLoadManager()
 CLoadManager::~CLoadManager()
 {
 	// ロードスレッドがまだ生きているなら待機
-	if (m_LoadingThread.joinable()) {
+	if (m_LoadingThread.joinable()) 
+	{
 		m_LoadingThread.join();
 	}
 }
@@ -39,11 +39,9 @@ CLoadManager::~CLoadManager()
 //==========================================================================
 CLoadManager* CLoadManager::Create(void)
 {
-	// 生成用のオブジェクト
-	CLoadManager* pLoadManager = NULL;
 
 	// メモリの確保
-	pLoadManager = DEBUG_NEW CLoadManager;
+	CLoadManager* pLoadManager = DEBUG_NEW CLoadManager;
 
 	if (pLoadManager != nullptr)
 	{// メモリの確保が出来ていたら
@@ -61,7 +59,8 @@ CLoadManager* CLoadManager::Create(void)
 HRESULT CLoadManager::Init(void)
 {
 	// ロードスレッドがまだ生きているなら待機
-	if (m_LoadingThread.joinable()) {
+	if (m_LoadingThread.joinable()) 
+	{
 		m_LoadingThread.join();
 	}
 	return S_OK;
@@ -89,9 +88,11 @@ void CLoadManager::Update(void)
 	{
 		m_pLoadScreen->Update();
 	}
-
 }
 
+//==========================================================================
+// ロード解放
+//==========================================================================
 void CLoadManager::UnLoad(void)
 {
 	if (m_LoadingThread.joinable())
@@ -100,26 +101,28 @@ void CLoadManager::UnLoad(void)
 	}
 }
 
+//==========================================================================
+// ロードリセット
+//==========================================================================
 void CLoadManager::ResetLoad()
 {
-	// ResetInternalLoad 関数を呼び出してロードをリセット
+	// ロードリセット
 	ResetInternalLoad();
-
 }
 
+//==========================================================================
+// 新しいシーンをセットする前のリセット
+//==========================================================================
 void CLoadManager::ResetInternalLoad()
 {
-	// ロックして安全にリセット処理を行う
-	//std::lock_guard<std::mutex> lock(isLoadedMutex);
-
-	// スレッドが動作中なら終了を待つ
+	// 終了を待つ
 	if (m_LoadingThread.joinable())
 	{
 		m_LoadingThread.join();
 	}
 
-	// ロードが完了していないことを示すフラグをリセット
-	isLoadComplete = false;
+	// ロードが完了フラグをリセット
+	m_bLoadComplete = false;
 }
 
 //==========================================================================
@@ -127,6 +130,7 @@ void CLoadManager::ResetInternalLoad()
 //==========================================================================
 void CLoadManager::LoadScene(CScene::MODE mode)
 {
+	// 次のモード
 	m_ModeNext = mode;
 
 	if (m_pLoadScreen == nullptr)
@@ -136,19 +140,15 @@ void CLoadManager::LoadScene(CScene::MODE mode)
 
 	if (m_LoadingThread.joinable())
 	{
-		// デタッチする前にスレッドが完了するまで待機
+		// スレッドが完了するまで待機
 		m_LoadingThread.join();
 	}
 
-	// ResetLoad 関数を呼び出して新しいシーンのロードを準備
+	// ロードを準備
 	ResetLoad();
 
 	// ロードが再び始まるのでフラグをリセット
-	{
-		//std::lock_guard<std::mutex> lock(isLoadedMutex);
-		//isLoadComplete = false;
-	}
-	isLoadComplete = false;
+	m_bLoadComplete = false;
 
     // ロード処理の開始
 	m_LoadingThread = std::thread(&CLoadManager::LoadInBackground, this);
@@ -163,11 +163,7 @@ void CLoadManager::LoadScene(CScene::MODE mode)
 void CLoadManager::LoadInBackground(void)
 {
 	// ロードが再び始まるのでフラグをリセット
-	{
-		//std::lock_guard<std::mutex> lock(isLoadedMutex);
-		//isLoadComplete = false;
-	}
-	isLoadComplete = false;
+	m_bLoadComplete = false;
 
 	try
 	{
@@ -184,12 +180,8 @@ void CLoadManager::LoadInBackground(void)
 		m_LoadingThread.join();
 	}
 
-	// ロードが完了したらフラグをセット
-	{
-		//std::lock_guard<std::mutex> lock(isLoadedMutex);
-		//isLoadComplete = true;
-	}
-	isLoadComplete = true;
+	// ロード完了フラグをセット
+	m_bLoadComplete = true;
 }
 
 //==========================================================================
@@ -197,9 +189,15 @@ void CLoadManager::LoadInBackground(void)
 //==========================================================================
 void CLoadManager::Load()
 {
-	
 	// シーンの初期化処理
-	CManager::GetInstance()->GetScene()->Init();
+	if (m_ModeNext != CScene::MODE_NONE)
+	{
+		CManager::GetInstance()->GetScene()->Init();
+	}
+	else
+	{
+		CManager::GetInstance()->Load();
+	}
 }
 
 //==========================================================================
@@ -218,6 +216,5 @@ void CLoadManager::Draw(void)
 //==========================================================================
 bool CLoadManager::IsLoadComplete()
 {
-	//std::lock_guard<std::mutex>  lock(isLoadedMutex);
-	return isLoadComplete;
+	return m_bLoadComplete;
 }

@@ -30,38 +30,42 @@
 #include "loadmanager.h"
 #include "Imguimanager.h"
 
+//==========================================================================
+// 定数定義
+//==========================================================================
 namespace
 {
 	const float TIME_LOAD = 2.0f;	// ロード時間
+	const CScene::MODE STARTMODE = CScene::MODE_GAME;
 }
 
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-CManager *CManager::m_pManager = NULL;					// マネージャのオブジェクト
+CManager *CManager::m_pManager = nullptr;					// マネージャのオブジェクト
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
 CManager::CManager()
 {
-	m_pRenderer = NULL;				// レンダラーのオブジェクト
-	m_pInputKeyboard = NULL;		// キーボードのオブジェクト
-	m_pInputGamepad = NULL;			// ゲームパッドのオブジェクト
-	m_pSound = NULL;				// サウンドのオブジェクト
-	m_pInputMouse = NULL;			// マウスのオブジェクト
-	m_pDebugProc = NULL;			// デバッグ表示のオブジェクト
-	m_pLight = NULL;				// ライトのオブジェクト
-	m_pCamera = NULL;				// カメラのオブジェクト
-	m_pTexture = NULL;				// テクスチャのオブジェクト
-	m_pEdit = NULL;					// エディットのオブジェクト
-	m_pScene = NULL;				// シーンのオブジェクト
-	m_pFade = NULL;					// フェードのオブジェクト
-	m_pInstantFade = NULL;			// 遷移なしフェードのオブジェクト
-	m_pBlackFrame = NULL;			// 黒フレームのオブジェクト
-	m_pPause = NULL;				// ポーズのオブジェクト
-	m_pResultManager = NULL;		// リザルトマネージャのオブジェクト
-	m_pRankingManager = NULL;		// ランキングマネージャのオブジェクト
+	m_pRenderer = nullptr;				// レンダラーのオブジェクト
+	m_pInputKeyboard = nullptr;		// キーボードのオブジェクト
+	m_pInputGamepad = nullptr;			// ゲームパッドのオブジェクト
+	m_pSound = nullptr;				// サウンドのオブジェクト
+	m_pInputMouse = nullptr;			// マウスのオブジェクト
+	m_pDebugProc = nullptr;			// デバッグ表示のオブジェクト
+	m_pLight = nullptr;				// ライトのオブジェクト
+	m_pCamera = nullptr;				// カメラのオブジェクト
+	m_pTexture = nullptr;				// テクスチャのオブジェクト
+	m_pEdit = nullptr;					// エディットのオブジェクト
+	m_pScene = nullptr;				// シーンのオブジェクト
+	m_pFade = nullptr;					// フェードのオブジェクト
+	m_pInstantFade = nullptr;			// 遷移なしフェードのオブジェクト
+	m_pBlackFrame = nullptr;			// 黒フレームのオブジェクト
+	m_pPause = nullptr;				// ポーズのオブジェクト
+	m_pResultManager = nullptr;		// リザルトマネージャのオブジェクト
+	m_pRankingManager = nullptr;		// ランキングマネージャのオブジェクト
 	m_pMyEffekseer = nullptr;		// エフェクシアのオブジェクト
 	m_bWireframe = false;			// ワイヤーフレーム
 	m_bHitStop = false;				// ヒットストップの判定
@@ -73,6 +77,7 @@ CManager::CManager()
 	m_nNumPlayer = 0;				// プレイヤーの数
 	m_fLoadTimer = 0.0f;			// ロードのタイマー
 	m_bLoadComplete = false;		// ロード完了のフラグ
+	m_bFirstLoad = false;			// 初回ロード
 
 	// ロードフラグリセット
 	m_bLoadComplete = false;
@@ -95,7 +100,7 @@ CManager::~CManager()
 //==========================================================================
 CManager *CManager::Create(void)
 {
-	if (m_pManager == NULL)
+	if (m_pManager == nullptr)
 	{// まだ生成していなかったら
 
 		// マネージャのインスタンス生成
@@ -132,7 +137,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// キーボード
 	//**********************************
-	if (m_pInputKeyboard != NULL)
+	if (m_pInputKeyboard != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -140,7 +145,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pInputKeyboard = DEBUG_NEW CInputKeyboard;
 
-	if (m_pInputKeyboard != NULL)
+	if (m_pInputKeyboard != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -154,7 +159,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// ゲームパッド
 	//**********************************
-	if (m_pInputGamepad != NULL)
+	if (m_pInputGamepad != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -162,7 +167,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pInputGamepad = DEBUG_NEW CInputGamepad;
 
-	if (m_pInputGamepad != NULL)
+	if (m_pInputGamepad != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -177,7 +182,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// マウス
 	//**********************************
-	if (m_pInputMouse != NULL)
+	if (m_pInputMouse != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -185,7 +190,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pInputMouse = DEBUG_NEW CInputMouse;
 
-	if (m_pInputMouse != NULL)
+	if (m_pInputMouse != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -200,7 +205,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// レンダラー
 	//**********************************
-	if (m_pRenderer != NULL)
+	if (m_pRenderer != nullptr)
 	{// 確保されていたら
 
 		return E_FAIL;
@@ -209,7 +214,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pRenderer = DEBUG_NEW CRenderer;
 
-	if (m_pRenderer != NULL)
+	if (m_pRenderer != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -227,7 +232,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// サウンド
 	//**********************************
-	if (m_pSound != NULL)
+	if (m_pSound != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -235,7 +240,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pSound = DEBUG_NEW CSound;
 
-	if (m_pSound != NULL)
+	if (m_pSound != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -250,7 +255,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// デバッグ表示
 	//**********************************
-	if (m_pDebugProc != NULL)
+	if (m_pDebugProc != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -258,7 +263,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pDebugProc = DEBUG_NEW CDebugProc;
 
-	if (m_pDebugProc != NULL)
+	if (m_pDebugProc != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -273,7 +278,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// ライト
 	//**********************************
-	if (m_pLight != NULL)
+	if (m_pLight != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -281,7 +286,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pLight = DEBUG_NEW CLight;
 
-	if (m_pLight != NULL)
+	if (m_pLight != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -296,7 +301,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	// カメラ
 	//**********************************
-	if (m_pCamera != NULL)
+	if (m_pCamera != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
@@ -304,7 +309,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メモリ確保
 	m_pCamera = DEBUG_NEW CCamera;
 
-	if (m_pCamera != NULL)
+	if (m_pCamera != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -325,7 +330,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	}
 
 	//**********************************
-	// 全てのテクスチャ読み込み
+	// テクスチャ
 	//**********************************
 	m_pTexture = CTexture::Create();
 	if (m_pTexture == nullptr)
@@ -334,68 +339,87 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	}
 
 	//**********************************
+	// フェード
+	//**********************************
+	m_pFade = CFade::Create();
+	if (m_pFade == nullptr)
+	{// 失敗していたら
+		return E_FAIL;
+	}
+
+#if 1
+	//m_pFade->SetFade(CScene::MODE_GAME);
+#else
+	SetMode(CScene::MODE_GAME);
+#endif
+
+	// ロードフラグリセット
+	m_bLoadComplete = false;
+	m_bLoadFadeSet = false;	// ロードのフェード設定フラグ
+	m_bNowLoading = true;
+
+	// シーンのロードを開始
+	GetLoadManager()->LoadScene(CScene::MODE_NONE);
+
+	return S_OK;
+}
+
+//==========================================================================
+// 読み込み
+//==========================================================================
+void CManager::Load(void)
+{
+
+	// 全てのテクスチャ読み込み
+	m_pTexture->LoadAll();
+
+	//**********************************
 	// 遷移なしフェード
 	//**********************************
 	m_pInstantFade = CInstantFade::Create();
-
-	if (m_pInstantFade == NULL)
-	{// 失敗していたら
-		return E_FAIL;
+	if (m_pInstantFade == nullptr)
+	{
+		return;
 	}
 
 	//**********************************
 	// 黒フレーム
 	//**********************************
 	m_pBlackFrame = CBlackFrame::Create();
-	if (m_pBlackFrame == NULL)
+	if (m_pBlackFrame == nullptr)
 	{
-		return E_FAIL;
+		return;
 	}
 
 	//**********************************
 	// ポーズ
 	//**********************************
 	m_pPause = CPause::Create();
-
-	if (m_pPause == NULL)
-	{// 失敗していたら
-		return E_FAIL;
+	if (m_pPause == nullptr)
+	{
+		return;
 	}
 
 	//**********************************
 	// リザルトマネージャ
 	//**********************************
 	m_pResultManager = CResultManager::Create();
-
-	if (m_pResultManager == NULL)
-	{// 失敗していたら
-		return E_FAIL;
+	if (m_pResultManager == nullptr)
+	{
+		return;
 	}
 
 	//**********************************
 	// ランキングマネージャ
 	//**********************************
 	m_pRankingManager = CRankingManager::Create();
-
-	if (m_pRankingManager == NULL)
-	{// 失敗していたら
-		return E_FAIL;
+	if (m_pRankingManager == nullptr)
+	{
+		return;
 	}
 
-	//**********************************
-	// フェード
-	//**********************************
-	m_pFade = CFade::Create();
-
-	m_pFade->SetFade(CScene::MODE_GAME);
-	//SetMode(CScene::MODE_GAME);
-
-	if (m_pFade == NULL)
-	{// 失敗していたら
-		return E_FAIL;
-	}
-
-	return S_OK;
+	// モード設定
+	NoLoadSetMode(STARTMODE);
 }
 
 //==========================================================================
@@ -405,13 +429,48 @@ void CManager::SetMode(CScene::MODE mode)
 {
 	GetLoadManager()->UnLoad();
 
+	// 次のモード設定
+	NoLoadSetMode(mode);
+
+	// ロードのタイマーリセット
+	m_fLoadTimer = 0.0f;
+
+	// ロードフラグリセット
+	m_bLoadComplete = false;
+	m_bLoadFadeSet = false;				// ロードのフェード設定フラグ
+	m_bNowLoading = true;
+
+	// シーンのロードを開始
+	GetLoadManager()->LoadScene(mode);
+}
+
+//==========================================================================
+// 次のモード設定
+//==========================================================================
+void CManager::NoLoadSetMode(CScene::MODE mode)
+{
+	// リセット
+	Reset(mode);
+
+	// 生成処理
+	m_pScene = CScene::Create(mode);
+
+	// ロードのタイマーリセット
+	m_fLoadTimer = 0.0f;
+}
+
+//==========================================================================
+// リセット
+//==========================================================================
+void CManager::Reset(CScene::MODE mode)
+{
 	m_bHitStop = false;		// ヒットストップの判定
 	m_nCntHitStop = 0;		// ヒットストップのカウンター
 
 	// 前回のモード設定
 	m_OldMode = GetMode();
 
-	if (mode == CScene::MODE_GAME && m_pResultManager != NULL && m_pRankingManager != NULL)
+	if (mode == CScene::MODE_GAME && m_pResultManager != nullptr && m_pRankingManager != nullptr)
 	{// 次のモードがゲームだったら
 
 		// スコア情報リセット
@@ -420,25 +479,25 @@ void CManager::SetMode(CScene::MODE mode)
 	}
 
 	// BGMストップ
-	if (m_pSound != NULL && mode != CScene::MODE_RANKING)
+	if (m_pSound != nullptr && mode != CScene::MODE_RANKING)
 	{
 		m_pSound->StopSound();
 	}
 
 	// メモリの確保がされていたら
-	if (m_pScene != NULL)
+	if (m_pScene != nullptr)
 	{
 		// 終了処理
 		m_pScene->Uninit();
 		delete m_pScene;
-		m_pScene = NULL;
+		m_pScene = nullptr;
 	}
 
 	// 全てのオブジェクト破棄
 	CObject::ReleaseAll();
 
 	// ポーズ状況入れ替え
-	if (m_pPause != NULL)
+	if (m_pPause != nullptr)
 	{
 		if (m_pPause->IsPause() == true)
 		{// ポーズ中だったら
@@ -450,32 +509,10 @@ void CManager::SetMode(CScene::MODE mode)
 	m_pBlackFrame->Reset();
 
 	// カメラの情報リセット
-	if (m_pCamera != NULL)
+	if (m_pCamera != nullptr)
 	{
 		m_pCamera->Reset(mode);
 	}
-
-	// 生成処理
-	m_pScene = CScene::Create(mode);
-
-	// ロードのタイマーリセット
-	m_fLoadTimer = 0.0f;
-
-	// ロードフラグリセット
-	m_bLoadComplete = false;
-
-	m_bLoadFadeSet =false;				// ロードのフェード設定フラグ
-
-	m_bNowLoading = true;
-
-	// シーンのロードを開始
-	GetLoadManager()->LoadScene(mode);
-
-	//// 初期化処理
-	//if (m_pScene != NULL)
-	//{
-	//	m_pScene->Init();
-	//}
 }
 
 //==========================================================================
@@ -484,7 +521,7 @@ void CManager::SetMode(CScene::MODE mode)
 CScene::MODE CManager::GetMode(void)
 {
 	// モード取得
-	if (m_pScene != NULL)
+	if (m_pScene != nullptr)
 	{
 		return m_pScene->GetMode();
 	}
@@ -506,7 +543,7 @@ void CManager::Uninit(void)
 	m_pSound->StopSound();
 
 	// キーボードの破棄
-	if (m_pInputKeyboard != NULL)
+	if (m_pInputKeyboard != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -514,11 +551,11 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pInputKeyboard;
-		m_pInputKeyboard = NULL;
+		m_pInputKeyboard = nullptr;
 	}
 
 	// ゲームパッドの破棄
-	if (m_pInputGamepad != NULL)
+	if (m_pInputGamepad != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -526,11 +563,11 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pInputGamepad;
-		m_pInputGamepad = NULL;
+		m_pInputGamepad = nullptr;
 	}
 
 	// マウスの破棄
-	if (m_pInputMouse != NULL)
+	if (m_pInputMouse != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -538,11 +575,11 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pInputMouse;
-		m_pInputMouse = NULL;
+		m_pInputMouse = nullptr;
 	}
 
 	// レンダラーの破棄
-	if (m_pRenderer != NULL)
+	if (m_pRenderer != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -550,14 +587,14 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pRenderer;
-		m_pRenderer = NULL;
+		m_pRenderer = nullptr;
 	}
 
 	// Imguiの終了
 	ImguiMgr::Uninit();
 
 	// ライトの破棄
-	if (m_pLight != NULL)
+	if (m_pLight != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -565,11 +602,11 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pLight;
-		m_pLight = NULL;
+		m_pLight = nullptr;
 	}
 
 	// カメラの破棄
-	if (m_pCamera != NULL)
+	if (m_pCamera != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -577,7 +614,7 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pCamera;
-		m_pCamera = NULL;
+		m_pCamera = nullptr;
 	}
 
 	if (m_pMyEffekseer != nullptr)
@@ -588,7 +625,7 @@ void CManager::Uninit(void)
 	}
 
 	// サウンドの破棄
-	if (m_pSound != NULL)
+	if (m_pSound != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -596,11 +633,11 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pSound;
-		m_pSound = NULL;
+		m_pSound = nullptr;
 	}
 
 	// デバッグ表示の破棄
-	if (m_pDebugProc != NULL)
+	if (m_pDebugProc != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -608,20 +645,20 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pDebugProc;
-		m_pDebugProc = NULL;
+		m_pDebugProc = nullptr;
 	}
 
 	// エディットの破棄
-	if (m_pEdit != NULL)
+	if (m_pEdit != nullptr)
 	{// メモリの確保が出来ていたら
 
-		m_pEdit = NULL;
+		m_pEdit = nullptr;
 	}
 
 	//**********************************
 	// 全てのテクスチャ破棄
 	//**********************************
-	if (m_pTexture != NULL)
+	if (m_pTexture != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -629,73 +666,73 @@ void CManager::Uninit(void)
 
 		// メモリの開放
 		delete m_pTexture;
-		m_pTexture = NULL;
+		m_pTexture = nullptr;
 	}
 
-	if (m_pScene != NULL)
+	if (m_pScene != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
 		m_pScene->Uninit();
 		delete m_pScene;
-		m_pScene = NULL;
+		m_pScene = nullptr;
 	}
 
 	// フェードの破棄
-	if (m_pFade != NULL)
+	if (m_pFade != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pFade->Uninit();
 		delete m_pFade;
-		m_pFade = NULL;
+		m_pFade = nullptr;
 	}
 
 	// 遷移なしフェードの破棄
-	if (m_pInstantFade != NULL)
+	if (m_pInstantFade != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pInstantFade->Uninit();
 		delete m_pInstantFade;
-		m_pInstantFade = NULL;
+		m_pInstantFade = nullptr;
 	}
 
 	// 黒フレームの破棄
-	if (m_pBlackFrame != NULL)
+	if (m_pBlackFrame != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pBlackFrame->Uninit();
 		delete m_pBlackFrame;
-		m_pBlackFrame = NULL;
+		m_pBlackFrame = nullptr;
 	}
 
-	if (m_pPause != NULL)
+	if (m_pPause != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pPause->Uninit();
 		delete m_pPause;
-		m_pPause = NULL;
+		m_pPause = nullptr;
 	}
 
-	if (m_pResultManager != NULL)
+	if (m_pResultManager != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pResultManager->Uninit();
 		delete m_pResultManager;
-		m_pResultManager = NULL;
+		m_pResultManager = nullptr;
 	}
 
-	if (m_pRankingManager != NULL)
+	if (m_pRankingManager != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pRankingManager->Uninit();
 		delete m_pRankingManager;
-		m_pRankingManager = NULL;
+		m_pRankingManager = nullptr;
 	}
 
 }
@@ -715,6 +752,40 @@ void CManager::Update(void)
 	m_CurrentTime = timeGetTime();
 	m_fDeltaTime = (float)(m_CurrentTime - m_OldTime) / 1000;
 
+	// Imguiの更新
+	ImguiMgr::Update();
+
+	// 初回ロード判定
+	if (!m_bFirstLoad)
+	{
+		bool bComplete = GetLoadManager()->IsLoadComplete();
+
+		if (bComplete &&
+			!m_bLoadFadeSet)
+		{
+			CManager::GetInstance()->GetInstantFade()->SetFade();
+			m_bLoadFadeSet = true;	// フェードのセットフラグ
+		}
+
+		// ロードマネージャの更新
+		GetLoadManager()->Update();
+
+		if (m_bLoadFadeSet)
+		{// フェードが設定されてる状態
+
+			// 遷移なしフェードの更新処理
+			m_pInstantFade->Update();
+
+			if (m_pInstantFade->GetState() == CInstantFade::STATE_FADECOMPLETION)
+			{
+				m_bLoadComplete = true;	// ロード完了
+				m_bNowLoading = false;	// ロード中フラグオフ
+				m_bFirstLoad = true;	// 初回ロード終了
+				SetMode(STARTMODE);
+			}
+		}
+		return;
+	}
 
 	if (m_bNowLoading)
 	{
@@ -733,15 +804,15 @@ void CManager::Update(void)
 		{// ロード完了の条件完了
 
 			CManager::GetInstance()->GetInstantFade()->SetFade();
-			m_bLoadFadeSet = true;
+			m_bLoadFadeSet = true;	// フェードのセットフラグ
 		}
 
 		if (m_bLoadFadeSet)
-		{
+		{// フェードが設定されてる状態
 			if (m_pInstantFade->GetState() == CInstantFade::STATE_FADECOMPLETION)
 			{
-				m_bLoadComplete = true;
-				m_bNowLoading = false;
+				m_bLoadComplete = true;	// ロード完了
+				m_bNowLoading = false;	// ロード中フラグオフ
 			}
 		}
 
@@ -758,9 +829,6 @@ void CManager::Update(void)
 	// 遷移なしフェードの更新処理
 	m_pInstantFade->Update();
 
-	// Imguiの更新
-	ImguiMgr::Update();
-
 	if (!m_bLoadComplete)
 	{
 		return;
@@ -769,7 +837,7 @@ void CManager::Update(void)
 	if (m_bLoadComplete)
 	{
 		// 黒フレーム
-		if (m_pBlackFrame != NULL)
+		if (m_pBlackFrame != nullptr)
 		{
 			m_pBlackFrame->Update();
 		}
@@ -836,8 +904,8 @@ void CManager::Update(void)
 		if (pInputKeyboard->GetTrigger(DIK_F8) == true)
 		{// F8でエディットモード切替え
 
-			if (m_pEdit == NULL)
-			{// NULLだったら
+			if (m_pEdit == nullptr)
+			{// nullptrだったら
 
 				// エディットの生成処理
 				m_pEdit = CEdit::Create();
@@ -846,13 +914,13 @@ void CManager::Update(void)
 			{
 				// 終了させる
 				m_pEdit->Release();
-				m_pEdit = NULL;
+				m_pEdit = nullptr;
 			}
 		}
 #endif
 
 		// レンダラーの更新処理
-		if (m_pRenderer != NULL)
+		if (m_pRenderer != nullptr)
 		{
 			m_pRenderer->Update();
 		}
@@ -866,7 +934,7 @@ void CManager::Update(void)
 		// デバッグ表示の更新処理
 		m_pDebugProc->Update();
 
-		if (m_pEdit == NULL && m_pScene != NULL)
+		if (m_pEdit == nullptr && m_pScene != nullptr)
 		{// メモリの確保が出来ていたら
 			m_pScene->Update();
 		}

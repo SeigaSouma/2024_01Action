@@ -41,7 +41,7 @@ public:
 	CBallast(int nPriority = mylib_const::PRIORITY_DEFAULT);
 	~CBallast();
 
-	static CBallast *Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum = 10, float fAlpha = 1.0f, TYPE type = TYPE_STONE);
+	static CBallast *Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum = 10, float scale = 1.0f, float fAlpha = 1.0f, TYPE type = TYPE_STONE);
 
 	// オーバーライドされた関数
 	HRESULT Init(void);
@@ -60,6 +60,7 @@ private:
 	int m_nCntParabola;				// 瓦礫の移動カウント
 	int m_nLife;					// 寿命
 	int m_nMaxLife;					// 最大寿命
+	float m_fScale;
 	static const char *m_pFileName[TYPE_MAX];	// ファイル名
 	CObjectX *m_pObjX[MAX_BALLAST];	// オブジェクトXのポインタ
 	static int m_nIdxXFile[TYPE_MAX];			// Xファイルのインデックス番号

@@ -210,16 +210,23 @@ void CRenderer::Draw(void)
 		}
 		else
 			// ロードマネージャの更新
-		
 		{
 			GetLoadManager()->Draw();
 		}
 
 		// 遷移なしフェード描画処理
-		CManager::GetInstance()->GetInstantFade()->Draw();
+		CInstantFade* pfalsefade = CManager::GetInstance()->GetInstantFade();
+		if (pfalsefade != nullptr)
+		{
+			pfalsefade->Draw();
+		}
 
 		// フェード描画処理
-		CManager::GetInstance()->GetFade()->Draw();
+		CFade* pfade = CManager::GetInstance()->GetFade();
+		if (pfade != nullptr)
+		{
+			pfade->Draw();
+		}
 
 		// ビューポートを元に戻す
 		m_pD3DDevice->SetViewport(&viewportDef);
@@ -229,10 +236,8 @@ void CRenderer::Draw(void)
 	}
 
 
-#if _DEBUG
 	// Imguiの描画
 	ImguiMgr::Draw();
-#endif
 
 	// バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);

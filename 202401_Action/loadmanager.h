@@ -29,10 +29,9 @@ public:
 	void Draw(void);
 
 	void LoadScene(CScene::MODE mode);
-	void UnLoad(void);
-	void ResetLoad();
-
-	bool IsLoadComplete();	// ロードが完了ふらぐ
+	void UnLoad(void);	// ロード解放
+	void ResetLoad();	// ロードリセット
+	bool IsLoadComplete();	// ロードが完了フラグ取得
 
 	// 静的関数
 	static CLoadManager* Create();
@@ -44,19 +43,15 @@ private:
 	//=============================
 	void LoadInBackground(void);
 	void Load();
-
-	// 新しいシーンをセットする前にロードをリセットする内部関数
-	void ResetInternalLoad();
+	void ResetInternalLoad();	// 新しいシーンをセットする前のリセット
 
 	//=============================
 	// メンバ変数
 	//=============================
 	std::thread m_LoadingThread;
-
-	std::mutex isLoadedMutex;  // Mutex for isLoadComplete
-	bool isLoadComplete = false;
-	CScene::MODE m_ModeNext;
-	CLoadScreen* m_pLoadScreen;
+	bool m_bLoadComplete;		// ロード完了フラグ
+	CScene::MODE m_ModeNext;	// 次のモード
+	CLoadScreen* m_pLoadScreen;	// ロード画面
 };
 
 

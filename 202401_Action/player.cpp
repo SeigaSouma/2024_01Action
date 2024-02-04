@@ -52,7 +52,6 @@ namespace
 	const int DEADTIME = 120;			// 死亡時の時間
 	const int FADEOUTTIME = 60;			// フェードアウトの時間
 	const float MULTIPLIY_DASH = 1.875f;	// ダッシュの倍率
-	const float RADIUS_STAGE = 2300.0f;	// ステージの半径
 	const float TIME_DASHATTACK = 0.3f;		// ダッシュ攻撃に必要な時間
 	const int DEFAULT_STAMINA = 200;	// スタミナのデフォルト値
 	const float SUBVALUE_DASH = 0.3f;		// ダッシュの減算量
@@ -880,7 +879,7 @@ void CPlayer::Controll(void)
 		}
 	}
 
-
+#if _DEBUG
 	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
 	{
 		CCollisionObject::Create(GetPosition(), mylib_const::DEFAULT_VECTOR3, 100000.0f, 3, 10000, CCollisionObject::TAG_PLAYER);
@@ -888,28 +887,18 @@ void CPlayer::Controll(void)
 
 	if (pInputKeyboard->GetTrigger(DIK_RETURN) == true)
 	{
-		m_sMotionFrag.bATK = true;		// 攻撃判定OFF
+		//m_sMotionFrag.bATK = true;		// 攻撃判定OFF
 
 		MyLib::Vector3 weponpos = pos;
 
-		CMyEffekseer::GetInstance()->SetEffect(
-			&m_pWeaponHandle,
-			"data/Effekseer/debugline_green.efkefc",
-			weponpos, rot, 0.0f, 40.0f, true);
+		//CMyEffekseer::GetInstance()->SetEffect(
+		//	&m_pWeaponHandle,
+		//	"data/Effekseer/debugline_green.efkefc",
+		//	weponpos, rot, 0.0f, 40.0f, true);
 
 		// デバッグ表示
 		CManager::GetInstance()->GetDebugProc()->Print(
 			"わああああああああああああああああああああああああああああああああああああああああああああ\n");
-	}
-
-	if (pInputKeyboard->GetTrigger(DIK_SPACE) == true)
-	{
-		MyLib::Vector3 weponpos = pos;
-		weponpos.y += 150.0f;
-
-		*m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
-			"data/Effekseer/MyLine.efkefc",
-			weponpos, rot, 0.0f, 40.0f);
 	}
 
 	if (pInputKeyboard->GetRepeat(DIK_O, 4) == true)
@@ -918,21 +907,6 @@ void CPlayer::Controll(void)
 		weponpos.y += 150.0f;
 
 		MyLib::Vector3 spawnpos = UtilFunc::Transformation::GetRandomPositionSphere(weponpos, 300.0f);
-
-		CMyEffekseer::GetInstance()->SetEffect(
-			"data/Effekseer/Laser01.efkefc",
-			spawnpos, UtilFunc::Transformation::GetRandomVecSphere() * D3DX_PI, mylib_const::DEFAULT_VECTOR3, 10.0f);
-	}
-	if (pInputKeyboard->GetTrigger(DIK_L) == true)
-	{
-		MyLib::Vector3 weponpos = pos;
-		weponpos.y += 150.0f;
-
-		MyLib::Vector3 spawnpos = UtilFunc::Transformation::GetRandomPositionSphere(weponpos, 300.0f);
-
-		CMyEffekseer::GetInstance()->SetEffect(
-			"data/Effekseer/CounterParticle_01.efkefc",
-			weponpos, MyLib::Vector3(1.57f, 1.57f, 1.57f), 0.0f, 50.0f);
 	}
 
 	static float fff = 1.0f;
@@ -940,6 +914,13 @@ void CPlayer::Controll(void)
 	{
 		fff += 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
+
+		MyLib::Vector3 weponpos = 0.0f;
+		weponpos.y += 150.0f;
+		weponpos.z += 800.0f;
+		CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_COUNTERLINE2,
+			weponpos, 0.0f, 0.0f, 60.0f);
 	}
 	if (pInputKeyboard->GetTrigger(DIK_DOWN) == true)
 	{
@@ -960,6 +941,7 @@ void CPlayer::Controll(void)
 		CMyEffekseer::GetInstance()->SetMatrix(*m_pWeaponHandle, weaponWorldMatrix);
 		CMyEffekseer::GetInstance()->SetPosition(*m_pWeaponHandle, weponpos);
 	}
+#endif
 }
 
 //==========================================================================
@@ -1256,8 +1238,16 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		if (nCntATK == 0)
 		{
 			CMyEffekseer::GetInstance()->SetEffect(
-				"data/Effekseer/CounterParticle_01.efkefc",
+				CMyEffekseer::EFKLABEL_COUNTERLINE,
 				weponpos, 0.0f, 0.0f, 50.0f);
+
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_COUNTERLINE2,
+				weponpos, 0.0f, 0.0f, 40.0f);
+
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_COUNTER_KRKR,
+				GetPosition(), 0.0f, 0.0f, 40.0f);
 		}
 		else if (nCntATK != 0)
 		{
@@ -1333,14 +1323,17 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 				MyLib::Vector3 pos = GetPosition();
 				MyLib::Vector3 enemypos = pEnemy->GetPosition();
 
-				// ターゲットと敵との向き
-				float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
-				UtilFunc::Transformation::RotNormalize(fRot);
+				if (pEnemy->GetType() != CEnemy::TYPE_BOSS)
+				{
+					// ターゲットと敵との向き
+					float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
+					UtilFunc::Transformation::RotNormalize(fRot);
 
-				pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
+					pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
+				}
 
 				CMyEffekseer::GetInstance()->SetEffect(
-					"data/Effekseer/HitParticle_Red_01.efkefc",
+					CMyEffekseer::EFKLABEL_HITMARK_RED,
 					hitresult.hitpos, 0.0f, 0.0f, 50.0f);
 
 				enemypos.y += pEnemy->GetHeight() * 0.5f;
@@ -1360,11 +1353,11 @@ void CPlayer::LimitPos(void)
 
 	float fLength = sqrtf(pos.x * pos.x + pos.z * pos.z);
 
-	if (fLength > RADIUS_STAGE)
+	if (fLength > mylib_const::RADIUS_STAGE)
 	{// 補正
 		D3DXVec3Normalize(&pos, &pos);
 
-		pos *= RADIUS_STAGE;
+		pos *= mylib_const::RADIUS_STAGE;
 
 		SetPosition(pos);
 	}
@@ -2227,7 +2220,15 @@ void CPlayer::UpgradeLife(int addvalue)
 }
 
 //==========================================================================
-// スタミナアップグレード
+// 体力ダウングレード
+//==========================================================================
+void CPlayer::DowngradeLife(int addvalue)
+{
+	UpgradeLife(-addvalue);
+}
+
+//==========================================================================
+// スタミナ最大値アップグレード
 //==========================================================================
 void CPlayer::UpgradeMaxStamina(int addvalue)
 {
@@ -2236,6 +2237,15 @@ void CPlayer::UpgradeMaxStamina(int addvalue)
 	{
 		m_pStaminaGauge->UpgradeMaxValue(addvalue);
 	}
+}
+
+//==========================================================================
+// スタミナ最大値ダウングレード
+//==========================================================================
+void CPlayer::DowngradeMaxStamina(int addvalue)
+{
+	// スタミナ最大値減少
+	UpgradeMaxStamina(-addvalue);
 }
 
 //==========================================================================

@@ -263,13 +263,12 @@ void CCamera::UpdateByMode(void)
 //==========================================================================
 void CCamera::MoveCameraInput(void)
 {
-#if _DEBUG
 	// マウスでの移動処理
 	MoveCameraMouse();
 
+
 	// スティックでの移動処理
 	MoveCameraStick();
-#endif
 }
 
 //==========================================================================
@@ -780,7 +779,13 @@ void CCamera::SetCameraVGame(void)
 
 			// 高さ取得
 			bool bLand = false;
-			float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
+			CElevation* pElevation = CGame::GetInstance()->GetElevation();
+			if (pElevation == nullptr)
+			{
+				return;
+			}
+
+			float fHeight = pElevation->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
 
 			if (m_fHeightMaxDest <= fHeight)
 			{// 最大の高さを更新したら

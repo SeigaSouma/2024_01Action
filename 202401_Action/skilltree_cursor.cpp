@@ -124,6 +124,25 @@ void CSkillTree_Cursor::Uninit(void)
 //==========================================================================
 void CSkillTree_Cursor::Update(void)
 {
+
+	if (CSkillTree::GetInstance()->GetState() == CSkillTree::STATE_NONE)
+	{
+		// 操作処理
+		Controll();
+
+		// アイコンとの当たり判定
+		CollisionIcon();
+	}
+
+	// 頂点座標の設定
+	SetVtx();
+}
+
+//==========================================================================
+// 操作処理
+//==========================================================================
+void CSkillTree_Cursor::Controll()
+{
 	CManager* pManager = CManager::GetInstance();
 	float deltatime = pManager->GetDeltaTime();
 
@@ -134,10 +153,10 @@ void CSkillTree_Cursor::Update(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = pManager->GetInputKeyboard();
+	CInputKeyboard* pInputKeyboard = pManager->GetInputKeyboard();
 
 	// ゲームパッド情報取得
-	CInputGamepad *pInputGamepad = pManager->GetInputGamepad();
+	CInputGamepad* pInputGamepad = pManager->GetInputGamepad();
 
 	if (pInputKeyboard->GetPress(DIK_A) == true)
 	{//←キーが押された,左移動
@@ -213,18 +232,6 @@ void CSkillTree_Cursor::Update(void)
 
 	// 位置・移動量
 	SetMove(move);
-
-	// 頂点座標の設定
-	SetVtx();
-
-	// アイコンとの当たり判定
-	CollisionIcon();
-
-	// デバッグ表示
-	CManager::GetInstance()->GetDebugProc()->Print(
-		"------------------[カー卒]------------------\n"
-		"位置：【X：%f, Y：%f, Z：%f】\n"
-		, m_WorldPos.x, m_WorldPos.y, m_WorldPos.z);
 }
 
 //==========================================================================
@@ -236,6 +243,7 @@ void CSkillTree_Cursor::CollisionIcon(void)
 	std::vector<CSkillTree_Icon*> iconList = CSkillTree::GetInstance()->GetIcon();
 
 	m_bHitIcon = false;
+	int i = 0;
 	for (const auto& icon : iconList)
 	{
 		MyLib::Vector3 iconpos = icon->GetPosition() - LOCK_POSITION;
@@ -253,6 +261,7 @@ void CSkillTree_Cursor::CollisionIcon(void)
 
 			break;
 		}
+		i++;
 	}
 
 	if (m_bHitIcon &&

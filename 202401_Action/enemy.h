@@ -13,6 +13,7 @@
 #include "enemymanager.h"
 #include "resultmanager.h"
 #include "listmanager.h"
+#include "myeffekseer.h"
 
 // 前方宣言
 class CHP_Gauge;
@@ -65,7 +66,6 @@ public:
 	CEnemy(int nPriority = mylib_const::ENEMY_PRIORITY);
 	virtual ~CEnemy();
 
-	static CEnemy *Create(const char *pFileName, MyLib::Vector3 pos, TYPE type = TYPE_BOSS);
 
 	// オーバーライドされた関数
 	virtual HRESULT Init(void) override;
@@ -74,6 +74,7 @@ public:
 	virtual void Draw(void) override;
 
 	void SetState(STATE state);		// 状態設定
+	STATE GetState() { return m_state; }
 	virtual bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);
 	virtual void NormalHitResponse();	// ヒット時の反応
 	virtual void CounterHitResponse();	// ヒット時の反応
@@ -85,6 +86,10 @@ public:
 	bool IsRockOnAccept(void) { return m_bRockOnAccepting; }
 
 
+	// エフェクシア
+	Effekseer::Handle GetEfkHandle() { return m_pWeaponHandle; }
+	void SetEfkHandle(Effekseer::Handle handle) { m_pWeaponHandle = handle; }
+
 	// モーション
 	void SetMotion(int motionIdx);	// モーションの設定
 
@@ -93,7 +98,9 @@ public:
 	void SetParent(CEnemy *pParent);		// 親のポインタ設定
 	void SetOriginRotation(MyLib::Vector3 rot);	// 元の向き
 	CEnemy *GetEnemy(void);
+	TYPE GetType() { return m_type; }	// 種類取得
 	static CListManager<CEnemy> GetListObj(void) { return m_List; }	// リスト取得
+	static CEnemy* Create(const char* pFileName, MyLib::Vector3 pos, TYPE type = TYPE_BOSS);
 
 protected:
 
@@ -164,6 +171,7 @@ protected:
 	CEnemy *m_pParent;						// 親のポインタ
 	D3DXCOLOR m_mMatcol;					// マテリアルの色
 	MyLib::Vector3 m_TargetPosition;		// 目標の位置
+	Effekseer::Handle m_pWeaponHandle;		// エフェクトの武器ハンドル
 private:
 
 	enum MOTION

@@ -222,7 +222,7 @@ MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_overheadattack.txt	# [
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_sideswipe.txt			# [3]横なぎ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_launchballast.txt		# [4]瓦礫飛ばし
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_rolling.txt		# [4]ローリング
-MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_knockback.txt			# [5]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_down.txt			# [5]ダウン
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_fadeout.txt			# [6]フェードアウト
 
 

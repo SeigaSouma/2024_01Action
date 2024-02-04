@@ -71,6 +71,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_Oldstate = m_state;	// 前回の状態
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// マテリアルの色
 	m_TargetPosition = mylib_const::DEFAULT_VECTOR3;	// 目標の位置
+	m_pWeaponHandle = 0;		// エフェクトの武器ハンドル
 
 	m_fStateTime = 0.0f;	// 状態遷移カウンター
 	m_nTexIdx = 0;			// テクスチャのインデックス番号
@@ -573,12 +574,6 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 		{
 			// ダメージ音再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
-
-			if (m_pHPGauge == nullptr)
-			{
-				// 体力ゲージ
-				m_pHPGauge = CHP_Gauge::Create(GetHeight(), GetLifeOrigin(), 3.0f);
-			}
 		}
 		else
 		{// 体力がなくなったら
@@ -644,6 +639,12 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 //==========================================================================
 void CEnemy::NormalHitResponse()
 {
+	if (m_pHPGauge == nullptr)
+	{
+		// 体力ゲージ
+		m_pHPGauge = CHP_Gauge::Create(GetHeight(), GetLifeOrigin(), 3.0f);
+	}
+
 	// ダメージ状態にする
 	m_state = STATE_DMG;
 
@@ -668,6 +669,12 @@ void CEnemy::NormalHitResponse()
 //==========================================================================
 void CEnemy::CounterHitResponse()
 {
+	if (m_pHPGauge == nullptr)
+	{
+		// 体力ゲージ
+		m_pHPGauge = CHP_Gauge::Create(GetHeight(), GetLifeOrigin(), 3.0f);
+	}
+
 	// ダウン状態にする
 	m_state = STATE_DOWN;
 
@@ -1712,6 +1719,18 @@ void CEnemy::LimitArea(void)
 
 	// 値を適用
 	SetPosition(pos);
+
+
+	float fLength = sqrtf(pos.x * pos.x + pos.z * pos.z);
+
+	if (fLength > mylib_const::RADIUS_STAGE)
+	{// 補正
+		D3DXVec3Normalize(&pos, &pos);
+
+		pos *= mylib_const::RADIUS_STAGE;
+
+		SetPosition(pos);
+	}
 }
 
 //==========================================================================
@@ -1833,7 +1852,6 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 void CEnemy::Draw(void)
 {
-#if _DEBUG
 	if (m_state == STATE_FADEOUT)
 	{
 		CObjectChara::Draw(m_mMatcol.a);
@@ -1848,20 +1866,6 @@ void CEnemy::Draw(void)
 		// オブジェクトキャラの描画
 		CObjectChara::Draw();
 	}
-#else
-	//CObjectChara::Draw();
-
-	if (m_mMatcol != D3DXCOLOR(1.0f, 1.0f, 1.0f, m_mMatcol.a))
-	{
-		// オブジェクトキャラの描画
-		CObjectChara::Draw(m_mMatcol);
-	}
-	else
-	{
-		// オブジェクトキャラの描画
-		CObjectChara::Draw();
-	}
-#endif
 }
 
 //==========================================================================

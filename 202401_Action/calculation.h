@@ -1335,14 +1335,14 @@ namespace UtilFunc	// 便利関数
 		}
 
 		/**
-		@brief	扇の当たり判定(3D)
+		@brief	視界内の判定(3D)
 		@param	posMain			[in]	中心となる人の位置
 		@param	posTarget		[in]	対象の位置
 		@param	mainRotY		[in]	向き
 		@param	fieldofview		[in]	視野角
 		@return	衝突したかのbool値
 		*/
-		inline bool CollisionFan3D(const MyLib::Vector3& posMain, MyLib::Vector3& posTarget, float mainRotY, float fieldofview)
+		inline bool CollisionViewRange3D(const MyLib::Vector3& posMain, MyLib::Vector3& posTarget, float mainRotY, float fieldofview)
 		{
 
 			// 2キャラのベクトル
@@ -1671,6 +1671,18 @@ namespace UtilFunc	// 便利関数
 			return D3DXCOLOR(R + m, G + m, B + m, 1.0f);
 		}
 
+		/**
+		@brief	ワイド文字列からマルチバイト文字列に変換する関数
+		@param	wideStr		[in]	ワイド文字列
+		@return	マルチバイト文字列
+		*/
+		inline std::string WideToMultiByte(const wchar_t* wideStr)
+		{
+			int size_needed = WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, NULL, 0, NULL, NULL);
+			std::string result(size_needed, 0);
+			WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, &result[0], size_needed, NULL, NULL);
+			return result;
+		}
 	}
 
 }

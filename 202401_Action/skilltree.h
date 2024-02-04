@@ -14,6 +14,7 @@
 class CSkillTree_Screen;
 class CSkillTree_Cursor;
 class CSkillTree_Line;
+class CSkillTree_Command;
 
 //==========================================================================
 // クラス定義
@@ -49,6 +50,8 @@ public:
 	void SaveJson(void);	// Jsonへのセーブ
 	void SetScreen(void);	// スクリーン上に設定
 	void OutScreen(void);	// スクリーンから捌ける
+
+	eState GetState() { return m_state; }	// 状態取得
 	void SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering);	// 習得状況設定
 	std::vector<CSkillTree_Icon*> GetIcon(void) const;	// アイコン取得
 	static CSkillTree* GetInstance() { return m_pThisPtr; }	// インスタンス取得
@@ -107,6 +110,7 @@ private:
 	eState m_state;		// 状態
 	CSkillTree_Screen* m_pScreen;	// スクリーンのオブジェクト
 	CSkillTree_Cursor* m_pCursor;	// カーソルのオブジェクト
+	CSkillTree_Command* m_pCommand;	// コマンドのオブジェクト
 	bool m_bOnScreen;				// スクリーン上にいるかのフラグ
 	static CSkillTree* m_pThisPtr;	// 自身のポインタ
 };

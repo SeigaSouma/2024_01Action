@@ -150,6 +150,11 @@ void CTransferBeacon::CollisionPlayer(void)
 		return;
 	}
 
+	if (CManager::GetInstance()->GetInstantFade()->GetState() != CInstantFade::STATE_NONE)
+	{
+		return;
+	}
+
 	// ƒvƒŒƒCƒ„[æ“¾
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
 	CPlayer* pPlayer = nullptr;

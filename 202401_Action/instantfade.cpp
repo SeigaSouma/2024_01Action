@@ -85,7 +85,7 @@ HRESULT CInstantFade::Init(void)
 		return E_FAIL;
 	}
 
-	m_state = STATE_FADEIN;			// 状態
+	m_state = STATE_NONE;			// 状態
 	m_aObject2D->SetSize(D3DXVECTOR2(640.0f, 360.0f));	// サイズ
 	m_aObject2D->SetPosition(MyLib::Vector3(640.0f, 360.0f, 0.0f));	// 位置
 	m_aObject2D->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));	// 色設定
@@ -171,7 +171,7 @@ void CInstantFade::Draw(void)
 //==========================================================================
 void CInstantFade::SetFade(D3DXCOLOR FadeColor, int nDuration)
 {
-	//if (m_state == STATE_NONE)
+	if (m_state == STATE_NONE)
 	{// 何もしていないとき
 
 		m_nDuration = nDuration;	// フェードまでの時間

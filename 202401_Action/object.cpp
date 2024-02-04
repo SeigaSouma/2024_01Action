@@ -258,7 +258,7 @@ void CObject::DrawAll(void)
 			DrawNone(nCntPriority);
 		}
 
-		if (nCntPriority == 1)
+		if (nCntPriority == 3)
 		{
 
 			// エフェクシアの更新兼描画

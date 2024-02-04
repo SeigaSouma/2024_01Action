@@ -7,11 +7,20 @@
 #include "texture.h"
 #include "manager.h"
 #include "renderer.h"
+#include "calculation.h"
 
 // 読み込むテクスチャのヘッダー
 #include "map.h"
 #include "3D_effect.h"
 #include "effect_thunderring.h"
+
+//==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const std::wstring MAINFOLODER = L"data\\TEXTURE";
+}
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -62,19 +71,21 @@ void CTexture::Init(void)
 {
 	STexture init = {};
 	m_TexInfo.emplace_back();
-
-	// 読み込み
-	Load();
-
-	// 全て読み込み
-	LoadAll();
 }
 
 //==========================================================================
-// テクスチャの読み込み
+// 全てのテクスチャ読み込み
 //==========================================================================
 HRESULT CTexture::LoadAll(void)
 {
+	std::vector<std::string> imageNames;
+	SearchAllImages(MAINFOLODER, imageNames);
+
+	for (const auto& name : imageNames)
+	{
+		Regist(name);
+	}
+
 	// マップ用の読み込み
 	if (FAILED(MyMap::ReadTexture()))
 	{// 失敗した場合
@@ -91,11 +102,40 @@ HRESULT CTexture::LoadAll(void)
 }
 
 //==========================================================================
-// 既定テクスチャの読み込み
+// 全ての画像検索
 //==========================================================================
-HRESULT CTexture::Load(void)
+void CTexture::SearchAllImages(const std::wstring& folderPath, std::vector<std::string>& imageNames) 
 {
-	return S_OK;
+	// ファイル検索用構造体
+	WIN32_FIND_DATAW findFileData;
+
+	// 最初のファイルを検索
+	HANDLE hFind = FindFirstFileW((folderPath + L"\\*").c_str(), &findFileData);
+
+	if (hFind == INVALID_HANDLE_VALUE) 
+	{// 最初のファイルがない場合
+		return;
+	}
+
+	do 
+	{
+		// フォルダかどうか判定
+		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+		{
+			// ファイルが見つかったらファイル名を保存
+			std::string fileName = UtilFunc::Transformation::WideToMultiByte((folderPath + L"\\" + findFileData.cFileName).c_str());
+			imageNames.push_back(fileName);
+		}
+		else if (lstrcmpW(findFileData.cFileName, L".") != 0 && lstrcmpW(findFileData.cFileName, L"..") != 0) 
+		{// サブフォルダだった場合
+
+			// サブフォルダ名を加えて再検索
+			std::wstring subFolderPath = folderPath + L"\\" + findFileData.cFileName;
+			SearchAllImages(subFolderPath, imageNames);
+		}
+	} while (FindNextFileW(hFind, &findFileData) != 0);
+
+	FindClose(hFind);
 }
 
 //==========================================================================

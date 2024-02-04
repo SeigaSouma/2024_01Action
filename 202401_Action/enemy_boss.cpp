@@ -16,6 +16,9 @@
 #include "sound.h"
 #include "player.h"
 #include "3D_effect.h"
+#include "bullet_obstacle.h"
+#include "ballast.h"
+#include "model.h"
 
 //==========================================================================
 // 定数定義
@@ -52,12 +55,13 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_TargetPosition = 0.0f;	// 目標の位置
 	m_fActTime = 0.0f;			// 行動カウンター
 	m_bCatchUp = false;			// 追い着き判定
+	m_bInSight = false;			// 視界内判定
 	m_pBossHPGauge = nullptr;	// ボスのHPゲージ
 
 
-	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
-	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
-	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
 	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());	// ローリング
 }
 
@@ -84,6 +88,7 @@ HRESULT CEnemyBoss::Init(void)
 	// 黒フレーム捌ける
 	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
 
+	// 攻撃抽選
 	DrawingRandomAction();
 	return S_OK;
 }
@@ -156,6 +161,13 @@ void CEnemyBoss::Update(void)
 	}
 	m_TargetPosition = pPlayer->GetPosition();
 
+	if (GetMotion()->GetType() == CEnemyBoss::MOTION_ROLLING)
+	{
+		MyLib::Vector3 pos = UtilFunc::Transformation::WorldMtxChangeToPosition(GetModel()[2]->GetWorldMtx());
+
+		CMyEffekseer::GetInstance()->SetPosition(m_pWeaponHandle, pos);
+	}
+
 	//// 黒フレーム捌ける
 	//if (CManager::GetInstance()->GetBlackFrame()->GetState() == CBlackFrame::STATE_INCOMPLETION)
 	//{
@@ -199,7 +211,7 @@ void CEnemyBoss::CounterHitResponse()
 	m_fDownTime = TIME_DOWN;
 
 	// やられモーション
-	//GetMotion()->Set(MOTION_DOWN);
+	GetMotion()->Set(MOTION_DOWN);
 
 	// ヒットストップ
 	CManager::GetInstance()->SetEnableHitStop(5);
@@ -240,7 +252,10 @@ void CEnemyBoss::ChangeATKState(CBossState* state)
 //==========================================================================
 void CEnemyBoss::PerformAttack()
 {
-	m_pATKState->Action(this);
+	if (m_bActionable)
+	{
+		m_pATKState->Action(this);
+	}
 }
 
 //==========================================================================
@@ -254,6 +269,7 @@ void CEnemyBoss::DrawingRandomAction()
 		int randomIndex = rand() % m_pAtkPattern.size();
 		ChangeATKState(m_pAtkPattern[randomIndex]);
 		m_bCatchUp = false;
+		m_bInSight = false;
 
 		// モーションインデックス切り替え
 		m_pATKState->ChangeMotionIdx(this);
@@ -282,6 +298,7 @@ void CBossAttack::Attack(CEnemyBoss* boss)
 
 		// 待機モーション設定
 		pMotion->Set(CEnemyBoss::MOTION_DEF);
+
 		return;
 	}
 
@@ -291,9 +308,6 @@ void CBossAttack::Attack(CEnemyBoss* boss)
 		pMotion->Set(m_nIdxMotion);
 	}
 
-	// 攻撃フラグを立てる
-	//m_sMotionFrag.bATK = true;
-
 }
 
 
@@ -302,11 +316,27 @@ void CBossAttack::Attack(CEnemyBoss* boss)
 //==========================================================================
 void CBossProximity::Action(CEnemyBoss* boss)
 {
+	bool bAct = true;	// 行動できるかのフラグ
+
+	// 視界内判定
+	if (!boss->IsCatchUp() ||
+		!boss->IsInSight())
+	{
+		// ターゲットの方を向く
+		boss->RotationTarget();
+		bAct = false;
+	}
+
 	// 範囲外時追従
 	if (!boss->IsCatchUp())
 	{
-		// 追い掛ける
+		// 追い掛け
 		boss->ActChase();
+		bAct = false;
+	}
+
+	if (!bAct)
+	{
 		return;
 	}
 
@@ -319,6 +349,20 @@ void CBossProximity::Action(CEnemyBoss* boss)
 //==========================================================================
 void CBossRemote::Action(CEnemyBoss* boss)
 {
+	bool bAct = true;	// 行動できるかのフラグ
+
+	// 視界内判定
+	if (!boss->IsInSight())
+	{
+		// ターゲットの方を向く
+		boss->RotationTarget(45.0f);
+		bAct = false;
+	}
+
+	if (!bAct)
+	{
+		return;
+	}
 	// 攻撃処理
 	Attack(boss);
 }
@@ -329,6 +373,8 @@ void CBossRemote::Action(CEnemyBoss* boss)
 //==========================================================================
 void CEnemyBoss::ActWait(void)
 {
+	m_bActionable = false;
+
 	// モーション取得
 	CMotion* pMotion = GetMotion();
 	if (pMotion == NULL)
@@ -362,9 +408,6 @@ void CEnemyBoss::ActChase(void)
 	// 移動フラグを立てる
 	m_sMotionFrag.bMove = true;
 
-	// ターゲットの方を向く
-	RotationTarget();
-
 	// 情報取得
 	MyLib::Vector3 move = GetMove();
 	MyLib::Vector3 rot = GetRotation();
@@ -378,21 +421,41 @@ void CEnemyBoss::ActChase(void)
 	SetMove(move);
 
 	// 追い着き判定
-	bool bCatch = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
-
-	// 視界判定
-	bool bRange = UtilFunc::Collision::CollisionFan3D(GetPosition(), m_TargetPosition, rot.y, 90.0f);
-
-	// 追い着き判定設定
-	m_bCatchUp = (bCatch && bRange);
-
-
-	if (!m_bCatchUp && UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, 200.0f, 0.0f))
-	{
-		m_bCatchUp = true;
-	}
+	m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
 }
 
+//==========================================================================
+// ターゲットの方を向く
+//==========================================================================
+void CEnemyBoss::RotationTarget(float range)
+{
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+	MyLib::Vector3 rot = GetRotation();
+
+	// 目標の角度を求める
+	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
+
+	// 目標との差分
+	float fRotDiff = fRotDest - rot.y;
+
+	//角度の正規化
+	UtilFunc::Transformation::RotNormalize(fRotDiff);
+
+	//角度の補正をする
+	rot.y += fRotDiff * 0.1f;
+	UtilFunc::Transformation::RotNormalize(rot.y);
+
+	// 向き設定
+	SetRotation(rot);
+
+	// 目標の向き設定
+	SetRotDest(fRotDest);
+
+
+	// 視界判定
+	m_bInSight = UtilFunc::Collision::CollisionViewRange3D(GetPosition(), m_TargetPosition, rot.y, range);
+}
 
 //==========================================================================
 // 描画処理
@@ -429,42 +492,7 @@ void CEnemyBoss::MotionSet(void)
 			m_sMotionFrag.bATK = false;
 			pMotion->Set(MOTION_WALK);
 		}
-		else if (m_sMotionFrag.bKnockback == true)
-		{// やられ中だったら
-
-			// やられモーション
-			pMotion->Set(MOTION_KNOCKBACK);
-		}
 	}
-}
-
-//==========================================================================
-// ターゲットの方を向く
-//==========================================================================
-void CEnemyBoss::RotationTarget(void)
-{
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の角度を求める
-	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
-
-	// 目標との差分
-	float fRotDiff = fRotDest - rot.y;
-
-	//角度の正規化
-	UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-	//角度の補正をする
-	rot.y += fRotDiff * 0.1f;
-	UtilFunc::Transformation::RotNormalize(rot.y);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
 }
 
 //==========================================================================
@@ -494,6 +522,36 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		break;
 
 	case MOTION_LAUNCHBALLAST:
+
+		if (weponpos.y <= 0.0f)
+		{
+			weponpos.y = 0.0f;
+		}
+
+		CBulletObstacle::Create(weponpos, rot, D3DXVECTOR2(40.0f, 15.0f), 150.0f);
+		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+
+		// 振動
+		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		break;
+
+	case MOTION_ROLLING:
+		if (nCntATK == 0)
+		{
+			MyLib::Vector3 pos = GetPosition();
+			pos.y += 150.0f;
+
+			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
+				pos, 0.0f, 0.0f, 50.0f);
+		}
+		else
+		{
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_BOSS_ROLLING,
+				weponpos,
+				MyLib::Vector3(0.0f, D3DX_PI + rot.y, 0.0f), 0.0f, 80.0f, true);
+		}
 		break;
 	}
 }
@@ -525,5 +583,42 @@ void CEnemyBoss::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	case MOTION_LAUNCHBALLAST:
 		break;
+	}
+}
+
+//==========================================================================
+// ダウン状態
+//==========================================================================
+void CEnemyBoss::StateDown(void)
+{
+	// 行動可能判定
+	m_bActionable = false;
+
+	// 色設定
+	m_mMatcol = D3DXCOLOR(1.0f, 0.5f, 0.1f, 1.0f);
+
+	if (m_fDownTime <= 0.0f)
+	{
+		m_state = STATE_NONE;
+		// 行動可能判定
+		m_bActionable = true;
+
+		// 行動抽選
+		DrawingRandomAction();
+		return;
+	}
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_DOWN)
+	{
+		// ダウンモーション設定
+		pMotion->Set(MOTION_DOWN);
 	}
 }

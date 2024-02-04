@@ -55,6 +55,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void Load(void);// 読み込み
 
 	static CManager *Create(void);		// 生成処理
 	static CManager *GetInstance(void);	// インスタンス取得
@@ -78,8 +79,6 @@ public:
 
 	int GetNumPlayer(void);			// プレイヤーの数取得
 	void SetNumPlayer(int nNum);	// プレイヤーの数設定
-	int GetByPlayerPartsType(int nIdx);				// プレイヤー毎の担当パーツ種類取得
-	void SetByPlayerPartsType(int nIdx, int nType);	// プレイヤー毎の担当パーツ種類設定
 	float GetDeltaTime(void);								// 経過時間取得
 	void SetMode(CScene::MODE mode);					// 次のモード設定
 	CScene::MODE GetMode(void);							// 現在のモード取得
@@ -89,6 +88,9 @@ public:
 	CScene::MODE GetOldMode(void) { return m_OldMode; }	// 前回のモード取得
 	bool IsLoadComplete(void) { return m_bLoadComplete; }
 private:
+
+	void Reset(CScene::MODE mode);
+	void NoLoadSetMode(CScene::MODE mode);		// 次のモード設定
 
 	CRenderer *m_pRenderer;				// レンダラーのオブジェクト
 	CInputKeyboard *m_pInputKeyboard;	// キーボードのオブジェクト
@@ -121,6 +123,7 @@ private:
 	bool m_bLoadComplete;				// ロード完了のフラグ
 	bool m_bLoadFadeSet;				// ロードのフェード設定フラグ
 	bool m_bNowLoading;				// ロード完了のフラグ
+	bool m_bFirstLoad;				// 初回ロード
 
 	static CManager *m_pManager;	// マネージャのオブジェクト
 };

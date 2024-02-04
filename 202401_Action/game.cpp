@@ -12,6 +12,7 @@
 #include "fade.h"
 #include "camera.h"
 #include "pause.h"
+#include "texture.h"
 
 #include "input.h"
 #include "player.h"
@@ -31,6 +32,7 @@
 #include "enemybase.h"
 #include "limitarea.h"
 #include "particle.h"
+#include "myeffekseer.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -186,6 +188,11 @@ HRESULT CGame::Init(void)
 
 	// クリアの判定
 	SetEnableClear(true);
+
+	/*CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL_BGFIRE,
+		MyLib::Vector3(0.0f, 0.0f, 0.0f),
+		0.0f, 0.0f, 100.0f, false);*/
 
 	// 成功
 	return S_OK;

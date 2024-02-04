@@ -293,12 +293,10 @@ void CGameManager::SetBoss(void)
 	CPlayer* pPlayer = nullptr;
 
 	// リストループ
-	int i = 0;
 	while (playerList.ListLoop(&pPlayer))
 	{
 		// 位置設定
-		pPlayer->SetPosition(D3DXVECTOR3(-500.0f + i * 50.0f, 5000.0f, 0.0f));
-		i++;
+		pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -2000.0f));
 	}
 
 	// カメラの情報取得

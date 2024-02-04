@@ -117,7 +117,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompile.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,6 +163,7 @@
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="blackframe.cpp" />
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bullet_obstacle.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="collisionobject.cpp" />
@@ -263,6 +264,7 @@
     <ClCompile Include="skilltree.cpp" />
     <ClCompile Include="skilltree_ability.cpp" />
     <ClCompile Include="skilltree_behavior.cpp" />
+    <ClCompile Include="skilltree_command.cpp" />
     <ClCompile Include="skilltree_cursor.cpp" />
     <ClCompile Include="skilltree_icon.cpp" />
     <ClCompile Include="skilltree_line.cpp" />
@@ -290,6 +292,7 @@
     <ClInclude Include="bg.h" />
     <ClInclude Include="blackframe.h" />
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="bullet_obstacle.h" />
     <ClInclude Include="calculation.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
@@ -390,6 +393,7 @@
     <ClInclude Include="skilltree.h" />
     <ClInclude Include="skilltree_ability.h" />
     <ClInclude Include="skilltree_behavior.h" />
+    <ClInclude Include="skilltree_command.h" />
     <ClInclude Include="skilltree_cursor.h" />
     <ClInclude Include="skilltree_icon.h" />
     <ClInclude Include="skilltree_line.h" />
