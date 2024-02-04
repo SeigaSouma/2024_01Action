@@ -86,6 +86,7 @@ public:
 	void ToggleFinish(bool bFinish);			// 終了しているかの判定切り替え
 	bool IsGetCancelable(void) { return m_bCancelable; }	// キャンセルの判定取得
 	bool IsGetCombiable(void) { return m_bCombiable; }	// キャンセルの判定取得
+	bool IsBeforeInAttack() { return m_bBeforeInAction; }		// 攻撃前フラグ取得
 	void SetSlowFactor(float fFactor);			// 遅延係数の設定
 
 	bool IsImpactFrame(AttackInfo attackInfo);	// 衝撃のフレームかどうか取得
@@ -146,6 +147,7 @@ private:
 	bool m_bFinish;				// 終了したかどうか
 	bool m_bCancelable;			// キャンセル可能か
 	bool m_bCombiable;			// コンボ可能か
+	bool m_bBeforeInAction;		// 攻撃前フラグ
 
 	CObjectChara *m_pObjChara;	// オブジェクトキャラクターのポインタ
 	CModel **m_ppModel;			// モデルのポインタ

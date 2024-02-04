@@ -15,6 +15,8 @@
 #include "skilltree_cursor.h"
 #include "skilltree_line.h"
 #include "skilltree_command.h"
+#include "skilltree_window.h"
+#include "skilltree_description.h"
 #include "game.h"
 
 //==========================================================================
@@ -56,6 +58,8 @@ CSkillTree::CSkillTree(int nPriority) : CObject(nPriority)
 	m_pScreen = nullptr;	// スクリーンのオブジェクト
 	m_pCursor = nullptr;	// カーソルのオブジェクト
 	m_pCommand = nullptr;	// コマンドのオブジェクト
+	m_pWindow = nullptr;	// ウィンドウのオブジェクト
+	m_pDescription = nullptr;	// 説明文のオブジェクト
 	m_bOnScreen = false;	// スクリーン上にいるかのフラグ
 }
 
@@ -176,6 +180,22 @@ void CSkillTree::Kill(void)
 		m_pCommand = nullptr;
 	}
 
+	// ウィンドウ終了
+	if (m_pWindow != nullptr)
+	{
+		m_pWindow->Uninit();
+		m_pWindow = nullptr;
+	}
+
+	// 説明文終了
+	if (m_pDescription != nullptr)
+	{
+		m_pDescription->Uninit();
+		m_pDescription = nullptr;
+	}
+
+
+
 	m_pThisPtr = nullptr;
 	// 情報削除
 	Release();
@@ -239,7 +259,9 @@ void CSkillTree::StateNone(void)
 
 	// ゲームパッド情報取得
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
-	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, 0))
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, 0) ||
+		pInputKeyboard->GetTrigger(DIK_BACK))
 	{
 		m_state = STATE_FADEOUT;
 	}
@@ -281,6 +303,15 @@ void CSkillTree::StateFadeIn(void)
 	// コマンドの透明度設定
 	m_pCommand->SetAlpha(m_fAlpha);
 
+	// ウィンドウの透明度設定
+	col = m_pWindow->GetColor();
+	col.a = m_fAlpha;
+	m_pWindow->SetColor(col);
+
+	// 説明文の透明度設定
+	col = m_pDescription->GetColor();
+	col.a = m_fAlpha;
+	m_pDescription->SetColor(col);
 
 	// ラインのリスト取得
 	CListManager<CSkillTree_Line> lineList = CSkillTree_Line::GetListObj();
@@ -339,6 +370,16 @@ void CSkillTree::StateFadeOut(void)
 
 	// コマンドの透明度設定
 	m_pCommand->SetAlpha(m_fAlpha);
+
+	// ウィンドウの透明度設定
+	col = m_pWindow->GetColor();
+	col.a = m_fAlpha;
+	m_pWindow->SetColor(col);
+
+	// 説明文の透明度設定
+	col = m_pDescription->GetColor();
+	col.a = m_fAlpha;
+	m_pDescription->SetColor(col);
 
 
 	// ラインのリスト取得
@@ -478,6 +519,12 @@ void CSkillTree::SetScreen(void)
 	// コマンド生成
 	m_pCommand = CSkillTree_Command::Create();
 
+	// ウィンドウ生成
+	m_pWindow = CSkillTree_Window::Create();
+
+	// 説明文生成
+	m_pDescription = CSkillTree_Description::Create();
+
 	// 状態カウンター
 	m_fStateTime = 0.0f;
 	m_state = STATE_FADEIN;
@@ -499,7 +546,7 @@ void CSkillTree::OutScreen(void)
 	// アイコンの終了
 	for (auto const& iconinfo : m_pSkillIcon)
 	{
-		iconinfo->Uninit();
+		iconinfo->Kill();
 	}
 	m_pSkillIcon.clear();
 
@@ -514,6 +561,14 @@ void CSkillTree::OutScreen(void)
 	// コマンド終了
 	m_pCommand->Uninit();
 	m_pCommand = nullptr;
+
+	// ウィンドウ終了
+	m_pWindow->Uninit();
+	m_pWindow = nullptr;
+
+	// 説明文終了
+	m_pDescription->Uninit();
+	m_pDescription = nullptr;
 
 	// スクリーン上にいるかのフラグ
 	m_bOnScreen = false;

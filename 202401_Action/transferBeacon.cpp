@@ -179,7 +179,9 @@ void CTransferBeacon::CollisionPlayer(void)
 	{
 		// ゲームパッド情報取得
 		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
-		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0))
+		CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) ||
+			pInputKeyboard->GetTrigger(DIK_RETURN))
 		{
 			// 遷移なしフェード追加
 			CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);

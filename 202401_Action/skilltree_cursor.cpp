@@ -13,6 +13,7 @@
 #include "fade.h"
 #include "calculation.h"
 #include "skilltree.h"
+#include "skilltree_description.h"
 #include "debugproc.h"
 
 //==========================================================================
@@ -20,7 +21,7 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\tyuuni\\tyuuni_face.png";
+	const char* TEXTURE = "data\\TEXTURE\\skilltree\\skilltree_cursor.png";
 	const MyLib::Vector3 LOCK_POSITION = MyLib::Vector3(340.0f, 240.0f, 0.0f);	// 固定の位置
 	const float MOVE_VELOCITY = 85.0f;	// 移動速度
 	const float RADIUS = 40.0f;	// 半径
@@ -32,10 +33,11 @@ namespace
 CSkillTree_Cursor::CSkillTree_Cursor(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
-	m_nMyPlayerIdx = 0;	// プレイヤーインデックス番号
-	m_WorldPos = 0.0f;	// 絶対座標
-	m_DestPos = 0.0f;	// 目標座標
-	m_bHitIcon = false;	// アイコンの接触フラグ
+	m_nMyPlayerIdx = 0;				// プレイヤーインデックス番号
+	m_WorldPos = 0.0f;				// 絶対座標
+	m_DestPos = 0.0f;				// 目標座標
+	m_bHitIcon = false;				// アイコンの接触フラグ
+	m_bControllKeyboard = false;	// キーボードの操作フラグ
 }
 
 //==========================================================================
@@ -98,7 +100,7 @@ HRESULT CSkillTree_Cursor::Init(void)
 	BindTexture(nIdxTex);
 
 	// テクスチャサイズ取得
-	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nIdxTex) * 0.1f;
+	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nIdxTex) * 0.15f;
 
 	// サイズ設定
 	SetSize(size);
@@ -161,6 +163,7 @@ void CSkillTree_Cursor::Controll()
 	if (pInputKeyboard->GetPress(DIK_A) == true)
 	{//←キーが押された,左移動
 
+		m_bControllKeyboard = true;
 		if (pInputKeyboard->GetPress(DIK_W) == true)
 		{//A+W,左上移動
 			move.x += sinf(-D3DX_PI * 0.75f) * velocity;
@@ -180,6 +183,7 @@ void CSkillTree_Cursor::Controll()
 	else if (pInputKeyboard->GetPress(DIK_D) == true)
 	{//Dキーが押された,右移動
 
+		m_bControllKeyboard = true;
 		if (pInputKeyboard->GetPress(DIK_W) == true)
 		{//D+W,右上移動
 			move.x += sinf(D3DX_PI * 0.75f) * velocity;
@@ -198,13 +202,20 @@ void CSkillTree_Cursor::Controll()
 	}
 	else if (pInputKeyboard->GetPress(DIK_W) == true)
 	{//Wが押された、上移動
+		m_bControllKeyboard = true;
 		move.x += sinf(D3DX_PI * 1.0f) * velocity;
 		move.y += cosf(D3DX_PI * 1.0f) * velocity;
 	}
 	else if (pInputKeyboard->GetPress(DIK_S) == true)
 	{//Sが押された、下移動
+		m_bControllKeyboard = true;
 		move.x += sinf(D3DX_PI * 0.0f) * velocity;
 		move.y += cosf(D3DX_PI * 0.0f) * velocity;
+	}
+	else
+	{
+		// キーボードの操作フラグ
+		m_bControllKeyboard = false;
 	}
 
 	if (pInputGamepad->IsTipStick())
@@ -253,6 +264,8 @@ void CSkillTree_Cursor::CollisionIcon(void)
 			m_bHitIcon = true;
 			m_DestPos = m_WorldPos + iconpos;
 
+			CSkillTree::GetInstance()->GetDescription()->SetIdxTex(icon->GetIconInfo().texID);
+
 			if (CManager::GetInstance()->GetInputGamepad()->GetTrigger(CInputGamepad::BUTTON_A, 0))
 			{
 				// 能力付与
@@ -264,8 +277,12 @@ void CSkillTree_Cursor::CollisionIcon(void)
 		i++;
 	}
 
+	// スキルツリーの描画設定
+	CSkillTree::GetInstance()->GetDescription()->SetEnableDisp(m_bHitIcon);
+
 	if (m_bHitIcon &&
-		!CManager::GetInstance()->GetInputGamepad()->IsTipStick())
+		!CManager::GetInstance()->GetInputGamepad()->IsTipStick() &&
+		!m_bControllKeyboard)
 	{// 接触 && スティックが倒されてない
 		UtilFunc::Correction::InertiaCorrection(m_WorldPos.x, m_DestPos.x, 0.25f);
 		UtilFunc::Correction::InertiaCorrection(m_WorldPos.y, m_DestPos.y, 0.25f);

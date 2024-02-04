@@ -44,6 +44,7 @@ private:
 	MyLib::Vector3 m_WorldPos;	// 絶対座標
 	MyLib::Vector3 m_DestPos;	// 目標座標
 	bool m_bHitIcon;			// アイコンの接触フラグ
+	bool m_bControllKeyboard;	// キーボードの操作フラグ
 };
 
 #endif

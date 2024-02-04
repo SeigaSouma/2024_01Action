@@ -59,9 +59,13 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_pBossHPGauge = nullptr;	// ボスのHPゲージ
 
 
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
+	m_pATKState = nullptr;		// 今の行動ポインタ
+	m_pNextATKState = nullptr;	// 次の行動ポインタ
+
+	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
+	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
+	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
+	m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());
 	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());	// ローリング
 }
 
@@ -76,7 +80,7 @@ CEnemyBoss::~CEnemyBoss()
 //==========================================================================
 //  初期化処理
 //==========================================================================
-HRESULT CEnemyBoss::Init(void)
+HRESULT CEnemyBoss::Init()
 {
 	//初期化処理
 	CEnemy::Init();
@@ -96,7 +100,7 @@ HRESULT CEnemyBoss::Init(void)
 //==========================================================================
 //  終了処理
 //==========================================================================
-void CEnemyBoss::Uninit(void)
+void CEnemyBoss::Uninit()
 {
 	// 終了処理
 	CEnemy::Uninit();
@@ -111,7 +115,7 @@ void CEnemyBoss::Uninit(void)
 //==========================================================================
 // 殺す
 //==========================================================================
-void CEnemyBoss::Kill(void)
+void CEnemyBoss::Kill()
 {
 	if (m_pHPGauge != nullptr)
 	{
@@ -131,7 +135,7 @@ void CEnemyBoss::Kill(void)
 //==========================================================================
 //  更新処理
 //==========================================================================
-void CEnemyBoss::Update(void)
+void CEnemyBoss::Update()
 {
 	// 死亡の判定
 	if (IsDeath() == true)
@@ -226,7 +230,7 @@ void CEnemyBoss::CounterHitResponse()
 //==========================================================================
 // 行動設定
 //==========================================================================
-void CEnemyBoss::ActionSet(void)
+void CEnemyBoss::ActionSet()
 {
 
 }
@@ -234,7 +238,7 @@ void CEnemyBoss::ActionSet(void)
 //==========================================================================
 // 行動更新
 //==========================================================================
-void CEnemyBoss::UpdateAction(void)
+void CEnemyBoss::UpdateAction()
 {
 
 }
@@ -244,6 +248,11 @@ void CEnemyBoss::UpdateAction(void)
 //==========================================================================
 void CEnemyBoss::ChangeATKState(CBossState* state)
 {
+	if (m_pATKState != nullptr &&
+		!m_pATKState->IsCreateFirstTime())
+	{
+		delete m_pATKState;
+	}
 	m_pATKState = state;
 }
 
@@ -267,24 +276,346 @@ void CEnemyBoss::DrawingRandomAction()
 	if (!m_pAtkPattern.empty())
 	{
 		int randomIndex = rand() % m_pAtkPattern.size();
-		ChangeATKState(m_pAtkPattern[randomIndex]);
-		m_bCatchUp = false;
-		m_bInSight = false;
 
-		// モーションインデックス切り替え
-		m_pATKState->ChangeMotionIdx(this);
+		if (!m_pAtkPattern[randomIndex]->IsDirectlyTrans())
+		{// 何か挟んで行動する場合
+
+			// 次の行動設定
+			ChangeNextATKState(m_pAtkPattern[randomIndex]);
+
+			// 遷移前処理
+			m_pAtkPattern[randomIndex]->BeforeTransitionProcess(this);
+		}
+		else
+		{
+			ChangeATKState(m_pAtkPattern[randomIndex]);
+			m_bCatchUp = false;
+			m_bInSight = false;
+
+			// モーションインデックス切り替え
+			m_pATKState->ChangeMotionIdx(this);
+		}
 	}
 }
 
+//==========================================================================
+// 次の攻撃へ切り替え
+//==========================================================================
+void CEnemyBoss::ChangeNextAction()
+{
+	// 保存していた次の行動を設定
+	ChangeATKState(m_pNextATKState);
+	m_bCatchUp = false;
+	m_bInSight = false;
+
+	// モーションインデックス切り替え
+	m_pATKState->ChangeMotionIdx(this);
+}
+
+
+//==========================================================================
+// 待機
+//==========================================================================
+void CEnemyBoss::ActWait()
+{
+	m_bActionable = false;
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	// 待機モーション設定
+	pMotion->Set(MOTION_DEF);
+
+	// 行動カウンター加算
+	m_fActTime += CManager::GetInstance()->GetDeltaTime();
+
+	// ターゲットの方を向く
+	RotationTarget();
+
+	if (TIME_WAIT <= m_fActTime)
+	{// 待機時間超えたら
+
+		// 行動抽選
+		DrawingRandomAction();
+		m_fActTime = 0.0f;
+	}
+}
+
+//==========================================================================
+// 追い掛け
+//==========================================================================
+void CEnemyBoss::ActChase()
+{
+	// 移動フラグを立てる
+	m_sMotionFrag.bMove = true;
+
+	// 情報取得
+	MyLib::Vector3 move = GetMove();
+	MyLib::Vector3 rot = GetRotation();
+	float fMove = GetVelocity();
+
+	// 移動量設定
+	move.x += sinf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
+	move.z += cosf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
+
+	// 移動量設定
+	SetMove(move);
+
+	// 追い着き判定
+	m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
+}
+
+//==========================================================================
+// ターゲットの方を向く
+//==========================================================================
+void CEnemyBoss::RotationTarget(float range)
+{
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+	MyLib::Vector3 rot = GetRotation();
+
+	// 目標の角度を求める
+	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
+
+	// 目標との差分
+	float fRotDiff = fRotDest - rot.y;
+
+	//角度の正規化
+	UtilFunc::Transformation::RotNormalize(fRotDiff);
+
+	//角度の補正をする
+	rot.y += fRotDiff * 0.1f;
+	UtilFunc::Transformation::RotNormalize(rot.y);
+
+	// 向き設定
+	SetRotation(rot);
+
+	// 目標の向き設定
+	SetRotDest(fRotDest);
+
+
+	// 視界判定
+	m_bInSight = UtilFunc::Collision::CollisionViewRange3D(GetPosition(), m_TargetPosition, rot.y, range);
+}
+
+//==========================================================================
+// 描画処理
+//==========================================================================
+void CEnemyBoss::Draw()
+{
+	// 描画処理
+	CEnemy::Draw();
+}
+
+//==========================================================================
+// モーションセット
+//==========================================================================
+void CEnemyBoss::MotionSet()
+{
+	
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	if (pMotion->IsFinish() == true)
+	{// 終了していたら
+
+		// 現在の種類取得
+		int nType = pMotion->GetType();
+
+		if (m_sMotionFrag.bMove == true && m_sMotionFrag.bKnockback == false && m_sMotionFrag.bATK == false)
+		{// 移動していたら
+
+			// 攻撃していない
+			m_sMotionFrag.bATK = false;
+			pMotion->Set(MOTION_WALK);
+		}
+	}
+}
+
+//==========================================================================
+// 攻撃時処理
+//==========================================================================
+void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	// モーション情報取得
+	int nMotionType = pMotion->GetType();
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+
+	// 情報取得
+	MyLib::Vector3 pos = GetPosition();
+	MyLib::Vector3 rot = GetRotation();
+
+	// モーション別処理
+	switch (nMotionType)
+	{
+	case MOTION_SIDESWIPE:
+		break;
+
+	case MOTION_LAUNCHBALLAST:
+
+		if (weponpos.y <= 0.0f)
+		{
+			weponpos.y = 0.0f;
+		}
+
+		CBulletObstacle::Create(weponpos, rot, D3DXVECTOR2(40.0f, 15.0f), 150.0f);
+		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+
+		// 振動
+		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		break;
+
+	case MOTION_ROLLING:
+		if (nCntATK == 0)
+		{
+			MyLib::Vector3 pos = GetPosition();
+			pos.y += 150.0f;
+
+			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
+				pos, 0.0f, 0.0f, 50.0f);
+		}
+		else
+		{
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_BOSS_ROLLING,
+				weponpos,
+				MyLib::Vector3(0.0f, D3DX_PI + rot.y, 0.0f), 0.0f, 80.0f, true);
+		}
+		break;
+	}
+}
+
+//==========================================================================
+// 攻撃判定中処理
+//==========================================================================
+void CEnemyBoss::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
+{
+	// 基底の攻撃判定中処理
+	CEnemy::AttackInDicision(ATKInfo, nCntATK);
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	// モーション情報取得
+	int nMotionType = pMotion->GetType();
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+
+	// モーション別処理
+	switch (nMotionType)
+	{
+	case MOTION_SIDESWIPE:
+		break;
+
+	case MOTION_LAUNCHBALLAST:
+		break;
+	}
+}
+
+//==========================================================================
+// ダウン状態
+//==========================================================================
+void CEnemyBoss::StateDown()
+{
+	// 行動可能判定
+	m_bActionable = false;
+
+	// 色設定
+	m_mMatcol = D3DXCOLOR(1.0f, 0.5f, 0.1f, 1.0f);
+
+	if (m_fDownTime <= 0.0f)
+	{
+		m_state = STATE_NONE;
+		// 行動可能判定
+		m_bActionable = true;
+
+		// 行動抽選
+		DrawingRandomAction();
+		return;
+	}
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_DOWN)
+	{
+		// ダウンモーション設定
+		pMotion->Set(MOTION_DOWN);
+	}
+}
+
+
+
+//==========================================================================
+// ステップの行動
+//==========================================================================
+void CBossStep::Action(CEnemyBoss* boss)
+{
+	// モーション取得
+	CMotion* pMotion = boss->GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == CEnemyBoss::MOTION_BACKSTEP && pMotion->IsFinish() == true)
+	{// ステップ終了
+
+		// 次の行動設定
+		boss->ChangeNextAction();
+
+		// 待機モーション設定
+		pMotion->Set(CEnemyBoss::MOTION_DEF);
+		return;
+	}
+
+	if (nType != CEnemyBoss::MOTION_BACKSTEP)
+	{
+		// モーション設定
+		pMotion->Set(CEnemyBoss::MOTION_BACKSTEP);
+	}
+}
 
 //==========================================================================
 // 攻撃処理
 //==========================================================================
 void CBossAttack::Attack(CEnemyBoss* boss)
 {
+	// 攻撃が始まるまで向き合わせ
+	if (boss->GetMotion()->IsBeforeInAttack())
+	{
+		// ターゲットの方を向く
+		boss->RotationTarget();
+	}
+
 	// モーション取得
 	CMotion* pMotion = boss->GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -365,260 +696,4 @@ void CBossRemote::Action(CEnemyBoss* boss)
 	}
 	// 攻撃処理
 	Attack(boss);
-}
-
-
-//==========================================================================
-// 待機
-//==========================================================================
-void CEnemyBoss::ActWait(void)
-{
-	m_bActionable = false;
-
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
-	{
-		return;
-	}
-
-	// 待機モーション設定
-	pMotion->Set(MOTION_DEF);
-
-	// 行動カウンター加算
-	m_fActTime += CManager::GetInstance()->GetDeltaTime();
-
-	// ターゲットの方を向く
-	RotationTarget();
-
-	if (TIME_WAIT <= m_fActTime)
-	{// 待機時間超えたら
-
-		// 行動抽選
-		DrawingRandomAction();
-		m_fActTime = 0.0f;
-	}
-}
-
-//==========================================================================
-// 追い掛け
-//==========================================================================
-void CEnemyBoss::ActChase(void)
-{
-	// 移動フラグを立てる
-	m_sMotionFrag.bMove = true;
-
-	// 情報取得
-	MyLib::Vector3 move = GetMove();
-	MyLib::Vector3 rot = GetRotation();
-	float fMove = GetVelocity();
-
-	// 移動量設定
-	move.x += sinf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
-	move.z += cosf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
-
-	// 移動量設定
-	SetMove(move);
-
-	// 追い着き判定
-	m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
-}
-
-//==========================================================================
-// ターゲットの方を向く
-//==========================================================================
-void CEnemyBoss::RotationTarget(float range)
-{
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の角度を求める
-	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
-
-	// 目標との差分
-	float fRotDiff = fRotDest - rot.y;
-
-	//角度の正規化
-	UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-	//角度の補正をする
-	rot.y += fRotDiff * 0.1f;
-	UtilFunc::Transformation::RotNormalize(rot.y);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
-
-
-	// 視界判定
-	m_bInSight = UtilFunc::Collision::CollisionViewRange3D(GetPosition(), m_TargetPosition, rot.y, range);
-}
-
-//==========================================================================
-// 描画処理
-//==========================================================================
-void CEnemyBoss::Draw(void)
-{
-	// 描画処理
-	CEnemy::Draw();
-}
-
-//==========================================================================
-// モーションセット
-//==========================================================================
-void CEnemyBoss::MotionSet(void)
-{
-	
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
-	{
-		return;
-	}
-
-	if (pMotion->IsFinish() == true)
-	{// 終了していたら
-
-		// 現在の種類取得
-		int nType = pMotion->GetType();
-
-		if (m_sMotionFrag.bMove == true && m_sMotionFrag.bKnockback == false && m_sMotionFrag.bATK == false)
-		{// 移動していたら
-
-			// 攻撃していない
-			m_sMotionFrag.bATK = false;
-			pMotion->Set(MOTION_WALK);
-		}
-	}
-}
-
-//==========================================================================
-// 攻撃時処理
-//==========================================================================
-void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
-{
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
-	{
-		return;
-	}
-
-	// モーション情報取得
-	int nMotionType = pMotion->GetType();
-	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
-
-	// 情報取得
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 rot = GetRotation();
-
-	// モーション別処理
-	switch (nMotionType)
-	{
-	case MOTION_SIDESWIPE:
-		break;
-
-	case MOTION_LAUNCHBALLAST:
-
-		if (weponpos.y <= 0.0f)
-		{
-			weponpos.y = 0.0f;
-		}
-
-		CBulletObstacle::Create(weponpos, rot, D3DXVECTOR2(40.0f, 15.0f), 150.0f);
-		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
-
-		// 振動
-		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
-		break;
-
-	case MOTION_ROLLING:
-		if (nCntATK == 0)
-		{
-			MyLib::Vector3 pos = GetPosition();
-			pos.y += 150.0f;
-
-			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
-				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
-				pos, 0.0f, 0.0f, 50.0f);
-		}
-		else
-		{
-			CMyEffekseer::GetInstance()->SetEffect(
-				CMyEffekseer::EFKLABEL_BOSS_ROLLING,
-				weponpos,
-				MyLib::Vector3(0.0f, D3DX_PI + rot.y, 0.0f), 0.0f, 80.0f, true);
-		}
-		break;
-	}
-}
-
-//==========================================================================
-// 攻撃判定中処理
-//==========================================================================
-void CEnemyBoss::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
-{
-	// 基底の攻撃判定中処理
-	CEnemy::AttackInDicision(ATKInfo, nCntATK);
-
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
-	{
-		return;
-	}
-
-	// モーション情報取得
-	int nMotionType = pMotion->GetType();
-	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
-
-	// モーション別処理
-	switch (nMotionType)
-	{
-	case MOTION_SIDESWIPE:
-		break;
-
-	case MOTION_LAUNCHBALLAST:
-		break;
-	}
-}
-
-//==========================================================================
-// ダウン状態
-//==========================================================================
-void CEnemyBoss::StateDown(void)
-{
-	// 行動可能判定
-	m_bActionable = false;
-
-	// 色設定
-	m_mMatcol = D3DXCOLOR(1.0f, 0.5f, 0.1f, 1.0f);
-
-	if (m_fDownTime <= 0.0f)
-	{
-		m_state = STATE_NONE;
-		// 行動可能判定
-		m_bActionable = true;
-
-		// 行動抽選
-		DrawingRandomAction();
-		return;
-	}
-
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
-	{
-		return;
-	}
-
-	int nType = pMotion->GetType();
-	if (nType != MOTION_DOWN)
-	{
-		// ダウンモーション設定
-		pMotion->Set(MOTION_DOWN);
-	}
 }

@@ -13,6 +13,7 @@
 #include "listmanager.h"
 
 class CAbillityStrategy;
+class CMultiNumber;
 
 //==========================================================================
 // クラス定義
@@ -118,6 +119,8 @@ public:
 	void Draw(void) override;
 	void SetVtx(void) override;
 
+	void Kill(void);
+
 	void SetIconInfo(sSkillIcon iconinfo);	// アイコン情報設定
 	sSkillIcon GetIconInfo(void);			// アイコン情報取得
 	void SetMastering(eMastering mastering) { m_Mastering = mastering; }	// 習得状況設定
@@ -152,6 +155,7 @@ private:
 	static std::vector<int> m_nTexIdx;	// テクスチャインデックス番号
 	static bool m_bLoadComplete;		// ロード完了のフラグ
 	CAbillityStrategy* m_pAbillity;		// 能力のオブジェクト
+	CMultiNumber* m_apNumber;	// 数字のオブジェクト
 	static CListManager<CSkillTree_Icon> m_List;	// リスト
 
 };

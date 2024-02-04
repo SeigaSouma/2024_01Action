@@ -16,6 +16,7 @@
 #include "skilltree.h"
 #include "skillpoint.h"
 #include "skilltree_behavior.h"
+#include "multinumber.h"
 
 //==========================================================================
 // マクロ定義
@@ -28,9 +29,11 @@ namespace
 		D3DXCOLOR(1.0f, 0.4f, 1.0f, 1.0f),	// 習得済み
 		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),	// 習得可能
 	};
-	const char* LOADTEXT = "data\\TEXT\\skilltree\\texture.txt";
+	const char* LOADTEXT = "data\\TEXT\\skilltree\\icontexture.txt";
+	const char* NUMBER_TEXTURE = "data\\TEXTURE\\number\\number_blackclover_01.png";
 	const float SIZE_ICON = 50.0f;	// アイコンサイズ
 	const float TIME_FADE = 0.5f;	// フェードアウト時間
+	const MyLib::Vector3 DISTANCE = MyLib::Vector3(SIZE_ICON, SIZE_ICON, 0.0f);
 }
 
 std::vector<int> CSkillTree_Icon::m_nTexIdx = {};	// テクスチャインデックス番号
@@ -131,6 +134,10 @@ HRESULT CSkillTree_Icon::Init(void)
 
 	// リストに追加
 	m_List.Regist(this);
+
+
+	// 生成処理
+	m_apNumber = CMultiNumber::Create(GetPosition() + DISTANCE, GetSize() * 0.5f, 1, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true);
 	return S_OK;
 }
 
@@ -147,6 +154,36 @@ void CSkillTree_Icon::Uninit(void)
 	{
 		delete m_pAbillity;
 		m_pAbillity = nullptr;
+	}
+
+	if (m_apNumber != nullptr)
+	{
+		m_apNumber->Uninit();
+		m_apNumber = nullptr;
+	}
+
+	// 終了処理
+	CObject2D::Uninit();
+}
+
+//==========================================================================
+// 終了処理
+//==========================================================================
+void CSkillTree_Icon::Kill(void)
+{
+	// リストから削除
+	m_List.Delete(this);
+
+	if (m_pAbillity != nullptr)
+	{
+		delete m_pAbillity;
+		m_pAbillity = nullptr;
+	}
+
+	if (m_apNumber != nullptr)
+	{
+		m_apNumber->Release();
+		m_apNumber = nullptr;
 	}
 
 	// 終了処理
@@ -176,6 +213,14 @@ void CSkillTree_Icon::Update(void)
 	D3DXCOLOR col = COLOR[m_Mastering];
 	col.a = GetColor().a;
 	SetColor(col);
+
+	if (m_apNumber != nullptr)
+	{
+		m_apNumber->SetValue(m_SkillIconInfo.needpoint);
+		m_apNumber->SetPosition(GetPosition() + DISTANCE);
+		m_apNumber->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, GetColor().a));
+	}
+
 
 	// 状態保存
 	CSkillTree::GetInstance()->SetMastering(m_SkillIconInfo.ID, m_Mastering);

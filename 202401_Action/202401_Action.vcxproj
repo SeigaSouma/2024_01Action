@@ -266,10 +266,12 @@
     <ClCompile Include="skilltree_behavior.cpp" />
     <ClCompile Include="skilltree_command.cpp" />
     <ClCompile Include="skilltree_cursor.cpp" />
+    <ClCompile Include="skilltree_description.cpp" />
     <ClCompile Include="skilltree_icon.cpp" />
     <ClCompile Include="skilltree_line.cpp" />
     <ClCompile Include="skilltree_obj.cpp" />
     <ClCompile Include="skilltree_screen.cpp" />
+    <ClCompile Include="skilltree_window.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stagecleartext.cpp" />
@@ -395,10 +397,12 @@
     <ClInclude Include="skilltree_behavior.h" />
     <ClInclude Include="skilltree_command.h" />
     <ClInclude Include="skilltree_cursor.h" />
+    <ClInclude Include="skilltree_description.h" />
     <ClInclude Include="skilltree_icon.h" />
     <ClInclude Include="skilltree_line.h" />
     <ClInclude Include="skilltree_obj.h" />
     <ClInclude Include="skilltree_screen.h" />
+    <ClInclude Include="skilltree_window.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="stagecleartext.h" />

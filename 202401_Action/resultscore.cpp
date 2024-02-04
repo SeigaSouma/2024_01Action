@@ -148,7 +148,6 @@ void CResultScore::Uninit(void)
 
 		// I—¹ˆ—
 		m_pToatalScore->Uninit();
-		delete m_pToatalScore;
 		m_pToatalScore = NULL;
 	}
 

@@ -18,7 +18,8 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\sccreen_01.png";
+	const char* TEXTURE = "data\\TEXTURE\\skilltree\\skilltree_bg4.png";
+	const float SCROLL = 0.0001f;
 }
 
 //==========================================================================
@@ -103,6 +104,12 @@ void CSkillTree_Screen::Uninit(void)
 //==========================================================================
 void CSkillTree_Screen::Update(void)
 {
+	D3DXVECTOR2* tex = GetTex();
+	tex[0].x += SCROLL;
+	tex[1].x += SCROLL;
+	tex[2].x += SCROLL;
+	tex[3].x += SCROLL;
+
 	// í∏ì_ç¿ïWÇÃê›íË
 	SetVtx();
 }

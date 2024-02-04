@@ -33,9 +33,11 @@ public:
 		MOTION_WALK,			// 移動モーション
 		MOTION_OVERHEADATK,		// 振り下ろし
 		MOTION_SIDESWIPE,		// 横なぎ
+		MOTION_HANDSLAP,		// ハンドスラップ
 		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
 		MOTION_ROLLING,			// ローリング
 		MOTION_DOWN,			// ダウンモーション
+		MOTION_BACKSTEP,		// バックステップ
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
 	};
@@ -55,17 +57,7 @@ public:
 
 	// 攻撃状態切り替え
 	void ChangeATKState(CBossState* state);
-	void ChangeNextATKState(CBossState* state) 
-	{ 
-		/*delete m_pNextATKState;
-		m_pNextATKState = state;*/
-	}
-
-
-	void ChangeATKType(int pattern)
-	{
-		//m_nIdxAtkPattern
-	}
+	void ChangeNextATKState(CBossState* state) { m_pNextATKState = state; }
 
 
 
@@ -74,6 +66,7 @@ public:
 
 	void PerformAttack();		// 攻撃実行処理
 	void DrawingRandomAction();	// 攻撃ランダム抽選
+	void ChangeNextAction();	// 次の攻撃へ切り替え
 
 	bool IsCatchUp() { return m_bCatchUp; }	// 追い着き判定
 	bool IsInSight() { return m_bInSight; }	// 視界内判定
@@ -118,30 +111,36 @@ private:
 
 
 
+//=============================
 // ボスステート
+//=============================
 class CBossState
 {
 public:
+	CBossState() : m_bCreateFirstTime(false) {}
+
 	virtual void Action(CEnemyBoss* boss) = 0;	// 行動
 	virtual void Attack(CEnemyBoss* boss) = 0;	// 攻撃処理
-
-	// モーションインデックス切り替え
-	virtual void ChangeMotionIdx(CEnemyBoss* boss) = 0;
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) = 0;	// モーションインデックス切り替え
+	bool IsCreateFirstTime() { return m_bCreateFirstTime; }
+protected:
+	bool m_bCreateFirstTime;	// 初回生成のフラグ
 };
 
+// ステップ
 class CBossStep : public CBossState
 {
 public:
-	// 行動
-	virtual void Action(CEnemyBoss* boss) override
-	{
-		// 追い掛ける
-		boss->ActChase();
 
-		if (boss->IsCatchUp())
-		{
-			boss->ChangeATKState(boss->GetNextATKState());
-		}
+	CBossStep() {}
+	
+	virtual void Action(CEnemyBoss* boss) override;	// 行動
+	virtual void Attack(CEnemyBoss* boss) override {}	// 攻撃処理
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		boss->SetMotion(CEnemyBoss::MOTION_BACKSTEP);
 	}
 };
 
@@ -151,11 +150,12 @@ class CBossAttack : public CBossState
 {
 public:
 
-	CBossAttack() : m_nIdxMotion(0) {}
+	CBossAttack() : m_nIdxMotion(0), m_bWillDirectlyTrans(true) 
+	{
+		m_bCreateFirstTime = true;
+	}
 
 	virtual void Action(CEnemyBoss* boss) override = 0;	// 行動
-
-
 	virtual void Attack(CEnemyBoss* boss) override;	// 攻撃処理
 
 	// モーションインデックス切り替え
@@ -165,8 +165,14 @@ public:
 		boss->SetMotion(m_nIdxMotion);
 	}
 
+	virtual void BeforeTransitionProcess(CEnemyBoss* boss) {}	// 遷移前処理
+
+	bool IsDirectlyTrans() { return m_bWillDirectlyTrans; }	// 直接遷移フラグ取得
+
+
 protected:
 	int m_nIdxMotion;	// モーション番号
+	bool m_bWillDirectlyTrans;	// 直接遷移フラグ
 };
 
 // 近接攻撃
@@ -177,9 +183,8 @@ public:
 	CBossProximity() {}
 	
 	virtual void Action(CEnemyBoss* boss) override;	// 行動
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override = 0;	// モーションインデックス切り替え
 
-	// モーションインデックス切り替え
-	virtual void ChangeMotionIdx(CEnemyBoss* boss) override = 0;
 };
 
 // 遠距離攻撃
@@ -196,18 +201,21 @@ public:
 
 
 
-
+//=============================
+// 近接群
+//=============================
 // 横なぎコンボ
 class CBossSideSwipeCombo : public CBossProximity
 {
 public:
 	CBossSideSwipeCombo() {}
-	
+
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
 	{
 		m_nIdxMotion = CEnemyBoss::MOTION_SIDESWIPE;
 		CBossAttack::ChangeMotionIdx(boss);
+		m_bWillDirectlyTrans = true;
 	}
 };
 
@@ -222,6 +230,23 @@ public:
 	{
 		m_nIdxMotion = CEnemyBoss::MOTION_OVERHEADATK;
 		CBossAttack::ChangeMotionIdx(boss);
+		m_bWillDirectlyTrans = true;
+	}
+};
+
+
+// ハンドスラップ
+class CBossHandSlap : public CBossProximity
+{
+public:
+	CBossHandSlap() {}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION_HANDSLAP;
+		CBossAttack::ChangeMotionIdx(boss);
+		m_bWillDirectlyTrans = true;
 	}
 };
 
@@ -231,14 +256,32 @@ class CBossRolling : public CBossProximity
 public:
 	CBossRolling() {}
 
+	// 行動
+	virtual void Action(CEnemyBoss* boss) override
+	{
+		Attack(boss);
+	}
+
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
 	{
 		m_nIdxMotion = CEnemyBoss::MOTION_ROLLING;
 		CBossAttack::ChangeMotionIdx(boss);
+		m_bWillDirectlyTrans = false;
 	}
+
+	// 遷移前処理
+	virtual void BeforeTransitionProcess(CEnemyBoss* boss) override 
+	{
+		// 挟む行動を設定
+		boss->ChangeATKState(DEBUG_NEW CBossStep());
+	}
+
 };
 
+//=============================
+// 遠距離群
+//=============================
 // 瓦礫飛ばし
 class CBossLaunchBallast : public CBossRemote
 {
@@ -250,6 +293,7 @@ public:
 	{
 		m_nIdxMotion = CEnemyBoss::MOTION_LAUNCHBALLAST;
 		CBossAttack::ChangeMotionIdx(boss);
+		m_bWillDirectlyTrans = true;
 	}
 };
 

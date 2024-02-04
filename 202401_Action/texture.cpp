@@ -78,13 +78,15 @@ void CTexture::Init(void)
 //==========================================================================
 HRESULT CTexture::LoadAll(void)
 {
+#ifndef _DEBUG
+	// 全検索
 	std::vector<std::string> imageNames;
 	SearchAllImages(MAINFOLODER, imageNames);
-
 	for (const auto& name : imageNames)
 	{
 		Regist(name);
 	}
+#endif
 
 	// マップ用の読み込み
 	if (FAILED(MyMap::ReadTexture()))

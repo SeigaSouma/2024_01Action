@@ -1,0 +1,14 @@
+#------------------------------------------------------------------------------
+# テクスチャ数
+#------------------------------------------------------------------------------
+NUM_TEXTURE = 3
+
+#------------------------------------------------------------------------------
+# テクスチャファイル名
+#------------------------------------------------------------------------------
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_description1.png	# [0]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_description2.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_description3.png	# [2]
+
+
+END_SCRIPT		# この行は絶対消さないこと！

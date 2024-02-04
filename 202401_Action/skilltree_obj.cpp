@@ -162,7 +162,9 @@ void CSkillTree_Obj::CollisionPlayer(void)
 	{
 		// ゲームパッド情報取得
 		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
-		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0))
+		CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) ||
+			pInputKeyboard->GetTrigger(DIK_RETURN))
 		{
 			// スキルツリーに変更
 			CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_SKILLTREE);

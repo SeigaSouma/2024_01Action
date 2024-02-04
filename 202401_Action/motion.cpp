@@ -38,6 +38,7 @@ CMotion::CMotion()
 	m_bFinish = false;		// 終了したかどうか
 	m_bCancelable = false;	// キャンセル可能か
 	m_bCombiable = false;	// コンボ可能か
+	m_bBeforeInAction = false;		// 攻撃前フラグ
 	m_pObjChara = NULL;		// オブジェクトのポインタ
 	m_ppModel = NULL;		// モデルのポインタ
 	m_nNumModel = 0;		// モデルの総数
@@ -277,8 +278,17 @@ void CMotion::Update(float fBuff)
 	for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 	{
 		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
-		{// NULLだったら
+		{
 			continue;
+		}
+
+		if (m_bBeforeInAction)
+		{
+			if (m_pInfo[m_nType].AttackInfo[nCntAttack]->nMaxCnt > 0 &&
+				m_pInfo[m_nType].AttackInfo[nCntAttack]->nMinCnt <= m_fCntAllFrame)
+			{
+				m_bBeforeInAction = false;
+			}
 		}
 
 		if (m_pInfo[m_nType].AttackInfo[nCntAttack]->nInpactCnt < 0)
@@ -658,6 +668,7 @@ void CMotion::Set(int nType, bool bBlend)
 	m_bFinish = false;		// 終了したかどうか
 	m_bCancelable = false;	// キャンセル可能か
 	m_bCombiable = false;	// コンボ可能か
+	m_bBeforeInAction = true;		// 攻撃前フラグ
 
 	for (int nCntKey = 0; nCntKey < m_pInfo[m_nPatternKey].nNumKey; nCntKey++)
 	{
