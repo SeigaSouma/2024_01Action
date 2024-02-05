@@ -498,6 +498,9 @@
     <ClCompile Include="skilltree_description.cpp">
       <Filter>ソース ファイル\skilltree</Filter>
     </ClCompile>
+    <ClCompile Include="playercontrol.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -886,6 +889,9 @@
     </ClInclude>
     <ClInclude Include="skilltree_description.h">
       <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="playercontrol.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -76,7 +76,7 @@ private:
 	// ‚»‚Ì‘¼ŠÖ”
 	void MotionSet(void) override;	// ƒ‚[ƒVƒ‡ƒ“‚Ìİ’è
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// UŒ‚ˆ—
-	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// UŒ‚”»’è’†ˆ—
+	void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// UŒ‚”»’è’†ˆ—
 
 	//=============================
 	// ƒƒ“ƒo•Ï”

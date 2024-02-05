@@ -93,7 +93,9 @@ HRESULT CEnemyBoss::Init()
 	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
 
 	// 攻撃抽選
-	DrawingRandomAction();
+	//DrawingRandomAction();
+
+	ChangeATKState(m_pAtkPattern[0]);
 	return S_OK;
 }
 
@@ -261,6 +263,11 @@ void CEnemyBoss::ChangeATKState(CBossState* state)
 //==========================================================================
 void CEnemyBoss::PerformAttack()
 {
+	if (m_pATKState == nullptr)
+	{
+		return;
+	}
+
 	if (m_bActionable)
 	{
 		m_pATKState->Action(this);
@@ -480,6 +487,13 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
 		break;
 
+	case MOTION_HANDSLAP:
+		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+
+		// 振動
+		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		break;
+
 	case MOTION_ROLLING:
 		if (nCntATK == 0)
 		{
@@ -504,10 +518,10 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 // 攻撃判定中処理
 //==========================================================================
-void CEnemyBoss::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
+void CEnemyBoss::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
 	// 基底の攻撃判定中処理
-	CEnemy::AttackInDicision(ATKInfo, nCntATK);
+	CEnemy::AttackInDicision(pATKInfo, nCntATK);
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -518,7 +532,7 @@ void CEnemyBoss::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	// モーション情報取得
 	int nMotionType = pMotion->GetType();
-	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 
 	// モーション別処理
 	switch (nMotionType)

@@ -60,7 +60,6 @@ public:
 	void ChangeNextATKState(CBossState* state) { m_pNextATKState = state; }
 
 
-
 	void ActChase(void);		// 追い掛け
 	void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
 
@@ -94,7 +93,7 @@ private:
 	// その他関数
 	void MotionSet(void) override;	// モーションの設定
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
-	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃判定中処理
+	void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
 
 	//=============================
 	// メンバ変数
@@ -122,7 +121,8 @@ public:
 	virtual void Action(CEnemyBoss* boss) = 0;	// 行動
 	virtual void Attack(CEnemyBoss* boss) = 0;	// 攻撃処理
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) = 0;	// モーションインデックス切り替え
-	bool IsCreateFirstTime() { return m_bCreateFirstTime; }
+	bool IsCreateFirstTime() { return m_bCreateFirstTime; }	// 初回生成のフラグ
+
 protected:
 	bool m_bCreateFirstTime;	// 初回生成のフラグ
 };
@@ -171,7 +171,7 @@ public:
 
 
 protected:
-	int m_nIdxMotion;	// モーション番号
+	int m_nIdxMotion;			// モーション番号
 	bool m_bWillDirectlyTrans;	// 直接遷移フラグ
 };
 
@@ -194,9 +194,7 @@ public:
 	CBossRemote() {}
 
 	virtual void Action(CEnemyBoss* boss) override;	// 行動
-
-	// モーションインデックス切り替え
-	virtual void ChangeMotionIdx(CEnemyBoss* boss) override = 0;
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override = 0;	// モーションインデックス切り替え
 };
 
 

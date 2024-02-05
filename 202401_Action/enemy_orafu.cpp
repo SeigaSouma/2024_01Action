@@ -384,10 +384,10 @@ void CEnemyOrafu::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 // 攻撃判定中処理
 //==========================================================================
-void CEnemyOrafu::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
+void CEnemyOrafu::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
 	// 基底の攻撃判定中処理
-	CEnemy::AttackInDicision(ATKInfo, nCntATK);
+	CEnemy::AttackInDicision(pATKInfo, nCntATK);
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -398,7 +398,7 @@ void CEnemyOrafu::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	// モーション情報取得
 	int nMotionType = pMotion->GetType();
-	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 
 	// モーション別処理
 	switch (nMotionType)

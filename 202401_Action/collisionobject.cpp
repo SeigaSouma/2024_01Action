@@ -263,10 +263,7 @@ void CCollisionObject::CollisionPlayer(void)
 			PlayerState != CPlayer::STATE_INVINCIBLE)
 		{
 			// ƒqƒbƒgˆ—
-			if (pPlayer->Hit(m_nDamage) == false)
-			{// Ž€‚ñ‚Å‚È‚©‚Á‚½‚ç
-
-			}
+			pPlayer->Hit(m_nDamage);
 		}
 	}
 }

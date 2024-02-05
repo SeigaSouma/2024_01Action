@@ -45,7 +45,7 @@ namespace mylib_const
 	const int MAX_PLAYER = 4;			// プレイヤーの数
 	const int SHAPE_LIMITEREA = 4;		// エリア制限の多角形
 	const float MAX_ROCKONDISTANCE_GAME = 1600.0f;		// (ゲーム時)最大ロックオン距離
-	const float MAX_ROCKONDISTANCE_BOSS = 2500.0f;		// (ボス戦時)最大ロックオン距離
+	const float MAX_ROCKONDISTANCE_BOSS = 4000.0f;		// (ボス戦時)最大ロックオン距離
 	const float RADIUS_STAGE = 2300.0f;					// ステージの半径
 	const D3DXCOLOR DEFAULT_COLOR = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// デフォルトの色
 	const D3DXCOLOR FIELDCOLOR_01 = D3DXCOLOR(0.6f, 0.4f, 0.1f, 1.0f);	// フィールドの色

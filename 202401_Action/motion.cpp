@@ -39,8 +39,8 @@ CMotion::CMotion()
 	m_bCancelable = false;	// キャンセル可能か
 	m_bCombiable = false;	// コンボ可能か
 	m_bBeforeInAction = false;		// 攻撃前フラグ
-	m_pObjChara = NULL;		// オブジェクトのポインタ
-	m_ppModel = NULL;		// モデルのポインタ
+	m_pObjChara = nullptr;		// オブジェクトのポインタ
+	m_ppModel = nullptr;		// モデルのポインタ
 	m_nNumModel = 0;		// モデルの総数
 	m_nNumMotion = 0;		// モーションの総数
 	m_pInfo = nullptr;		// モーション情報
@@ -62,15 +62,15 @@ CMotion::~CMotion()
 CMotion *CMotion::Create(const std::string pTextFile, CObjectChara* pObjChara)
 {
 	// 生成用のオブジェクト
-	CMotion *pMotion = NULL;
+	CMotion *pMotion = nullptr;
 
-	if (pMotion == NULL)
-	{// NULLだったら
+	if (pMotion == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pMotion = DEBUG_NEW CMotion;
 
-		if (pMotion != NULL)
+		if (pMotion != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// オブジェクトのポインタを渡す
@@ -84,7 +84,7 @@ CMotion *CMotion::Create(const std::string pTextFile, CObjectChara* pObjChara)
 		return pMotion;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -100,7 +100,7 @@ HRESULT CMotion::Init(void)
 	m_fCntAllFrame = 0.0f;	// 全てのカウント
 	m_fMaxAllFrame = 0.0f;	// 全てのカウントの最大値
 	m_bFinish = true;		// 終了したかどうか
-	m_ppModel = NULL;		// モデルのポインタ
+	m_ppModel = nullptr;		// モデルのポインタ
 	m_nNumModel = 0;		// モデルの総数
 	m_fSlowFactor = 1.0f;	// 遅延係数
 
@@ -188,8 +188,8 @@ void CMotion::SetAttackInfo(AttackInfo info)
 	// メモリ確保
 	m_pInfo[m_nNumAll].AttackInfo[nIdx] = DEBUG_NEW AttackInfo;
 
-	if (m_pInfo[m_nNumAll].AttackInfo[nIdx] != NULL)
-	{// NULLじゃなければ
+	if (m_pInfo[m_nNumAll].AttackInfo[nIdx] != nullptr)
+	{// nullptrじゃなければ
 
 		// 情報渡す
 		*m_pInfo[m_nNumAll].AttackInfo[nIdx] = info;
@@ -239,8 +239,8 @@ void CMotion::ResetPose(int nType)
 			break;
 		}
 
-		if (m_ppModel[nCntModel] == NULL)
-		{// NULLだったら
+		if (m_ppModel[nCntModel] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -277,7 +277,7 @@ void CMotion::Update(float fBuff)
 
 	for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 	{
-		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
+		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == nullptr)
 		{
 			continue;
 		}
@@ -351,8 +351,8 @@ void CMotion::Update(float fBuff)
 			break;
 		}
 
-		if (m_ppModel[nCntModel] == NULL)
-		{// NULLだったら
+		if (m_ppModel[nCntModel] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -624,8 +624,8 @@ void CMotion::Update(float fBuff)
 			{
 				for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 				{
-					if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
-					{// NULLだったら
+					if (m_pInfo[m_nType].AttackInfo[nCntAttack] == nullptr)
+					{// nullptrだったら
 						continue;
 					}
 
@@ -637,6 +637,7 @@ void CMotion::Update(float fBuff)
 					// まだ衝撃カウントの行動をしてない状態にする
 					m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
 					m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = false;
+					m_pInfo[m_nType].AttackInfo[nCntAttack]->bEndAtk = false;
 				}
 			}
 		}
@@ -679,14 +680,17 @@ void CMotion::Set(int nType, bool bBlend)
 	int nNumAttackInfo = m_pInfo[m_nType].nNumAttackInfo;
 	for (int nCntAttack = 0; nCntAttack < nNumAttackInfo; nCntAttack++)
 	{
-		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == NULL)
-		{// NULLだったら
+		if (m_pInfo[m_nType].AttackInfo[nCntAttack] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
 		// まだ衝撃カウントの行動をしてない状態にする
 		m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactAct = false;
 		m_pInfo[m_nType].AttackInfo[nCntAttack]->bInpactActSet = false;
+
+		// 攻撃のフラグリセット
+		m_pInfo[m_nType].AttackInfo[nCntAttack]->bEndAtk = false;
 	}
 
 	int nStartIdx = m_pObjChara->GetMotionStartIdx();
@@ -704,8 +708,8 @@ void CMotion::Set(int nType, bool bBlend)
 			break;
 		}
 
-		if (m_ppModel[nCntModel] == NULL)
-		{// NULLだったら
+		if (m_ppModel[nCntModel] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -860,8 +864,8 @@ void CMotion::AddNumAttackInfo(int nType)
 	// メモリ確保
 	m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo] = DEBUG_NEW AttackInfo;
 
-	if (m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo] != NULL)
-	{// NULLじゃなければ
+	if (m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo] != nullptr)
+	{// nullptrじゃなければ
 
 		// 初期化
 		memset(m_pInfo[nType].AttackInfo[m_pInfo[nType].nNumAttackInfo], 0, sizeof(AttackInfo));
@@ -883,10 +887,10 @@ void CMotion::SubNumAttackInfo(int nType)
 	int nIdx = m_pInfo[nType].nNumAttackInfo - 1;
 
 	// メモリ解放
-	//if (m_pInfo[nType].AttackInfo[nIdx] != NULL)
+	//if (m_pInfo[nType].AttackInfo[nIdx] != nullptr)
 	{
 		delete m_pInfo[nType].AttackInfo[nIdx];
-		m_pInfo[nType].AttackInfo[nIdx] = NULL;
+		m_pInfo[nType].AttackInfo[nIdx] = nullptr;
 
 		// 攻撃情報の総数減算
 		m_pInfo[nType].nNumAttackInfo--;
@@ -924,8 +928,8 @@ MyLib::Vector3 CMotion::GetAttackPosition(CModel **ppModel, AttackInfo attackInf
 {
 	D3DXMATRIX mtxTrans;	// 計算用マトリックス宣言
 
-	if (ppModel[attackInfo.nCollisionNum] == NULL)
-	{// NULLだったら
+	if (ppModel[attackInfo.nCollisionNum] == nullptr)
+	{// nullptrだったら
 		return mylib_const::DEFAULT_VECTOR3;
 	}
 
@@ -946,8 +950,8 @@ MyLib::Vector3 CMotion::GetAttackPosition(CModel *pModel, AttackInfo attackInfo)
 {
 	D3DXMATRIX mtxTrans;	// 計算用マトリックス宣言
 
-	if (pModel == NULL)
-	{// NULLだったら
+	if (pModel == nullptr)
+	{// nullptrだったら
 		return mylib_const::DEFAULT_VECTOR3;
 	}
 
@@ -1031,7 +1035,7 @@ void CMotion::ReadText(const std::string pTextFile)
 
 	// ファイルを開く
 	FILE* pFile = fopen(pTextFile.c_str(), "r");
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けなかった場合
 		return;
 	}
@@ -1114,7 +1118,7 @@ void CMotion::LoadMotion(const std::string text, int nIdxMotion)
 
 	// ファイルを開く
 	FILE* pFile = fopen(text.c_str(), "r");
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けなかった場合
 		return;
 	}

@@ -29,6 +29,7 @@ std::vector<CEnhance::CREATE_FUNC> CEnhance::m_CreateFunc =
 	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityLife(); },
 	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityCounter(); },
 	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityRespawn(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityGuard(); },
 };
 
 //=============================
@@ -38,6 +39,9 @@ CAbillityStamina::STAGE_FUNC CAbillityStamina::m_StageFunc[] =
 {
 	&CAbillityStamina::Add01,
 	&CAbillityStamina::AutoHeal01,
+	&CAbillityStamina::Add02,
+	&CAbillityStamina::AutoHeal02,
+	&CAbillityStamina::Add03,
 };
 
 //=============================
@@ -54,7 +58,11 @@ CAbillityLife::STAGE_FUNC CAbillityLife::m_StageFunc[] =
 //=============================
 CAbillityCounter::STAGE_FUNC CAbillityCounter::m_StageFunc[] =
 {
-	&CAbillityCounter::SubNeedStamina,
+	&CAbillityCounter::SubNeedStamina01,
+	&CAbillityCounter::SubNeedStamina02,
+	&CAbillityCounter::SubNeedStamina03,
+	&CAbillityCounter::HealStamina01,
+	&CAbillityCounter::HealStamina02,
 };
 
 //=============================
@@ -65,6 +73,17 @@ CAbillityRespawn::STAGE_FUNC CAbillityRespawn::m_StageFunc[] =
 	&CAbillityRespawn::AddRespawnPercent,	// リスポーン確率加算
 };
 
+//=============================
+// ガードのステージ
+//=============================
+CAbillityGuard::STAGE_FUNC CAbillityGuard::m_StageFunc[] =
+{
+	&CAbillityGuard::SubNeedStamina01,
+	&CAbillityGuard::SubNeedStamina02,
+	&CAbillityGuard::KnockbackMitigation01,
+	&CAbillityGuard::KnockbackMitigation02,
+};
+
 
 
 
@@ -73,13 +92,22 @@ CAbillityRespawn::STAGE_FUNC CAbillityRespawn::m_StageFunc[] =
 //=============================
 std::vector<CUnlock::CREATE_FUNC> CUnlock::m_CreateFunc =
 {
-	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CUnlockCombo(); }
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CUnlockCombo(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CUnlockCounter(); },
 };
 
 //=============================
-// ステージ関数リストの初期化
+// ステージ関数リストの初期化[コンボ開放]
 //=============================
 CUnlockCombo::STAGE_FUNC CUnlockCombo::m_StageFunc[] =
 {
 	&CUnlockCombo::State01,
+};
+
+//=============================
+// ステージ関数リストの初期化[反撃開放]
+//=============================
+CUnlockCounter::STAGE_FUNC CUnlockCounter::m_StageFunc[] =
+{
+	&CUnlockCounter::State01,
 };

@@ -196,7 +196,7 @@ void CBulletObstacle::CollisionPlayer(void)
 	{// “–‚½‚Á‚Ä‚¢‚½‚ç
 
 		// ƒqƒbƒgˆ—
-		if (pPlayer->Hit(DAMAGE))
+		if (pPlayer->Hit(DAMAGE).ishit)
 		{
 			// I—¹ˆ—
 			Uninit();

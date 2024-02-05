@@ -185,18 +185,18 @@ void CObjectChara::MotionInProgressAction(void)
 		}
 
 		// UŒ‚î•ñŽæ“¾
-		CMotion::AttackInfo AttackInfo = *aInfo.AttackInfo[nCntAttack];
+		CMotion::AttackInfo* AttackInfo = aInfo.AttackInfo[nCntAttack];
 
-		if (m_pMotion->IsImpactFrame(AttackInfo))
+		if (m_pMotion->IsImpactFrame(*AttackInfo))
 		{// ÕŒ‚‚ÌƒJƒEƒ“ƒg‚Æ“¯‚¶‚Æ‚«
 
 			// UŒ‚Žžˆ—
-			AttackAction(AttackInfo, nCntAttack);
+			AttackAction(*AttackInfo, nCntAttack);
 		}
 
 		// ƒ‚[ƒVƒ‡ƒ“ƒJƒEƒ“ƒ^[Žæ“¾
 		float fAllCount = m_pMotion->GetAllCount();
-		if (fAllCount > AttackInfo.nMinCnt && fAllCount <= AttackInfo.nMaxCnt)
+		if (fAllCount > AttackInfo->nMinCnt && fAllCount <= AttackInfo->nMaxCnt)
 		{// UŒ‚”»’è’†
 
 			// UŒ‚”»’è’†ˆ—
@@ -217,10 +217,10 @@ void CObjectChara::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 // UŒ‚”»’è’†ˆ—
 //==========================================================================
-void CObjectChara::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
+void CObjectChara::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
 	// •Ší‚ÌˆÊ’u
-	MyLib::Vector3 weponpos = m_pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 weponpos = m_pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 }
 
 //==========================================================================

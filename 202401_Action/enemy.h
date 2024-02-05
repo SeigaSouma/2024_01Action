@@ -132,7 +132,7 @@ protected:
 
 	virtual void ProcessLanding(void);	// 着地時処理
 	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
-	virtual void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃判定中処理
+	virtual void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
 	virtual void ChaseMove(float fMove);	// 追い掛け移動
 	virtual void RotationTarget(void);		// ターゲットの方を向く
 	virtual bool CalcLenPlayer(float fLen); // プレイヤーとの距離判定

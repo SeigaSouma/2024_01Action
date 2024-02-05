@@ -1758,7 +1758,7 @@ void CEnemy::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 // 攻撃判定中処理
 //==========================================================================
-void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
+void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -1771,15 +1771,20 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 	MyLib::Vector3 pos = GetPosition();
 
 	// 武器の位置
-	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 
-	if (ATKInfo.fRangeSize == 0.0f)
+	if (pATKInfo->fRangeSize == 0.0f)
+	{
+		return;
+	}
+
+	if (pATKInfo->bEndAtk)
 	{
 		return;
 	}
 
 #if _DEBUG
-	CEffect3D::Create(weponpos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), ATKInfo.fRangeSize, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+	CEffect3D::Create(weponpos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), pATKInfo->fRangeSize, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 #endif
 
 	//============================
@@ -1798,10 +1803,17 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		// 判定サイズ取得
 		float fRadius = pPlayer->GetRadius();
 
-		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, ATKInfo.fRangeSize, fRadius).ishit)
+		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, pATKInfo->fRangeSize, fRadius).ishit)
 		{// 球の判定
 
-			if (pPlayer->Hit(ATKInfo.nDamage, this, ATKInfo.AtkType))
+			MyLib::HitResult_Character result = pPlayer->Hit(pATKInfo->nDamage, this, pATKInfo->AtkType);
+
+			if (result.ishit)
+			{
+				pATKInfo->bEndAtk = true;
+			}
+
+			if (result.isdamage)
 			{// 当たってたら
 
 				// プレイヤーの向き
@@ -1838,7 +1850,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		while (BagList.ListLoop(&pBag))
 		{
 			// 当たり判定
-			if (UtilFunc::Collision::CircleRange3D(weponpos, pBag->GetPosition(), ATKInfo.fRangeSize, 80.0f))
+			if (UtilFunc::Collision::CircleRange3D(weponpos, pBag->GetPosition(), pATKInfo->fRangeSize, 80.0f))
 			{
 				pBag->Hit();
 			}

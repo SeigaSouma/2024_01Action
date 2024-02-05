@@ -15,7 +15,7 @@
 //==========================================================================
 namespace
 {
-	const float DEFAULT_AUTOHEAL = 0.6f;	// デフォルトの自動回復
+	const float DEFAULT_AUTOHEAL = 0.3f;	// デフォルトの自動回復
 	const float DEFAULT_WIDTH = 120.0f;		// デフォルトの幅
 	const float DEFAULT_HEIGHT = 15.0f;		// デフォルトの高さ
 	const float TIME_STATESUB = static_cast<float>(20) / static_cast<float>(mylib_const::DEFAULT_FPS);		// 減算状態の時間

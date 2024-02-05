@@ -79,7 +79,7 @@ private:
 	void MotionSet(void) override;	// モーションの設定
 	void RotationTarget(void);		// ターゲットの方を向く
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
-	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃判定中処理
+	void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
 
 	//=============================
 	// メンバ変数

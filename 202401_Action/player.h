@@ -22,25 +22,16 @@ class CSkillPoint;
 class CEnemy;
 class CEndCounterSetting;
 
+class CPlayerControlAttack;	// 攻撃
+class CPlayerControlDefence;	// 防御
+class CPlayerControlAvoid;	// 回避
+
 //==========================================================================
 // クラス定義
 //==========================================================================
 // プレイヤークラス定義
 class CPlayer : public CObjectChara
 {
-protected:
-
-	// モーションの判定
-	struct SMotionFrag
-	{
-		bool bJump;			// ジャンプ中
-		bool bATK;			// 攻撃中
-		bool bCounter;		// カウンター中
-		bool bKnockBack;	// ノックバック中
-		bool bDead;			// 死亡中
-		bool bMove;			// 移動中
-	};
-
 public:
 	// 列挙型定義
 	enum MOTION
@@ -57,6 +48,8 @@ public:
 		MOTION_KNOCKBACK,	// ノックバック
 		MOTION_DEAD,		// 死亡
 		MOTION_RESPAWN,		// 復活
+		MOTION_GUARD,		// ガード
+		MOTION_GUARD_DMG,	// ガードダメージ
 		MOTION_COUNTER_ACCEPT,		// 反撃受け付け
 		MOTION_COUNTER_TURN,		// 反撃受け流し
 		MOTION_COUNTER_ATTACK,		// 反撃
@@ -80,6 +73,18 @@ public:
 		STATE_MAX
 	};
 
+	// モーションの判定
+	struct SMotionFrag
+	{
+		bool bJump;			// ジャンプ中
+		bool bATK;			// 攻撃中
+		bool bGuard;		// ガード
+		bool bCounter;		// カウンター中
+		bool bKnockBack;	// ノックバック中
+		bool bDead;			// 死亡中
+		bool bMove;			// 移動中
+	};
+
 	CPlayer(int nPriority = 2);
 	~CPlayer();
 
@@ -89,9 +94,9 @@ public:
 	virtual void Update(void) override;
 	virtual void Draw(void) override;
 
-	bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
-	bool Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
-	bool ProcessHit(const int nValue);
+	MyLib::HitResult_Character Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
+	MyLib::HitResult_Character Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
+	MyLib::HitResult_Character ProcessHit(const int nValue);
 
 	STATE GetState(void);		// 状態取得
 	void SetState(STATE state, int nCntState = 0);	// 状態設定
@@ -100,7 +105,13 @@ public:
 
 	// モーション
 	void SetMotion(int motionIdx);	// モーションの設定
-
+	bool IsJump() { return m_bJump; }	// ジャンプ判定
+	float GetDashTime() { return m_fDashTime; }		// ダッシュ時間
+	void SetComboStage(int stage) { m_nComboStage = stage;; }	// コンボの段階設定
+	int GetComboStage() { return m_nComboStage; }	// コンボの段階取得
+	bool IsReadyDashAtk() { return m_bReadyDashAtk; }
+	void SetMotionFrag(SMotionFrag frag) { m_sMotionFrag = frag; }
+	SMotionFrag GetMotionFrag() { return m_sMotionFrag; }
 
 	// 転移ビーコン
 	void SetEnableTouchBeacon(bool bTouch) { m_bTouchBeacon = bTouch; }	// ビーコンに触れてる判定設定
@@ -108,6 +119,9 @@ public:
 
 	// スキルポイント
 	CSkillPoint* GetSkillPoint(void) { return m_pSkillPoint; }
+
+	// スタミナ
+	CStaminaGauge_Player* GetStaminaGauge() { return m_pStaminaGauge; }
 
 	// スキルツリー用関数
 	void UpgradeLife(int addvalue);	// 体力アップグレード
@@ -126,6 +140,11 @@ public:
 	bool IsLockOnAtStart() { return m_bLockOnAtStart; }	// 反撃開始時にロックオンしていたか
 	void EndCounterSetting(void);	// 反撃終了時の設定
 
+	// ヒット系
+	void DeadSetting(MyLib::HitResult_Character* result);
+
+	// その他
+	int GetMyPlayerIdx() { return m_nMyPlayerIdx; }
 
 	static CPlayer* Create(int nIdx);	// 生成
 	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
@@ -177,7 +196,7 @@ private:
 
 	// モーション系関数
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
-	void AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK) override;			// 攻撃判定中処理
+	void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;			// 攻撃判定中処理
 
 	//=============================
 	// メンバ変数
@@ -190,6 +209,7 @@ private:
 	int m_nComboStage;				// コンボの段階
 	int m_nIdxRockOn;				// ロックオン対象のインデックス番号
 	bool m_bLockOnAtStart;			// カウンター開始時にロックオンしていたか
+	bool m_bReadyDashAtk;				// ダッシュアタックのフラグ
 	bool m_bAttacking;				// 攻撃中
 	bool m_bCounterAccepting;		// カウンター受付中
 	bool m_bDash;					// ダッシュ判定
@@ -199,14 +219,21 @@ private:
 	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
 	CHP_GaugePlayer* m_pHPGauge;		// HPゲージのポインタ
 	CStaminaGauge_Player* m_pStaminaGauge;	// スタミナゲージのポインタ
+	
+	// パターン用インスタンス
 	CEndCounterSetting* m_pEndCounterSetting;	// カウンター終了時の設定
+	CPlayerControlAttack* m_pControlAtk;		// 攻撃操作
+	CPlayerControlDefence* m_pControlDefence;	// 防御操作
+	CPlayerControlAvoid* m_pControlAvoid;		// 回避操作
+
 	Effekseer::Handle *m_pWeaponHandle;		// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト
 };
 
 
 //==========================================================================
-// カウンター終了時の設定
+// カウンター終了時の設定クラス
+//==========================================================================
 class CEndCounterSetting
 {
 public:
@@ -224,6 +251,7 @@ class CEndAttack : public CEndCounterSetting
 {
 	void EndSetting(CPlayer* player) override;
 };
+
 
 
 #endif

@@ -12,6 +12,18 @@
                         {
                             "stage": 0,
                             "stageName": "EnhanceAutoHeal01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "AddStamina02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "EnhanceAutoHeal02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "AddStamina03"
                         }
                     ],
                     "typeName": "Stamina"
@@ -33,7 +45,23 @@
                     "skillstage": [
                         {
                             "stage": 0,
-                            "stageName": "SubNeedStamina"
+                            "stageName": "SubNeedStamina01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "SubNeedStamina02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "HealStamina01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "HealStamina02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "SubNeedStamina03"
                         }
                     ],
                     "typeName": "Counter"
@@ -46,6 +74,27 @@
                         }
                     ],
                     "typeName": "respawn"
+                },
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "SubNeedStamina01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "SubNeedStamina02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "KnockbackMitigation01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "KnockbackMitigation02"
+                        }
+                    ],
+                    "typeName": "Guard"
                 }
             ]
         },
@@ -60,6 +109,15 @@
                         }
                     ],
                     "typeName": "AddCombo"
+                },
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "UnlockCounter"
+                        }
+                    ],
+                    "typeName": "GetCounter"
                 }
             ]
         }

@@ -91,6 +91,9 @@ class CAbillityStamina : public CEnhance
 	// 段階別
 	void Add01(void) { m_pPlayer->UpgradeMaxStamina(20); }
 	void AutoHeal01(void){ m_pPlayer->UpgradeAutoHealStamina(1.5f); }
+	void Add02(void) { m_pPlayer->UpgradeMaxStamina(20); }
+	void AutoHeal02(void) { m_pPlayer->UpgradeAutoHealStamina(1.5f); }
+	void Add03(void) { m_pPlayer->UpgradeMaxStamina(20); }
 
 };
 
@@ -141,7 +144,11 @@ class CAbillityCounter : public CEnhance
 	// メンバ関数
 	//=============================
 	// 段階別
-	void SubNeedStamina(void) {}
+	void SubNeedStamina01(void) {}
+	void SubNeedStamina02(void) {}
+	void SubNeedStamina03(void) {}
+	void HealStamina01(void) {}
+	void HealStamina02(void) {}
 
 };
 
@@ -170,6 +177,34 @@ class CAbillityRespawn : public CEnhance
 
 };
 
+
+//==========================================================================
+// ガード強化
+//==========================================================================
+class CAbillityGuard : public CEnhance
+{
+	virtual void BindAbillity() override	// 能力を付与する関数
+	{
+		// 状態別処理
+		(this->*(m_StageFunc[m_nStage]))();
+	}
+
+	//=============================
+	// ステージ関数リスト
+	//=============================
+	typedef void(CAbillityGuard::* STAGE_FUNC)(void);
+	static STAGE_FUNC m_StageFunc[];
+
+	//=============================
+	// メンバ関数
+	//=============================
+	// 段階別
+	void SubNeedStamina01(void) {}
+	void SubNeedStamina02(void) {}
+	void KnockbackMitigation01(void) {}
+	void KnockbackMitigation02(void) {}
+
+};
 
 
 
@@ -214,6 +249,31 @@ class CUnlockCombo : public CUnlock
 	// ステージ関数リスト
 	//=============================
 	typedef void(CUnlockCombo::* STAGE_FUNC)(void);
+	static STAGE_FUNC m_StageFunc[];
+
+	//=============================
+	// メンバ関数
+	//=============================
+	// 段階別
+	void State01(void) {}
+
+};
+
+//==========================================================================
+// 反撃開放
+//==========================================================================
+class CUnlockCounter : public CUnlock
+{
+	virtual void BindAbillity() override	// 能力を付与する関数
+	{
+		// 状態別処理
+		(this->*(m_StageFunc[m_nStage]))();
+	}
+
+	//=============================
+	// ステージ関数リスト
+	//=============================
+	typedef void(CUnlockCounter::* STAGE_FUNC)(void);
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================

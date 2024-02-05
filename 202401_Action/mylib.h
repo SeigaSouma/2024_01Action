@@ -265,14 +265,16 @@ namespace MyLib
 	struct HitResult_Character
 	{
 		bool ishit;				// 衝突結果
+		bool isdamage;			// ダメージを喰らったか
 		bool isdeath;			// 死亡したか
 		MyLib::Vector3 hitpos;	// 衝突地点
 
 		// デフォルトコンストラクタ
-		HitResult_Character() : ishit(false), hitpos() {}
+		HitResult_Character() : ishit(false), isdamage(false), isdeath(false), hitpos() {}
 
 		// パラメータ付きコンストラクタ
-		HitResult_Character(bool bHit, MyLib::Vector3 pos) : ishit(bHit), hitpos(pos) {}
+		HitResult_Character(bool bHit, bool bDamage, bool bDeath, MyLib::Vector3 pos) : 
+			ishit(bHit), isdamage(bDamage), isdeath(bDeath), hitpos(pos) {}
 	};
 }
 

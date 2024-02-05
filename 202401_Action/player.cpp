@@ -40,6 +40,8 @@
 #include "damagepoint.h"
 #include "deadmanager.h"
 
+#include "playercontrol.h"
+
 //==========================================================================
 // 定数定義
 //==========================================================================
@@ -58,6 +60,7 @@ namespace
 	const float SUBVALUE_AVOID = 30.0f;		// 回避の減算量
 	const float SUBVALUE_COUNTER = 40.0f;	// カウンターの減算量
 	const int DEFAULT_RESPAWN_PERCENT = 80;	// 復活確率のデフォルト値
+	const float MULTIPLY_GUARD = 0.4f;		// カードの軽減
 }
 
 //==========================================================================
@@ -109,6 +112,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_nComboStage = 0;								// コンボの段階
 	m_nIdxRockOn = 0;								// ロックオン対象のインデックス番号
 	m_bLockOnAtStart = false;						// カウンター開始時にロックオンしていたか
+	m_bReadyDashAtk = false;						// ダッシュアタックのフラグ
 	m_bAttacking = false;							// 攻撃中
 	m_bCounterAccepting = false;					// カウンター受付中
 	m_bDash = false;								// ダッシュ判定
@@ -120,7 +124,12 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
 	m_pHPGauge = nullptr;							// HPゲージのポインタ
 	m_pStaminaGauge = nullptr;						// スタミナゲージのポインタ
+
 	m_pEndCounterSetting = nullptr;					// カウンター終了時の設定
+	m_pControlAtk = nullptr;						// 攻撃操作
+	m_pControlDefence = nullptr;					// 防御操作
+	m_pControlAvoid = nullptr;						// 回避操作
+
 	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
 
@@ -199,6 +208,11 @@ HRESULT CPlayer::Init(void)
 
 	// スタミナゲージ生成
 	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
+
+	// 操作関数
+	m_pControlAtk = DEBUG_NEW CPlayerControlAttack;		// 攻撃操作
+	m_pControlDefence = DEBUG_NEW CPlayerControlDefence;	// 防御操作
+	m_pControlAvoid = DEBUG_NEW CPlayerControlAvoid;		// 回避操作
 
 	return S_OK;
 }
@@ -646,21 +660,24 @@ void CPlayer::Controll(void)
 				fRotDest = D3DX_PI * 0.0f + Camerarot.y;
 			}
 
-			//if (pInputGamepad->IsTipStick())
-			//{// 左スティックが倒れてる場合
-
-			//	fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
-			//}
 		}
 
+		// 角度の正規化
+		UtilFunc::Transformation::RotNormalize(fRotDest);
+		SetRotDest(fRotDest);
+
+		// 操作関数
+		m_pControlAtk->Attack(this);		// 攻撃操作
+		m_pControlDefence->Defence(this);	// 防御操作
+		m_pControlAvoid->Avoid(this);		// 回避操作
+
+#if 0
 		// 攻撃
 		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
 			!m_bJump &&
 			!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) && 
 			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
 		{
-			//pMotion->ToggleFinish(true);
-			//m_sMotionFrag.bATK = true;		// 攻撃判定ON
 
 			if (pInputGamepad->IsTipStick())
 			{// 左スティックが倒れてる場合
@@ -687,21 +704,29 @@ void CPlayer::Controll(void)
 			}
 		}
 
-		// カウンター
+
+		// ガード
 		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
 			!m_bJump &&
-			pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) &&
-			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
+			pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx))
 		{
 			pMotion->Set(MOTION_DEF);
-			pMotion->Set(MOTION_COUNTER_ACCEPT);
-			m_sMotionFrag.bCounter = true;		// 攻撃判定ON
 
 			if (pInputGamepad->IsTipStick())
 			{// 左スティックが倒れてる場合
-
 				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
 			}
+
+			pMotion->Set(MOTION_GUARD);
+			m_sMotionFrag.bGuard = true;	// ガードON
+		}
+
+		// ガード中に攻撃でカウンター
+		if (pMotion->GetType() == MOTION_GUARD &&
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
+		{
+			pMotion->Set(MOTION_COUNTER_ACCEPT);
+			m_sMotionFrag.bCounter = true;		// 攻撃判定ON
 
 			// スタミナ減算
 			if (m_pStaminaGauge != nullptr)
@@ -709,6 +734,7 @@ void CPlayer::Controll(void)
 				m_pStaminaGauge->SubValue(SUBVALUE_COUNTER);
 			}
 		}
+
 
 
 		// デバッグ表示
@@ -738,6 +764,7 @@ void CPlayer::Controll(void)
 				m_pStaminaGauge->SubValue(SUBVALUE_AVOID);
 			}
 		}
+#endif
 	}
 
 	// 移動量加算
@@ -747,12 +774,8 @@ void CPlayer::Controll(void)
 	sakiPos.x = newPosition.x + sinf(D3DX_PI + rot.y) * GetRadius();
 	sakiPos.z = newPosition.z + cosf(D3DX_PI + rot.y) * GetRadius();
 
-	// 角度の正規化
-	UtilFunc::Transformation::RotNormalize(fRotDest);
-	SetRotDest(fRotDest);
-
 	// 現在と目標の差分を求める
-	float fRotDiff = fRotDest - rot.y;
+	float fRotDiff = GetRotDest() - rot.y;
 
 	// 角度の正規化
 	UtilFunc::Transformation::RotNormalize(fRotDiff);
@@ -1014,19 +1037,6 @@ void CPlayer::MotionSet(void)
 			// やられモーション
 			pMotion->Set(MOTION_KNOCKBACK);
 		}
-		//else if (m_sMotionFrag.bATK == true)
-		//{// 攻撃
-
-		//	m_sMotionFrag.bATK = false;		// 攻撃判定OFF
-
-		//	int nSetType = MOTION_ATK + m_nComboStage;
-		//	pMotion->Set(nSetType, true);
-
-		//	if (m_nComboStage >= MOTION_ATK3 - MOTION_ATK)
-		//	{
-		//		m_nComboStage = 0;
-		//	}
-		//}
 		else
 		{
 			// ニュートラルモーション
@@ -1063,6 +1073,28 @@ void CPlayer::MotionBySetState(void)
 
 	default:
 		m_fDashTime = 0.0f;
+		break;
+	}
+
+	// ダッシュアタックのフラグ
+	if (m_fDashTime >= TIME_DASHATTACK)
+	{
+		m_bReadyDashAtk = true;
+	}
+	else
+	{
+		m_bReadyDashAtk = false;
+	}
+
+	switch (nType)
+	{
+	case MOTION_GUARD:
+	case MOTION_GUARD_DMG:
+		m_sMotionFrag.bGuard = true;	// ガードON
+		break;
+
+	default:
+		m_sMotionFrag.bGuard = false;	// ガードOFF
 		break;
 	}
 
@@ -1222,6 +1254,7 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	// 武器の位置
 	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 rot = GetRotation();
 
 	switch (nType)
 	{
@@ -1231,6 +1264,20 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	case MOTION_WALK:
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_WALK);
+		break;
+
+	case MOTION_COUNTER_TURN:
+		CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_COUNTERLINE,
+			weponpos, 0.0f, 0.0f, 50.0f);
+
+		CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_COUNTERLINE2,
+			weponpos, MyLib::Vector3(0.0f, D3DX_PI + rot.y, 0.0f), 0.0f, 40.0f);
+
+		CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_COUNTER_KRKR,
+			GetPosition(), 0.0f, 0.0f, 40.0f);
 		break;
 
 	case MOTION_COUNTER_ATTACK:
@@ -1266,13 +1313,13 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 // 攻撃判定中処理
 //==========================================================================
-void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
+void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
 
 	// 武器の位置
-	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 
 	CEffect3D* pEffect = NULL;
 
@@ -1286,7 +1333,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		break;
 	}
 
-	if (ATKInfo.fRangeSize == 0.0f)
+	if (pATKInfo->fRangeSize == 0.0f)
 	{
 		return;
 	}
@@ -1296,7 +1343,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		weponpos,
 		MyLib::Vector3(0.0f, 0.0f, 0.0f),
 		D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
-		ATKInfo.fRangeSize, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+		pATKInfo->fRangeSize, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 #endif
 
 	// 敵のリスト取得
@@ -1312,11 +1359,11 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 		// 判定サイズ取得
 		float fTargetRadius = pEnemy->GetRadius();
 
-		MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, TargetPos, ATKInfo.fRangeSize, fTargetRadius);
+		MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, TargetPos, pATKInfo->fRangeSize, fTargetRadius);
 		if (hitresult.ishit)
 		{// 球の判定
 
-			if (pEnemy->Hit(ATKInfo.nDamage) == true)
+			if (pEnemy->Hit(pATKInfo->nDamage) == true)
 			{// 当たってたら
 
 				// 位置
@@ -1336,9 +1383,10 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo ATKInfo, int nCntATK)
 					CMyEffekseer::EFKLABEL_HITMARK_RED,
 					hitresult.hitpos, 0.0f, 0.0f, 50.0f);
 
+				// ダメージ表記
 				enemypos.y += pEnemy->GetHeight() * 0.5f;
 				enemypos += UtilFunc::Transformation::GetRandomPositionSphere(enemypos, fTargetRadius * 0.5f);
-				CDamagePoint::Create(hitresult.hitpos, ATKInfo.nDamage);
+				CDamagePoint::Create(hitresult.hitpos, pATKInfo->nDamage);
 			}
 		}
 	}
@@ -1495,9 +1543,9 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 //==========================================================================
 // ヒット処理
 //==========================================================================
-bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
+MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 {
-	bool bHit = false;
+	MyLib::HitResult_Character hitresult = {};
 
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 
@@ -1528,22 +1576,24 @@ bool CPlayer::Hit(const int nValue, CGameManager::AttackType atkType)
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
 			}
 		}
-		return false;
+		hitresult.ishit = true;
+		return hitresult;
 	}
 	
 	// 共通のヒット処理
-	bHit = ProcessHit(nValue);
+	hitresult = ProcessHit(nValue);
 
 	// 当たった判定を返す
-	return bHit;
+	return hitresult;
 }
 
 //==========================================================================
 // ヒット処理
 //==========================================================================
-bool CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType)
+MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType)
 {
-	bool bHit = false;
+
+	MyLib::HitResult_Character hitresult = {};
 
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 
@@ -1584,22 +1634,81 @@ bool CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atk
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
 			}
 		}
-		return false;
+		hitresult.ishit = true;
+		return hitresult;
+	}
+
+	if (m_sMotionFrag.bGuard)
+	{
+		// 共通のヒット処理
+		if (atkType == CGameManager::ATTACK_STRONG)
+		{// 強攻撃はガー不
+			hitresult = ProcessHit(nValue);
+			return hitresult;
+		}
+
+		if (GetMotion()->GetType() == MOTION_GUARD_DMG)
+		{
+			return hitresult;
+		}
+
+		if (GetMotion()->GetType() == MOTION_GUARD)
+		{
+			GetMotion()->Set(MOTION_GUARD_DMG);
+
+			// スタミナ減算
+			if (m_pStaminaGauge != nullptr)
+			{
+				m_pStaminaGauge->SubValue(SUBVALUE_COUNTER);
+			}
+		}
+
+		// 体力設定
+		int nLife = GetLife();
+		int damage = nValue;
+		nLife -= static_cast<int>(static_cast<float>(nValue) * MULTIPLY_GUARD);
+		SetLife(nLife);
+
+		if (nLife <= 0)
+		{// 体力がなくなったら
+
+			// 死亡時の設定
+			DeadSetting(&hitresult);
+			return hitresult;
+		}
+
+		// 位置取得
+		MyLib::Vector3 pos = GetPosition();
+		MyLib::Vector3 enemypos = pEnemy->GetPosition();
+		MyLib::Vector3 rot = GetRotation();
+
+		// 目標の角度設定
+		float fRotDest = atan2f((pos.x - enemypos.x), (pos.z - enemypos.z));
+		SetRotation(MyLib::Vector3(rot.x, fRotDest, rot.z));
+		SetRotDest(fRotDest);
+
+		SetMove(MyLib::Vector3(
+			sinf(fRotDest) * 20.0f,
+			0.0f,
+			cosf(fRotDest) * 20.0f));
+
+		hitresult.ishit = true;
+		return hitresult;
 	}
 
 	// 共通のヒット処理
-	bHit = ProcessHit(nValue);
+	hitresult = ProcessHit(nValue);
 
-	// 当たった判定を返す
-	return bHit;
+	return hitresult;
 }
 
 //==========================================================================
 // 共通のヒット処理
 //==========================================================================
-bool CPlayer::ProcessHit(const int nValue)
+MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue)
 {
-	bool bHit = false;
+
+	MyLib::HitResult_Character hitresult = {};
 
 	// 体力取得
 	int nLife = GetLife();
@@ -1609,7 +1718,7 @@ bool CPlayer::ProcessHit(const int nValue)
 	if (m_state == STATE_COUNTER ||
 		m_state == STATE_AVOID)
 	{// ダメージ受けない状態
-		return false;
+		return hitresult;
 	}
 
 	if (m_state != STATE_DMG &&
@@ -1620,7 +1729,8 @@ bool CPlayer::ProcessHit(const int nValue)
 	{// ダメージ受付状態の時
 
 		// 当たった
-		bHit = true;
+		hitresult.ishit = true;
+		hitresult.isdamage = true;
 
 		// 体力減らす
 		nLife -= nValue;
@@ -1638,50 +1748,8 @@ bool CPlayer::ProcessHit(const int nValue)
 		if (nLife <= 0)
 		{// 体力がなくなったら
 
-			// 死状態
-			m_state = STATE_DEAD;
-
-			m_KnokBackMove.y = 8.0f;
-
-			// 遷移カウンター設定
-			m_nCntState = DEADTIME;
-
-			// 体力設定
-			SetLife(0);
-
-			// ノックバック判定にする
-			m_sMotionFrag.bKnockBack = true;
-
-			// やられモーション
-			//pMotion->Set(MOTION_KNOCKBACK);
-
-			// ノックバックの位置更新
-			MyLib::Vector3 pos = GetPosition();
-			MyLib::Vector3 rot = GetRotation();
-			m_posKnokBack = pos;
-
-			// 衝撃波生成
-			CImpactWave::Create
-			(
-				MyLib::Vector3(pos.x, pos.y + 80.0f, pos.z),	// 位置
-				MyLib::Vector3(D3DX_PI * 0.5f, D3DX_PI + rot.y, D3DX_PI),				// 向き
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f),			// 色
-				80.0f,										// 幅
-				80.0f,										// 高さ
-				0.0f,										// 中心からの間隔
-				20,											// 寿命
-				10.0f,										// 幅の移動量
-				CImpactWave::TYPE_GIZAWHITE,				// テクスチャタイプ
-				false										// 加算合成するか
-			);
-
-			CManager::GetInstance()->SetEnableHitStop(18);
-
-			// 振動
-			pCamera->SetShake(21, 30.0f, 0.0f);
-
-			// 死んだ
-			return true;
+			DeadSetting(&hitresult);
+			return hitresult;
 		}
 
 		// 過去の状態保存
@@ -1731,7 +1799,60 @@ bool CPlayer::ProcessHit(const int nValue)
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_PLAYERDMG);
 	}
 
-	return bHit;
+	return hitresult;
+}
+
+//==========================================================================
+// 死亡時の設定
+//==========================================================================
+void CPlayer::DeadSetting(MyLib::HitResult_Character* result)
+{
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	// 死状態
+	m_state = STATE_DEAD;
+
+	m_KnokBackMove.y = 8.0f;
+
+	// 遷移カウンター設定
+	m_nCntState = DEADTIME;
+
+	// 体力設定
+	SetLife(0);
+
+	// ノックバック判定にする
+	m_sMotionFrag.bKnockBack = true;
+
+	// やられモーション
+	GetMotion()->Set(MOTION_KNOCKBACK);
+
+	// ノックバックの位置更新
+	MyLib::Vector3 pos = GetPosition();
+	MyLib::Vector3 rot = GetRotation();
+	m_posKnokBack = pos;
+
+	// 衝撃波生成
+	CImpactWave::Create
+	(
+		MyLib::Vector3(pos.x, pos.y + 80.0f, pos.z),	// 位置
+		MyLib::Vector3(D3DX_PI * 0.5f, D3DX_PI + rot.y, D3DX_PI),				// 向き
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f),			// 色
+		80.0f,										// 幅
+		80.0f,										// 高さ
+		0.0f,										// 中心からの間隔
+		20,											// 寿命
+		10.0f,										// 幅の移動量
+		CImpactWave::TYPE_GIZAWHITE,				// テクスチャタイプ
+		false										// 加算合成するか
+	);
+
+	CManager::GetInstance()->SetEnableHitStop(18);
+
+	// 振動
+	pCamera->SetShake(21, 30.0f, 0.0f);
+
+	// 死んだ
+	result->isdeath = true;
 }
 
 //==========================================================================
