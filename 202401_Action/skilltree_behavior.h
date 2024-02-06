@@ -10,6 +10,7 @@
 
 #include "skilltree_icon.h"
 #include "player.h"
+#include "playercontrol.h"
 
 //==========================================================================
 // スキルツリー能力のStrategy
@@ -90,9 +91,9 @@ class CAbillityStamina : public CEnhance
 	//=============================
 	// 段階別
 	void Add01(void) { m_pPlayer->UpgradeMaxStamina(20); }
-	void AutoHeal01(void){ m_pPlayer->UpgradeAutoHealStamina(1.5f); }
+	void AutoHeal01(void){ m_pPlayer->UpgradeAutoHealStamina(1.3f); }
 	void Add02(void) { m_pPlayer->UpgradeMaxStamina(20); }
-	void AutoHeal02(void) { m_pPlayer->UpgradeAutoHealStamina(1.5f); }
+	void AutoHeal02(void) { m_pPlayer->UpgradeAutoHealStamina(1.75f); }
 	void Add03(void) { m_pPlayer->UpgradeMaxStamina(20); }
 
 };
@@ -144,11 +145,11 @@ class CAbillityCounter : public CEnhance
 	// メンバ関数
 	//=============================
 	// 段階別
-	void SubNeedStamina01(void) {}
-	void SubNeedStamina02(void) {}
-	void SubNeedStamina03(void) {}
-	void HealStamina01(void) {}
-	void HealStamina02(void) {}
+	void SubNeedStamina01(void) { m_pPlayer->SetCounterSubValue(30.0f); }
+	void HealStamina01(void) { m_pPlayer->SetCounterHealValue(10.0f); }
+	void SubNeedStamina02(void) { m_pPlayer->SetCounterSubValue(20.0f); }
+	void HealStamina02(void) { m_pPlayer->SetCounterHealValue(20.0f); }
+	void SubNeedStamina03(void) { m_pPlayer->SetCounterSubValue(10.0f); }
 
 };
 
@@ -199,10 +200,10 @@ class CAbillityGuard : public CEnhance
 	// メンバ関数
 	//=============================
 	// 段階別
-	void SubNeedStamina01(void) {}
-	void SubNeedStamina02(void) {}
-	void KnockbackMitigation01(void) {}
-	void KnockbackMitigation02(void) {}
+	void SubNeedStamina01(void) { m_pPlayer->SetGuardSubValue(30.0f); }
+	void SubNeedStamina02(void) { m_pPlayer->SetGuardSubValue(15.0f); }
+	void KnockbackMitigation01(void) { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level1()); }
+	void KnockbackMitigation02(void) { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level2()); }
 
 };
 
@@ -280,7 +281,7 @@ class CUnlockCounter : public CUnlock
 	// メンバ関数
 	//=============================
 	// 段階別
-	void State01(void) {}
+	void State01(void) { m_pPlayer->ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence_Level1()); }
 
 };
 

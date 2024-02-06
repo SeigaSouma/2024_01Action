@@ -9,11 +9,14 @@
 #define _PLAYERCONTROL_H_	// 二重インクルード防止
 
 #include "player.h"
+#include "stamina_gauge_player.h"
 
 //==========================================================================
 // プレイヤーコントロールクラス定義
 //==========================================================================
+//=============================
 // 攻撃
+//=============================
 class CPlayerControlAttack
 {
 public:
@@ -56,10 +59,14 @@ protected:
 };
 
 
+//=============================
 // 防御
+//=============================
 class CPlayerControlDefence
 {
 public:
+	CPlayerControlDefence() {}
+
 	virtual void Defence(CPlayer* player);	// 防御
 };
 
@@ -67,16 +74,71 @@ public:
 class CPlayerControlDefence_Level1 : public CPlayerControlDefence
 {
 public:
+	CPlayerControlDefence_Level1() {}
+
 	virtual void Defence(CPlayer* player) override;	// 防御
 };
 
 
-
+//=============================
 // 回避
+//=============================
 class CPlayerControlAvoid
 {
 public:
+	CPlayerControlAvoid() {}
+
 	virtual void Avoid(CPlayer* player);	// 回避
 };
+
+
+//=============================
+// ガード
+//=============================
+class CPlayerGuard
+{
+public:
+	CPlayerGuard() {}
+
+	virtual void HitProcess(CPlayer* player, MyLib::Vector3 enemypos);	// 受けた時の処理
+};
+
+class CPlayerGuard_Level1 : public CPlayerGuard
+{
+public:
+	CPlayerGuard_Level1() {}
+
+	// 受けた時の処理
+	virtual void HitProcess(CPlayer* player, MyLib::Vector3 enemypos) override
+	{
+		CPlayerGuard::HitProcess(player, enemypos);
+
+		MyLib::Vector3 rot = player->GetRotation();
+		player->SetMove(MyLib::Vector3(
+			sinf(rot.y) * 20.0f,
+			0.0f,
+			cosf(rot.y) * 20.0f));
+	}
+};
+
+class CPlayerGuard_Level2 : public CPlayerGuard
+{
+public:
+	CPlayerGuard_Level2() {}
+
+	// 受けた時の処理
+	virtual void HitProcess(CPlayer* player, MyLib::Vector3 enemypos) override
+	{
+		CPlayerGuard::HitProcess(player, enemypos);
+
+		MyLib::Vector3 rot = player->GetRotation();
+		player->SetMove(MyLib::Vector3(
+			sinf(rot.y) * 5.0f,
+			0.0f,
+			cosf(rot.y) * 5.0f));
+	}
+};
+
+
 
 #endif

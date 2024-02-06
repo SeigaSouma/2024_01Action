@@ -159,8 +159,8 @@
             "needpoint": 1,
             "parentID": 0,
             "pos": {
-                "x": 200.0,
-                "y": 50.0,
+                "x": -200.0,
+                "y": 100.0,
                 "z": 0.0
             },
             "skillcategory": 0,
@@ -173,8 +173,8 @@
             "needpoint": 2,
             "parentID": 11,
             "pos": {
-                "x": 275.0,
-                "y": 200.0,
+                "x": -275.0,
+                "y": 260.0,
                 "z": 0.0
             },
             "skillcategory": 0,
@@ -187,8 +187,8 @@
             "needpoint": 1,
             "parentID": 11,
             "pos": {
-                "x": 350.0,
-                "y": 50.0,
+                "x": -350.0,
+                "y": 100.0,
                 "z": 0.0
             },
             "skillcategory": 0,
@@ -201,12 +201,12 @@
             "needpoint": 2,
             "parentID": 13,
             "pos": {
-                "x": 500.0,
-                "y": 0.0,
+                "x": -500.0,
+                "y": 50.0,
                 "z": 0.0
             },
             "skillcategory": 0,
-            "skillstage": 3,
+            "skillstage": 4,
             "skilltype": 2,
             "texID": 1
         },
@@ -215,13 +215,55 @@
             "needpoint": 3,
             "parentID": 12,
             "pos": {
-                "x": 425.0,
-                "y": 200.0,
+                "x": -450.0,
+                "y": 235.0,
                 "z": 0.0
             },
             "skillcategory": 0,
-            "skillstage": 4,
+            "skillstage": 3,
             "skilltype": 2,
+            "texID": 1
+        },
+        {
+            "ID": 16,
+            "needpoint": 2,
+            "parentID": 0,
+            "pos": {
+                "x": 225.0,
+                "y": 65.0,
+                "z": 0.0
+            },
+            "skillcategory": 0,
+            "skillstage": 0,
+            "skilltype": 1,
+            "texID": 0
+        },
+        {
+            "ID": 17,
+            "needpoint": 3,
+            "parentID": 16,
+            "pos": {
+                "x": 400.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "skillcategory": 0,
+            "skillstage": 1,
+            "skilltype": 1,
+            "texID": 0
+        },
+        {
+            "ID": 18,
+            "needpoint": 3,
+            "parentID": 0,
+            "pos": {
+                "x": -200.0,
+                "y": -200.0,
+                "z": 0.0
+            },
+            "skillcategory": 1,
+            "skillstage": 0,
+            "skilltype": 0,
             "texID": 1
         }
     ]

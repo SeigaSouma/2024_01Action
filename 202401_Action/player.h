@@ -25,6 +25,7 @@ class CEndCounterSetting;
 class CPlayerControlAttack;	// 攻撃
 class CPlayerControlDefence;	// 防御
 class CPlayerControlAvoid;	// 回避
+class CPlayerGuard;	// ガード
 
 //==========================================================================
 // クラス定義
@@ -130,6 +131,10 @@ public:
 	void DowngradeMaxStamina(int addvalue);		// スタミナ最大値ダウングレード
 	void UpgradeAutoHealStamina(float ratio);	// スタミナ自動回復アップグレード
 	void DowngradeAutoHealStamina(float ratio);	// スタミナ自動回復ダウングレード
+	void ChangeAtkControl(CPlayerControlAttack* control);	// 攻撃の操作変更
+	void ChangeDefenceControl(CPlayerControlDefence* control);	// 防御の操作変更
+	void ChangeAvoidControl(CPlayerControlAvoid* control);	// 回避の操作変更
+	void ChangeGuardGrade(CPlayerGuard* guard);	// ガード性能変更
 
 	// リスポーン
 	void RespawnSetting(void);	// リスポーン時の設定
@@ -138,7 +143,14 @@ public:
 
 	// 反撃
 	bool IsLockOnAtStart() { return m_bLockOnAtStart; }	// 反撃開始時にロックオンしていたか
-	void EndCounterSetting(void);	// 反撃終了時の設定
+	void SetCounterSubValue(float value) { m_fCounterStaminaSubValue = value; }	// カウンター時の消費スタミナ設定
+	float GetCounterSubValue() { return m_fCounterStaminaSubValue; }	// カウンター時の消費スタミナ取得
+	void SetCounterHealValue(float value) { m_fCounterStaminaHealValue = value; }	// カウンター時のスタミナ回復設定
+	float GetCounterHealValue() { return m_fCounterStaminaHealValue; }	// カウンター時のスタミナ回復設取得
+
+	// ガード
+	void SetGuardSubValue(float value) { m_fGuardStaminaSubValue = value; }	// ガード時の消費スタミナ設定
+	float GetGuardSubValue() { return m_fGuardStaminaSubValue; }	// ガード時の消費スタミナ取得
 
 	// ヒット系
 	void DeadSetting(MyLib::HitResult_Character* result);
@@ -216,6 +228,9 @@ private:
 	float m_fDashTime;				// ダッシュ時間
 	int m_nRespawnPercent;			// リスポーン確率
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
+	float m_fGuardStaminaSubValue;	// ガード時のスタミナ減少量
+	float m_fCounterStaminaSubValue;	// カウンター時のスタミナ減少量
+	float m_fCounterStaminaHealValue;	// カウンター時のスタミナ回復量
 	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
 	CHP_GaugePlayer* m_pHPGauge;		// HPゲージのポインタ
 	CStaminaGauge_Player* m_pStaminaGauge;	// スタミナゲージのポインタ
@@ -225,6 +240,7 @@ private:
 	CPlayerControlAttack* m_pControlAtk;		// 攻撃操作
 	CPlayerControlDefence* m_pControlDefence;	// 防御操作
 	CPlayerControlAvoid* m_pControlAvoid;		// 回避操作
+	CPlayerGuard* m_pGuard;						// ガード
 
 	Effekseer::Handle *m_pWeaponHandle;		// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト

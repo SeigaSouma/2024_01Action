@@ -337,12 +337,14 @@ void CEdit::Control(CObjectX *pObjX)
 	if (pInputKeyboard->GetTrigger(DIK_LSHIFT) == true)
 	{//‰ñ“]
 
-		rot.y += D3DX_PI * 0.1f;
+		//rot.y += D3DX_PI * 0.05f;
+		rot.y += D3DXToRadian(5);
 	}
 	if (pInputKeyboard->GetTrigger(DIK_RSHIFT) == true)
 	{// ‰ñ“]
 
-		rot.y -= D3DX_PI * 0.1f;
+		//rot.y -= D3DX_PI * 0.05f;
+		rot.y -= D3DXToRadian(5);
 	}
 
 	if (pInputKeyboard->GetPress(DIK_I) == true)
@@ -496,8 +498,7 @@ void CEdit::GrabModel(void)
 				if (pInputKeyboard->GetTrigger(DIK_DELETE) == true)
 				{// Delete‚ª‰Ÿ‚³‚ê‚½Aíœ
 
-					// íœˆ—
-					pObjX->Kill();
+					MyMap::Delete(pObjX);
 					//DeleteEditModel(nCntModel);
 				}
 			}

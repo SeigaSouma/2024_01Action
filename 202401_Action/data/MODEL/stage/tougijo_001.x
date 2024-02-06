@@ -84389,7 +84389,7 @@ Mesh {
    0.230000;0.230000;0.230000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\metal02.jpg";
+    "data\\TEXTURE\\arena\\metal02.jpg";
    }
   }
   Material {
@@ -84398,7 +84398,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\red_texture_01.jpg";
+    "data\\TEXTURE\\arena\\red_texture_01.jpg";
    }
   }
   Material {
@@ -84407,7 +84407,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\24312828_s.jpg";
+    "data\\TEXTURE\\arena\\24312828_s.jpg";
    }
   }
   Material {
@@ -84416,7 +84416,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84425,7 +84425,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84434,7 +84434,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84443,7 +84443,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\stone001.jpg";
+    "data\\TEXTURE\\arena\\stone001.jpg";
    }
   }
   Material {
@@ -84452,7 +84452,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\stone001.jpg";
+    "data\\TEXTURE\\arena\\stone001.jpg";
    }
   }
   Material {
@@ -84461,7 +84461,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84470,7 +84470,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84479,7 +84479,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84488,7 +84488,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84497,7 +84497,7 @@ Mesh {
    0.400000;0.400000;0.400000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\metal_texture_7_by_wojtar_stock_d1au5qb-fullview.jpg";
+    "data\\TEXTURE\\arena\\metal_texture_7_by_wojtar_stock_d1au5qb-fullview.jpg";
    }
   }
   Material {
@@ -84506,7 +84506,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84515,7 +84515,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84524,7 +84524,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84533,7 +84533,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84542,7 +84542,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84551,7 +84551,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84560,7 +84560,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84569,7 +84569,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84578,7 +84578,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84587,7 +84587,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84596,7 +84596,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\isirenga001.jpg";
+    "data\\TEXTURE\\arena\\isirenga001.jpg";
    }
   }
   Material {
@@ -84605,7 +84605,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3831504_s.jpg";
+    "data\\TEXTURE\\arena\\3831504_s.jpg";
    }
   }
   Material {
@@ -84614,7 +84614,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\isirenga001.jpg";
+    "data\\TEXTURE\\arena\\isirenga001.jpg";
    }
   }
   Material {
@@ -84623,7 +84623,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84632,7 +84632,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "G:\\.shortcut-targets-by-id\\1PYt_OqWOdvNFVntj0PEDJ9oNPfJfqAI-\\GameSP_2022\\06_3D表\現技術Ⅰ\\01_提出\\オリジナルステージ【チーム】\\C班\\03_モデルビューワ\\闘技場モデルビューワ\\data\\TEXTURE\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84641,7 +84641,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "G:\\.shortcut-targets-by-id\\1PYt_OqWOdvNFVntj0PEDJ9oNPfJfqAI-\\GameSP_2022\\06_3D表\現技術Ⅰ\\01_提出\\オリジナルステージ【チーム】\\C班\\03_モデルビューワ\\闘技場モデルビューワ\\data\\TEXTURE\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
   Material {
@@ -84650,7 +84650,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "G:\\.shortcut-targets-by-id\\1PYt_OqWOdvNFVntj0PEDJ9oNPfJfqAI-\\GameSP_2022\\06_3D表\現技術Ⅰ\\01_提出\\オリジナルステージ【チーム】\\C班\\03_モデルビューワ\\闘技場モデルビューワ\\data\\TEXTURE\\3464133_s.jpg";
+    "data\\TEXTURE\\arena\\3464133_s.jpg";
    }
   }
  }

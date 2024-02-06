@@ -59,10 +59,10 @@ CAbillityLife::STAGE_FUNC CAbillityLife::m_StageFunc[] =
 CAbillityCounter::STAGE_FUNC CAbillityCounter::m_StageFunc[] =
 {
 	&CAbillityCounter::SubNeedStamina01,
-	&CAbillityCounter::SubNeedStamina02,
-	&CAbillityCounter::SubNeedStamina03,
 	&CAbillityCounter::HealStamina01,
+	&CAbillityCounter::SubNeedStamina02,
 	&CAbillityCounter::HealStamina02,
+	&CAbillityCounter::SubNeedStamina03,
 };
 
 //=============================

@@ -49,11 +49,11 @@
                         },
                         {
                             "stage": 0,
-                            "stageName": "SubNeedStamina02"
+                            "stageName": "HealStamina01"
                         },
                         {
                             "stage": 0,
-                            "stageName": "HealStamina01"
+                            "stageName": "SubNeedStamina02"
                         },
                         {
                             "stage": 0,

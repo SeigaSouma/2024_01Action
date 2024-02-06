@@ -324,12 +324,19 @@ HRESULT MyMap::SaveText(void)
 		"# モデルの配置\n"
 		"#==============================================================================\n");
 
-	for (int i = 0; i < mapdate::nNumObjXAll; i++)
+	int nnnn = 0;
+	for (int i = 0; i < mylib_const::MAX_OBJ; i++)
 	{
 		// Xファイルの情報取得
 		CObjectX* pObjX = mapdate::pObjX[i];
 
-		int nType = ModelIdx[i];		// 種類
+		if (pObjX == nullptr)
+		{
+			continue;
+		}
+
+		int nType = ModelIdx[nnnn];		// 種類
+		nnnn++;
 		MyLib::Vector3 pos = pObjX->GetPosition();	// 位置
 		MyLib::Vector3 rot = pObjX->GetRotation();	// 向き
 		int nShadow = 0;						// 影使うかどうか
@@ -873,6 +880,22 @@ void MyMap::Regist(int nType, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShad
 	mapdate::pObjX[mapdate::nNumObjXAll] = CObjectX::Create(ModelFile[nType].c_str(), pos, rot, bShadow);
 	mapdate::pObjX[mapdate::nNumObjXAll]->SetType(CObject::TYPE_XFILE);
 	mapdate::nNumObjXAll++;
+}
+
+void MyMap::Delete(CObjectX* obj)
+{
+	for (int i = 0; i < mylib_const::MAX_OBJ; i++)
+	{
+		if (mapdate::pObjX[i] == obj)
+		{
+			mapdate::pObjX[i]->Kill();
+			mapdate::pObjX[i] = nullptr;
+
+			mapdate::nNumObjXAll--;
+			break;
+		}
+		
+	}
 }
 
 std::string MyMap::GetModelFileName(int nIdx)

@@ -119,6 +119,11 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_fDashTime = 0.0f;								// ダッシュ時間
 	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
+
+	m_fGuardStaminaSubValue = 0.0f;					// ガード時のスタミナ減少量
+	m_fCounterStaminaSubValue = 0.0f;				// カウンター時のスタミナ減少量
+	m_fCounterStaminaHealValue = 0.0f;				// カウンター時のスタミナ回復量
+
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = NULL;								// 影の情報
 	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
@@ -129,6 +134,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_pControlAtk = nullptr;						// 攻撃操作
 	m_pControlDefence = nullptr;					// 防御操作
 	m_pControlAvoid = nullptr;						// 回避操作
+	m_pGuard = nullptr;								// ガード
 
 	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
@@ -183,6 +189,9 @@ HRESULT CPlayer::Init(void)
 	m_nCntState = 0;		// 状態遷移カウンター
 	m_bLandOld = true;		// 前回の着地状態
 	m_nRespawnPercent = DEFAULT_RESPAWN_PERCENT;	// リスポーン確率
+	m_fGuardStaminaSubValue = SUBVALUE_COUNTER;		// ガード時のスタミナ減少量
+	m_fCounterStaminaSubValue = SUBVALUE_COUNTER;	// カウンター時のスタミナ減少量
+	m_fCounterStaminaHealValue = 0.0f;				// カウンター時のスタミナ回復量
 
 	// キャラ作成
 	HRESULT hr = SetCharacter(CHARAFILE);
@@ -210,11 +219,50 @@ HRESULT CPlayer::Init(void)
 	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
 
 	// 操作関数
-	m_pControlAtk = DEBUG_NEW CPlayerControlAttack;		// 攻撃操作
-	m_pControlDefence = DEBUG_NEW CPlayerControlDefence;	// 防御操作
-	m_pControlAvoid = DEBUG_NEW CPlayerControlAvoid;		// 回避操作
+	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack);	// 攻撃操作
+	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence);	// 防御操作
+	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid);	// 回避操作
+
+	// ガード
+	ChangeGuardGrade(DEBUG_NEW CPlayerGuard);
 
 	return S_OK;
+}
+
+//==========================================================================
+// 攻撃の操作変更
+//==========================================================================
+void CPlayer::ChangeAtkControl(CPlayerControlAttack* control)
+{ 
+	delete m_pControlAtk;
+	m_pControlAtk = control;
+}
+
+//==========================================================================
+// 防御の操作変更
+//==========================================================================
+void CPlayer::ChangeDefenceControl(CPlayerControlDefence* control)
+{ 
+	delete m_pControlDefence;
+	m_pControlDefence = control;
+}
+
+//==========================================================================
+// 回避の操作変更
+//==========================================================================
+void CPlayer::ChangeAvoidControl(CPlayerControlAvoid* control)
+{ 
+	delete m_pControlAvoid;
+	m_pControlAvoid = control;
+}
+
+//==========================================================================
+// ガード性能変更
+//==========================================================================
+void CPlayer::ChangeGuardGrade(CPlayerGuard* guard)
+{
+	delete m_pGuard;
+	m_pGuard = guard;
 }
 
 //==========================================================================
@@ -930,6 +978,7 @@ void CPlayer::Controll(void)
 		weponpos.y += 150.0f;
 
 		MyLib::Vector3 spawnpos = UtilFunc::Transformation::GetRandomPositionSphere(weponpos, 300.0f);
+		m_pSkillPoint->AddPoint();
 	}
 
 	static float fff = 1.0f;
@@ -944,6 +993,7 @@ void CPlayer::Controll(void)
 		CMyEffekseer::GetInstance()->SetEffect(
 			CMyEffekseer::EFKLABEL_COUNTERLINE2,
 			weponpos, 0.0f, 0.0f, 60.0f);
+
 	}
 	if (pInputKeyboard->GetTrigger(DIK_DOWN) == true)
 	{
@@ -1064,11 +1114,6 @@ void CPlayer::MotionBySetState(void)
 
 		// ダッシュ時間加算
 		m_fDashTime += CManager::GetInstance()->GetDeltaTime();
-
-		if (m_pStaminaGauge != nullptr)
-		{
-			m_pStaminaGauge->SubValue(SUBVALUE_DASH);
-		}
 		break;
 
 	default:
@@ -1576,6 +1621,10 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
 			}
 		}
+
+		// カウンターで回復
+		m_pStaminaGauge->AddValue(m_fCounterStaminaHealValue);
+
 		hitresult.ishit = true;
 		return hitresult;
 	}
@@ -1634,6 +1683,10 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
 			}
 		}
+
+		// カウンターで回復
+		m_pStaminaGauge->AddValue(m_fCounterStaminaHealValue);
+
 		hitresult.ishit = true;
 		return hitresult;
 	}
@@ -1655,12 +1708,6 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 		if (GetMotion()->GetType() == MOTION_GUARD)
 		{
 			GetMotion()->Set(MOTION_GUARD_DMG);
-
-			// スタミナ減算
-			if (m_pStaminaGauge != nullptr)
-			{
-				m_pStaminaGauge->SubValue(SUBVALUE_COUNTER);
-			}
 		}
 
 		// 体力設定
@@ -1677,20 +1724,8 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 			return hitresult;
 		}
 
-		// 位置取得
-		MyLib::Vector3 pos = GetPosition();
-		MyLib::Vector3 enemypos = pEnemy->GetPosition();
-		MyLib::Vector3 rot = GetRotation();
-
-		// 目標の角度設定
-		float fRotDest = atan2f((pos.x - enemypos.x), (pos.z - enemypos.z));
-		SetRotation(MyLib::Vector3(rot.x, fRotDest, rot.z));
-		SetRotDest(fRotDest);
-
-		SetMove(MyLib::Vector3(
-			sinf(fRotDest) * 20.0f,
-			0.0f,
-			cosf(fRotDest) * 20.0f));
+		// ヒット時の処理
+		m_pGuard->HitProcess(this, pEnemy->GetPosition());
 
 		hitresult.ishit = true;
 		return hitresult;
@@ -2414,6 +2449,9 @@ void CEndCounterSetting::EndSetting(CPlayer* player)
 	CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
 }
 
+//==========================================================================
+// 攻撃の終了時設定
+//==========================================================================
 void CEndAttack::EndSetting(CPlayer* player)
 {
 	// 親の処理

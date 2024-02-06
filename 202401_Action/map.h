@@ -10,7 +10,7 @@
 
 #include "main.h"
 #include "listmanager.h"
-
+class CObjectX;
 //==========================================================================
 // 名前空間
 //==========================================================================
@@ -24,6 +24,8 @@ namespace MyMap
 	int GetNumModelAll(void);	// 総数取得
 	void Release(void);
 	void Regist(int nType, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShadow);
+	void Delete(CObjectX* obj);
+
 	void ChangeMap(const char* pTextFile);	// マップ切り替え
 	std::string GetModelFileName(int nIdx);
 };
