@@ -31,7 +31,7 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/forest_01.png		# [20]
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 36
+NUM_MODEL = 37
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -72,6 +72,7 @@ MODEL_FILENAME = data/MODEL/arena/jouheki_hasira.x		# [32]
 MODEL_FILENAME = data/MODEL/arena/jouheki_kabe.x		# [33]
 MODEL_FILENAME = data/MODEL/arena/taimatu_001.x		# [34]
 MODEL_FILENAME = data/MODEL/arena/taimatu_002.x		# [35]
+MODEL_FILENAME = data/MODEL/gallery/gallery_red_wait.x		# [36]
 
 #==============================================================================
 # 空情報

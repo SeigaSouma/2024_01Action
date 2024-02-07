@@ -60,8 +60,8 @@ public:
 	void Kill(void);
 	static CObjectX *Create();
 	static CObjectX *Create(const char *pFileName);
-	static CObjectX *Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vector3 rot = MyLib::Vector3(0.0f, 0.0f, 0.0f), bool bShadow = false);
-	static CObjectX *Create(int nIdxXFile, MyLib::Vector3 pos, MyLib::Vector3 rot = MyLib::Vector3(0.0f, 0.0f, 0.0f), bool bShadow = false);
+	static CObjectX *Create(const char *pFileName, const MyLib::Vector3& pos, const MyLib::Vector3& rot = 0.0f, bool bShadow = false);
+	static CObjectX *Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib::Vector3& rot = 0.0f, bool bShadow = false);
 	CObjectX *GetObjectX(void);
 	static int GetNumAll(void);
 protected:

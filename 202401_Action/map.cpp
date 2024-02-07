@@ -15,6 +15,8 @@
 #include "meshcylinder.h"
 #include "meshdome.h"
 #include "shadow.h"
+#include "gallery.h"
+
 using namespace std;	// –¼‘O‹óŠÔ‚ðŽw’è
 
 namespace mapdate

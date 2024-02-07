@@ -33,6 +33,7 @@
 #include "limitarea.h"
 #include "particle.h"
 #include "myeffekseer.h"
+#include "gallery.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -189,10 +190,13 @@ HRESULT CGame::Init(void)
 	// クリアの判定
 	SetEnableClear(true);
 
-	/*CMyEffekseer::GetInstance()->SetEffect(
+	// 観衆設定
+	CGallery::SetGallery();
+
+	CMyEffekseer::GetInstance()->SetEffect(
 		CMyEffekseer::EFKLABEL_BGFIRE,
 		MyLib::Vector3(0.0f, 0.0f, 0.0f),
-		0.0f, 0.0f, 100.0f, false);*/
+		0.0f, 0.0f, 100.0f, false);
 
 	// 成功
 	return S_OK;

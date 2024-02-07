@@ -132,7 +132,7 @@ CObjectX *CObjectX::Create(const char *pFileName)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectX *CObjectX::Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShadow)
+CObjectX *CObjectX::Create(const char *pFileName, const MyLib::Vector3& pos, const MyLib::Vector3& rot, bool bShadow)
 {
 	// 生成用のオブジェクト
 	CObjectX *pObjectX = NULL;
@@ -176,7 +176,7 @@ CObjectX *CObjectX::Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vec
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectX *CObjectX::Create(int nIdxXFile, MyLib::Vector3 pos, MyLib::Vector3 rot, bool bShadow)
+CObjectX *CObjectX::Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib::Vector3& rot, bool bShadow)
 {
 	// 生成用のオブジェクト
 	CObjectX *pObjectX = NULL;

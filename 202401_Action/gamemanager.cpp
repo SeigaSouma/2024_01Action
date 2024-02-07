@@ -24,6 +24,7 @@
 #include "skilltree_obj.h"
 #include "skilltree.h"
 #include "skilltree_ability.h"
+#include "gallery.h"
 
 
 //==========================================================================
@@ -183,6 +184,9 @@ void CGameManager::Update(void)
 				pCamera->SetEnableFollow(true);
 			}
 
+			// 観衆設定
+			CGallery::SetGallery();
+
 			if (!m_bEndNormalStage)
 			{// 通常ステージが終わっていなかったら
 				SetEnemy();
@@ -217,6 +221,15 @@ void CGameManager::GameClearSettings(void)
 	{
 		pPlayer->GetSkillPoint()->AddPoint(POINT_WAVECLEAR);
 	}
+
+	// 観衆のリスト取得
+	CListManager<CGallery> galleryList = CGallery::GetList();
+	CGallery* pGallery = nullptr;
+	while (galleryList.ListLoop(&pGallery))
+	{
+		pGallery->SetState(CGallery::STATE_HEAT);
+	}
+
 }
 
 //==========================================================================
@@ -230,6 +243,14 @@ void CGameManager::SceneEnhance(void)
 	if (fadestate != CInstantFade::STATE_FADECOMPLETION)
 	{// 完了してない
 		return;
+	}
+
+	// 観衆削除
+	CListManager<CGallery> galleryList = CGallery::GetList();
+	CGallery* pGallery = nullptr;
+	while (galleryList.ListLoop(&pGallery))
+	{
+		pGallery->Kill();
 	}
 
 	// カメラリセット
