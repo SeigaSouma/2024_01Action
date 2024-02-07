@@ -574,7 +574,7 @@ void CObject::SetVtx(void)
 //==========================================================================
 // à íuê›íË
 //==========================================================================
-void CObject::SetPosition(const MyLib::Vector3 pos)
+void CObject::SetPosition(const MyLib::Vector3& pos)
 {
 	m_pos = pos;
 }
@@ -590,7 +590,7 @@ MyLib::Vector3 CObject::GetPosition(void) const
 //==========================================================================
 // à íuê›íË
 //==========================================================================
-void CObject::SetOldPosition(const MyLib::Vector3 posOld)
+void CObject::SetOldPosition(const MyLib::Vector3& posOld)
 {
 	m_posOld = posOld;
 }
@@ -606,7 +606,7 @@ MyLib::Vector3 CObject::GetOldPosition(void) const
 //==========================================================================
 // å≥ÇÃà íuê›íË
 //==========================================================================
-void CObject::SetOriginPosition(const MyLib::Vector3 pos)
+void CObject::SetOriginPosition(const MyLib::Vector3& pos)
 {
 	m_posOrigin = pos;
 }
@@ -622,7 +622,7 @@ MyLib::Vector3 CObject::GetOriginPosition(void) const
 //==========================================================================
 // à⁄ìÆó ê›íË
 //==========================================================================
-void CObject::SetMove(const MyLib::Vector3 move)
+void CObject::SetMove(const MyLib::Vector3& move)
 {
 	m_move = move;
 }
@@ -638,7 +638,7 @@ MyLib::Vector3 CObject::GetMove(void) const
 //==========================================================================
 // å¸Ç´ê›íË
 //==========================================================================
-void CObject::SetRotation(const MyLib::Vector3 rot)
+void CObject::SetRotation(const MyLib::Vector3& rot)
 {
 	m_rot = rot;
 }

@@ -283,6 +283,7 @@
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="title_screen.cpp" />
+    <ClCompile Include="torch.cpp" />
     <ClCompile Include="transferBeacon.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="tutorial_screen.cpp" />
@@ -416,6 +417,7 @@
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="title_screen.h" />
+    <ClInclude Include="torch.h" />
     <ClInclude Include="transferBeacon.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="tutorial_screen.h" />

@@ -308,7 +308,7 @@ void CObjectBillboard::SetVtx(void)
 //==========================================================================
 // Œü‚«İ’è
 //==========================================================================
-void CObjectBillboard::SetRotation(const MyLib::Vector3 rot)
+void CObjectBillboard::SetRotation(const MyLib::Vector3& rot)
 {
 	// Œü‚«İ’è
 	CObject::SetRotation(rot);

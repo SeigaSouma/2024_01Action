@@ -266,9 +266,6 @@ void CBeam::UpdateEffect(void)
 			// 瓦礫
 			CBallast::Create(pos, MyLib::Vector3(2.0f, 6.0f, 2.0f), 1, 1.0f, CBallast::TYPE_STONE);
 
-			// ビームヒットパーティクル
-			my_particle::Create(pos, my_particle::TYPE_BEAMHIT_FIELD);
-
 			m_pEffect[i]->Uninit();
 			m_pEffect[i] = nullptr;
 
@@ -372,9 +369,6 @@ void CBeam::UpdateBillboard(void)
 
 			// 瓦礫
 			CBallast::Create(pos, MyLib::Vector3(2.0f, 6.0f, 2.0f), 1, 1.0f, CBallast::TYPE_STONE);
-
-			// ビームヒットパーティクル
-			my_particle::Create(pos, my_particle::TYPE_BEAMHIT_FIELD);
 
 			billboard->Uninit();
 			//billboard = nullptr;

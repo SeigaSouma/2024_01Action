@@ -121,33 +121,24 @@ CEffect3D *CEffect3D::Create(void)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CEffect3D *CEffect3D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type, const float fAddSizeValue)
+CEffect3D* CEffect3D::Create(const MyLib::Vector3& pos, const MyLib::Vector3& move, const D3DXCOLOR& col, const float fRadius, const int nLife, const int moveType, const TYPE type, const float fAddSizeValue)
 {
-	// 生成用のオブジェクト
-	CEffect3D *pEffect = NULL;
+	// メモリの確保
+	CEffect3D* pEffect = DEBUG_NEW CEffect3D;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect != NULL)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pEffect = DEBUG_NEW CEffect3D;
-
-		if (pEffect != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pEffect->m_fAddSizeValue = fAddSizeValue;	// サイズ変更量
-			HRESULT hr = pEffect->Init(pos, move, col, fRadius, nLife, moveType, type);
-			if (FAILED(hr))
-			{
-				return NULL;
-			}
+		// 初期化処理
+		pEffect->m_fAddSizeValue = fAddSizeValue;	// サイズ変更量
+		HRESULT hr = pEffect->Init(pos, move, col, fRadius, nLife, moveType, type);
+		if (FAILED(hr))
+		{
+			return NULL;
 		}
-
-		return pEffect;
 	}
 
-	return NULL;
+	return pEffect;
 }
 
 //==========================================================================
@@ -174,15 +165,6 @@ HRESULT CEffect3D::Init(void)
 	// 種類の設定
 	SetType(TYPE_EFFECT3D);
 
-	// テクスチャの割り当て
-	//if (m_nTexIdx[m_nType] == 0)
-	//{
-	//	m_nTexIdx[m_nType] = CTexture::GetInstance()->Regist(m_apTextureFile[m_nType]);
-	//}
-
-	//// テクスチャの割り当て
-	//BindTexture(m_nTexIdx[m_nType]);
-
 	// 初期化処理
 	hr = CObjectBillboard::Init();
 
@@ -199,7 +181,7 @@ HRESULT CEffect3D::Init(void)
 //==========================================================================
 // エフェクトの初期化処理
 //==========================================================================
-HRESULT CEffect3D::Init(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type)
+HRESULT CEffect3D::Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, const D3DXCOLOR& col, const float fRadius, const int nLife, const int moveType, const TYPE type)
 {
 	HRESULT hr;
 

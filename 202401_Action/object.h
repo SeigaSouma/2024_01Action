@@ -82,15 +82,15 @@ public:
 	virtual void Draw(void) = 0;
 
 	virtual void SetVtx(void);
-	virtual void SetPosition(const MyLib::Vector3 pos);		// 位置設定
+	virtual void SetPosition(const MyLib::Vector3& pos);		// 位置設定
 	virtual MyLib::Vector3 GetPosition(void) const;			// 位置取得
-	virtual void SetOldPosition(const MyLib::Vector3 posOld);	// 過去の位置設定
+	virtual void SetOldPosition(const MyLib::Vector3& posOld);	// 過去の位置設定
 	virtual MyLib::Vector3 GetOldPosition(void) const;			// 過去の位置取得
-	virtual void SetOriginPosition(const MyLib::Vector3 pos);	// 元の位置設定
+	virtual void SetOriginPosition(const MyLib::Vector3& pos);	// 元の位置設定
 	virtual MyLib::Vector3 GetOriginPosition(void) const;		// 元の位置取得
-	virtual void SetMove(const MyLib::Vector3 move);			// 移動量設定
+	virtual void SetMove(const MyLib::Vector3& move);			// 移動量設定
 	virtual MyLib::Vector3 GetMove(void) const;				// 移動量取得
-	virtual void SetRotation(const MyLib::Vector3 rot);		// 向き設定
+	virtual void SetRotation(const MyLib::Vector3& rot);		// 向き設定
 	virtual MyLib::Vector3 GetRotation(void) const;			// 向き取得
 	virtual bool Hit(const int nValue);						// 嘆きのバーチャルヒット処理
 	virtual bool Hit(const int nValue, MyLib::Vector3 move);

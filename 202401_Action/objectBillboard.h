@@ -30,7 +30,7 @@ public:
 	void Draw(void);
 	virtual void SetVtx(void);
 	void BindTexture(int nIdx);
-	virtual void SetRotation(const MyLib::Vector3 rot) override;		// 向き設定
+	virtual void SetRotation(const MyLib::Vector3& rot) override;		// 向き設定
 
 	virtual void SetWorldMtx(const D3DXMATRIX mtx);		// マトリックス設定
 	virtual D3DXMATRIX GetWorldMtx(void) const;			// マトリックス取得

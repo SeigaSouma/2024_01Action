@@ -34,6 +34,7 @@
 #include "particle.h"
 #include "myeffekseer.h"
 #include "gallery.h"
+#include "torch.h"
 
 //==========================================================================
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
@@ -192,6 +193,9 @@ HRESULT CGame::Init(void)
 
 	// ŠÏOÝ’è
 	CGallery::SetGallery();
+
+	// ¼–¾Ý’è
+	CTorch::SetTorch();
 
 	CMyEffekseer::GetInstance()->SetEffect(
 		CMyEffekseer::EFKLABEL_BGFIRE,

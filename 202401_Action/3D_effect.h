@@ -53,12 +53,12 @@ public:
 	~CEffect3D();
 
 	static CEffect3D *Create(void);
-	static CEffect3D *Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type, const float fAddSizeValue = 0.0f);
+	static CEffect3D *Create(const MyLib::Vector3& pos, const MyLib::Vector3& move, const D3DXCOLOR& col, const float fRadius, const int nLife, const int moveType, const TYPE type, const float fAddSizeValue = 0.0f);
 	static void LoadTexture(void);	// テクスチャ読み込み
 
 	//  オーバーライドされた関数
 	HRESULT Init(void);
-	HRESULT Init(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type);
+	HRESULT Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, const D3DXCOLOR& col, const float fRadius, const int nLife, const int moveType, const TYPE type);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
