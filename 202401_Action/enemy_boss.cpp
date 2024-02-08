@@ -193,7 +193,7 @@ void CEnemyBoss::NormalHitResponse()
 	m_fStateTime = TIME_DMG;
 
 	// ヒットストップ
-	CManager::GetInstance()->SetEnableHitStop(5);
+	//CManager::GetInstance()->SetEnableHitStop(5);
 
 	// 振動
 	CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);

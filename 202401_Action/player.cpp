@@ -39,6 +39,7 @@
 #include "skillpoint.h"
 #include "damagepoint.h"
 #include "deadmanager.h"
+#include "gallery.h"
 
 #include "playercontrol.h"
 
@@ -1579,6 +1580,28 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 		if (pos.z - GetRadius() <= info.fMinZ) { pos.z = info.fMinZ + GetRadius(); }
 	}
 
+	// リストループ
+	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+	CEnemy* pEnemy = nullptr;
+	MyLib::Vector3 enemypos;
+	float radius = GetRadius();
+	float enemyradius = 0.0f;
+
+	while (enemyList.ListLoop(&pEnemy))
+	{
+		enemypos = pEnemy->GetPosition();
+		enemyradius = pEnemy->GetRadius();
+		if (UtilFunc::Collision::CircleRange3D(pos, enemypos, radius, enemyradius))
+		{
+			// ターゲットと敵との向き
+			float fRot = atan2f((pos.x - enemypos.x), (pos.z - enemypos.z));
+			float totalradius = radius + enemyradius;
+
+			pos.x = enemypos.x + sinf(fRot) * totalradius;
+			pos.z = enemypos.z + cosf(fRot) * totalradius;
+		}
+	}
+
 	// 向き設定
 	SetRotation(rot);
 
@@ -1596,6 +1619,14 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 
 	if (m_bCounterAccepting)
 	{// カウンター受け付け中
+
+		// 観衆のリスト取得
+		CListManager<CGallery> galleryList = CGallery::GetList();
+		CGallery* pGallery = nullptr;
+		while (galleryList.ListLoop(&pGallery))
+		{
+			pGallery->SetState(CGallery::STATE_COUNTERHEAT);
+		}
 		
 		if (atkType == CGameManager::ATTACK_NORMAL)
 		{
@@ -1648,6 +1679,14 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 
 	if (m_bCounterAccepting)
 	{// カウンター受け付け中
+
+		// 観衆のリスト取得
+		CListManager<CGallery> galleryList = CGallery::GetList();
+		CGallery* pGallery = nullptr;
+		while (galleryList.ListLoop(&pGallery))
+		{
+			pGallery->SetState(CGallery::STATE_COUNTERHEAT);
+		}
 
 		if (atkType == CGameManager::ATTACK_NORMAL)
 		{

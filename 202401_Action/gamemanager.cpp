@@ -25,6 +25,7 @@
 #include "skilltree.h"
 #include "skilltree_ability.h"
 #include "gallery.h"
+#include "torch.h"
 
 
 //==========================================================================
@@ -187,6 +188,9 @@ void CGameManager::Update(void)
 			// 観衆設定
 			CGallery::SetGallery();
 
+			// 松明設定
+			CTorch::SetTorch();
+
 			if (!m_bEndNormalStage)
 			{// 通常ステージが終わっていなかったら
 				SetEnemy();
@@ -227,7 +231,7 @@ void CGameManager::GameClearSettings(void)
 	CGallery* pGallery = nullptr;
 	while (galleryList.ListLoop(&pGallery))
 	{
-		pGallery->SetState(CGallery::STATE_HEAT);
+		pGallery->SetState(CGallery::STATE_CLEARHEAT);
 	}
 
 }
@@ -251,6 +255,14 @@ void CGameManager::SceneEnhance(void)
 	while (galleryList.ListLoop(&pGallery))
 	{
 		pGallery->Kill();
+	}
+
+	// 松明削除
+	CListManager<CTorch> torchList = CTorch::GetList();
+	CTorch* pTorch = nullptr;
+	while (torchList.ListLoop(&pTorch))
+	{
+		pTorch->Kill();
 	}
 
 	// カメラリセット

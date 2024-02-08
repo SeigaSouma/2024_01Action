@@ -34,9 +34,13 @@ public:
 	virtual void Uninit(void) override;
 	virtual void Update(void) override {}
 
+	void Kill(void);	// 削除
+
 	// 静的関数
 	static CTorch *Create(TYPE type, const MyLib::Vector3& pos, const MyLib::Vector3& rot);
 	static void SetTorch(void);
+
+	static CListManager<CTorch> GetList() { return m_List; }
 
 protected:
 	int m_nCntFire;
@@ -52,6 +56,7 @@ private:
 	// メンバ変数
 	//=============================
 	static std::vector<std::string> ModelFile;		// モデルファイル名
+	static CListManager<CTorch> m_List;		// リスト
 
 };
 

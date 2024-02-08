@@ -26,7 +26,7 @@ MODEL_FILENAME = data/MODEL/enemy/orafu/04_LArm.x	# [4]ç∂òr
 CHARACTERSET
 	VELOCITY = 1.2		
 	JUMP = 0.00		
-	RADIUS = 100.00		
+	RADIUS = 80.00		
 	HEIGHT = 250.00		
 	LIFE = 50		
 

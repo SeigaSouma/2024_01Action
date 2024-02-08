@@ -40,6 +40,7 @@ namespace
 	const float DISTANCE_DEPTH = 70.0f;	// 奥行きの間隔
 	const float GRAVITY = 0.5f;		// 重力
 	const float JUMP = 6.0f;		// ジャンプ力
+	const float TIME_COUNTERHEAT = 1.8f;	// カウンター盛り上がりの時間
 }
 std::vector<int> CGallery::m_nModelIdx = {};		// モデルインデックス番号
 CListManager<CGallery> CGallery::m_List = {};		// リスト
@@ -50,7 +51,8 @@ CListManager<CGallery> CGallery::m_List = {};		// リスト
 CGallery::STATE_FUNC CGallery::m_StateFunc[] =
 {
 	&CGallery::StateNone,	// なし
-	&CGallery::StateHeat,	// 盛り上がり
+	&CGallery::StateClearHeat,	// クリア盛り上がり
+	&CGallery::StateCounterHeat,	// カウンター盛り上がり
 };
 
 //==========================================================================
@@ -60,6 +62,7 @@ CGallery::CGallery(int nPriority) : CObject(nPriority)
 {
 	// クリア
 	m_State = STATE_NONE;	// 状態
+	m_fStateTime = 0.0f;	// 状態カウンター
 	m_GalleryInfo.clear();	// 観衆情報
 }
 
@@ -222,9 +225,67 @@ void CGallery::Update()
 }
 
 //==========================================================================
-// 盛り上がり
+// クリア盛り上がり
 //==========================================================================
-void CGallery::StateHeat()
+void CGallery::StateClearHeat()
+{
+	// ジャンプ
+	Jump();
+}
+
+//==========================================================================
+// カウンター盛り上がり
+//==========================================================================
+void CGallery::StateCounterHeat()
+{
+
+	// 状態カウンター加算
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+
+	if (TIME_COUNTERHEAT <= m_fStateTime)
+	{
+		for (auto& info : m_GalleryInfo)
+		{
+			MyLib::Vector3 move = info.objX->GetMove();
+			MyLib::Vector3 pos = info.objX->GetPosition();
+			MyLib::Vector3 posorigin = info.objX->GetOriginPosition();
+
+			// 位置更新
+			pos += move;
+
+			// 重力
+			move.y -= GRAVITY;
+			info.objX->SetMove(move);
+
+			if (pos.y <= posorigin.y)
+			{// 初期値を下回れば
+
+				// 初期値固定
+				pos.y = posorigin.y;
+				info.objX->SetMove(0.0f);
+
+				// 通常のポーズに戻す
+				info.poseType = POSE_NONE;
+
+				// モデル切り替え
+				int color = info.colorType, pose = info.poseType;
+				info.objX->BindXData(m_nModelIdx[3 * color + pose]);
+			}
+
+			info.objX->SetPosition(pos);
+		}
+	}
+	else
+	{
+		// ジャンプ
+		Jump();
+	}
+}
+
+//==========================================================================
+// ジャンプ
+//==========================================================================
+void CGallery::Jump()
 {
 	for (auto& info : m_GalleryInfo)
 	{
@@ -247,7 +308,7 @@ void CGallery::StateHeat()
 			float jump = JUMP + UtilFunc::Transformation::Random(-20, 20) * 0.05f;
 			info.objX->SetMove(MyLib::Vector3(0.0f, jump, 0.0f));
 
-			info.poseType = 
+			info.poseType =
 				(info.poseType == POSE_RIGHT) ? POSE_LEFT :
 				(info.poseType == POSE_LEFT) ? POSE_RIGHT :
 				static_cast<POSE>(UtilFunc::Transformation::Random(1, 2));
@@ -268,6 +329,15 @@ void CGallery::Draw()
 {
 	
 
+}
+
+//==========================================================================
+// 状態設定
+//==========================================================================
+void CGallery::SetState(STATE state)
+{ 
+	m_fStateTime = 0.0f;
+	m_State = state;
 }
 
 //==========================================================================

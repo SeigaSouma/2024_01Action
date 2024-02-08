@@ -1,14 +1,29 @@
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 3
+NUM_TEXTURE = 18
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
 #------------------------------------------------------------------------------
-TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_description1.png	# [0]
-TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_description2.png	# [1]
-TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_description3.png	# [2]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addlife01.png	# [0]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addlife02.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addstamina01.png	# [2]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addstamina02.png	# [3]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addstamina03.png	# [4]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_autoheal_stamina01.png	# [5]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_autoheal_stamina02.png	# [6]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_counter_healstamina01.png	# [7]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_counter_healstamina02.png	# [8]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_counter_needstamina01.png	# [9]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_counter_needstamina02.png	# [10]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_counter_needstamina03.png	# [11]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_guard_needstamina01.png	# [12]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_guard_needstamina02.png	# [13]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_knockbackMitigation01.png	# [14]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_knockbackMitigation02.png	# [15]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addcombo.png	# [16]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_setsubu.png	# [17]
 
 
 END_SCRIPT		# この行は絶対消さないこと！

@@ -23,6 +23,7 @@ namespace
 	const char* MODEL_WALL = "data\\MODEL\\arena\\taimatu_001.x";
 }
 std::vector<std::string> CTorch::ModelFile = {};		// モデルファイル名
+CListManager<CTorch> CTorch::m_List = {};		// リスト
 
 //==========================================================================
 // コンストラクタ
@@ -86,6 +87,9 @@ HRESULT CTorch::Init(void)
 	// 種類の設定
 	CObject::SetType(TYPE_OBJECTX);
 
+	// リストに割り当て
+	m_List.Regist(this);
+
 	return S_OK;
 }
 
@@ -136,8 +140,23 @@ HRESULT CTorchWall::Init(void)
 //==========================================================================
 void CTorch::Uninit(void)
 {
+	// リストから削除
+	m_List.Delete(this);
+
 	// 終了処理
 	CObjectX::Uninit();
+}
+
+//==========================================================================
+// 削除
+//==========================================================================
+void CTorch::Kill(void)
+{
+	// リストから削除
+	m_List.Delete(this);
+
+	// 削除処理
+	CObjectX::Kill();
 }
 
 //==========================================================================
