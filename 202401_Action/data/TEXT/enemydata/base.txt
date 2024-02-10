@@ -16,8 +16,15 @@ STAGESET
 		RUSH = 0
 	END_BASESET
 
+	BASESET
+		PATTERN = 2
+		POS = 221.38 0.00 1256.61
+		RUSH = 0
+	END_BASESET
+
 END_STAGESET
 
+#--------------------------------[Stage1]-----------------------------
 STAGESET
 	BASESET
 		PATTERN = 1

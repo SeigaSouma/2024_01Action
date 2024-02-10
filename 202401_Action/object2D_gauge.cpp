@@ -201,7 +201,7 @@ void CObject2D_Gauge::SetValue(int value)
 MyLib::Vector3 CObject2D_Gauge::UpgradeMaxValue(int addvalue)
 {
 	// ç≈ëÂíl
-	m_nMaxValue += addvalue;
+	m_nMaxValue = m_nOriginValue + addvalue;
 	float nowlen = m_fOriginWidth * (static_cast<float>(m_nMaxValue) / static_cast<float>(m_nOriginValue));
 
 	// ç≈ëÂÇÃí∑Ç≥

@@ -308,6 +308,11 @@ void CPlayer::Uninit(void)
 //==========================================================================
 void CPlayer::Kill(void)
 {
+	// 遷移なしフェード追加
+	CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
+
+	// 遷移状態に変更
+	CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_REASPAWN);
 
 	my_particle::Create(GetPosition(), my_particle::TYPE_ENEMY_FADE);
 
@@ -424,9 +429,21 @@ void CPlayer::Update(void)
 	MyLib::Vector3 rot = GetRotation();
 
 	// カメラの情報取得
-	CCamera* pCamera = CManager::GetInstance()->GetCamera();
-	pCamera->SetTargetPosition(pos);
-	pCamera->SetTargetRotation(rot);
+	if (!CManager::GetInstance()->GetCamera()->IsRockOn())
+	{
+		CCamera* pCamera = CManager::GetInstance()->GetCamera();
+		pCamera->SetTargetPosition(pos);
+		pCamera->SetTargetRotation(rot);
+	}
+	else
+	{
+		CCamera* pCamera = CManager::GetInstance()->GetCamera();
+		MyLib::Vector3 camerapos = pos;
+		camerapos.y = pCamera->GetTargetPosition().y;
+
+		pCamera->SetTargetPosition(camerapos);
+		pCamera->SetTargetRotation(rot);
+	}
 
 	// 影の位置更新
 	if (m_pShadow != NULL)
@@ -1219,7 +1236,7 @@ void CPlayer::RockOn(void)
 	{// ロックオン距離内なら
 
 		// ロックオン設定
-		pCamera->SetRockOn(enemyList.GetData(nMaxIdx)->GetPosition(), true);
+		//pCamera->SetRockOn(enemyList.GetData(nMaxIdx)->GetPosition(), true);
 		enemyList.GetData(nMaxIdx)->SetEnableRockOn(true);
 
 		// インデックス番号設定
@@ -1281,7 +1298,7 @@ void CPlayer::SwitchRockOnTarget(void)
 
 		// ロックオン設定
 		CEnemy* pSetEnemy = enemyList.GetData(nMaxIdx);
-		CManager::GetInstance()->GetCamera()->SetRockOn(pSetEnemy->GetPosition(), true);
+		//CManager::GetInstance()->GetCamera()->SetRockOn(pSetEnemy->GetPosition(), true);
 		pSetEnemy->SetEnableRockOn(true);
 
 		// インデックス番号設定
@@ -1399,40 +1416,40 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	// リストループ
 	while (enemyList.ListLoop(&pEnemy))
 	{
-		// 敵の位置取得
-		MyLib::Vector3 TargetPos = pEnemy->GetPosition();
+		// コライダーの数繰り返し
+		std::vector<SphereCollider> colliders = pEnemy->GetSphereColliders();
+		for (const auto& collider : colliders)
+		{
+			MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, collider.center, pATKInfo->fRangeSize, collider.radius);
+			if (hitresult.ishit)
+			{// 球の判定
 
-		// 判定サイズ取得
-		float fTargetRadius = pEnemy->GetRadius();
+				if (pEnemy->Hit(pATKInfo->nDamage) == true)
+				{// 当たってたら
 
-		MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, TargetPos, pATKInfo->fRangeSize, fTargetRadius);
-		if (hitresult.ishit)
-		{// 球の判定
+					// 位置
+					MyLib::Vector3 pos = GetPosition();
+					MyLib::Vector3 enemypos = pEnemy->GetPosition();
 
-			if (pEnemy->Hit(pATKInfo->nDamage) == true)
-			{// 当たってたら
+					if (pEnemy->GetType() != CEnemy::TYPE_BOSS)
+					{
+						// ターゲットと敵との向き
+						float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
+						UtilFunc::Transformation::RotNormalize(fRot);
 
-				// 位置
-				MyLib::Vector3 pos = GetPosition();
-				MyLib::Vector3 enemypos = pEnemy->GetPosition();
+						pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
+					}
 
-				if (pEnemy->GetType() != CEnemy::TYPE_BOSS)
-				{
-					// ターゲットと敵との向き
-					float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
-					UtilFunc::Transformation::RotNormalize(fRot);
+					CMyEffekseer::GetInstance()->SetEffect(
+						CMyEffekseer::EFKLABEL_HITMARK_RED,
+						hitresult.hitpos, 0.0f, 0.0f, 50.0f);
 
-					pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
+					// ダメージ表記
+					enemypos.y += pEnemy->GetHeight() * 0.5f;
+					enemypos += UtilFunc::Transformation::GetRandomPositionSphere(enemypos, collider.radius * 0.5f);
+					CDamagePoint::Create(hitresult.hitpos, pATKInfo->nDamage);
+					break;
 				}
-
-				CMyEffekseer::GetInstance()->SetEffect(
-					CMyEffekseer::EFKLABEL_HITMARK_RED,
-					hitresult.hitpos, 0.0f, 0.0f, 50.0f);
-
-				// ダメージ表記
-				enemypos.y += pEnemy->GetHeight() * 0.5f;
-				enemypos += UtilFunc::Transformation::GetRandomPositionSphere(enemypos, fTargetRadius * 0.5f);
-				CDamagePoint::Create(hitresult.hitpos, pATKInfo->nDamage);
 			}
 		}
 	}
@@ -1591,6 +1608,8 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 	{
 		enemypos = pEnemy->GetPosition();
 		enemyradius = pEnemy->GetRadius();
+		enemyradius *= 0.5f;
+
 		if (UtilFunc::Collision::CircleRange3D(pos, enemypos, radius, enemyradius))
 		{
 			// ターゲットと敵との向き
@@ -1706,7 +1725,7 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 				if (!pCamera->IsRockOn())
 				{
 					// ロックオン設定
-					pCamera->SetRockOn(pEnemy->GetPosition(), true);
+					//pCamera->SetRockOn(pEnemy->GetPosition(), true);
 					pEnemy->SetEnableRockOn(true);
 
 					// インデックス番号設定
@@ -2402,6 +2421,38 @@ void CPlayer::SetState(STATE state, int nCntState)
 CPlayer::STATE CPlayer::GetState(void)
 {
 	return m_state;
+}
+
+
+//==========================================================================
+// 強化リセット
+//==========================================================================
+void CPlayer::ResetEnhance()
+{
+	// 体力に設定
+	if (m_pHPGauge != nullptr)
+	{
+		SetLife(m_pHPGauge->UpgradeMaxValue(0));
+		SetLifeOrigin(m_pHPGauge->GetMaxLife());
+	}
+
+	// スタミナ
+	if (m_pStaminaGauge != nullptr)
+	{
+		m_pStaminaGauge->UpgradeMaxValue(0);
+	}
+
+	// スタミナ自動回復値
+	if (m_pStaminaGauge != nullptr)
+	{
+		m_pStaminaGauge->UpgradeAutoHeal(1.0f);
+	}
+
+	// 操作関連
+	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack());
+	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence());
+	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid());
+	ChangeGuardGrade(DEBUG_NEW CPlayerGuard());
 }
 
 //==========================================================================

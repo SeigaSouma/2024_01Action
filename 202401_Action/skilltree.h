@@ -55,7 +55,10 @@ public:
 
 	eState GetState() { return m_state; }	// 状態取得
 	void SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering);	// 習得状況設定
+	void SetMastering(std::vector<CSkillTree_Icon::eMastering> mastering);	// 習得状況設定
+	std::vector<CSkillTree_Icon::eMastering> GetMastering();			// 習得状況取得
 	std::vector<CSkillTree_Icon*> GetIcon(void) const;	// アイコン取得
+	std::vector<CSkillTree_Icon::sSkillIcon> GetIconInfo() { return m_SkillInfo; }
 	CSkillTree_Description* GetDescription() { return m_pDescription; }	// 説明文取得
 
 	static CSkillTree* GetInstance() { return m_pThisPtr; }	// インスタンス取得
@@ -104,7 +107,6 @@ private:
 	//=============================
 	std::vector<CSkillTree_Icon::sSkillIcon> m_SkillInfo;	// スキルアイコン
 	std::vector<CSkillTree_Icon*> m_pSkillIcon;				// スキルアイコン
-	std::vector<CSkillTree_Icon::eMastering> m_SkillIconMastering;	// スキルアイコンの習得状況
 
 	//=============================
 	// メンバ変数

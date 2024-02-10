@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 21
+NUM_TEXTURE = 12
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
@@ -18,20 +18,11 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/tile_04.jpg		# [8]
 TEXTURE_FILENAME = data/TEXTURE/FIELD/tile_03.jpg		# [9]
 TEXTURE_FILENAME = data/TEXTURE/FIELD/water_02.jpg		# [10]
 TEXTURE_FILENAME = data/TEXTURE/sky/sky_06.jpg		# [11]
-TEXTURE_FILENAME = data/TEXTURE/forest_02.jpg		# [12]
-TEXTURE_FILENAME = data/TEXTURE/line.png		# [13]
-TEXTURE_FILENAME = data/TEXTURE/glass.jpg		# [14]
-TEXTURE_FILENAME = data/TEXTURE/FIELD/soil.jpg		# [15]
-TEXTURE_FILENAME = data/TEXTURE/FIELD/douro_01.png		# [16]
-TEXTURE_FILENAME = data/TEXTURE/FIELD/kousaten_01.png		# [17]
-TEXTURE_FILENAME = data/TEXTURE/FIELD/stop.png		# [18]
-TEXTURE_FILENAME = data/TEXTURE/FIELD/forest.png		# [19]
-TEXTURE_FILENAME = data/TEXTURE/FIELD/forest_01.png		# [20]
 
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 37
+NUM_MODEL = 38
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -73,6 +64,7 @@ MODEL_FILENAME = data/MODEL/arena/jouheki_kabe.x		# [33]
 MODEL_FILENAME = data/MODEL/arena/taimatu_001.x		# [34]
 MODEL_FILENAME = data/MODEL/arena/taimatu_002.x		# [35]
 MODEL_FILENAME = data/MODEL/gallery/gallery_red_wait.x		# [36]
+MODEL_FILENAME = data/MODEL/enemy/gobelin/TModel.x		# [36]
 
 #==============================================================================
 # 空情報

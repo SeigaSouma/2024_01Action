@@ -9,6 +9,7 @@
 #define _GAMEMANAGER_H_	// 二重インクルード防止
 
 #include "constans.h"
+#include "skilltree_icon.h"
 
 class CSkillTree_Ability;
 
@@ -29,7 +30,8 @@ public:
 		SCENE_SKILLTREE,		// スキルツリー
 		SCENE_BOSS,				// ボス
 		SCENE_TRANSITIONWAIT,	// 遷移待機
-		SCENE_TRANSITION,		// 遷移
+		SCENE_TRANSITION,		// 転移
+		SCENE_REASPAWN,			// 復活
 		SCENE_MAX
 	};
 
@@ -60,6 +62,8 @@ public:
 	void SetNumStage(int nStage) { m_nNumStage = nStage; }	// ステージの総数設定
 	int GetNumStage(void) { return m_nNumStage; }			// ステージの総数取得
 
+	void SetPrevEnhance();	// 前回の強化内容設定
+
 	void GameClearSettings(void);	// ゲームクリア時の設定
 	static CGameManager *Create(void);	// 生成処理
 
@@ -67,6 +71,7 @@ private:
 
 	// メンバ関数
 	void SceneEnhance(void);
+	void SceneReaspawn(void);	// 復活
 	void SetEnemy(void);
 	void SetBoss(void);
 
@@ -78,6 +83,9 @@ private:
 	bool m_bEndNormalStage;	// 通常ステージが終了したか
 	int m_nNowStage;		// 現在のステージ
 	int m_nNumStage;		// ステージの総数
+	int m_nPrevPoint;		// 前回のポイント
+	std::vector<CSkillTree_Icon::eMastering> m_PrevSkillIconMastering;	// 前回のスキルアイコンの習得状況
+	std::vector<CSkillTree_Icon*> m_p_PrevSkillIcon;	// 前回のスキルアイコン
 };
 
 

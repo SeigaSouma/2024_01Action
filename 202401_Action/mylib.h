@@ -125,6 +125,24 @@ namespace MyLib
 		}
 
 		/**
+		@brief	XZベクトルの長さ
+		@return	求められた長さ
+		*/
+		inline float LengthXZ(void)
+		{
+			return sqrtf(x * x + z * z);
+		}
+
+		/**
+		@brief	XYベクトルの長さ
+		@return	求められた長さ
+		*/
+		inline float LengthXY(void)
+		{
+			return sqrtf(x * x + y * y);
+		}
+
+		/**
 		@brief	ベクトルの長さの2乗
 		@return	求められた長さ
 		*/

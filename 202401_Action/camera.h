@@ -69,8 +69,9 @@ public:
 	MyLib::Vector3 GetDestRotation(void);				// 目標の向き取得
 	void SetTargetPosition(const MyLib::Vector3 pos);	// 追従目標の位置設定
 	MyLib::Vector3 GetTargetPosition(void);			// 追従目標の位置取得
-	void SetTargetRotation(const MyLib::Vector3 rot);	// 追従目標の向き設定
-	void SetRockOnPosition(const MyLib::Vector3 pos);	// 追従目標の位置設定
+	void SetTargetRotation(const MyLib::Vector3 rot);	// ロックオンの向き設定
+	void SetRockOnPosition(const MyLib::Vector3 pos);	// ロックオンの位置設定
+	void SetRockOnDistance(const float distance);	// ロックオンの下限距離設定
 	MyLib::Vector3 GetRockOnPosition(void);			// 追従目標の位置取得
 	void SetRockOn(const MyLib::Vector3 pos, bool bSet);	// ロックオン設定
 	void SetRockDir(RockOnDir dir) { m_RockOnDir = dir; }	// ロックオン時のズレ向き設定
@@ -149,6 +150,7 @@ private:
 	MyLib::Vector3 m_TargetPosDest;		// 目標の追従目標の位置
 	MyLib::Vector3 m_TargetRot;			// 追従目標の向き
 	MyLib::Vector3 m_RockOnPos;			// ロックオン対象の位置
+	float m_fRockOnDistance;
 	float m_fDistance;					// 距離
 	float m_fDestDistance;				// 目標の距離
 	float m_fOriginDistance;			// 元の距離

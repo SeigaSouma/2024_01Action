@@ -268,7 +268,7 @@ int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
 	int oldMaxLife = m_nMaxLifeValue;
 
 	// ‘Ì—Í‚ÌÅ‘å’lã¸
-	m_nMaxLifeValue += addvalue;
+	m_nMaxLifeValue = m_nOriginLifeValue + addvalue;
 
 	for (const auto& gauge : m_pObj2DGauge)
 	{

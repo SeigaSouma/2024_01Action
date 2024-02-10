@@ -39,11 +39,6 @@ public:
 		TYPE_BLACK,			// 黒エフェクト
 		TYPE_JUJI,			// 十字エフェクト
 		TYPE_JUJI2,			// 十字エフェクト
-		TYPE_SAND,			// 砂エフェクト
-		TYPE_SANDBLACK,		// 砂エフェクト
-		TYPE_LINE,			// 線エフェクト
-		TYPE_GRASS,			// 草エフェクト
-		TYPE_SWEAT,			// 汗エフェクト
 		TYPE_THUNDER,		// 雷エフェクト
 		TYPE_NULL,			// NULLエフェクト
 		TYPE_MAX

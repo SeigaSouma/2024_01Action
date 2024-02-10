@@ -27,9 +27,9 @@ MODEL_FILENAME = data/MODEL/enemy/jerseycookie/05_LLeg.x	# [5]ç∂ãr
 CHARACTERSET
 	VELOCITY = 0.8		
 	JUMP = 0.00		
-	RADIUS = 80.00		
+	RADIUS = 50.00		
 	HEIGHT = 250.00		
-	LIFE = 50		
+	LIFE = 30		
 
 	PARTSSET
 		INDEX = 0

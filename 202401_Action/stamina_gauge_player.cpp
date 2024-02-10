@@ -355,7 +355,7 @@ void CStaminaGauge_Player::UpgradeMaxValue(int addvalue)
 #else
 
 	// スタミナの最大値上昇
-	m_fMaxStaminaValue += addvalue;
+	m_fMaxStaminaValue = m_fOriginStaminaValue + addvalue;
 
 	for (const auto& gauge : m_pObj2DGauge)
 	{

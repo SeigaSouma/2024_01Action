@@ -60,59 +60,41 @@ void CObjectBillboard::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectBillboard *CObjectBillboard::Create(void)
+CObjectBillboard* CObjectBillboard::Create(void)
 {
-	// 生成用のオブジェクト
-	CObjectBillboard *pObjBillBoard = NULL;
+	// メモリの確保
+	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard;
 
-	if (pObjBillBoard == NULL)
-	{// NULLだったら
+	if (pObjBillBoard != NULL)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pObjBillBoard = DEBUG_NEW CObjectBillboard;
-
-		if (pObjBillBoard != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObjBillBoard->Init();
-		}
-
-		return pObjBillBoard;
+		// 初期化処理
+		pObjBillBoard->Init();
 	}
 
-	return NULL;
+	return pObjBillBoard;
 }
 
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectBillboard *CObjectBillboard::Create(MyLib::Vector3 pos, MyLib::Vector3 rot)
+CObjectBillboard* CObjectBillboard::Create(MyLib::Vector3 pos, MyLib::Vector3 rot)
 {
-	// 生成用のオブジェクト
-	CObjectBillboard *pObjBillBoard = NULL;
+	// メモリの確保
+	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard;
 
-	if (pObjBillBoard == NULL)
-	{// NULLだったら
+	if (pObjBillBoard != NULL)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pObjBillBoard = DEBUG_NEW CObjectBillboard;
+		// 初期化処理
+		pObjBillBoard->Init();
 
-		if (pObjBillBoard != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObjBillBoard->Init();
-
-			// 位置・向き
-			pObjBillBoard->SetPosition(pos);
-			pObjBillBoard->SetRotation(rot);
-		}
-
-		return pObjBillBoard;
+		// 位置・向き
+		pObjBillBoard->SetPosition(pos);
+		pObjBillBoard->SetRotation(rot);
 	}
 
-	return NULL;
+	return pObjBillBoard;
 }
 
 //==========================================================================

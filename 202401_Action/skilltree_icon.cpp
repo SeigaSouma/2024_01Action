@@ -95,7 +95,7 @@ CSkillTree_Icon* CSkillTree_Icon::Create(sSkillIcon iconinfo)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Icon::Init(void)
+HRESULT CSkillTree_Icon::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -144,7 +144,7 @@ HRESULT CSkillTree_Icon::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Icon::Uninit(void)
+void CSkillTree_Icon::Uninit()
 {
 
 	// リストから削除
@@ -169,7 +169,7 @@ void CSkillTree_Icon::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Icon::Kill(void)
+void CSkillTree_Icon::Kill()
 {
 	// リストから削除
 	m_List.Delete(this);
@@ -193,7 +193,7 @@ void CSkillTree_Icon::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Icon::Update(void)
+void CSkillTree_Icon::Update()
 {
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
@@ -232,7 +232,7 @@ void CSkillTree_Icon::Update(void)
 //==========================================================================
 // 何もない状態
 //==========================================================================
-void CSkillTree_Icon::StateNone(void)
+void CSkillTree_Icon::StateNone()
 {
 
 }
@@ -240,7 +240,7 @@ void CSkillTree_Icon::StateNone(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Icon::Draw(void)
+void CSkillTree_Icon::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -270,7 +270,7 @@ void CSkillTree_Icon::SetIconInfo(sSkillIcon iconinfo)
 //==========================================================================
 // アイコン情報取得
 //==========================================================================
-CSkillTree_Icon::sSkillIcon CSkillTree_Icon::GetIconInfo(void)
+CSkillTree_Icon::sSkillIcon CSkillTree_Icon::GetIconInfo()
 {
 	return m_SkillIconInfo;
 }
@@ -278,7 +278,7 @@ CSkillTree_Icon::sSkillIcon CSkillTree_Icon::GetIconInfo(void)
 //==========================================================================
 // 初期能力割り当て
 //==========================================================================
-void CSkillTree_Icon::BindStartAvillity(void)
+void CSkillTree_Icon::BindStartAvillity()
 {
 	// 能力割り当て
 	m_pAbillity->BindAbillity();
@@ -290,7 +290,7 @@ void CSkillTree_Icon::BindStartAvillity(void)
 //==========================================================================
 // 能力割り当て
 //==========================================================================
-bool CSkillTree_Icon::BindAvillity(void)
+bool CSkillTree_Icon::BindAvillity()
 {
 	if (m_Mastering != MASTERING_POSSIBLE)
 	{// 習得可能以外はリターン
@@ -318,7 +318,7 @@ bool CSkillTree_Icon::BindAvillity(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CSkillTree_Icon::SetVtx(void)
+void CSkillTree_Icon::SetVtx()
 {
 	// 頂点設定
 	CObject2D::SetVtx();
@@ -328,7 +328,7 @@ void CSkillTree_Icon::SetVtx(void)
 //==========================================================================
 // テクスチャ読み込み処理
 //==========================================================================
-HRESULT CSkillTree_Icon::ReadTexture(void)
+HRESULT CSkillTree_Icon::ReadTexture()
 {
 	char aComment[MAX_COMMENT] = {};	// コメント用
 	int nTexNum = 0;					// ファイルの数

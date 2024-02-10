@@ -17,7 +17,6 @@
 #include "game.h"
 #include "player.h"
 #include "impactwave.h"
-#include "effect_thunderring.h"
 
 //==========================================================================
 //  ’è”’è‹`

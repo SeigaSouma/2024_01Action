@@ -164,6 +164,7 @@ protected:
 	float m_fActCounter;					// 移動カウンター
 	bool m_bActionable;						// 行動可能か
 	float m_fDownTime;						// ダウンカウンター
+	float m_fRockOnDistance;				// ロックオンの距離
 	MyLib::Vector3 m_posOrigin;				// 最初の位置
 	MyLib::Vector3 m_posKnokBack;			// ノックバックの位置
 	SMotionFrag m_sMotionFrag;				// モーションのフラグ

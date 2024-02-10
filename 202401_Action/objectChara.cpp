@@ -154,6 +154,22 @@ void CObjectChara::Update(void)
 		m_pMotion->Update();
 	}
 
+	// コライダーの位置調整
+	for (auto& collider : m_SphereColliders)
+	{
+		// 判定するパーツ取得
+		CModel* pModel = GetModel()[collider.nParentPartsIdx];
+
+		// 判定するパーツのマトリックス取得
+		D3DXMATRIX mtxTrans;
+		D3DXMATRIX mtxWepon = pModel->GetWorldMtx();
+
+		// 位置を反映する
+		D3DXMatrixTranslation(&mtxTrans, collider.offset.x, collider.offset.y, collider.offset.z);
+		D3DXMatrixMultiply(&mtxWepon, &mtxTrans, &mtxWepon);
+		collider.center = UtilFunc::Transformation::WorldMtxChangeToPosition(mtxWepon);
+	}
+
 	// モーション中の行動処理
 	MotionInProgressAction();
 }
@@ -409,12 +425,41 @@ void CObjectChara::SaveSphereColliders(void)
 }
 
 //==========================================================================
+// スフィアコライダーの数取得
+//==========================================================================
+int CObjectChara::GetSphereColliderNum()
+{
+	return static_cast<int>(m_SphereColliders.size());
+}
+
+//==========================================================================
+// スフィアコライダー取得
+//==========================================================================
+std::vector<CObjectChara::SphereCollider> CObjectChara::GetSphereColliders()
+{ 
+	return m_SphereColliders; 
+}
+
+//==========================================================================
 // コライダー取得
 //==========================================================================
 CObjectChara::SphereCollider CObjectChara::GetNowSphereCollider(int nIdx)
 {
-	if (nIdx >= 0 && nIdx < (int)m_SphereColliders.size())
+	if (nIdx >= 0 && nIdx < static_cast<int>(m_SphereColliders.size()))
 	{
+#if 0
+		// 判定するパーツ取得
+		CModel* pModel = GetModel()[m_SphereColliders[nIdx].nParentPartsIdx];
+
+		// 判定するパーツのマトリックス取得
+		D3DXMATRIX mtxTrans;
+		D3DXMATRIX mtxWepon = pModel->GetWorldMtx();
+
+		// 位置を反映する
+		D3DXMatrixTranslation(&mtxTrans, m_SphereColliders[nIdx].offset.x, m_SphereColliders[nIdx].offset.y, m_SphereColliders[nIdx].offset.z);
+		D3DXMatrixMultiply(&mtxWepon, &mtxTrans, &mtxWepon);
+		m_SphereColliders[nIdx].center = UtilFunc::Transformation::WorldMtxChangeToPosition(mtxWepon);
+#endif
 		return m_SphereColliders[nIdx];
 	}
 	return SphereCollider();

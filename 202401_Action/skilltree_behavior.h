@@ -92,9 +92,9 @@ class CAbillityStamina : public CEnhance
 	// ’iŠK•Ê
 	void Add01(void) { m_pPlayer->UpgradeMaxStamina(20); }
 	void AutoHeal01(void){ m_pPlayer->UpgradeAutoHealStamina(1.3f); }
-	void Add02(void) { m_pPlayer->UpgradeMaxStamina(20); }
+	void Add02(void) { m_pPlayer->UpgradeMaxStamina(40); }
 	void AutoHeal02(void) { m_pPlayer->UpgradeAutoHealStamina(1.75f); }
-	void Add03(void) { m_pPlayer->UpgradeMaxStamina(20); }
+	void Add03(void) { m_pPlayer->UpgradeMaxStamina(60); }
 
 };
 
@@ -120,7 +120,7 @@ class CAbillityLife : public CEnhance
 	//=============================
 	// ’iŠK•Ê
 	void Add01(void) { m_pPlayer->UpgradeLife(20); }
-	void Add02(void) { m_pPlayer->UpgradeLife(20); }
+	void Add02(void) { m_pPlayer->UpgradeLife(40); }
 
 };
 

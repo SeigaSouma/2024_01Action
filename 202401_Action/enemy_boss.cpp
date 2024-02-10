@@ -89,6 +89,8 @@ HRESULT CEnemyBoss::Init()
 	m_pBossHPGauge = CHP_GaugeBoss::Create(MyLib::Vector3(640.0f, 50.0f, 0.0f), GetLifeOrigin());	// ボスのHPゲージ
 	m_pBossHPGauge->SetLife(0);
 
+	m_fRockOnDistance = 700.0f;	// ロックオンの距離
+
 	// 黒フレーム捌ける
 	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);
 

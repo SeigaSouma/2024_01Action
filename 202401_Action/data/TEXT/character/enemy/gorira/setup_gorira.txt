@@ -45,7 +45,7 @@ CHARACTERSET
 	VELOCITY = 4.0					# 移動量
 	JUMP = 8.65						# ジャンプ量
 	RADIUS = 300.0					# 半径
-	HEIGHT = 80.0					# 高さ
+	HEIGHT = 500.0					# 高さ
 	LIFE = 600						# 体力
 	NUM_PARTS = 5					# パーツ数
 

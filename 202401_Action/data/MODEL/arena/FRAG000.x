@@ -663,7 +663,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.360000;0.360000;0.360000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\emblem000.png";
+    "data\\TEXTURE\\arena\\emblem000.png";
    }
   }
   Material {

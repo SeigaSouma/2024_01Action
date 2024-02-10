@@ -31,11 +31,6 @@ const char *CEffect3D::m_apTextureFile[] =					// ファイル読み込み
 	"data\\TEXTURE\\effect\\effect000.png",	   // 黒エフェクト
 	"data\\TEXTURE\\effect\\effect001.png",		// 十字エフェクト
 	"data\\TEXTURE\\effect\\Star01.png",		// 十字エフェクト
-	"data\\TEXTURE\\effect\\sand_01.png",		// 砂エフェクト
-	"data\\TEXTURE\\effect\\sand_02.png",		// 砂エフェクト
-	"data\\TEXTURE\\effect\\line_02.png",		// 線エフェクト
-	"data\\TEXTURE\\grassblades_01.png",		// 草エフェクト
-	"data\\TEXTURE\\effect\\sweat_01.png",		// 汗エフェクト
 	"data\\TEXTURE\\effect\\thunder_02.tga",	// 雷エフェクト
 	"",											// NULLエフェクト
 };
@@ -235,26 +230,6 @@ HRESULT CEffect3D::Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, c
 
 	case TYPE_JUJI2:
 		m_bAddAlpha = true;
-		break;
-
-	case TYPE_SAND:
-		m_bAddAlpha = true;
-		break;
-
-	case TYPE_SANDBLACK:
-		m_bAddAlpha = false;
-		break;
-
-	case TYPE_LINE:
-		m_bAddAlpha = true;
-		break;
-
-	case TYPE_GRASS:
-		m_bAddAlpha = false;
-		break;
-
-	case TYPE_SWEAT:
-		m_bAddAlpha = false;
 		break;
 
 	case TYPE_THUNDER:

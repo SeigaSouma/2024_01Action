@@ -811,7 +811,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\konkuri.jpg";
+    "data\\TEXTURE\\arena\\konkuri.jpg";
    }
   }
   Material {
@@ -820,7 +820,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\stone001.jpg";
+    "data\\TEXTURE\\arena\\stone001.jpg";
    }
   }
   Material {
@@ -829,7 +829,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\stone001.jpg";
+    "data\\TEXTURE\\arena\\stone001.jpg";
    }
   }
   Material {
@@ -838,7 +838,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\stone001.jpg";
+    "data\\TEXTURE\\arena\\stone001.jpg";
    }
   }
   Material {
@@ -847,7 +847,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\konkuri.jpg";
+    "data\\TEXTURE\\arena\\konkuri.jpg";
    }
   }
   Material {
@@ -856,7 +856,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\konkuri.jpg";
+    "data\\TEXTURE\\arena\\konkuri.jpg";
    }
   }
  }

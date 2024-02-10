@@ -40,7 +40,7 @@ namespace
 #if _DEBUG
 	const CScene::MODE STARTMODE = CScene::MODE_GAME;
 #else
-	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
+	const CScene::MODE STARTMODE = CScene::MODE_GAME;
 #endif
 }
 

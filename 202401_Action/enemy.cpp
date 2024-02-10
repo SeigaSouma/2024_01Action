@@ -33,6 +33,8 @@
 #include "limitarea.h"
 #include "santabag.h"
 
+#include "rockon_marker.h"
+
 // 子クラス
 #include "enemy_boss.h"
 #include "enemy_cookie.h"
@@ -55,6 +57,8 @@ namespace
 // 静的メンバ変数宣言
 //==========================================================================
 CListManager<CEnemy> CEnemy::m_List = {};	// リスト
+
+CRockOnMarker* Marker;
 
 //==========================================================================
 // コンストラクタ
@@ -80,6 +84,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_fActCounter = 0.0f;		// 移動カウンター
 	m_bActionable = false;		// 行動可能か
 	m_fDownTime = 0.0f;			// ダウンカウンター
+	m_fRockOnDistance = 0.0f;	// ロックオンの距離
 	m_bAddScore = false;		// スコア加算するかの判定
 	m_bRockOnAccepting = false;	// ロックオン受付
 	m_nBallastEmission = 0;	// 瓦礫の発生カウンター
@@ -173,6 +178,7 @@ HRESULT CEnemy::Init(void)
 	m_fStateTime = 0.0f;			// 状態遷移カウンター
 	m_posKnokBack = m_posOrigin;	// ノックバックの位置
 	m_bAddScore = true;	// スコア加算するかの判定
+	m_fRockOnDistance = 0.0f;	// ロックオンの距離
 
 	// 種類の設定
 	SetType(TYPE_ENEMY);
@@ -182,6 +188,8 @@ HRESULT CEnemy::Init(void)
 
 	// リストに追加
 	m_List.Regist(this);
+
+	Marker = CRockOnMarker::Create(GetPosition());
 
 	return S_OK;
 }
@@ -442,7 +450,18 @@ void CEnemy::Update(void)
 	// ロックオン受付してたら
 	if (m_bRockOnAccepting)
 	{
-		CManager::GetInstance()->GetCamera()->SetRockOn(GetPosition(), true);
+		MyLib::Vector3 rockonpos = GetPosition();
+		rockonpos.y += GetHeight() * 0.5f;
+		CManager::GetInstance()->GetCamera()->SetRockOn(rockonpos, true);
+		CManager::GetInstance()->GetCamera()->SetRockOnDistance(m_fRockOnDistance);
+
+		CEffect3D::Create(
+			rockonpos,
+			MyLib::Vector3(0.0f, 0.0f, 0.0f),
+			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
+			20.0f, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+
+		Marker->SetPosition(rockonpos);
 	}
 }
 

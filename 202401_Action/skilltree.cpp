@@ -126,9 +126,9 @@ HRESULT CSkillTree::Init(void)
 #endif
 
 	// スキルアイコンの習得状況
-	for (auto const& iconinfo : m_SkillInfo)
+	for (auto& mastering : m_SkillInfo)
 	{
-		m_SkillIconMastering.push_back(CSkillTree_Icon::MASTERING_YET);
+		mastering.mastering = CSkillTree_Icon::MASTERING_YET;
 	}
 
 	// 状態カウンター
@@ -470,17 +470,46 @@ std::vector<CSkillTree_Icon*> CSkillTree::GetIcon(void) const
 //==========================================================================
 // 習得状況設定
 //==========================================================================
+void CSkillTree::SetMastering(std::vector<CSkillTree_Icon::eMastering> mastering)
+{
+	for (int i = 0; i < m_SkillInfo.size(); i++)
+	{
+		m_SkillInfo[i].mastering = mastering[i];
+	}
+}
+
+//==========================================================================
+// 習得状況設定
+//==========================================================================
 void CSkillTree::SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering)
 {
-	if (m_SkillIconMastering.empty() ||
-		m_SkillIconMastering.size() <= nIdx)
+	if (m_SkillInfo.empty() ||
+		static_cast<int>(m_SkillInfo.size()) <= nIdx)
 	{
 		return;
 	}
 
 	// 習得状況設定
-	m_SkillIconMastering[nIdx] = mastering;
+	m_SkillInfo[nIdx].mastering = mastering;
+}
 
+//==========================================================================
+// 習得状況取得
+//==========================================================================
+std::vector<CSkillTree_Icon::eMastering> CSkillTree::GetMastering()
+{
+	if (m_SkillInfo.empty())
+	{
+		return std::vector<CSkillTree_Icon::eMastering>();
+	}
+
+	std::vector<CSkillTree_Icon::eMastering> mastering;
+	for (const auto& info : m_SkillInfo)
+	{
+		mastering.push_back(info.mastering);
+	}
+
+	return mastering;
 }
 
 //==========================================================================
@@ -505,7 +534,7 @@ void CSkillTree::SetScreen(void)
 		m_pSkillIcon[nIdx] = CSkillTree_Icon::Create(iconinfo);
 
 		// 習得済みのものは能力付与
-		m_pSkillIcon[nIdx]->SetMastering(m_SkillIconMastering[nIdx]);
+		m_pSkillIcon[nIdx]->SetMastering(m_SkillInfo[nIdx].mastering);
 
 		if (iconinfo.parentID != -1)
 		{

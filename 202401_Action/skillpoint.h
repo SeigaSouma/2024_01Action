@@ -42,7 +42,6 @@ private:
 	// メンバ変数
 	int m_nPoint;	// ポイント
 	CMultiNumber* m_apNumber;	// 数字のオブジェクト
-	//LPDIRECT3DTEXTURE9 multi;
 };
 
 

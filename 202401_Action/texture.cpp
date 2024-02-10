@@ -12,7 +12,6 @@
 // 読み込むテクスチャのヘッダー
 #include "map.h"
 #include "3D_effect.h"
-#include "effect_thunderring.h"
 
 //==========================================================================
 // 定数定義
@@ -78,7 +77,7 @@ void CTexture::Init(void)
 //==========================================================================
 HRESULT CTexture::LoadAll(void)
 {
-#ifndef _DEBUG
+#if 0
 	// 全検索
 	std::vector<std::string> imageNames;
 	SearchAllImages(MAINFOLODER, imageNames);
@@ -96,9 +95,6 @@ HRESULT CTexture::LoadAll(void)
 
 	// 3Dエフェクト
 	CEffect3D::LoadTexture();
-
-	// 雷のリング
-	CThunderRing::LoadTexture();
 
 	return S_OK;
 }
@@ -177,7 +173,7 @@ int CTexture::Regist(std::string file)
 	for (int nCntData = 0; nCntData < nNumAll; nCntData++)
 	{
 		if (m_TexInfo[nCntData].nFileNameLen != nNowLen)
-		{// ファイル名の長さが同じだったら
+		{// ファイル名の長さが違ったら
 			continue;
 		}
 

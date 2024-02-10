@@ -174,7 +174,6 @@
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="edit.cpp" />
     <ClCompile Include="edit_enemybase.cpp" />
-    <ClCompile Include="effect_thunderring.cpp" />
     <ClCompile Include="elevation.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemybase.cpp" />
@@ -258,6 +257,7 @@
     <ClCompile Include="resultscore.cpp" />
     <ClCompile Include="revivalpercent_text.cpp" />
     <ClCompile Include="revivaltime_gauge.cpp" />
+    <ClCompile Include="rockon_marker.cpp" />
     <ClCompile Include="santabag.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="score.cpp" />
@@ -310,7 +310,6 @@
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="edit.h" />
     <ClInclude Include="edit_enemybase.h" />
-    <ClInclude Include="effect_thunderring.h" />
     <ClInclude Include="elevation.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemybase.h" />
@@ -392,6 +391,7 @@
     <ClInclude Include="resultscore.h" />
     <ClInclude Include="revivalpercent_text.h" />
     <ClInclude Include="revivaltime_gauge.h" />
+    <ClInclude Include="rockon_marker.h" />
     <ClInclude Include="santabag.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="score.h" />

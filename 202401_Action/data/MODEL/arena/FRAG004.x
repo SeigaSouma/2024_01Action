@@ -774,7 +774,7 @@ Mesh {
    0.210000;0.210000;0.210000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\IronTex001.jpg";
+    "data\\TEXTURE\\arena\\IronTex001.jpg";
    }
   }
   Material {
@@ -783,7 +783,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.360000;0.360000;0.360000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\FRAG000.png";
+    "data\\TEXTURE\\arena\\FRAG000.png";
    }
   }
   Material {
@@ -792,7 +792,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {
@@ -801,7 +801,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\arena\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {

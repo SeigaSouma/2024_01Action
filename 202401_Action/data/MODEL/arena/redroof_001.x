@@ -2085,7 +2085,7 @@ Mesh {
    0.230000;0.230000;0.230000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\metal_texture_7_by_wojtar_stock_d1au5qb-fullview.jpg";
+    "data\\TEXTURE\\arena\\metal7.jpg";
    }
   }
   Material {
@@ -2094,7 +2094,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\red_texture_01.jpg";
+    "data\\TEXTURE\\arena\\red_texture_01.jpg";
    }
   }
  }

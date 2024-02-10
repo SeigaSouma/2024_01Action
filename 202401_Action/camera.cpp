@@ -579,19 +579,41 @@ void CCamera::RockOnStateNormal(void)
 	if (ratio <= 1.0f)
 	{
 		// 目標の長さ設定
-		SetLenDest(maxRockOnDistance * ratio, 2, 2.0f, 0.1f);
+		float setDistance = maxRockOnDistance * ratio;
+		if (setDistance <= m_fRockOnDistance)
+		{
+			setDistance = m_fRockOnDistance;
+		}
+
+		SetLenDest(setDistance, 2, 2.0f, 0.1f);
 
 		// 目標の角度を求める
 		m_rotDest.y =
 			D3DX_PI +
 			atan2f((m_TargetPos.x - m_RockOnPos.x), (m_TargetPos.z - m_RockOnPos.z)) +
 			((ROTDISTANCE_ROCKON * 2.0f) * (m_RockOnDir - 1)) + ROTDISTANCE_ROCKON;
+
+		if (m_RockOnPos.y > 150.0f)
+		{
+			// 目標の角度を求める
+			m_rotDest.z = atan2f((m_RockOnPos.y - 150.0f), setDistance) + DEFAULT_GAMEROT.z;
+		}
+		else
+		{
+			m_rotDest.z = DEFAULT_GAMEROT.z;
+		}
+			//m_TargetPos.y - m_RockOnPos.y;
+
 		UtilFunc::Transformation::RotNormalize(m_rotDest);
 
 		// 目標の向き
 		float fRotDiff = m_rotDest.y - m_rot.y;
 		UtilFunc::Transformation::RotNormalize(fRotDiff);
 		m_rot.y += fRotDiff * 0.08f;
+
+		fRotDiff = m_rotDest.z - m_rot.z;
+		UtilFunc::Transformation::RotNormalize(fRotDiff);
+		m_rot.z += fRotDiff * 0.08f;
 	}
 	else
 	{
@@ -762,6 +784,11 @@ void CCamera::SetCameraVGame(void)
 		m_posVDest.x = m_posR.x + cosf(m_rot.z) * sinf(m_rot.y) * -m_fDistance;
 		m_posVDest.z = m_posR.z + cosf(m_rot.z) * cosf(m_rot.y) * -m_fDistance;
 		m_posVDest.y = m_posR.y + sinf(m_rot.z) * -m_fDistance;
+
+		if (m_posVDest.LengthXZ() > mylib_const::RADIUS_STAGE)
+		{// 補正
+			m_posVDest = m_posVDest.Normal() * mylib_const::RADIUS_STAGE;
+		}
 
 		float fDistance = 0.0f;
 		m_fHeightMaxDest = m_posVDest.y;
@@ -1484,14 +1511,28 @@ MyLib::Vector3 CCamera::GetTargetPosition(void)
 	return m_TargetPos;
 }
 
+//==========================================================================
+// ロックオンの位置設定
+//==========================================================================
 void CCamera::SetRockOnPosition(const MyLib::Vector3 pos)
 {
 	m_RockOnPos = pos;
 }
 
+//==========================================================================
+// ロックオンの位置取得
+//==========================================================================
 MyLib::Vector3 CCamera::GetRockOnPosition(void)
 {
 	return m_RockOnPos;
+}
+
+//==========================================================================
+// ロックオンの下限距離設定
+//==========================================================================
+void CCamera::SetRockOnDistance(const float distance)
+{
+	m_fRockOnDistance = distance;
 }
 
 //==========================================================================

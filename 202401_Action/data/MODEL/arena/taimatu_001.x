@@ -1867,7 +1867,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {
@@ -1876,7 +1876,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\rotting-wood-texture.jpg";
+    "data\\TEXTURE\\arena\\rotting-wood-texture.jpg";
    }
   }
   Material {
@@ -1885,7 +1885,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\rotting-wood-texture.jpg";
+    "data\\TEXTURE\\arena\\rotting-wood-texture.jpg";
    }
   }
   Material {
@@ -1894,7 +1894,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\rotting-wood-texture.jpg";
+    "data\\TEXTURE\\arena\\rotting-wood-texture.jpg";
    }
   }
   Material {
@@ -1903,7 +1903,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\rotting-wood-texture.jpg";
+    "data\\TEXTURE\\arena\\rotting-wood-texture.jpg";
    }
   }
   Material {
@@ -1912,7 +1912,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {
@@ -1921,7 +1921,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\rotting-wood-texture.jpg";
+    "data\\TEXTURE\\arena\\rotting-wood-texture.jpg";
    }
   }
   Material {
@@ -1930,7 +1930,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {
@@ -1939,7 +1939,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {
@@ -1948,7 +1948,7 @@ Mesh {
    0.260000;0.260000;0.260000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\テクスチャ\\sabi.jpg";
+    "data\\TEXTURE\\arena\\sabi.jpg";
    }
   }
   Material {

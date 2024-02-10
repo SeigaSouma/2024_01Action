@@ -15,8 +15,8 @@ NUM_CHARACTER = 3
 # キャラクターファイル名
 #------------------------------------------------------------------
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/setup_gorira.txt			# [0]ボス
-MOTION_FILENAME = data/TEXT/character/enemy/cookie/setup_cookie.txt		# [1]クッキー
-MOTION_FILENAME = data/TEXT/character/enemy/orafu/setup_orafu.txt		# [2]オラフ
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/setup_gobelin.txt		# [1]クッキー
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/setup_gobelin.txt		# [2]オラフ
 
 #===================================================================================================
 # 敵の情報

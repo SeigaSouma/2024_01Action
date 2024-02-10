@@ -24,6 +24,7 @@
 #include "skilltree_obj.h"
 #include "skilltree.h"
 #include "skilltree_ability.h"
+#include "skilltree_behavior.h"
 #include "gallery.h"
 #include "torch.h"
 
@@ -48,7 +49,10 @@ CGameManager::CGameManager()
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 	m_nNowStage = 0;			// 現在のステージ
 	m_nNumStage = 0;			// ステージの総数
+	m_nPrevPoint = 0;			// 前回のポイント
 	m_pSkilltreeAbillity = nullptr;	// スキルツリー能力のポインタ
+	m_PrevSkillIconMastering.clear();	// 前回のスキルアイコンの習得状況
+	m_p_PrevSkillIcon.clear();			// 前回のスキルアイコン
 }
 
 //==========================================================================
@@ -91,7 +95,7 @@ HRESULT CGameManager::Init(void)
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 
 #if _DEBUG
-	m_nNowStage = 2;			// 現在のステージ
+	m_nNowStage = 0;			// 現在のステージ
 #else
 	m_nNowStage = 0;			// 現在のステージ
 #endif
@@ -158,6 +162,11 @@ void CGameManager::Update(void)
 		m_bControll = false;
 		break;
 
+	case SCENE_REASPAWN:			// 復活
+		m_bControll = false;
+		SceneReaspawn();
+		break;
+
 	default:
 		break;
 	}
@@ -218,13 +227,16 @@ void CGameManager::GameClearSettings(void)
 
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
-	CPlayer* pPlayer = nullptr;
+	CPlayer* pPlayer = playerList.GetData(0);
 
-	// リストループ
-	while (playerList.ListLoop(&pPlayer))
-	{
-		pPlayer->GetSkillPoint()->AddPoint(POINT_WAVECLEAR);
-	}
+	// クリアポイント追加
+	pPlayer->GetSkillPoint()->AddPoint(POINT_WAVECLEAR);
+
+	// 前回のポイント保存
+	m_nPrevPoint = pPlayer->GetSkillPoint()->GetPoint();
+
+	// 前回の習得状況保存
+	m_PrevSkillIconMastering = CSkillTree::GetInstance()->GetMastering();
 
 	// 観衆のリスト取得
 	CListManager<CGallery> galleryList = CGallery::GetList();
@@ -301,6 +313,50 @@ void CGameManager::SceneEnhance(void)
 		m_pSkilltreeAbillity = nullptr;
 	}
 	m_pSkilltreeAbillity = CSkillTree_Ability::Create();
+}
+
+//==========================================================================
+// 復活
+//==========================================================================
+void CGameManager::SceneReaspawn(void)
+{
+	// 遷移なしフェードの状態取得
+	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
+	if (fadestate != CInstantFade::STATE_FADECOMPLETION)
+	{// 完了してない
+		return;
+	}
+
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = playerList.GetData(0);
+
+	// アイコン毎の情報取得
+	std::vector<CSkillTree_Icon::sSkillIcon> iconInfo = CSkillTree::GetInstance()->GetIconInfo();
+
+	// 習得済み能力割り当て
+	for (const auto& info : iconInfo)
+	{
+		if (info.mastering != CSkillTree_Icon::MASTERING_DONE)
+		{
+			continue;
+		}
+		CAbillityStrategy* pAbillity = CAbillityStrategy::CreateInstance(info, pPlayer);
+		pAbillity->BindAbillity();
+
+		delete pAbillity;
+		pAbillity = nullptr;
+	}
+
+	// 前回の習得状況設定
+	CSkillTree::GetInstance()->SetMastering(m_PrevSkillIconMastering);
+
+	// 前回のポイント+お情けポイント0設定
+	pPlayer->GetSkillPoint()->SetPoint(m_nPrevPoint + 1);
+
+
+	// 強化シーン処理
+	SceneEnhance();
 }
 
 //==========================================================================

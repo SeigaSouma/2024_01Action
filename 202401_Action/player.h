@@ -125,6 +125,7 @@ public:
 	CStaminaGauge_Player* GetStaminaGauge() { return m_pStaminaGauge; }
 
 	// スキルツリー用関数
+	void ResetEnhance();	// 強化リセット
 	void UpgradeLife(int addvalue);	// 体力アップグレード
 	void DowngradeLife(int addvalue);	// 体力ダウングレード
 	void UpgradeMaxStamina(int addvalue);		// スタミナ最大値アップグレード

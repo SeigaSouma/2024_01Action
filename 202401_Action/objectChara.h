@@ -24,10 +24,10 @@ public:
 	*/
 	struct SphereCollider
 	{
-		MyLib::Vector3 center;		// 中心座標
-		float radius;				// 半径
-		int nParentPartsIdx;		// 親のパーツインデックス番号
-		MyLib::Vector3 offset;		// オフセット位置
+		MyLib::Vector3 center;	// 中心座標
+		float radius;			// 半径
+		int nParentPartsIdx;	// 親のパーツインデックス番号
+		MyLib::Vector3 offset;	// オフセット位置
 
 		// デフォルトコンストラクタ
 		SphereCollider() : center(), radius(0.0f), nParentPartsIdx(0), offset() {}
@@ -83,7 +83,9 @@ public:
 	int GetAddScoreValue(void) const;			// スコア加算量取得
 
 	// コライダー関連
+	int GetSphereColliderNum();						// スフィアコライダーの数取得
 	SphereCollider GetNowSphereCollider(int nIdx);	// コライダー取得
+	std::vector<SphereCollider> GetSphereColliders();	// スフィアコライダー取得
 
 	HRESULT SetCharacter(const std::string pTextFile) override;	// キャラクター設定
 	CObjectChara *GetObjectChara(void);

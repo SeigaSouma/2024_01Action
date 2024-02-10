@@ -489,7 +489,8 @@ HRESULT MyMap::ReadTexture(void)
 				fscanf(pFile, "%s", &aComment[0]);	// ÉtÉ@ÉCÉãñº
 
 				// ç≈å„îˆÇ…í«â¡
-				TextureFile.push_back(&aComment[0]);
+				TextureFile.emplace_back();
+				TextureFile.back() = &aComment[0];
 
 				//TextureFile.push_back(std::string());
 
