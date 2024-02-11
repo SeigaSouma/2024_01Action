@@ -59,6 +59,7 @@ CEffect3D::CEffect3D(int nPriority) : CObjectBillboard(nPriority)
 	m_nType = TYPE_NORMAL;						// 種類
 	m_pParent = NULL;							// 親のポインタ
 	m_bAddAlpha = true;							// 加算合成の判定
+	m_bZSort = false;							// Zソートのフラグ
 	m_bGravity = false;							// 重力のフラグ
 	m_bChaseDest = false;						// 目標の位置へ向かうフラグ
 
@@ -240,6 +241,9 @@ HRESULT CEffect3D::Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, c
 		m_bAddAlpha = true;
 		break;
 	}
+
+	// Zソートのフラグ
+	m_bZSort = true;
 
 	// 種類の設定
 	SetType(TYPE_EFFECT3D);
@@ -507,10 +511,12 @@ void CEffect3D::Draw(void)
 	// ライティングを無効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	// アルファテストを有効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+	if (!m_bZSort)
+	{
+		// Zテストを無効にする
+		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);	//常に描画する
+	}
 
 	// αブレンディングを加算合成に設定
 	if (m_bAddAlpha == true)
@@ -520,8 +526,17 @@ void CEffect3D::Draw(void)
 		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 	}
 
+	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+
 	// 描画処理
 	CObjectBillboard::Draw();
+
+	// Zテストを有効にする
+	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	// αブレンディングを元に戻す
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);

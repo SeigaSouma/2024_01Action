@@ -20,6 +20,7 @@ class CHP_Gauge;
 class CShadow;
 class CEffect3D;
 class CEnemyFixedMoveManager;
+class CRockOnMarker;
 
 //==========================================================================
 // クラス定義
@@ -209,6 +210,7 @@ private:
 	int m_nBallastEmission;		// 瓦礫の発生カウンター
 	CEnemy *m_pChild[mylib_const::MAX_ENEMY];	// 子のポインタ
 	CShadow *m_pShadow;			// 影の情報
+	CRockOnMarker* m_pRockOnMarker;		// ロックオンマーカー
 	static CListManager<CEnemy> m_List;	// リスト
 };
 

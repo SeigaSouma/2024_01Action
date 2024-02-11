@@ -187,6 +187,7 @@ HRESULT CGame::Init(void)
 
 	// スキルツリー生成
 	CSkillTree::Create();
+	m_pGameManager->SetPrevEnhance();
 
 	// クリアの判定
 	SetEnableClear(true);

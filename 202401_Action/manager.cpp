@@ -29,6 +29,7 @@
 #include "MyEffekseer.h"
 #include "loadmanager.h"
 #include "Imguimanager.h"
+#include "fog.h"
 
 //==========================================================================
 // 定数定義
@@ -904,6 +905,11 @@ void CManager::Update(void)
 		if (pInputKeyboard->GetTrigger(DIK_F2) == true)
 		{// F2でワイヤーフレーム切り替え
 			m_bWireframe = m_bWireframe ? false : true;
+		}
+
+		if (pInputKeyboard->GetTrigger(DIK_F6))
+		{
+			MyFog::ToggleFogFrag();
 		}
 
 		if (pInputKeyboard->GetTrigger(DIK_F8) == true)

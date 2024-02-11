@@ -212,6 +212,9 @@ void CGallery::Kill()
 
 	// 情報削除
 	Release();
+
+	// インデックスリセット
+	m_nModelIdx.clear();
 }
 
 

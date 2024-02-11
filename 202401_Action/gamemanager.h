@@ -70,6 +70,7 @@ public:
 private:
 
 	// ƒƒ“ƒoŠÖ”
+	void SceneTransition(void);	// ‘JˆÚ’†
 	void SceneEnhance(void);
 	void SceneReaspawn(void);	// •œŠˆ
 	void SetEnemy(void);

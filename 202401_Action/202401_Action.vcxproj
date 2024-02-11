@@ -183,6 +183,7 @@
     <ClCompile Include="enemy_orafu.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="fog.cpp" />
     <ClCompile Include="gallery.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamemanager.cpp" />
@@ -319,6 +320,7 @@
     <ClInclude Include="enemy_orafu.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="fog.h" />
     <ClInclude Include="gallery.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamemanager.h" />

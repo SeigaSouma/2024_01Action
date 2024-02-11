@@ -60,7 +60,7 @@ namespace
 	const float SUBVALUE_DASH = 0.3f;		// ダッシュの減算量
 	const float SUBVALUE_AVOID = 30.0f;		// 回避の減算量
 	const float SUBVALUE_COUNTER = 40.0f;	// カウンターの減算量
-	const int DEFAULT_RESPAWN_PERCENT = 80;	// 復活確率のデフォルト値
+	const int DEFAULT_RESPAWN_PERCENT = 100;	// 復活確率のデフォルト値
 	const float MULTIPLY_GUARD = 0.4f;		// カードの軽減
 }
 
@@ -126,7 +126,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_fCounterStaminaHealValue = 0.0f;				// カウンター時のスタミナ回復量
 
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
-	m_pShadow = NULL;								// 影の情報
+	m_pShadow = nullptr;								// 影の情報
 	m_pSkillPoint = nullptr;						// スキルポイントのオブジェクト
 	m_pHPGauge = nullptr;							// HPゲージのポインタ
 	m_pStaminaGauge = nullptr;						// スタミナゲージのポインタ
@@ -154,15 +154,15 @@ CPlayer::~CPlayer()
 CPlayer *CPlayer::Create(int nIdx)
 {
 	// 生成用のオブジェクト
-	CPlayer *pPlayer = NULL;
+	CPlayer *pPlayer = nullptr;
 
-	if (pPlayer == NULL)
-	{// NULLだったら
+	if (pPlayer == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pPlayer = DEBUG_NEW CPlayer;
 
-		if (pPlayer != NULL)
+		if (pPlayer != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// プレイヤーインデックス番号
@@ -175,7 +175,7 @@ CPlayer *CPlayer::Create(int nIdx)
 		return pPlayer;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -272,10 +272,10 @@ void CPlayer::ChangeGuardGrade(CPlayerGuard* guard)
 void CPlayer::Uninit(void)
 {
 	// 影を消す
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		//m_pShadow->Uninit();
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
 	if (m_pSkillPoint != nullptr)
@@ -294,6 +294,28 @@ void CPlayer::Uninit(void)
 	{
 		delete m_pEndCounterSetting;
 		m_pEndCounterSetting = nullptr;
+	}
+
+	// 操作系
+	if (m_pControlAtk != nullptr)
+	{
+		delete m_pControlAtk;
+		m_pControlAtk = nullptr;
+	}
+	if (m_pControlDefence != nullptr)
+	{
+		delete m_pControlDefence;
+		m_pControlDefence = nullptr;
+	}
+	if (m_pControlAvoid != nullptr)
+	{
+		delete m_pControlAvoid;
+		m_pControlAvoid = nullptr;
+	}
+	if (m_pGuard != nullptr)
+	{
+		delete m_pGuard;
+		m_pGuard = nullptr;
 	}
 
 	// 終了処理
@@ -318,7 +340,7 @@ void CPlayer::Kill(void)
 
 	if (m_pSkillPoint != nullptr)
 	{
-		m_pSkillPoint->Uninit();
+		m_pSkillPoint->Kill();
 		m_pSkillPoint = nullptr;
 	}
 
@@ -337,10 +359,10 @@ void CPlayer::Kill(void)
 	}
 
 	// 影を消す
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		m_pShadow->Uninit();
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
 	// 反撃終了時の設定
@@ -348,6 +370,28 @@ void CPlayer::Kill(void)
 	{
 		delete m_pEndCounterSetting;
 		m_pEndCounterSetting = nullptr;
+	}
+
+	// 操作系
+	if (m_pControlAtk != nullptr)
+	{
+		delete m_pControlAtk;
+		m_pControlAtk = nullptr;
+	}
+	if (m_pControlDefence != nullptr)
+	{
+		delete m_pControlDefence;
+		m_pControlDefence = nullptr;
+	}
+	if (m_pControlAvoid != nullptr)
+	{
+		delete m_pControlAvoid;
+		m_pControlAvoid = nullptr;
+	}
+	if (m_pGuard != nullptr)
+	{
+		delete m_pGuard;
+		m_pGuard = nullptr;
 	}
 
 	// ロックオン設定
@@ -446,7 +490,7 @@ void CPlayer::Update(void)
 	}
 
 	// 影の位置更新
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		m_pShadow->SetPosition(MyLib::Vector3(pos.x, m_pShadow->GetPosition().y, pos.z));
 	}
@@ -462,8 +506,8 @@ void CPlayer::Update(void)
 	for (int i = 0; i < mylib_const::MAX_OBJ; i++)
 	{
 		CEffect3D* pEffect = GetEffectParent(i);
-		if (pEffect == NULL)
-		{// NULLだったら
+		if (pEffect == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -736,101 +780,6 @@ void CPlayer::Controll(void)
 		m_pControlAtk->Attack(this);		// 攻撃操作
 		m_pControlDefence->Defence(this);	// 防御操作
 		m_pControlAvoid->Avoid(this);		// 回避操作
-
-#if 0
-		// 攻撃
-		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
-			!m_bJump &&
-			!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx) && 
-			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
-		{
-
-			if (pInputGamepad->IsTipStick())
-			{// 左スティックが倒れてる場合
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
-			}
-
-			if (m_fDashTime >= TIME_DASHATTACK && m_nComboStage == 0)
-			{// ダッシュ中の初撃は2からスタート
-				m_nComboStage++;
-				pMotion->Set(MOTION_DASHATK, true);
-			}
-			else
-			{
-				// コンボ段階分考慮
-				int nSetType = MOTION_ATK + m_nComboStage;
-				pMotion->Set(nSetType, true);
-			}
-
-			// コンボの段階加算
-			m_nComboStage++;
-			if (m_nComboStage > MOTION_ATK3 - MOTION_ATK)
-			{
-				m_nComboStage = 0;
-			}
-		}
-
-
-		// ガード
-		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
-			!m_bJump &&
-			pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, m_nMyPlayerIdx))
-		{
-			pMotion->Set(MOTION_DEF);
-
-			if (pInputGamepad->IsTipStick())
-			{// 左スティックが倒れてる場合
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
-			}
-
-			pMotion->Set(MOTION_GUARD);
-			m_sMotionFrag.bGuard = true;	// ガードON
-		}
-
-		// ガード中に攻撃でカウンター
-		if (pMotion->GetType() == MOTION_GUARD &&
-			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, m_nMyPlayerIdx))
-		{
-			pMotion->Set(MOTION_COUNTER_ACCEPT);
-			m_sMotionFrag.bCounter = true;		// 攻撃判定ON
-
-			// スタミナ減算
-			if (m_pStaminaGauge != nullptr)
-			{
-				m_pStaminaGauge->SubValue(SUBVALUE_COUNTER);
-			}
-		}
-
-
-
-		// デバッグ表示
-		CManager::GetInstance()->GetDebugProc()->Print(
-			"------------------[プレイヤーの操作]------------------\n"
-			"コンボステージ：【%d】\n"
-			, m_nComboStage);
-
-		// 回避
-		if (!m_bJump &&
-			(pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
-			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, m_nMyPlayerIdx))
-		{
-			pMotion->Set(MOTION_DEF);
-			pMotion->Set(MOTION_AVOID);
-
-			if (pInputGamepad->IsTipStick())
-			{// 左スティックが倒れてる場合
-
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(m_nMyPlayerIdx) + Camerarot.y;
-			}
-			m_state = STATE_AVOID;
-
-			// スタミナ減算
-			if (m_pStaminaGauge != nullptr)
-			{
-				m_pStaminaGauge->SubValue(SUBVALUE_AVOID);
-			}
-		}
-#endif
 	}
 
 	// 移動量加算
@@ -1056,7 +1005,7 @@ void CPlayer::MotionSet(void)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -1149,6 +1098,7 @@ void CPlayer::MotionBySetState(void)
 		m_bReadyDashAtk = false;
 	}
 
+	// ガードフラグ
 	switch (nType)
 	{
 	case MOTION_GUARD:
@@ -1161,6 +1111,7 @@ void CPlayer::MotionBySetState(void)
 		break;
 	}
 
+	// 攻撃フラグ
 	switch (nType)
 	{
 	case MOTION_ATK:
@@ -1180,6 +1131,13 @@ void CPlayer::MotionBySetState(void)
 		m_bAttacking = false;	// 攻撃中判定
 		m_nComboStage = 0;		// コンボの段階
 		break;
+	}
+
+	// 回避
+	if (nType == MOTION_AVOID &&
+		!m_bInDicision)
+	{
+		m_state = STATE_NONE;
 	}
 }
 
@@ -1384,7 +1342,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	// 武器の位置
 	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 
-	CEffect3D* pEffect = NULL;
+	CEffect3D* pEffect = nullptr;
 
 	switch (pMotion->GetType())
 	{
@@ -1393,6 +1351,10 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 
 	case MOTION_COUNTER_ACCEPT:
 		m_bCounterAccepting = true;	// カウンター受付中
+		break;
+
+	case MOTION_AVOID:
+		m_state = STATE_AVOID;
 		break;
 	}
 
@@ -1518,8 +1480,8 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 
 	// Xファイルとの判定
 	CStage *pStage = CGame::GetInstance()->GetStage();
-	if (pStage == NULL)
-	{// NULLだったら
+	if (pStage == nullptr)
+	{// nullptrだったら
 		return false;
 	}
 
@@ -1532,8 +1494,8 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 		// オブジェクト取得
 		CObjectX *pObjX = pStage->GetObj(nCntStage);
 
-		if (pObjX == NULL)
-		{// NULLだったら
+		if (pObjX == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -1818,6 +1780,8 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue)
 		m_state != STATE_KNOCKBACK &&
 		m_state != STATE_INVINCIBLE &&
 		m_state != STATE_DEAD &&
+		m_state != STATE_DEADWAIT &&
+		m_state != STATE_RESPAWN &&
 		m_state != STATE_FADEOUT)
 	{// ダメージ受付状態の時
 
@@ -2033,8 +1997,8 @@ void CPlayer::StateDamage(void)
 
 		// モーション取得
 		CMotion* pMotion = GetMotion();
-		if (pMotion == NULL)
-		{// モーションがNULLだったら
+		if (pMotion == nullptr)
+		{// モーションがnullptrだったら
 			return;
 		}
 		pMotion->ToggleFinish(true);
@@ -2042,8 +2006,8 @@ void CPlayer::StateDamage(void)
 
 		// Xファイルとの判定
 		CStage *pStage = CGame::GetInstance()->GetStage();
-		if (pStage == NULL)
-		{// NULLだったら
+		if (pStage == nullptr)
+		{// nullptrだったら
 			return;
 		}
 
@@ -2053,8 +2017,8 @@ void CPlayer::StateDamage(void)
 			// オブジェクト取得
 			CObjectX *pObjX = pStage->GetObj(nCntStage);
 
-			if (pObjX == NULL)
-			{// NULLだったら
+			if (pObjX == nullptr)
+			{// nullptrだったら
 				continue;
 			}
 
@@ -2131,8 +2095,8 @@ void CPlayer::StateDead(void)
 
 		// Xファイルとの判定
 		CStage *pStage = CGame::GetInstance()->GetStage();
-		if (pStage == NULL)
-		{// NULLだったら
+		if (pStage == nullptr)
+		{// nullptrだったら
 			return;
 		}
 
@@ -2142,8 +2106,8 @@ void CPlayer::StateDead(void)
 			// オブジェクト取得
 			CObjectX *pObjX = pStage->GetObj(nCntStage);
 
-			if (pObjX == NULL)
-			{// NULLだったら
+			if (pObjX == nullptr)
+			{// nullptrだったら
 				continue;
 			}
 
@@ -2246,16 +2210,16 @@ void CPlayer::StateKnockBack(void)
 
 		// モーション取得
 		CMotion* pMotion = GetMotion();
-		if (pMotion == NULL)
-		{// モーションがNULLだったら
+		if (pMotion == nullptr)
+		{// モーションがnullptrだったら
 			return;
 		}
 		pMotion->ToggleFinish(true);
 
 		// Xファイルとの判定
 		CStage *pStage = CGame::GetInstance()->GetStage();
-		if (pStage == NULL)
-		{// NULLだったら
+		if (pStage == nullptr)
+		{// nullptrだったら
 			return;
 		}
 
@@ -2265,8 +2229,8 @@ void CPlayer::StateKnockBack(void)
 			// オブジェクト取得
 			CObjectX *pObjX = pStage->GetObj(nCntStage);
 
-			if (pObjX == NULL)
-			{// NULLだったら
+			if (pObjX == nullptr)
+			{// nullptrだったら
 				continue;
 			}
 
@@ -2306,6 +2270,7 @@ void CPlayer::StateRespawn(void)
 	if (nType != MOTION_RESPAWN)
 	{// 復活が終了
 		m_state = STATE_NONE;
+		m_sMotionFrag.bDead = false;
 		return;
 	}
 
@@ -2323,7 +2288,7 @@ void CPlayer::StateCounter(void)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -2372,7 +2337,7 @@ void CPlayer::StateAvoid(void)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -2466,14 +2431,6 @@ void CPlayer::UpgradeLife(int addvalue)
 }
 
 //==========================================================================
-// 体力ダウングレード
-//==========================================================================
-void CPlayer::DowngradeLife(int addvalue)
-{
-	UpgradeLife(-addvalue);
-}
-
-//==========================================================================
 // スタミナ最大値アップグレード
 //==========================================================================
 void CPlayer::UpgradeMaxStamina(int addvalue)
@@ -2483,15 +2440,6 @@ void CPlayer::UpgradeMaxStamina(int addvalue)
 	{
 		m_pStaminaGauge->UpgradeMaxValue(addvalue);
 	}
-}
-
-//==========================================================================
-// スタミナ最大値ダウングレード
-//==========================================================================
-void CPlayer::DowngradeMaxStamina(int addvalue)
-{
-	// スタミナ最大値減少
-	UpgradeMaxStamina(-addvalue);
 }
 
 //==========================================================================

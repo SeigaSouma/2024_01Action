@@ -19,7 +19,7 @@ class CSkillTree_Obj : public CObjectX
 {
 public:
 
-	CSkillTree_Obj(int nPriority = 6);
+	CSkillTree_Obj(int nPriority = 3);
 	~CSkillTree_Obj();
 
 	// オーバーライドされた関数
@@ -64,6 +64,7 @@ private:
 	//=============================
 	float m_fStateTime;	// 状態カウンター
 	STATE m_state;		// 状態
+	Effekseer::Handle* m_pWeaponHandle;		// エフェクトハンドルのポインタ
 
 };
 

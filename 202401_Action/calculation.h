@@ -1569,7 +1569,7 @@ namespace UtilFunc	// •Ö—˜ŠÖ”
 			MyLib::Vector3 vec = GetRandomVecSphere();
 
 			// ˆø”î•ñŒvZ
-			spherepos *= fRadius;
+			spherepos = vec * fRadius;
 			spherepos += pos;
 
 			return spherepos;

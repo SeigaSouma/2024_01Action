@@ -62,6 +62,7 @@ public:
 	void SetDisableAddAlpha(void) { m_bAddAlpha = false; }	// 加算合成取り消し
 	void SetPositionDest(MyLib::Vector3 pos);	// 目標の位置設定
 	void SetEnableGravity(void) { m_bGravity = true; }	// 重力有効
+	void SetDisableZSort(void) { m_bZSort = false; }	// Zソート無効
 	void SetGravityValue(float fValue);					// 重力の値設定
 	void SetUp(MyLib::Vector3 setup, D3DXMATRIX *pMtxParent, CObject *pObj, int nParentIdx);	// セットアップ
 	void UpdatePosition(MyLib::Vector3 rot);	// 位置更新
@@ -94,6 +95,7 @@ private:
 	int m_moveType;				// 移動の種類
 	int m_nParentIdx;			// 親のインデックス番号
 	bool m_bAddAlpha;			// 加算合成の判定
+	bool m_bZSort;				// Zソートのフラグ
 	bool m_bGravity;			// 重力のフラグ
 	bool m_bChaseDest;			// 目標の位置へ向かうフラグ
 	TYPE m_nType;				// 種類

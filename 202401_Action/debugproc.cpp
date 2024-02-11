@@ -234,34 +234,21 @@ void CDebugProc::Print(const char *fmt, ...)
 //==========================================================================
 void CDebugProc::SetText(void)
 {
-	return;
 	// デバッグの情報取得
 	CDebugProc *pDebug = CManager::GetInstance()->GetDebugProc();
 
 	pDebug->Print("FPS：%d\n", GetFPS());
 	pDebug->Print("デルタタイム：%f\n", CManager::GetInstance()->GetDeltaTime());
 	pDebug->Print("オブジェクトの総数：%d\n", CObject::GetNumAll());
-	pDebug->Print("オブジェクトの総数：1[%d], 2[%d], 3[%d], 4[%d], 5[%d], 6[%d], 7[%d], 8[%d]\n", CObject::GetNumAll(),
-		CObject::GetNumPriorityAll(0), CObject::GetNumPriorityAll(1), CObject::GetNumPriorityAll(2), CObject::GetNumPriorityAll(3),
-		CObject::GetNumPriorityAll(4), CObject::GetNumPriorityAll(5), CObject::GetNumPriorityAll(6), CObject::GetNumPriorityAll(7));
-
-	CManager::GetInstance()->GetDebugProc()->Print(
-		"\n"
-		"読み込んだテクスチャの総数【%d】\n", CTexture::GetInstance()->GetNumAll());
-
-	CManager::GetInstance()->GetDebugProc()->Print(
-		"読み込んだXファイルの総数【%d】\n"
-		"配置したXファイルオブジェの総数【%d】\n", CXLoad::GetInstance()->GetNumAll(), CObjectX::GetNumAll());
 
 	pDebug->Print("\n--------------------------------[ F系 ]--------------------------------\n");
 	pDebug->Print("[F2]：ワイヤーフレーム切り替え\n");
 	pDebug->Print("[F3]：起伏のエディット切り替え\n");
 	pDebug->Print("[F4]：マップ制御点エディット切り替え\n");
 	pDebug->Print("[F5]：プレイヤー配置リセット\n");
-	pDebug->Print("[F6]：カメラの軸エディット切り替え\n");
+	pDebug->Print("[F6]：フォグ切り替え\n");
 	pDebug->Print("[F7]：カメラ追従切り替え\n");
 	pDebug->Print("[F8]：エディットモード切り替え\n");
-	pDebug->Print("[P]：敵リスポーン\n");
 
 	pDebug->Print("\n");
 }

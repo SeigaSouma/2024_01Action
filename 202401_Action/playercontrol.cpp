@@ -182,7 +182,7 @@ void CPlayerControlAvoid::Avoid(CPlayer* player)
 
 			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
 		}
-		player->SetState(CPlayer::STATE_AVOID);
+		//player->SetState(CPlayer::STATE_AVOID);
 
 		// スタミナ減算
 		if (player->GetStaminaGauge() != nullptr)

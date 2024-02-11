@@ -58,7 +58,6 @@ namespace
 //==========================================================================
 CListManager<CEnemy> CEnemy::m_List = {};	// リスト
 
-CRockOnMarker* Marker;
 
 //==========================================================================
 // コンストラクタ
@@ -95,6 +94,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_pParent = nullptr;					// 親のポインタ
 	m_pHPGauge = nullptr;					// HPゲージの情報
 	m_pShadow = nullptr;
+	m_pRockOnMarker = nullptr;		// ロックオンマーカー
 
 	memset(&m_pChild[0], NULL, sizeof(m_pChild));	// 子のポインタ
 }
@@ -188,8 +188,6 @@ HRESULT CEnemy::Init(void)
 
 	// リストに追加
 	m_List.Regist(this);
-
-	Marker = CRockOnMarker::Create(GetPosition());
 
 	return S_OK;
 }
@@ -287,6 +285,11 @@ void CEnemy::Uninit(void)
 		m_pShadow = nullptr;
 	}
 
+	if (m_pRockOnMarker != nullptr)
+	{
+		m_pRockOnMarker = nullptr;
+	}
+
 	// リストから削除
 	m_List.Delete(this);
 
@@ -329,6 +332,13 @@ void CEnemy::Kill(void)
 	{
 		m_pShadow->Uninit();
 		m_pShadow = nullptr;
+	}
+
+	// ロックオンマーカー
+	if (m_pRockOnMarker != nullptr)
+	{
+		m_pRockOnMarker->Kill();
+		m_pRockOnMarker = nullptr;
 	}
 
 	// ロックオン受付してたら
@@ -455,13 +465,20 @@ void CEnemy::Update(void)
 		CManager::GetInstance()->GetCamera()->SetRockOn(rockonpos, true);
 		CManager::GetInstance()->GetCamera()->SetRockOnDistance(m_fRockOnDistance);
 
-		CEffect3D::Create(
-			rockonpos,
-			MyLib::Vector3(0.0f, 0.0f, 0.0f),
-			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
-			20.0f, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
-
-		Marker->SetPosition(rockonpos);
+		// ロックオンマーカーの位置設定
+		if (m_pRockOnMarker == nullptr)
+		{
+			m_pRockOnMarker = CRockOnMarker::Create(rockonpos);
+		}
+		m_pRockOnMarker->SetPosition(rockonpos);
+	}
+	else
+	{
+		if (m_pRockOnMarker != nullptr)
+		{
+			m_pRockOnMarker->Kill();
+			m_pRockOnMarker = nullptr;
+		}
 	}
 }
 

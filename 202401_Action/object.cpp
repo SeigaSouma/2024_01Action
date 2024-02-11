@@ -9,6 +9,7 @@
 #include "3D_effect.h"
 #include "camera.h"
 #include "MyEffekseer.h"
+#include "fog.h"
 
 //==========================================================================
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾

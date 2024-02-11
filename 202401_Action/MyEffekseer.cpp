@@ -25,6 +25,8 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/HitParticle_Red_01.efkefc",	// ヒットマーク[赤]
 	"data/Effekseer/strongATK.efkefc",			// 強攻撃のサイン
 	"data/Effekseer/SonicBoom.efkefc",			// ボスのローリング
+	"data/Effekseer/stonebase_light.efkefc",			// 石板の光
+	"data/Effekseer/stonebase_begin.efkefc",			// 石板起動
 };
 CMyEffekseer* CMyEffekseer::m_pMyEffekseer = nullptr;	// 自身のポインタ
 
@@ -50,7 +52,7 @@ CMyEffekseer::~CMyEffekseer()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CMyEffekseer* CMyEffekseer::Create(void)
+CMyEffekseer* CMyEffekseer::Create()
 {
 	if (m_pMyEffekseer == NULL)
 	{// まだ生成していなかったら
@@ -73,7 +75,7 @@ CMyEffekseer* CMyEffekseer::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMyEffekseer::Init(void)
+HRESULT CMyEffekseer::Init()
 {
 	time = 0;
 	efkHandle = 0;
@@ -205,7 +207,7 @@ Effekseer::EffectRef CMyEffekseer::LoadEffect(std::string efkpath)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMyEffekseer::Uninit(void)
+void CMyEffekseer::Uninit()
 {
 	efkManager->StopAllEffects();
 
@@ -214,9 +216,44 @@ void CMyEffekseer::Uninit(void)
 }
 
 //==========================================================================
+// 停止
+//==========================================================================
+void CMyEffekseer::Stop(Effekseer::Handle handle)
+{
+	for (int i = 0; i < static_cast<int>(m_EffectObj.size()); i++)
+	{
+		Effekseer::Handle loacalhandle = m_EffectObj[i].handle;
+		if (loacalhandle == handle)
+		{
+			// 削除
+			m_EffectObj.erase(m_EffectObj.begin() + i);
+			m_Handle.erase(m_Handle.begin() + i);
+		}
+	}
+
+	// 停止
+	efkManager->StopEffect(handle);
+}
+
+//==========================================================================
+// 全て停止
+//==========================================================================
+void CMyEffekseer::StopAll()
+{
+	// 全て停止
+	efkManager->StopAllEffects();
+
+	for (int i = 0; i < static_cast<int>(m_EffectObj.size()); i++)
+	{
+		m_EffectObj.erase(m_EffectObj.begin() + i);
+		m_Handle.erase(m_Handle.begin() + i);
+	}
+}
+
+//==========================================================================
 // 更新処理
 //==========================================================================
-void CMyEffekseer::Update(void)
+void CMyEffekseer::Update()
 {
 	if (!CManager::GetInstance()->GetPause()->IsPause())
 	{
@@ -403,7 +440,7 @@ bool CMyEffekseer::IsDeath(Effekseer::Handle handle)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMyEffekseer::Draw(void)
+void CMyEffekseer::Draw()
 {
 	// 時間を更新する
 	efkRenderer->SetTime(time / 60.0f);

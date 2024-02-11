@@ -20,6 +20,7 @@
 #include <list>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <cmath>
 #include <iterator>

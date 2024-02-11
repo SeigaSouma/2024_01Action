@@ -209,7 +209,7 @@ void CEnemyManager::SetStageEnemy(void)
 	}
 
 	// ステージ加算
-	pGameManager->AddNowStage();
+	//pGameManager->AddNowStage();
 }
 
 //==========================================================================

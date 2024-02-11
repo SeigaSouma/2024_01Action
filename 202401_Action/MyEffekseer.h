@@ -48,6 +48,8 @@ public:
 		EFKLABEL_HITMARK_RED,		// ヒットマーク[赤]
 		EFKLABEL_STRONGATK_SIGN,		// 強攻撃のサイン
 		EFKLABEL_BOSS_ROLLING,		// ボスのローリング
+		EFKLABEL_STONEBASE_LIGHT,		// 石板の光
+		EFKLABEL_STONEBASE_BEGIN,		// 石板起動
 		EFKLABEL_MAX
 	};
 
@@ -79,7 +81,9 @@ public:
 	void SetScale(Effekseer::Handle handle, float scale);	// スケール設定
 	Effekseer::Matrix43 GetMatrix(Effekseer::Handle handle);	// マトリックス取得
 	void SetTransform(Effekseer::Handle handle, MyLib::Vector3 pos, MyLib::Vector3 rot);	// マトリックス設定
-	bool IsDeath(Effekseer::Handle handle);
+	bool IsDeath(Effekseer::Handle handle);	// 死亡フラグ
+	void StopAll();	// 全て停止
+	void Stop(Effekseer::Handle handle);	// 停止
 
 	static CMyEffekseer* GetInstance() { return m_pMyEffekseer; }	// インスタンス取得
 	static CMyEffekseer* Create(void);								// インスタンス生成

@@ -8,7 +8,7 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/stone_01.jpg
 #==============================================================================
 FIELDSET
 	POS = 0.00 0.00 0.00
-	BLOCK = 40 40
+	BLOCK = 80 80
 	SIZE = 200.00 200.00
 	VTXPOS
 	

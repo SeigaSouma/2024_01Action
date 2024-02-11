@@ -29,6 +29,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void Kill(void);
+
 	void SetPoint(int nValue);	// ポイント設定
 	int GetPoint(void) const { return m_nPoint; }		// ポイント取得
 	void AddPoint(void);		// ポイント追加

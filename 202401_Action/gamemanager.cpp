@@ -11,6 +11,7 @@
 #include "renderer.h"
 #include "instantfade.h"
 #include "player.h"
+#include "enemy.h"
 #include "camera.h"
 #include "sound.h"
 #include "blackframe.h"
@@ -27,6 +28,9 @@
 #include "skilltree_behavior.h"
 #include "gallery.h"
 #include "torch.h"
+#include "limitarea.h"
+#include "calculation.h"
+#include "fog.h"
 
 
 //==========================================================================
@@ -122,13 +126,13 @@ void CGameManager::Uninit(void)
 //==========================================================================
 void CGameManager::Update(void)
 {
-	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1 <= m_nNowStage)
-	{// 総ステージ数を超えたら
-		m_nNowStage = CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1;
+	//if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1 <= m_nNowStage)
+	//{// 総ステージ数を超えたら
+	//	m_nNowStage = CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1;
 
-		// 通常ステージが終了判定
-		m_bEndNormalStage = true;
-	}
+	//	// 通常ステージが終了判定
+	//	m_bEndNormalStage = true;
+	//}
 
 	// 操作状態
 	switch (m_SceneType)
@@ -160,6 +164,7 @@ void CGameManager::Update(void)
 
 	case CGameManager::SCENE_TRANSITION:
 		m_bControll = false;
+		SceneTransition();
 		break;
 
 	case SCENE_REASPAWN:			// 復活
@@ -175,43 +180,8 @@ void CGameManager::Update(void)
 	// テキストの描画
 	CManager::GetInstance()->GetDebugProc()->Print(
 		"---------------- ゲームマネージャ情報 ----------------\n"
-		"【今のモード】[%d]\n", m_SceneType);
-
-
-	if (m_SceneType == SCENE_TRANSITION)
-	{// 遷移中
-
-		// 遷移なしフェードの状態取得
-		CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
-
-		if (fadestate == CInstantFade::STATE_FADECOMPLETION)
-		{// 完了した瞬間
-
-			// カメラ取得
-			CCamera *pCamera = CManager::GetInstance()->GetCamera();
-			if (pCamera != NULL)
-			{
-				pCamera->SetEnableFollow(true);
-			}
-
-			// 観衆設定
-			CGallery::SetGallery();
-
-			// 松明設定
-			CTorch::SetTorch();
-
-			if (!m_bEndNormalStage)
-			{// 通常ステージが終わっていなかったら
-				SetEnemy();
-			}
-			else
-			{// ボスステージ
-				SetBoss();
-			}
-
-		}
-	}
-
+		"【モード】[%d]\n"
+		"【ステージ】[%d]\n", m_SceneType, m_nNowStage);
 }
 
 //==========================================================================
@@ -246,6 +216,62 @@ void CGameManager::GameClearSettings(void)
 		pGallery->SetState(CGallery::STATE_CLEARHEAT);
 	}
 
+}
+
+//==========================================================================
+// メイン遷移中
+//==========================================================================
+void CGameManager::SceneTransition(void)
+{
+	// 遷移なしフェードの状態取得
+	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
+
+	if (fadestate == CInstantFade::STATE_FADECOMPLETION)
+	{// 完了した瞬間
+
+		// カメラ取得
+		CCamera* pCamera = CManager::GetInstance()->GetCamera();
+		if (pCamera != NULL)
+		{
+			pCamera->SetEnableFollow(true);
+		}
+
+		// 観衆設定
+		CGallery::SetGallery();
+
+		// 松明設定
+		CTorch::SetTorch();
+
+		// エリア制限情報取得
+		CListManager<CLimitArea> limitareaList = CLimitArea::GetListObj();
+		CLimitArea* pLimitArea = nullptr;
+		while (limitareaList.ListLoop(&pLimitArea))
+		{
+			pLimitArea->Kill();
+		}
+
+		// エフェクト全て停止
+		CMyEffekseer::GetInstance()->StopAll();
+
+		// フォグリセット
+		MyFog::ToggleFogFrag(false);
+
+		// 塵
+		CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_BGFIRE,
+			MyLib::Vector3(0.0f, 0.0f, 0.0f),
+			0.0f, 0.0f, 100.0f, false);
+
+		if (!m_bEndNormalStage)
+		{// 通常ステージが終わっていなかったら
+			SetEnemy();
+		}
+		else
+		{// ボスステージ
+			SetBoss();
+		}
+
+	}
 }
 
 //==========================================================================
@@ -284,6 +310,16 @@ void CGameManager::SceneEnhance(void)
 		pCamera->Reset(CScene::MODE_GAME);
 	}
 
+	// エフェクト全て停止
+	CMyEffekseer::GetInstance()->StopAll();
+
+
+	// ステージ加算
+	AddNowStage();
+
+	// 前回のポイント保存
+	m_nPrevPoint = CPlayer::GetListObj().GetData(0)->GetSkillPoint()->GetPoint();
+
 	// ステージ切り替え
 	CGame::GetInstance()->GetStage()->ChangeStage("data\\TEXT\\stage\\info.txt");
 
@@ -313,6 +349,17 @@ void CGameManager::SceneEnhance(void)
 		m_pSkilltreeAbillity = nullptr;
 	}
 	m_pSkilltreeAbillity = CSkillTree_Ability::Create();
+
+	CLimitArea::sLimitEreaInfo info;
+	info.fMaxX = 600.0f;
+	info.fMaxZ = 1050.0f;
+	info.fMinX = -600.0f;
+	info.fMinZ = -1000.0f;
+	CLimitArea* pArea = CLimitArea::Create(info);
+	pArea->SetEnableDisp(false);
+
+	MyFog::SetFogparam(D3DXCOLOR(1.0f, 0.95f, 0.9f, 1.0f), info.fMaxZ, 3000.0f, D3DFOG_LINEAR);
+	MyFog::ToggleFogFrag(true);
 }
 
 //==========================================================================
@@ -327,21 +374,31 @@ void CGameManager::SceneReaspawn(void)
 		return;
 	}
 
-	// プレイヤー取得
-	CListManager<CPlayer> playerList = CPlayer::GetListObj();
-	CPlayer* pPlayer = playerList.GetData(0);
+	// 敵のリスト取得
+	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+	CEnemy* pEnemy = nullptr;
+
+	// リストループ
+	while (enemyList.ListLoop(&pEnemy))
+	{
+		pEnemy->Kill();
+		pEnemy->Uninit();
+	}
+
+	// プレイヤー生成
+	CPlayer* pPlayer = CPlayer::Create(0);
 
 	// アイコン毎の情報取得
 	std::vector<CSkillTree_Icon::sSkillIcon> iconInfo = CSkillTree::GetInstance()->GetIconInfo();
 
 	// 習得済み能力割り当て
-	for (const auto& info : iconInfo)
+	for (int i = 0; i < static_cast<int>(m_PrevSkillIconMastering.size()); i++)
 	{
-		if (info.mastering != CSkillTree_Icon::MASTERING_DONE)
+		if (m_PrevSkillIconMastering[i] != CSkillTree_Icon::MASTERING_DONE)
 		{
 			continue;
 		}
-		CAbillityStrategy* pAbillity = CAbillityStrategy::CreateInstance(info, pPlayer);
+		CAbillityStrategy* pAbillity = CAbillityStrategy::CreateInstance(iconInfo[i], pPlayer);
 		pAbillity->BindAbillity();
 
 		delete pAbillity;
@@ -354,6 +411,32 @@ void CGameManager::SceneReaspawn(void)
 	// 前回のポイント+お情けポイント0設定
 	pPlayer->GetSkillPoint()->SetPoint(m_nPrevPoint + 1);
 
+	// 現在のステージ
+	m_nNowStage--;
+	if (m_nNowStage <= 0)
+	{
+		m_nNowStage = 0;
+	}
+
+	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() <= m_nNowStage)
+	{// 総ステージ数を超えたら
+
+		// 通常ステージが終了判定
+		m_bEndNormalStage = true;
+	}
+	else
+	{
+		m_bEndNormalStage = false;
+	}
+
+	// 敵の再配置
+	CEnemyManager* pEnemyManager = CGame::GetInstance()->GetEnemyManager();
+
+	// 変更中にする
+	pEnemyManager->SetEnableChangeStage(true);
+
+	// 強化シーンに切り替え
+	m_SceneType = SCENE_ENHANCE;
 
 	// 強化シーン処理
 	SceneEnhance();
@@ -461,7 +544,6 @@ void CGameManager::AddNowStage(void)
 
 	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() <= m_nNowStage)
 	{// 総ステージ数を超えたら
-		m_nNowStage = CGame::GetInstance()->GetEnemyBase()->GetNumStage();
 
 		// 通常ステージが終了判定
 		m_bEndNormalStage = true;
@@ -475,6 +557,15 @@ void CGameManager::AddNowStage(void)
 int CGameManager::GetNowStage(void)
 {
 	return m_nNowStage;
+}
+
+//==========================================================================
+// 前回の強化内容設定
+//==========================================================================
+void CGameManager::SetPrevEnhance()
+{
+	// 前回の習得状況保存
+	m_PrevSkillIconMastering = CSkillTree::GetInstance()->GetMastering();
 }
 
 //==========================================================================

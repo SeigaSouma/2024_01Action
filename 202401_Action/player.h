@@ -127,11 +127,8 @@ public:
 	// スキルツリー用関数
 	void ResetEnhance();	// 強化リセット
 	void UpgradeLife(int addvalue);	// 体力アップグレード
-	void DowngradeLife(int addvalue);	// 体力ダウングレード
 	void UpgradeMaxStamina(int addvalue);		// スタミナ最大値アップグレード
-	void DowngradeMaxStamina(int addvalue);		// スタミナ最大値ダウングレード
 	void UpgradeAutoHealStamina(float ratio);	// スタミナ自動回復アップグレード
-	void DowngradeAutoHealStamina(float ratio);	// スタミナ自動回復ダウングレード
 	void ChangeAtkControl(CPlayerControlAttack* control);	// 攻撃の操作変更
 	void ChangeDefenceControl(CPlayerControlDefence* control);	// 防御の操作変更
 	void ChangeAvoidControl(CPlayerControlAvoid* control);	// 回避の操作変更

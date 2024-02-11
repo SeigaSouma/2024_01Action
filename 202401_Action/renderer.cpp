@@ -16,6 +16,7 @@
 #include "input.h"
 #include "loadmanager.h"
 #include "Imguimanager.h"
+#include "fog.h"
 
 //==========================================================================
 // コンストラクタ
@@ -179,6 +180,13 @@ void CRenderer::Draw(void)
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{// 描画が成功したとき
+
+
+		// フォグを解除
+		MyFog::DisableFog(m_pD3DDevice);
+
+		// フォグ有効
+		MyFog::SetFog();
 
 		D3DVIEWPORT9 viewportDef;	//ビューポート保存
 

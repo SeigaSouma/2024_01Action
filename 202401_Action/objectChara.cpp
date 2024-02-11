@@ -23,6 +23,7 @@ CObjectChara::CObjectChara(int nPriority) : CObjectHierarchy(nPriority)
 	m_nLifeOrigin = 0;		// 元の体力
 	m_nMotionStartIdx = 0;	// モーション開始のインデックス番号
 	m_nAddScore = 0;		// スコア加算量
+	m_bInDicision = false;	// 攻撃判定中フラグ
 }
 
 //==========================================================================
@@ -36,32 +37,23 @@ CObjectChara::~CObjectChara()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectChara *CObjectChara::Create(const std::string pTextFile)
+CObjectChara* CObjectChara::Create(const std::string pTextFile)
 {
-	// 生成用のオブジェクト
-	CObjectChara *pObjChara = nullptr;
+	// メモリの確保
+	CObjectChara* pObjChara = DEBUG_NEW CObjectChara;
 
-	if (pObjChara == nullptr)
-	{
+	if (pObjChara != nullptr)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pObjChara = DEBUG_NEW CObjectChara;
-
-		if (pObjChara != nullptr)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			HRESULT hr = pObjChara->SetCharacter(pTextFile);
-			if (FAILED(hr))
-			{// 失敗していたら
-				return nullptr;
-			}
+		// 初期化処理
+		HRESULT hr = pObjChara->SetCharacter(pTextFile);
+		if (FAILED(hr))
+		{// 失敗していたら
+			return nullptr;
 		}
-
-		return pObjChara;
 	}
 
-	return nullptr;
+	return pObjChara;
 }
 
 //==========================================================================
@@ -179,6 +171,9 @@ void CObjectChara::Update(void)
 //==========================================================================
 void CObjectChara::MotionInProgressAction(void)
 {
+	// 攻撃判定フラグリセット
+	m_bInDicision = false;
+
 	if (m_pMotion == nullptr)
 	{
 		return;
@@ -214,6 +209,9 @@ void CObjectChara::MotionInProgressAction(void)
 		float fAllCount = m_pMotion->GetAllCount();
 		if (fAllCount > AttackInfo->nMinCnt && fAllCount <= AttackInfo->nMaxCnt)
 		{// 攻撃判定中
+
+			// 攻撃判定フラグ
+			m_bInDicision = true;
 
 			// 攻撃判定中処理
 			AttackInDicision(AttackInfo, nCntAttack);

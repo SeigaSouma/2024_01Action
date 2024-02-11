@@ -132,6 +132,8 @@ protected:
 	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK);	// 攻撃時処理
 	virtual void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK);			// 攻撃判定中処理
 	void ChangeMotion(const char* pMotionFile);	// モーションファイル変更
+
+	bool m_bInDicision;	// 攻撃判定中フラグ
 private:
 
 	// メンバ関数
