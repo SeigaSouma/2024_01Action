@@ -1845,7 +1845,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\uploads_files_2289950_Books_Texture2K\\Books_Texture2K\\Books_BaseColor.png";
+    "data\\TEXTURE\\enhance\\Books_BaseColor.png";
    }
   }
  }

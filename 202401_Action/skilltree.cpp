@@ -17,7 +17,9 @@
 #include "skilltree_command.h"
 #include "skilltree_window.h"
 #include "skilltree_description.h"
+#include "skilltree_obj.h"
 #include "camera.h"
+#include "player.h"
 #include "game.h"
 
 //==========================================================================
@@ -27,7 +29,7 @@ namespace
 {
 	const char* LOADTEXT = "data\\TEXT\\skilltree\\iconinfo.json";
 	const char* AUTOSAVE_MASTERING = "data\\TEXT\\skilltree\\mastering.json";
-	const float TIME_FADE = 0.4f;	// フェードアウト時間
+	const float TIME_FADE = 0.5f;	// フェードアウト時間
 	const int MAX_ICON = 4;		// アイコン
 }
 
@@ -268,6 +270,24 @@ void CSkillTree::StateNone()
 
 		// 通常状態に設定
 		CManager::GetInstance()->GetCamera()->SetStateCamraR(DEBUG_NEW CStateCameraR());
+
+
+		// 祈り後状態に設定
+		CCamera* pCamera = CManager::GetInstance()->GetCamera();
+		pCamera->SetControlState(DEBUG_NEW CCameraControlState_BeforePrayer(CManager::GetInstance()->GetCamera()));
+
+		// プレイヤー取得
+		CListManager<CPlayer> playerList = CPlayer::GetListObj();
+		CPlayer* pPlayer = nullptr;
+
+		// リストループ
+		while (playerList.ListLoop(&pPlayer))
+		{
+			pPlayer->SetState(CPlayer::STATE_NONE);
+		}
+
+		// 再起動処理
+		CSkillTree_Obj::GetInstance()->ReStartUp();
 	}
 }
 
@@ -405,6 +425,9 @@ void CSkillTree::StateFadeOut()
 
 		// スキルツリーに変更
 		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
+
+		// 通常状態に戻す
+		CManager::GetInstance()->GetCamera()->SetControlState(DEBUG_NEW CCameraControlState_Normal(CManager::GetInstance()->GetCamera()));
 
 		// スクリーンから捌ける
 		OutScreen();

@@ -23,7 +23,7 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/hiero.jpg		# [10]
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 44
+NUM_MODEL = 45
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -72,6 +72,7 @@ MODEL_FILENAME = data/MODEL/enhance/enhancewall.x		# [40]
 MODEL_FILENAME = data/MODEL/enhance/stonewallobj_02.x		# [41]
 MODEL_FILENAME = data/MODEL/enhance/books.x		# [42]
 MODEL_FILENAME = data/MODEL/enhance/stonebase.x		# [43]
+MODEL_FILENAME = data/MODEL/enhance/stonewallobj_03.x		# [44]
 
 #==============================================================================
 # 空情報
@@ -210,6 +211,94 @@ MODELSET
 	POS = 506.13 170.00 1105.05
 	ROT = 0.00 1.05 0.00
 	SHADOW = 1
+END_MODELSET
+
+
+MODELSET
+	TYPE = 44
+	POS = -1367.40 470.00 440.66
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = -1367.40 470.00 -5361.65
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = -1367.40 470.00 6242.31
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = 1367.40 470.00 440.66
+	ROT = 0.00 1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = 1367.40 470.00 -5361.65
+	ROT = 0.00 1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = 1367.40 470.00 6242.31
+	ROT = 0.00 1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+
+
+
+MODELSET
+	TYPE = 44
+	POS = -2095.40 940.00 440.66
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = -2095.40 940.00 -5361.65
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = -2095.40 940.00 6242.31
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = 2095.40 940.00 440.66
+	ROT = 0.00 1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = 2095.40 940.00 -5361.65
+	ROT = 0.00 1.57 0.00
+	SHADOW = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 44
+	POS = 2095.40 940.00 6242.31
+	ROT = 0.00 1.57 0.00
+	SHADOW = 0
 END_MODELSET
 
 

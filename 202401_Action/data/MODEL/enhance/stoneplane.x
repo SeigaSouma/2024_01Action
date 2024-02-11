@@ -16721,7 +16721,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\2024_01Action\\202401_Action\\data\\TEXTURE\\enhance\\tex_u1_v1.jpg";
+    "data\\TEXTURE\\enhance\\tex_u1_v1.jpg";
    }
   }
  }

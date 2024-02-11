@@ -50,6 +50,7 @@ public:
 		MOTION_DEAD,		// 死亡
 		MOTION_RESPAWN,		// 復活
 		MOTION_PRAYER,		// 祈り
+		MOTION_PRAYERLOOP,	// 祈りループ
 		MOTION_GUARD,		// ガード
 		MOTION_GUARD_DMG,	// ガードダメージ
 		MOTION_COUNTER_ACCEPT,		// 反撃受け付け
@@ -72,6 +73,7 @@ public:
 		STATE_RESPAWN,		// 復活
 		STATE_COUNTER,		// 反撃
 		STATE_AVOID,		// 回避
+		STATE_PRAYER,		// 祈り
 		STATE_MAX
 	};
 
@@ -197,6 +199,7 @@ private:
 	void StateRespawn();	// リスポーン
 	void StateCounter();	// カウンター中
 	void StateAvoid();		// 回避
+	void StatePrayer();		// 祈り
 
 	// その他関数
 	virtual void Controll();	// 操作

@@ -204,7 +204,12 @@ void CSkillTree_Obj::CollisionPlayer()
 			pInputKeyboard->GetTrigger(DIK_RETURN))
 		{
 			// 祈りモーション設定
+			pPlayer->SetState(CPlayer::STATE_PRAYER);
 			pPlayer->SetMotion(CPlayer::MOTION_PRAYER);
+
+			// 祈り準備状態に設定
+			CCamera* pCamera = CManager::GetInstance()->GetCamera();
+			pCamera->SetControlState(DEBUG_NEW CCameraControlState_BeforePrayer(CManager::GetInstance()->GetCamera()));
 		}
 	}
 }
@@ -245,6 +250,26 @@ void CSkillTree_Obj::StartUp()
 }
 
 //==========================================================================
+// 再起動処理
+//==========================================================================
+void CSkillTree_Obj::ReStartUp()
+{
+	// ループエフェクト再生
+	if (m_pWeaponHandle == nullptr)
+	{
+		MyLib::Vector3 pos = POSITION;
+		pos.y += 250.0f;
+		pos.z += 50.0f;
+
+		CMyEffekseer::GetInstance()->SetEffect(
+			&m_pWeaponHandle,
+			CMyEffekseer::EFKLABEL_STONEBASE_LIGHT,
+			pos,
+			0.0f, 0.0f, 100.0f, false);
+	}
+}
+
+//==========================================================================
 // なにもない状態
 //==========================================================================
 void CSkillTree_Obj::StateNone()
@@ -267,8 +292,15 @@ void CSkillTree_Obj::StateStartUp()
 		// スキルツリー生成
 		CSkillTree::GetInstance()->SetScreen();
 
+		// 生成位置
+		MyLib::Vector3 pos = POSITION;
+		pos.z -= 50.0f;
+
 		// 祈り状態に設定
-		CManager::GetInstance()->GetCamera()->SetStateCamraR(DEBUG_NEW CStateCameraR_Prayer());
+		CCamera* pCamera = CManager::GetInstance()->GetCamera();
+		pCamera->SetTargetPosition(pos);
+		pCamera->SetStateCamraR(DEBUG_NEW CStateCameraR_Prayer());
+		pCamera->SetControlState(DEBUG_NEW CCameraControlState_Prayer(CManager::GetInstance()->GetCamera()));
 	}
 }
 

@@ -6489,7 +6489,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.200000;0.200000;0.200000;;
    TextureFilename {
-    "data\\TEXTURE\\enhance\\pedestal_Base_Color.png";
+    "data\\TEXTURE\\enhance\\pedestal.png";
    }
   }
  }

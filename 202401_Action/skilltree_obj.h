@@ -30,6 +30,7 @@ public:
 
 	// その他関数
 	void StartUp();	// 起動処理
+	void ReStartUp();	// 再起動処理
 
 	// 静的関数
 	static CSkillTree_Obj* GetInstance();		// インスタンス取得

@@ -78034,7 +78034,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\03LowerDeck.jpg";
+    "data\\TEXTURE\\enhance\\03LowerDeck.jpg";
    }
   }
   Material {
@@ -78043,7 +78043,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\01Maidenmap.jpg";
+    "data\\TEXTURE\\enhance\\01Maidenmap.jpg";
    }
   }
   Material {
@@ -78052,7 +78052,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\02foundation.jpg";
+    "data\\TEXTURE\\enhance\\02foundation.jpg";
    }
   }
   Material {
@@ -78061,7 +78061,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\04UpperDeck.jpg";
+    "data\\TEXTURE\\enhance\\04UpperDeck.jpg";
    }
   }
   Material {
@@ -78070,7 +78070,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\05WallMap.jpg";
+    "data\\TEXTURE\\enhance\\05WallMap.jpg";
    }
   }
   Material {
@@ -78079,7 +78079,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\09building.jpg";
+    "data\\TEXTURE\\enhance\\09building.jpg";
    }
   }
   Material {
@@ -78088,7 +78088,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\08Column.jpg";
+    "data\\TEXTURE\\enhance\\08Column.jpg";
    }
   }
   Material {
@@ -78097,7 +78097,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\変なオブジェ\\Textures\\10rubble.jpg";
+    "data\\TEXTURE\\enhance\\10rubble.jpg";
    }
   }
  }

@@ -12649,7 +12649,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\Camera Roll\\AEì•i\\skilltree_icon\\pbr\\m31_Base_Color.png";
+    "data\\TEXTURE\\enhance\\m31_Base_Color.png";
    }
   }
  }

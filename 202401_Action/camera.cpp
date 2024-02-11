@@ -59,9 +59,9 @@ namespace
 	const float DISATNCE_POSR_PLAYER = 200.0f;		// (ゲーム時)プレイヤーとの注視点距離
 	const float MIN_ROCKONDISTANCE = 1.0f;
 	const float ROTDISTANCE_ROCKON = D3DX_PI * 0.095f;	// ロックオン向きのズレ
-	const MyLib::Vector3 ROTDISTANCE_COUNTER = { 0.0f, D3DX_PI * 0.5f, -D3DX_PI * 0.05f };	// 反撃時の向きズレ
-	//const MyLib::Vector3 ROTDISTANCE_COUNTER = { 0.0f, D3DX_PI * 0.5f, D3DX_PI * 0.05f };	// 反撃時の向きズレ
+	const MyLib::Vector3 ROTDISTANCE_COUNTER = MyLib::Vector3(0.0f, D3DX_PI * 0.5f, -D3DX_PI * 0.05f);	// 反撃時の向きズレ
 	const float LENGTH_COUNTER = 400.0f;					// カウンター時のカメラ長さ
+	const MyLib::Vector3 ROTATION_PRAYER = MyLib::Vector3(0.0f, -0.89f, 0.06f);	// 祈り時の向き
 }
 
 //==========================================================================
@@ -123,7 +123,9 @@ CCamera::CCamera()
 	m_RockOnDir = ROCKON_DIR_RIGHT;				// ロックオン時の向き
 	m_stateRockOn = ROCKON_NORMAL;				// ロックオン時の状態
 
+	m_StateCameraR = POSR_STATE_NORMAL;		// 注視点の状態
 	m_pStateCameraR = nullptr;	// 注視点の状態ポインタ
+	m_pControlState = nullptr;	// 操作の状態ポインタ
 
 }
 
@@ -153,6 +155,10 @@ HRESULT CCamera::Init()
 
 	// 注視点の状態設定
 	SetStateCamraR(DEBUG_NEW CStateCameraR());
+
+	// 操作の状態設定
+	SetControlState(DEBUG_NEW CCameraControlState_Normal(this));
+
 	return S_OK;
 }
 
@@ -178,6 +184,12 @@ void CCamera::Uninit()
 	{
 		delete m_pStateCameraR;
 		m_pStateCameraR = nullptr;
+	}
+
+	if (m_pControlState != nullptr)
+	{
+		delete m_pControlState;
+		m_pControlState = nullptr;
 	}
 }
 
@@ -284,39 +296,9 @@ void CCamera::MoveCameraInput()
 //==========================================================================
 void CCamera::MoveCameraStick(int nIdx)
 {
-	// ゲームパッド情報取得
-	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+	// 操作処理
+	m_pControlState->MoveCamera(this);
 
-	if (!m_bRockON)
-	{
-		m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
-
-		if (m_rot.z > MIN_STICKROT &&
-			(m_bRotationZ || pInputGamepad->GetStickMoveR(nIdx).y < 0.0f))
-		{
-			m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
-		}
-		else if (m_rot.z <= MIN_STICKROT && pInputGamepad->GetStickMoveR(nIdx).y > 0.0f)
-		{
-			m_Moverot.z += pInputGamepad->GetStickMoveR(nIdx).y * ROT_MOVE_STICK_Z;
-		}
-
-		// 移動する
-		m_rot += m_Moverot;
-
-		UtilFunc::Correction::InertiaCorrection(m_Moverot.y, 0.0f, 0.25f);
-		UtilFunc::Correction::InertiaCorrection(m_Moverot.z, 0.0f, 0.25f);
-	}
-	else
-	{
-		// 目標の向き
-		float fRotDiff = m_rotDest.z - m_rot.z;
-		UtilFunc::Transformation::RotNormalize(fRotDiff);
-		m_rot.z += fRotDiff * 0.08f;
-
-		// ロックオン状態別処理
-		(this->*(m_RockOnStateFunc[m_stateRockOn]))();
-	}
 	// 角度の正規化
 	UtilFunc::Transformation::RotNormalize(m_rot);
 
@@ -1225,6 +1207,9 @@ void CCamera::Reset(CScene::MODE mode)
 	// 通常状態
 	SetStateCamraR(DEBUG_NEW CStateCameraR());
 
+	// 操作の状態設定
+	SetControlState(DEBUG_NEW CCameraControlState_Normal(this));
+
 	m_bFollow = true;	// 追従するかどうか
 	m_bRockON = false;	// ロックオンするか
 
@@ -1488,9 +1473,9 @@ MyLib::Vector3 CCamera::GetRotation() const
 //==========================================================================
 // 目標の向き設定
 //==========================================================================
-void CCamera::SetDestRotation(const MyLib::Vector3 rot)
+void CCamera::SetDestRotation(const MyLib::Vector3& rot)
 {
-	m_rotVDest = rot;
+	m_rotDest = rot;
 }
 
 //==========================================================================
@@ -1498,7 +1483,7 @@ void CCamera::SetDestRotation(const MyLib::Vector3 rot)
 //==========================================================================
 MyLib::Vector3 CCamera::GetDestRotation()
 {
-	return m_rotVDest;
+	return m_rotDest;
 }
 
 //==========================================================================
@@ -1550,10 +1535,13 @@ void CCamera::SetRockOn(const MyLib::Vector3 pos, bool bSet)
 	if (bSet)
 	{
 		SetStateCamraR(DEBUG_NEW CStateCameraR_RockOn());
+		SetControlState(DEBUG_NEW CCameraControlState_RockOn(this));
 	}
 	else
 	{
 		SetStateCamraR(DEBUG_NEW CStateCameraR());
+		// 操作の状態設定
+		SetControlState(DEBUG_NEW CCameraControlState_Normal(this));
 	}
 
 	m_RockOnPos = pos;
@@ -1665,6 +1653,15 @@ void CCamera::SetStateCamraR(CStateCameraR* state)
 }
 
 //==========================================================================
+// 操作の状態設定
+//==========================================================================
+void CCamera::SetControlState(CCameraControlState* state)
+{
+	delete m_pControlState;
+	m_pControlState = state;
+}
+
+//==========================================================================
 // 通常の注視点設定
 //==========================================================================
 void CStateCameraR::SetCameraR(CCamera* pCamera)
@@ -1699,4 +1696,109 @@ void CStateCameraR_Prayer::SetCameraR(CCamera* pCamera)
 {
 	MyLib::Vector3 targetpos = pCamera->GetTargetPosition();
 	pCamera->SetPositionRDest(targetpos);
+}
+
+
+
+//==========================================================================
+// 基底の操作処理
+//==========================================================================
+void CCameraControlState::MoveCamera(CCamera* pCamera)
+{
+	// ゲームパッド情報取得
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	MyLib::Vector3 moverot = pCamera->GetMoveRot();
+	MyLib::Vector3 rot = pCamera->GetRotation();
+
+	moverot.y += pInputGamepad->GetStickMoveR(0).x * ROT_MOVE_STICK_Y;
+
+	if (rot.z > MIN_STICKROT &&
+		(pCamera->IsRotationZ() || pInputGamepad->GetStickMoveR(0).y < 0.0f))
+	{
+		moverot.z += pInputGamepad->GetStickMoveR(0).y * ROT_MOVE_STICK_Z;
+	}
+	else if (rot.z <= MIN_STICKROT && pInputGamepad->GetStickMoveR(0).y > 0.0f)
+	{
+		moverot.z += pInputGamepad->GetStickMoveR(0).y * ROT_MOVE_STICK_Z;
+	}
+
+	// 移動する
+	rot += moverot;
+
+	UtilFunc::Correction::InertiaCorrection(moverot.y, 0.0f, 0.25f);
+	UtilFunc::Correction::InertiaCorrection(moverot.z, 0.0f, 0.25f);
+
+	// 回転移動量設定
+	pCamera->SetRotation(rot);
+	pCamera->SetMoveRot(moverot);
+}
+
+//==========================================================================
+// ロックオンの操作処理
+//==========================================================================
+void CCameraControlState_RockOn::MoveCamera(CCamera* pCamera)
+{
+	// ゲームパッド情報取得
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	MyLib::Vector3 moverot = pCamera->GetMoveRot();
+	MyLib::Vector3 rot = pCamera->GetRotation();
+	MyLib::Vector3 rotdest = pCamera->GetDestRotation();
+
+	// 目標の向き
+	float fRotDiff = rotdest.z - rot.z;
+	UtilFunc::Transformation::RotNormalize(fRotDiff);
+	rot.z += fRotDiff * 0.08f;
+	UtilFunc::Transformation::RotNormalize(rot.z);
+	pCamera->SetRotation(rot);
+
+	// ロックオン状態別処理
+	(pCamera->*(CCamera::m_RockOnStateFunc[pCamera->GetRockOnState()]))();
+}
+
+//==========================================================================
+// 祈り準備の操作処理
+//==========================================================================
+void CCameraControlState_BeforePrayer::MoveCamera(CCamera* pCamera)
+{
+	// 情報取得
+	MyLib::Vector3 rot = pCamera->GetRotation();
+
+	// 目標の向き
+	MyLib::Vector3 rotDiff = DEFAULT_GAMEROT - rot;
+	UtilFunc::Transformation::RotNormalize(rotDiff);
+
+	rot += rotDiff * 0.08f;
+	UtilFunc::Transformation::RotNormalize(rot);
+
+	// 向き設定
+	pCamera->SetRotation(rot);
+}
+
+//==========================================================================
+// 祈りの操作処理
+//==========================================================================
+void CCameraControlState_Prayer::MoveCamera(CCamera* pCamera)
+{
+	// 情報取得
+	MyLib::Vector3 rot = pCamera->GetRotation();
+	MyLib::Vector3 targetpos = pCamera->GetTargetPosition();
+
+	// 目標値
+	//const MyLib::Vector3& rotdest = pCamera->GetDestRotation();
+	const MyLib::Vector3& rotdest = ROTATION_PRAYER;
+
+	// 目標の向き
+	MyLib::Vector3 rotDiff = rotdest - rot;
+	UtilFunc::Transformation::RotNormalize(rotDiff);
+
+	rot += rotDiff * 0.08f;
+	UtilFunc::Transformation::RotNormalize(rot);
+
+	// 長さ設定
+	pCamera->SetLenDest(170.0f, 10, 50.0f, 0.1f);
+
+	// 向き設定
+	pCamera->SetRotation(rot);
 }

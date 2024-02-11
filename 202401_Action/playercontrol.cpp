@@ -162,9 +162,6 @@ void CPlayerControlAvoid::Avoid(CPlayer* player)
 	// 目標の向き取得
 	float fRotDest = player->GetRotDest();
 
-	// モーションフラグ取得
-	CPlayer::SMotionFrag motionFrag = player->GetMotionFrag();
-
 	// カメラの向き取得
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 	MyLib::Vector3 Camerarot = pCamera->GetRotation();
@@ -193,9 +190,6 @@ void CPlayerControlAvoid::Avoid(CPlayer* player)
 
 	// 目標の向き設定
 	player->SetRotDest(fRotDest);
-
-	// モーションフラグ設定
-	player->SetMotionFrag(motionFrag);
 }
 
 

@@ -10,7 +10,8 @@
 #include "main.h"
 #include "scene.h"
 
-class CStateCameraR;
+class CStateCameraR;	// 注視点の状態
+class CCameraControlState;	// 状態別操作
 
 //==========================================================================
 // クラス定義
@@ -48,10 +49,20 @@ public:
 		ROCKON_DIR_MAX
 	};
 
+	// 注視点の状態
+	enum PosRState
+	{
+		POSR_STATE_NORMAL = 0,
+		POSR_STATE_ROCKON,		// ロックオン状態
+		POSR_STATE_PRAYER,		// 祈り状態
+		POSR_STATE_MAX
+	};
+
 	enum RockOnState
 	{
 		ROCKON_NORMAL = 0,	// 通常
 		ROCKON_COUNTER,	// カウンター
+		ROCKON_ROCKON,	// ロックオン
 		ROCKON_MAX
 	};
 
@@ -69,10 +80,12 @@ public:
 	MyLib::Vector3 GetPositionR() const;		// カメラの注視点取得
 	void SetOriginDistance(float fDistance);	// 元になるカメラの距離設定
 	float GetOriginDistance();				// 元になるカメラの距離取得
-	void SetDestRotation(const MyLib::Vector3 rot);	// 目標の向き設定
+	void SetDestRotation(const MyLib::Vector3& rot);	// 目標の向き設定
 	MyLib::Vector3 GetDestRotation();				// 目標の向き取得
 	void SetTargetPosition(const MyLib::Vector3 pos);	// 追従目標の位置設定
-	MyLib::Vector3 GetTargetPosition();			// 追従目標の位置取得
+	MyLib::Vector3 GetTargetPosition();					// 追従目標の位置取得
+	void SetTargetPositionDest(const MyLib::Vector3& pos) { m_TargetPosDest = pos; }	// 追従目標の目標位置設定
+	MyLib::Vector3 GetTargetPositionDest() { return m_TargetPosDest; }					// 追従目標の目標位置取得
 	void SetTargetRotation(const MyLib::Vector3 rot);	// ロックオンの向き設定
 
 	// 移動量系
@@ -86,6 +99,10 @@ public:
 	MyLib::Vector3 GetRockOnPosition();			// 追従目標の位置取得
 	void SetRockOn(const MyLib::Vector3 pos, bool bSet);	// ロックオン設定
 	void SetRockDir(RockOnDir dir) { m_RockOnDir = dir; }	// ロックオン時のズレ向き設定
+
+	// 関数リスト
+	typedef void(CCamera::* ROCKON_STATE_FUNC)();
+	static ROCKON_STATE_FUNC m_RockOnStateFunc[];
 	void SetRockOnState(RockOnState state);	// ロックオン状態設定
 	CCamera::RockOnState GetRockOnState() { return m_stateRockOn; }	// ロックオン状態取得
 
@@ -124,12 +141,11 @@ public:
 
 	// ステートパターン設定
 	void SetStateCamraR(CStateCameraR* state);	// 注視点の状態設定
+	void SetStateCameraR(PosRState state) { m_StateCameraR = state; }
+	PosRState GetStateCameraR() { return m_StateCameraR; }
 
+	void SetControlState(CCameraControlState* state);	// 操作の状態設定
 private:
-
-	// 関数リスト
-	typedef void(CCamera::* ROCKON_STATE_FUNC)();
-	static ROCKON_STATE_FUNC m_RockOnStateFunc[];
 
 	// メンバ変数
 	void UpdateByMode();	// モード別更新処理
@@ -214,7 +230,9 @@ private:
 	RockOnDir m_RockOnDir;				// ロックオン時の向き
 	RockOnState m_stateRockOn;			// ロックオン時の状態
 
+	PosRState m_StateCameraR;		// 注視点の状態
 	CStateCameraR* m_pStateCameraR;	// 注視点の状態ポインタ
+	CCameraControlState* m_pControlState;	// 操作の状態ポインタ
 };
 
 //=============================
@@ -248,10 +266,62 @@ public:
 //=============================
 // 状態パターン
 //=============================
-class CCameraState
+// 基底クラス
+class CCameraControlState
 {
 public:
-	CCameraState() {}
+	CCameraControlState(CCamera* pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_NORMAL); }
+
+	virtual void MoveCamera(CCamera* pCamera);	// 移動処理
+};
+
+// 通常
+class CCameraControlState_Normal : public CCameraControlState
+{
+public:
+	CCameraControlState_Normal(CCamera* pCamera) : CCameraControlState(pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_NORMAL); }
+};
+
+// ロックオン
+class CCameraControlState_RockOn : public CCameraControlState
+{
+public:
+	CCameraControlState_RockOn(CCamera* pCamera) : CCameraControlState(pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_ROCKON); }
+
+	virtual void MoveCamera(CCamera* pCamera) override;	// 移動処理
+};
+
+// 祈り準備
+class CCameraControlState_BeforePrayer : public CCameraControlState
+{
+public:
+	CCameraControlState_BeforePrayer(CCamera* pCamera) : CCameraControlState(pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_NORMAL); }
+
+	virtual void MoveCamera(CCamera* pCamera) override;	// 移動処理
+};
+
+// 祈り後
+class CCameraControlState_AfterPrayer : public CCameraControlState_BeforePrayer
+{
+public:
+	CCameraControlState_AfterPrayer(CCamera* pCamera) : CCameraControlState_BeforePrayer(pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_NORMAL); }
+};
+
+// 祈り
+class CCameraControlState_Prayer : public CCameraControlState
+{
+public:
+	CCameraControlState_Prayer(CCamera* pCamera) : CCameraControlState(pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_PRAYER); }
+
+	virtual void MoveCamera(CCamera* pCamera) override;	// 移動処理
+};
+
+// ボス演出
+class CCameraControlState_BossAppearance : public CCameraControlState
+{
+public:
+	CCameraControlState_BossAppearance(CCamera* pCamera) : CCameraControlState(pCamera) { pCamera->SetStateCameraR(CCamera::POSR_STATE_NORMAL); }
+
 };
 
 #endif

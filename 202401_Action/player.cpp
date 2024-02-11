@@ -80,6 +80,7 @@ CPlayer::STATE_FUNC CPlayer::m_StateFunc[] =
 	&CPlayer::StateRespawn,		// リスポーン
 	&CPlayer::StateCounter,		// カウンター中
 	&CPlayer::StateAvoid,		// 回避
+	&CPlayer::StatePrayer,		// 祈り
 };
 
 //==========================================================================
@@ -474,17 +475,16 @@ void CPlayer::Update()
 	MyLib::Vector3 rot = GetRotation();
 
 	// カメラの情報取得
-	if (!CManager::GetInstance()->GetCamera()->IsRockOn())
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	if (pCamera->GetStateCameraR() == CCamera::POSR_STATE_ROCKON)
 	{
-		CCamera* pCamera = CManager::GetInstance()->GetCamera();
 		pCamera->SetTargetPosition(pos);
 		pCamera->SetTargetRotation(rot);
 	}
-	else
+	else if(pCamera->GetStateCameraR() == CCamera::POSR_STATE_NORMAL)
 	{
-		CCamera* pCamera = CManager::GetInstance()->GetCamera();
 		MyLib::Vector3 camerapos = pos;
-		camerapos.y = pCamera->GetTargetPosition().y;
+		//camerapos.y = pCamera->GetTargetPosition().y;
 
 		pCamera->SetTargetPosition(camerapos);
 		pCamera->SetTargetRotation(rot);
@@ -1011,6 +1011,13 @@ void CPlayer::MotionSet()
 		return;
 	}
 
+	if (m_state == STATE_DEAD ||
+		m_state == STATE_DEADWAIT ||
+		m_state == STATE_PRAYER)
+	{
+		return;
+	}
+
 	if (pMotion->IsFinish() == true)
 	{// 終了していたら
 
@@ -1054,11 +1061,6 @@ void CPlayer::MotionSet()
 
 			// やられモーション
 			pMotion->Set(MOTION_KNOCKBACK);
-		}
-		else if (CGame::GetInstance()->GetGameManager()->GetType() == CGameManager::SCENE_SKILLTREE)
-		{
-			// 祈りモーション設定
-			pMotion->Set(CPlayer::MOTION_PRAYER);
 		}
 		else
 		{
@@ -2369,6 +2371,26 @@ void CPlayer::StateAvoid()
 	{// 回避が終了
 		m_state = STATE_NONE;
 		return;
+	}
+}
+
+//==========================================================================
+// 祈り
+//==========================================================================
+void CPlayer::StatePrayer()
+{
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	if (pMotion->IsFinish())
+	{// 祈りが終了
+
+		// 祈りループモーション設定
+		pMotion->Set(MOTION_PRAYERLOOP);
 	}
 }
 

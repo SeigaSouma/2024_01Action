@@ -68,6 +68,24 @@ namespace UtilFunc	// 便利関数
 		}
 
 		/**
+		@brief	慣性補正
+		@details 補正係数を1.0fにすると1Fで補正が完了します
+		@param	main	[inout]	補正する値
+		@param	target	[in]	目標の値
+		@param	fFactor	[in]	補正係数(0.0f ～ 1.0f)
+		@return	void
+		*/
+		inline void InertiaCorrection(MyLib::Vector3& main, const MyLib::Vector3& target, float fFactor)
+		{
+			// 範囲外補正
+			UtilFunc::Transformation::ValueNormalize(fFactor, 1.0f, 0.0f);
+
+			main.x += (target.x - main.x) * fFactor;
+			main.y += (target.y - main.y) * fFactor;
+			main.z += (target.z - main.z) * fFactor;
+		}
+
+		/**
 		@brief	線形補正(等速, リニア)
 		@details https://mo-no.design/blog/wp-content/uploads/2023/02/linear.mp4
 		@param	start	[in]	初期値

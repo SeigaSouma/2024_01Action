@@ -11649,7 +11649,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\uploads_files_4272890_Textures\\Textures\\Stonegate_None_BaseColor.1001.png";
+    "data\\TEXTURE\\enhance\\Stonegate.png";
    }
   }
  }
