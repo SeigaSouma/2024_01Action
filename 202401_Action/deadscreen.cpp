@@ -73,7 +73,7 @@ CDeadScreen* CDeadScreen::Create(float fadetime)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CDeadScreen::Init(void)
+HRESULT CDeadScreen::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -108,7 +108,7 @@ HRESULT CDeadScreen::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CDeadScreen::Uninit(void)
+void CDeadScreen::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -117,7 +117,7 @@ void CDeadScreen::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CDeadScreen::Update(void)
+void CDeadScreen::Update()
 {
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
@@ -133,7 +133,7 @@ void CDeadScreen::Update(void)
 //==========================================================================
 // なにもなし
 //==========================================================================
-void CDeadScreen::StateNone(void)
+void CDeadScreen::StateNone()
 {
 
 }
@@ -141,7 +141,7 @@ void CDeadScreen::StateNone(void)
 //==========================================================================
 // フェードイン
 //==========================================================================
-void CDeadScreen::StateFadeIn(void)
+void CDeadScreen::StateFadeIn()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -167,7 +167,7 @@ void CDeadScreen::StateFadeIn(void)
 //==========================================================================
 // フェードアウト
 //==========================================================================
-void CDeadScreen::StateFadeOut(void)
+void CDeadScreen::StateFadeOut()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -198,7 +198,7 @@ void CDeadScreen::StateFadeOut(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CDeadScreen::Draw(void)
+void CDeadScreen::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

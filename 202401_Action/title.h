@@ -27,10 +27,10 @@ public:
 	~CTitle();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 private:
 	int m_nCntSwitch;		// 切り替えのカウンター

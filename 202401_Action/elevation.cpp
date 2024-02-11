@@ -109,7 +109,7 @@ CElevation *CElevation::Create(const char *pText)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CElevation::Init(void)
+HRESULT CElevation::Init()
 {
 	return E_FAIL;
 }
@@ -170,7 +170,7 @@ HRESULT CElevation::Init(const char *pText)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CElevation::Uninit(void)
+void CElevation::Uninit()
 {
 	// 頂点座標の破棄
 	if (m_aInfo.pVtxPos != NULL)
@@ -193,7 +193,7 @@ void CElevation::Uninit(void)
 //==========================================================================
 // 解放処理
 //==========================================================================
-void CElevation::Release(void)
+void CElevation::Release()
 {
 
 }
@@ -201,7 +201,7 @@ void CElevation::Release(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CElevation::Update(void)
+void CElevation::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -246,7 +246,7 @@ void CElevation::Update(void)
 //==========================================================================
 // 状態更新処理
 //==========================================================================
-void CElevation::UpdateState(void)
+void CElevation::UpdateState()
 {
 
 }
@@ -254,7 +254,7 @@ void CElevation::UpdateState(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CElevation::Draw(void)
+void CElevation::Draw()
 {
 	//  デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -629,7 +629,7 @@ void CElevation::UPVtxField(MyLib::Vector3 pos)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CElevation::SetVtx(void)
+void CElevation::SetVtx()
 {
 
 	MyLib::Vector3 *pVtxPos = GetVtxPos();
@@ -867,7 +867,7 @@ HRESULT CElevation::Load(const char *pText)
 //==========================================================================
 // セーブ処理
 //==========================================================================
-void CElevation::Save(void)
+void CElevation::Save()
 {
 	FILE *pFile = NULL;	// ファイルポインタを宣言
 
@@ -934,7 +934,7 @@ void CElevation::Save(void)
 //==========================================================================
 // エディットの判定
 //==========================================================================
-bool CElevation::IsEdit(void)
+bool CElevation::IsEdit()
 {
 	return m_bEdit;
 }
@@ -942,7 +942,7 @@ bool CElevation::IsEdit(void)
 //==========================================================================
 // 起伏の情報取得
 //==========================================================================
-CElevation *CElevation::GetElevation(void)
+CElevation *CElevation::GetElevation()
 {
 	return this;
 }

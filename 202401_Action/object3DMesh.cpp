@@ -67,7 +67,7 @@ void CObject3DMesh::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject3DMesh *CObject3DMesh::Create(void)
+CObject3DMesh *CObject3DMesh::Create()
 {
 	// 生成用のオブジェクト
 	CObject3DMesh *pObject3D = NULL;
@@ -171,7 +171,7 @@ CObject3DMesh *CObject3DMesh::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, flo
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject3DMesh::Init(void)
+HRESULT CObject3DMesh::Init()
 {
 	HRESULT hr;
 
@@ -350,7 +350,7 @@ HRESULT CObject3DMesh::Init(TYPE type)
 //==========================================================================
 // 頂点バッファ生成
 //==========================================================================
-HRESULT CObject3DMesh::CreateVertex(void)
+HRESULT CObject3DMesh::CreateVertex()
 {
 	HRESULT hr;
 
@@ -474,7 +474,7 @@ HRESULT CObject3DMesh::CreateVertex(void)
 //==========================================================================
 // インデックス生成
 //==========================================================================
-HRESULT CObject3DMesh::CreateIndex(void)
+HRESULT CObject3DMesh::CreateIndex()
 {
 	HRESULT hr;
 
@@ -533,7 +533,7 @@ HRESULT CObject3DMesh::CreateIndex(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObject3DMesh::Uninit(void)
+void CObject3DMesh::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -584,7 +584,7 @@ void CObject3DMesh::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject3DMesh::Update(void)
+void CObject3DMesh::Update()
 {
 	// 頂点情報設定
 	SetVtx();
@@ -665,7 +665,7 @@ void CObject3DMesh::UPVtxField(MyLib::Vector3 pos)
 //==========================================================================
 // ワールドマトリックスの計算処理
 //==========================================================================
-void CObject3DMesh::CalWorldMtx(void)
+void CObject3DMesh::CalWorldMtx()
 {
 	D3DXMATRIX m_mtxWorld = GetWorldMtx();			// マトリックス取得
 	MyLib::Vector3 m_rot = GetRotation();				// 向き取得
@@ -702,7 +702,7 @@ void CObject3DMesh::CalWorldMtx(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObject3DMesh::Draw(void)
+void CObject3DMesh::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -736,7 +736,7 @@ void CObject3DMesh::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject3DMesh::SetVtx(void)
+void CObject3DMesh::SetVtx()
 {
 	// 種類に頂点座標設定
 	switch (m_type)
@@ -770,7 +770,7 @@ void CObject3DMesh::SetVtx(void)
 //==========================================================================
 // フィールドの初期化時頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetInitVtxField(void)
+void CObject3DMesh::SetInitVtxField()
 {
 	VERTEX_3D *pVtx;	// 頂点情報へのポインタ
 
@@ -813,7 +813,7 @@ void CObject3DMesh::SetInitVtxField(void)
 //==========================================================================
 // フィールドの頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetVtxField(void)
+void CObject3DMesh::SetVtxField()
 {
 
 	VERTEX_3D *pVtx;	// 頂点情報へのポインタ
@@ -857,7 +857,7 @@ void CObject3DMesh::SetVtxField(void)
 //==========================================================================
 // ウォールの頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetVtxWall(void)
+void CObject3DMesh::SetVtxWall()
 {
 
 	VERTEX_3D *pVtx;	// 頂点情報へのポインタ
@@ -898,7 +898,7 @@ void CObject3DMesh::SetVtxWall(void)
 //==========================================================================
 // シリンダーの頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetVtxCylinder(void)
+void CObject3DMesh::SetVtxCylinder()
 {
 	D3DXCOLOR col = GetColor();			// 色
 	MyLib::Vector3 pos = GetPosition();	// 位置
@@ -973,7 +973,7 @@ void CObject3DMesh::SetVtxCylinder(void)
 //==========================================================================
 // ドームの頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetVtxDome(void)
+void CObject3DMesh::SetVtxDome()
 {
 	D3DXCOLOR col = GetColor();			// 色
 	MyLib::Vector3 pos = GetPosition();	// 位置
@@ -1049,7 +1049,7 @@ void CObject3DMesh::SetVtxDome(void)
 //==========================================================================
 // ドーナツの頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetVtxDonuts(void)
+void CObject3DMesh::SetVtxDonuts()
 {
 	D3DXCOLOR col = GetColor();			// 色
 	MyLib::Vector3 pos = GetPosition();	// 位置
@@ -1097,7 +1097,7 @@ void CObject3DMesh::SetVtxDonuts(void)
 //==========================================================================
 // 球の頂点座標設定
 //==========================================================================
-void CObject3DMesh::SetVtxSphere(void)
+void CObject3DMesh::SetVtxSphere()
 {
 	D3DXCOLOR col = GetColor();			// 色
 	MyLib::Vector3 pos = GetPosition();	// 位置
@@ -1167,7 +1167,7 @@ void CObject3DMesh::SetVtxSphere(void)
 //==========================================================================
 // インデックス数取得
 //==========================================================================
-int CObject3DMesh::GetNumIndex(void)
+int CObject3DMesh::GetNumIndex()
 {
 	return m_nNumIndex;
 }
@@ -1183,7 +1183,7 @@ void CObject3DMesh::SetNumIndex(int nWidth, int nHeight)
 //==========================================================================
 // 頂点数設定
 //==========================================================================
-int CObject3DMesh::GetNumVertex(void)
+int CObject3DMesh::GetNumVertex()
 {
 	return m_nNumVertex;
 }
@@ -1199,7 +1199,7 @@ void CObject3DMesh::SetNumVertex(int nWidth, int nHeight)
 //==========================================================================
 // 頂点座標取得
 //==========================================================================
-MyLib::Vector3 *CObject3DMesh::GetVtxPos(void)
+MyLib::Vector3 *CObject3DMesh::GetVtxPos()
 {
 	return m_pVtxPos;
 }
@@ -1215,7 +1215,7 @@ void CObject3DMesh::SetVtxPos(MyLib::Vector3 *pos)
 //==========================================================================
 // 頂点ベクトル取得
 //==========================================================================
-MyLib::Vector3 *CObject3DMesh::GetVtxNor(void)
+MyLib::Vector3 *CObject3DMesh::GetVtxNor()
 {
 	return m_pVtxNor;
 }
@@ -1231,7 +1231,7 @@ void CObject3DMesh::SetVtxNor(MyLib::Vector3 *nor)
 //==========================================================================
 // 頂点カラー取得
 //==========================================================================
-D3DXCOLOR *CObject3DMesh::GetVtxCol(void)
+D3DXCOLOR *CObject3DMesh::GetVtxCol()
 {
 	return m_pVtxCol;
 }
@@ -1247,7 +1247,7 @@ void CObject3DMesh::SetVtxCol(D3DXCOLOR *col)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CObject3DMesh::GetVtxTex(void)
+D3DXVECTOR2 *CObject3DMesh::GetVtxTex()
 {
 	return m_pVtxTex;
 }
@@ -1263,7 +1263,7 @@ void CObject3DMesh::SetVtxTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // 幅の分割数取得
 //==========================================================================
-int CObject3DMesh::GetWidthBlock(void)
+int CObject3DMesh::GetWidthBlock()
 {
 	return m_nWidth;
 }
@@ -1279,7 +1279,7 @@ void CObject3DMesh::SetWidthBlock(int nWidth)
 //==========================================================================
 // 高さの分割数取得
 //==========================================================================
-int CObject3DMesh::GetHeightBlock(void)
+int CObject3DMesh::GetHeightBlock()
 {
 	return m_nHeight;
 }
@@ -1295,7 +1295,7 @@ void CObject3DMesh::SetHeightBlock(int nHeight)
 //==========================================================================
 // 幅の長さ取得
 //==========================================================================
-float CObject3DMesh::GetWidthLen(void)
+float CObject3DMesh::GetWidthLen()
 {
 	return m_fWidthLen;
 }
@@ -1311,7 +1311,7 @@ void CObject3DMesh::SetWidthLen(float fLen)
 //==========================================================================
 // 高さの長さ取得
 //==========================================================================
-float CObject3DMesh::GetHeightLen(void)
+float CObject3DMesh::GetHeightLen()
 {
 	return m_fHeightLen;
 }
@@ -1327,7 +1327,7 @@ void CObject3DMesh::SetHeightLen(float fLen)
 //==========================================================================
 // テクスチャのインデックス番号取得
 //==========================================================================
-int CObject3DMesh::GetIdxTex(void)
+int CObject3DMesh::GetIdxTex()
 {
 	return m_nTexIdx;
 }
@@ -1335,12 +1335,12 @@ int CObject3DMesh::GetIdxTex(void)
 //==========================================================================
 // オブジェクト3Dオブジェクトの取得
 //==========================================================================
-CObject3DMesh *CObject3DMesh::GetObject3DMesh(void)
+CObject3DMesh *CObject3DMesh::GetObject3DMesh()
 {
 	return this;
 }
 
-LPDIRECT3DVERTEXBUFFER9 CObject3DMesh::GetVtxBuff(void)
+LPDIRECT3DVERTEXBUFFER9 CObject3DMesh::GetVtxBuff()
 {
 	return m_pVtxBuff;
 }

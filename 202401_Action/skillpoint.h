@@ -24,20 +24,20 @@ public:
 	CSkillPoint(int nPriority = 8);
 	~CSkillPoint();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	void Kill(void);
+	void Kill();
 
 	void SetPoint(int nValue);	// ポイント設定
-	int GetPoint(void) const { return m_nPoint; }		// ポイント取得
-	void AddPoint(void);		// ポイント追加
+	int GetPoint() const { return m_nPoint; }		// ポイント取得
+	void AddPoint();		// ポイント追加
 	void AddPoint(int nValue);	// ポイント追加
-	void SubPoint(void);		// ポイント削除
+	void SubPoint();		// ポイント削除
 	void SubPoint(int nValue);	// ポイント削除
-	static CSkillPoint* Create(void);
+	static CSkillPoint* Create();
 
 private:
 

@@ -76,32 +76,32 @@ public:
 	CMotion();
 	~CMotion();
 
-	HRESULT Init(void);
-	void Uninit(void);
+	HRESULT Init();
+	void Uninit();
 	void Update(float fBuff = 1.0f);
 	static CMotion *Create(const std::string pTextFile, CObjectChara* pObjChara);
 	void Set(int nType, bool bBlend = true);	// モーションの設定処理
-	int GetType(void);							// 現在のモーションタイプ取得
-	int GetOldType(void);						// 前回のモーションタイプ取得
-	bool IsFinish(void);						// 終了しているかの判定
+	int GetType();							// 現在のモーションタイプ取得
+	int GetOldType();						// 前回のモーションタイプ取得
+	bool IsFinish();						// 終了しているかの判定
 	void ToggleFinish(bool bFinish);			// 終了しているかの判定切り替え
-	bool IsGetCancelable(void) { return m_bCancelable; }	// キャンセルの判定取得
-	bool IsGetCombiable(void) { return m_bCombiable; }	// キャンセルの判定取得
+	bool IsGetCancelable() { return m_bCancelable; }	// キャンセルの判定取得
+	bool IsGetCombiable() { return m_bCombiable; }	// キャンセルの判定取得
 	bool IsBeforeInAttack() { return m_bBeforeInAction; }		// 攻撃前フラグ取得
 	void SetSlowFactor(float fFactor);			// 遅延係数の設定
 
 	bool IsImpactFrame(AttackInfo attackInfo);	// 衝撃のフレームかどうか取得
 	MyLib::Vector3 GetAttackPosition(CModel **ppModel, AttackInfo attackInfo);	// 攻撃の位置取得
 	MyLib::Vector3 GetAttackPosition(CModel *pModel, AttackInfo attackInfo);	// 攻撃の位置取得
-	float GetAllCount(void);	// 全てのカウント取得
-	float GetMaxAllCount(void) { return m_fMaxAllFrame; }
+	float GetAllCount();	// 全てのカウント取得
+	float GetMaxAllCount() { return m_fMaxAllFrame; }
 	int GetMaxAllCount(int nType);	// 全てのカウント取得
 	void SetFrameCount(float fCnt);					// フレームカウント設定
-	float GetFrameCount(void) { return m_fCntFrame; }	// フレームカウント取得
-	int GetNumAll(void) { return m_nNumModel; }		// パーツ数取得
-	int GetNumMotion(void) { return m_nNumMotion; }	// モーションの総数取得
+	float GetFrameCount() { return m_fCntFrame; }	// フレームカウント取得
+	int GetNumAll() { return m_nNumModel; }		// パーツ数取得
+	int GetNumMotion() { return m_nNumMotion; }	// モーションの総数取得
 	void SetNowPattern(int nPattern) { m_nPatternKey = nPattern; }		// 現在のパターン設定
-	int GetNowPattern(void) { return m_nPatternKey; }	// 現在のパターン取得
+	int GetNowPattern() { return m_nPatternKey; }	// 現在のパターン取得
 	void AddNumAttackInfo(int nType);	// 攻撃情報の総数加算
 	void SubNumAttackInfo(int nType);	// 攻撃情報の総数減算
 

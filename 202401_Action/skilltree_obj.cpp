@@ -10,6 +10,7 @@
 #include "renderer.h"
 #include "sound.h"
 #include "calculation.h"
+#include "camera.h"
 #include "game.h"
 #include "player.h"
 #include "input.h"
@@ -26,9 +27,9 @@ namespace
 	const char* BAGMODEL = "data\\MODEL\\enhance\\stoneplane.x";
 	const MyLib::Vector3 POSITION = MyLib::Vector3(0.0f, 0.0f, 1100.0f);	// 半径
 	const float RADIUS = 80.0f;	// 半径
-	const float TIME_DMG = static_cast<float>(30) / static_cast<float>(mylib_const::DEFAULT_FPS);		// ダメージ時間 
-	const float TIME_INVICIBLE = static_cast<float>(60) / static_cast<float>(mylib_const::DEFAULT_FPS);	// 無敵時間
+	const float TIME_STARTUP = 1.0f;		// 起動時間
 }
+CSkillTree_Obj* CSkillTree_Obj::m_pThisPtr = nullptr;		// 自身のポインタ
 
 //==========================================================================
 // 関数ポインタ
@@ -36,7 +37,7 @@ namespace
 CSkillTree_Obj::STATE_FUNC CSkillTree_Obj::m_StateFuncList[] =
 {
 	&CSkillTree_Obj::StateNone,		// なにもなし
-	&CSkillTree_Obj::StateTransfer,	// 転移
+	&CSkillTree_Obj::StateStartUp,	// 起動
 };
 
 //==========================================================================
@@ -59,30 +60,37 @@ CSkillTree_Obj::~CSkillTree_Obj()
 }
 
 //==========================================================================
+// インスタンス取得
+//==========================================================================
+CSkillTree_Obj* CSkillTree_Obj::GetInstance()
+{
+	if (m_pThisPtr == nullptr)
+	{
+		m_pThisPtr = Create();
+	}
+	return m_pThisPtr;
+}
+
+//==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Obj *CSkillTree_Obj::Create(void)
+CSkillTree_Obj *CSkillTree_Obj::Create()
 {
-	// 生成用のオブジェクト
-	CSkillTree_Obj *pBag = NULL;
+	if (m_pThisPtr == nullptr)
+	{// まだ生成していなかったら
 
-	// メモリの確保
-	pBag = DEBUG_NEW CSkillTree_Obj;
-
-	if (pBag != NULL)
-	{// メモリの確保が出来ていたら
-
-		// 初期化処理
-		pBag->Init();
+		// インスタンス生成
+		m_pThisPtr = DEBUG_NEW CSkillTree_Obj;
+		m_pThisPtr->Init();
 	}
 
-	return pBag;
+	return m_pThisPtr;
 }
 
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Obj::Init(void)
+HRESULT CSkillTree_Obj::Init()
 {
 
 	// 種類の設定
@@ -120,8 +128,9 @@ HRESULT CSkillTree_Obj::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Obj::Uninit(void)
+void CSkillTree_Obj::Uninit()
 {
+	m_pThisPtr = nullptr;
 
 	// 終了処理
 	CObjectX::Uninit();
@@ -130,7 +139,7 @@ void CSkillTree_Obj::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Obj::Update(void)
+void CSkillTree_Obj::Update()
 {
 	float distance = static_cast<float>(UtilFunc::Transformation::Random(5, 180)) * 10.0f;
 	float diffRadius = static_cast<float>(UtilFunc::Transformation::Random(-10, 10));
@@ -142,9 +151,6 @@ void CSkillTree_Obj::Update(void)
 			D3DXCOLOR(0.2f, 1.0f, 0.4f, 1.0f),
 			30.0f + diffRadius, UtilFunc::Transformation::Random(160, 200), CEffect3D::MOVEEFFECT_SUB, CEffect3D::TYPE_POINT);
 	}
-
-	// 状態カウンター減算
-	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
 	// プレイヤーとの当たり判定
 	CollisionPlayer();
@@ -162,7 +168,7 @@ void CSkillTree_Obj::Update(void)
 //==========================================================================
 // プレイヤーとの当たり判定処理
 //==========================================================================
-void CSkillTree_Obj::CollisionPlayer(void)
+void CSkillTree_Obj::CollisionPlayer()
 {
 	if (!CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できないとき
@@ -194,66 +200,82 @@ void CSkillTree_Obj::CollisionPlayer(void)
 		// ゲームパッド情報取得
 		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 		CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) ||
+		if (pInputGamepad->GetTriggerRT(0) ||
 			pInputKeyboard->GetTrigger(DIK_RETURN))
 		{
-			// スキルツリーに変更
-			CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_SKILLTREE);
-
-			// スキルツリー生成
-			CSkillTree::GetInstance()->SetScreen();
-
-
-			// ループエフェクト停止
-			if (m_pWeaponHandle != nullptr)
-			{
-				CMyEffekseer::GetInstance()->Stop(*m_pWeaponHandle);
-				m_pWeaponHandle = nullptr;
-			}
-
-			// 生成位置
-			MyLib::Vector3 pos = POSITION;
-			pos.y += 250.0f;
-			pos.z -= 20.0f;
-
-			// 起動エフェクト
-			CMyEffekseer::GetInstance()->SetEffect(
-				CMyEffekseer::EFKLABEL_STONEBASE_BEGIN,
-				pos,
-				0.0f, 0.0f, 100.0f, true);
+			// 祈りモーション設定
+			pPlayer->SetMotion(CPlayer::MOTION_PRAYER);
 		}
 	}
 }
 
 //==========================================================================
+// 起動処理
+//==========================================================================
+void CSkillTree_Obj::StartUp()
+{
+	
+	// 起動
+	m_state = STATE_STARTUP;
+
+	// スキルツリーに変更
+	CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_SKILLTREE);
+
+	// 目標の長さ設定
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	pCamera->SetLenDest(pCamera->GetOriginDistance() + 900.0f, 120, 1000.0f, 0.05f);
+
+	// ループエフェクト停止
+	if (m_pWeaponHandle != nullptr)
+	{
+		CMyEffekseer::GetInstance()->Stop(*m_pWeaponHandle);
+		m_pWeaponHandle = nullptr;
+	}
+
+	// 生成位置
+	MyLib::Vector3 pos = POSITION;
+	pos.y += 250.0f;
+	pos.z -= 20.0f;
+
+	// 起動エフェクト
+	CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL_STONEBASE_BEGIN,
+		pos,
+		0.0f, 0.0f, 100.0f, true);
+}
+
+//==========================================================================
 // なにもない状態
 //==========================================================================
-void CSkillTree_Obj::StateNone(void)
+void CSkillTree_Obj::StateNone()
 {
 	m_fStateTime = 0.0f;
 }
 
 //==========================================================================
-// 転移状態
+// 起動状態
 //==========================================================================
-void CSkillTree_Obj::StateTransfer(void)
+void CSkillTree_Obj::StateStartUp()
 {
-	m_fStateTime = 0.0f;
+	// 状態カウンター加算
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
 
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-	rot.y += D3DX_PI * 0.05f;
-	UtilFunc::Transformation::RotNormalize(rot.y);
+	if (TIME_STARTUP <= m_fStateTime)
+	{
+		m_state = STATE_NONE;
 
-	// 向き設定
-	SetRotation(rot);
+		// スキルツリー生成
+		CSkillTree::GetInstance()->SetScreen();
+
+		// 祈り状態に設定
+		CManager::GetInstance()->GetCamera()->SetStateCamraR(DEBUG_NEW CStateCameraR_Prayer());
+	}
 }
-
 
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Obj::Draw(void)
+void CSkillTree_Obj::Draw()
 {
 	// 描画
 	CObjectX::Draw();

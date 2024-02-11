@@ -49,34 +49,34 @@ public:
 	~CImpactWave();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
 	// 設定・取得
 	void SetLife(const int nLife);				// 寿命設定
-	int GetLife(void) const;					// 寿命取得
+	int GetLife() const;					// 寿命取得
 	void SetMaxLife(const int nLife);			// 最大寿命設定
-	int GetMaxLife(void) const;					// 最大寿命取得
+	int GetMaxLife() const;					// 最大寿命取得
 	void SetColOrigin(const D3DXCOLOR col);		// 元の色設定
-	D3DXCOLOR GetColOrigin(void) const;			// 元の色取得
+	D3DXCOLOR GetColOrigin() const;			// 元の色取得
 	void SetOutWidth(const float fOutWidth);	// 外周設定
-	float GetOutWidth(void) const;				// 外周取得
+	float GetOutWidth() const;				// 外周取得
 	void SetInWidth(const float fInWidth);		// 内周設定
-	float GetInWidth(void) const;				// 内周取得
+	float GetInWidth() const;				// 内周取得
 	void SetRotWidth(const float fRot);			// 一分割あたりの角度設定
-	float GetRotWidth(void) const;				// 一分割あたりの角度取得
+	float GetRotWidth() const;				// 一分割あたりの角度取得
 	void SetMoveSize(const float fMoveSize);	// サイズの移動量設定
-	float GetMoveSize(void) const;				// サイズの移動量取得
+	float GetMoveSize() const;				// サイズの移動量取得
 	void SetTexDivision(const int nDivision);	// テクスチャ分割数設定
-	int GetTexDivision(void) const;				// テクスチャ分割数取得
+	int GetTexDivision() const;				// テクスチャ分割数取得
 	void SetIsAddBlend(bool bAddBlend);			// 加算合成の設定
 
 	static const char *GetFileName(int nTexType);	// ファイル名取得
 	static CImpactWave *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, D3DXCOLOR col, float fWidth, float fHeight, float fCenterDistance, int nLife, float fMove, int nTexType, bool bAddBlend);
-	CImpactWave *GetMyObject(void);
+	CImpactWave *GetMyObject();
 
 private:
 	int m_nTexIdx;	// テクスチャのインデックス番号

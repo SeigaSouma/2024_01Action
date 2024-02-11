@@ -69,7 +69,7 @@ CObject3DAnim *CObject3DAnim::Create(MyLib::Vector3 pos, const int nDivisionU, c
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject3DAnim::Init(void)
+HRESULT CObject3DAnim::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject3D::Init();
@@ -118,7 +118,7 @@ HRESULT CObject3DAnim::Init(const int nDivisionU, const int nDivisionV, const in
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject3DAnim::Update(void)
+void CObject3DAnim::Update()
 {
 
 	// カウントを更新
@@ -152,7 +152,7 @@ void CObject3DAnim::Update(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject3DAnim::SetVtx(void)
+void CObject3DAnim::SetVtx()
 {
 	// 頂点情報へのポインタ
 	VERTEX_3D *pVtx;

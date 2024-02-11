@@ -113,37 +113,37 @@ public:
 	~CSkillTree_Icon();
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-	void SetVtx(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+	void SetVtx() override;
 
-	void Kill(void);
+	void Kill();
 
 	void SetIconInfo(sSkillIcon iconinfo);	// アイコン情報設定
-	sSkillIcon GetIconInfo(void);			// アイコン情報取得
+	sSkillIcon GetIconInfo();			// アイコン情報取得
 	void SetMastering(eMastering mastering) { m_Mastering = mastering; }	// 習得状況設定
-	CSkillTree_Icon::eMastering GetMastering(void) { return m_Mastering; }	// 習得状態取得
+	CSkillTree_Icon::eMastering GetMastering() { return m_Mastering; }	// 習得状態取得
 
-	void BindStartAvillity(void);			// 初期能力割り当て
-	bool BindAvillity(void);				// 能力割り当て
+	void BindStartAvillity();			// 初期能力割り当て
+	bool BindAvillity();				// 能力割り当て
 	static CSkillTree_Icon* Create(sSkillIcon iconinfo);
-	static CListManager<CSkillTree_Icon> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CSkillTree_Icon> GetListObj() { return m_List; }	// リスト取得
 
 private:
 
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CSkillTree_Icon::*STATE_FUNC)(void);	// 状態処理のリスト
+	typedef void(CSkillTree_Icon::*STATE_FUNC)();	// 状態処理のリスト
 	static STATE_FUNC m_StateFuncList[];
 
 	//=============================
 	// メンバ関数
 	//=============================
-	void StateNone(void);	// 何もない状態
-	HRESULT ReadTexture(void);
+	void StateNone();	// 何もない状態
+	HRESULT ReadTexture();
 
 	//=============================
 	// メンバ変数

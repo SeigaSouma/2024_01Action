@@ -88,7 +88,7 @@ HRESULT CDebugProc::Init(HINSTANCE hInstance, HWND hWnd)
 //==========================================================================
 // デバッグ表示の終了処理
 //==========================================================================
-void CDebugProc::Uninit(void)
+void CDebugProc::Uninit()
 {
 	// フォントの破棄
 	if (m_pFont != NULL)
@@ -101,7 +101,7 @@ void CDebugProc::Uninit(void)
 //==========================================================================
 // デバッグ表示の更新処理
 //==========================================================================
-void CDebugProc::Update(void)
+void CDebugProc::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -119,7 +119,7 @@ void CDebugProc::Update(void)
 //==========================================================================
 // デバッグ表示の描画処理
 //==========================================================================
-void CDebugProc::Draw(void)
+void CDebugProc::Draw()
 {
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
@@ -232,7 +232,7 @@ void CDebugProc::Print(const char *fmt, ...)
 //==========================================================================
 // 文字設定処理
 //==========================================================================
-void CDebugProc::SetText(void)
+void CDebugProc::SetText()
 {
 	// デバッグの情報取得
 	CDebugProc *pDebug = CManager::GetInstance()->GetDebugProc();

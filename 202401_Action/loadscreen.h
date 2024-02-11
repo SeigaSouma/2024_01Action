@@ -28,14 +28,14 @@ public:
 	~CLoadScreen();
 
 	// ÉÅÉìÉoä÷êî
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void Kill(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void Kill();
 
-	CObject2D_Anim*GetMyObject(void);
-	static CLoadScreen *Create(void);
+	CObject2D_Anim*GetMyObject();
+	static CLoadScreen *Create();
 
 private:
 

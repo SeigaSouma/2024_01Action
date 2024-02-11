@@ -22,12 +22,12 @@ public:
 	~CRevivalTimeGauge();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void Kill(void);	// 削除
+	void Kill();	// 削除
 
 
 	static CRevivalTimeGauge* Create(const float fadetime, MyLib::Vector3 pos);
@@ -58,16 +58,16 @@ private:
 	//=============================
 	// 関数ポインタ
 	//=============================
-	typedef void(CRevivalTimeGauge::* STATE_FUNC)(void);
+	typedef void(CRevivalTimeGauge::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
-	void StateNone(void);		// なにもなし
-	void StateFadeIn(void);		// フェードイン
-	void StateFadeOut(void);	// フェードアウト
-	void StateTimeComplete(void);	// 時間がなくなった瞬間
+	void StateNone();		// なにもなし
+	void StateFadeIn();		// フェードイン
+	void StateFadeOut();	// フェードアウト
+	void StateTimeComplete();	// 時間がなくなった瞬間
 
 	//=============================
 	// メンバ変数

@@ -119,7 +119,7 @@ namespace MyLib
 		@brief	ベクトルの長さ
 		@return	求められた長さ
 		*/
-		inline float Length(void)
+		inline float Length()
 		{
 			return sqrtf(x * x + y * y + z * z);
 		}
@@ -128,7 +128,7 @@ namespace MyLib
 		@brief	XZベクトルの長さ
 		@return	求められた長さ
 		*/
-		inline float LengthXZ(void)
+		inline float LengthXZ()
 		{
 			return sqrtf(x * x + z * z);
 		}
@@ -137,7 +137,7 @@ namespace MyLib
 		@brief	XYベクトルの長さ
 		@return	求められた長さ
 		*/
-		inline float LengthXY(void)
+		inline float LengthXY()
 		{
 			return sqrtf(x * x + y * y);
 		}
@@ -146,9 +146,18 @@ namespace MyLib
 		@brief	ベクトルの長さの2乗
 		@return	求められた長さ
 		*/
-		inline float LengthSquared(void) const
+		inline float LengthSquared() const
 		{
 			return x * x + y * y + z * z;
+		}
+
+		/**
+		@brief	XZの向き
+		@return	向き
+		*/
+		inline float AngleXZ(const Vector3& v)
+		{
+			return atan2f(x - v.x, z - v.z);
 		}
 
 		/**
@@ -173,7 +182,7 @@ namespace MyLib
 		@brief	単位ベクトル
 		@return	正規化されたベクトル
 		*/
-		inline Vector3 Normal(void)
+		inline Vector3 Normal()
 		{
 			Vector3 result;
 			D3DXVec3Normalize(&result, this);
@@ -214,7 +223,7 @@ namespace MyLib
 		@brief	ベクトルを反転
 		@return	反転されたベクトル
 		*/
-		inline Vector3 Invert(void)
+		inline Vector3 Invert()
 		{
 			return Vector3(-x, -y, -z);
 		}
@@ -239,7 +248,7 @@ namespace MyLib
 		@brief	要素がゼロか
 		@return	判定結果
 		*/
-		inline bool IsZero(void) const
+		inline bool IsZero() const
 		{
 			if (x == 0.0f &&
 				y == 0.0f &&
@@ -254,7 +263,7 @@ namespace MyLib
 		@brief	文字列変換
 		@return	(x, y, z)の形式で変換された文字列
 		*/
-		inline std::string ToString(void) const
+		inline std::string ToString() const
 		{
 			std::stringstream text;
 			text << "(" << x << ", " << y << ", " << z << ")";

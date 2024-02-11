@@ -28,13 +28,13 @@ public:
 	~CRanking();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	static void SetEnableArrival(void);
-	static int GetRandStage(void) { return m_nRandStage; }
+	static void SetEnableArrival();
+	static int GetRandStage() { return m_nRandStage; }
 private:
 	int m_nCntSwitch;		// 切り替えのカウンター
 	static bool m_bAllArrival;		// 全て到着した判定

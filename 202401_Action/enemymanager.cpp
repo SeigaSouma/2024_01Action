@@ -95,7 +95,7 @@ CEnemyManager *CEnemyManager::Create(const std::string pTextFile)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEnemyManager::Init(void)
+HRESULT CEnemyManager::Init()
 {
 
 	// ステージ変更中にする
@@ -134,7 +134,7 @@ HRESULT CEnemyManager::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEnemyManager::Uninit(void)
+void CEnemyManager::Uninit()
 {
 	
 }
@@ -142,7 +142,7 @@ void CEnemyManager::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEnemyManager::Update(void)
+void CEnemyManager::Update()
 {
 	int nNumAll = CEnemy::GetListObj().GetNumAll();
 	if (nNumAll <= 0 && !m_bChangeStage)
@@ -165,7 +165,7 @@ void CEnemyManager::Update(void)
 //==========================================================================
 // ステージ毎の敵配置
 //==========================================================================
-void CEnemyManager::SetStageEnemy(void)
+void CEnemyManager::SetStageEnemy()
 {
 	// ゲームマネージャ取得
 	CGameManager* pGameManager = CGame::GetInstance()->GetGameManager();
@@ -215,7 +215,7 @@ void CEnemyManager::SetStageEnemy(void)
 //==========================================================================
 // ボスステージの敵配置
 //==========================================================================
-void CEnemyManager::SetStageBoss(void)
+void CEnemyManager::SetStageBoss()
 {
 	// 敵拠点データ取得
 	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
@@ -303,7 +303,7 @@ CEnemy **CEnemyManager::SetEnemy(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPa
 //==========================================================================
 // パターン数
 //==========================================================================
-int CEnemyManager::GetPatternNum(void)
+int CEnemyManager::GetPatternNum()
 {
 	return m_nPatternNum;
 }
@@ -450,7 +450,7 @@ HRESULT CEnemyManager::ReadText(const std::string pTextFile)
 //==========================================================================
 // ボス取得
 //==========================================================================
-CEnemyBoss *CEnemyManager::GetBoss(void)
+CEnemyBoss *CEnemyManager::GetBoss()
 {
 	return m_pBoss;
 }

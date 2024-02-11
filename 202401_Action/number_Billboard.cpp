@@ -50,7 +50,7 @@ HRESULT CNumberBillboard::Init(int nPriority)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CNumberBillboard::Uninit(void)
+void CNumberBillboard::Uninit()
 {
 	// 終了処理
 	if (m_pObjBillboard != NULL)
@@ -62,7 +62,7 @@ void CNumberBillboard::Uninit(void)
 //==========================================================================
 // 解放処理
 //==========================================================================
-void CNumberBillboard::Release(void)
+void CNumberBillboard::Release()
 {
 	if (m_pObjBillboard != NULL)
 	{// NULLじゃなかったら
@@ -74,7 +74,7 @@ void CNumberBillboard::Release(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CNumberBillboard::Update(void)
+void CNumberBillboard::Update()
 {
 	// 更新処理
 	if (m_pObjBillboard != NULL)
@@ -86,7 +86,7 @@ void CNumberBillboard::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CNumberBillboard::Draw(void)
+void CNumberBillboard::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -117,7 +117,7 @@ void CNumberBillboard::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CNumberBillboard::SetVtx(void)
+void CNumberBillboard::SetVtx()
 {
 	m_pObjBillboard->SetVtx();
 }
@@ -151,7 +151,7 @@ void CNumberBillboard::SetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CNumberBillboard::GetPosition(void) const
+MyLib::Vector3 CNumberBillboard::GetPosition() const
 {
 	return m_pObjBillboard->GetPosition();
 }
@@ -167,7 +167,7 @@ void CNumberBillboard::SetMove(const MyLib::Vector3 move)
 //==========================================================================
 // 移動量取得
 //==========================================================================
-MyLib::Vector3 CNumberBillboard::GetMove(void) const
+MyLib::Vector3 CNumberBillboard::GetMove() const
 {
 	return m_pObjBillboard->GetMove();
 }
@@ -183,7 +183,7 @@ void CNumberBillboard::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CNumberBillboard::GetColor(void) const
+D3DXCOLOR CNumberBillboard::GetColor() const
 {
 	return m_pObjBillboard->GetColor();
 }
@@ -199,7 +199,7 @@ void CNumberBillboard::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CNumberBillboard::GetSize(void) const
+D3DXVECTOR2 CNumberBillboard::GetSize() const
 {
 	return m_pObjBillboard->GetSize();
 }
@@ -215,7 +215,7 @@ void CNumberBillboard::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // 元のサイズの取得
 //==========================================================================
-D3DXVECTOR2 CNumberBillboard::GetSizeOrigin(void) const
+D3DXVECTOR2 CNumberBillboard::GetSizeOrigin() const
 {
 	return m_pObjBillboard->GetSizeOrigin();
 }
@@ -231,7 +231,7 @@ void CNumberBillboard::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CNumberBillboard::GetTex(void)
+D3DXVECTOR2 *CNumberBillboard::GetTex()
 {
 	return m_pObjBillboard->GetTex();
 }
@@ -239,7 +239,7 @@ D3DXVECTOR2 *CNumberBillboard::GetTex(void)
 //==========================================================================
 // オブジェクトビルボードオブジェクトの取得
 //==========================================================================
-CObjectBillboard *CNumberBillboard::GetObjectBillboard(void)
+CObjectBillboard *CNumberBillboard::GetObjectBillboard()
 {
 	return m_pObjBillboard;
 }

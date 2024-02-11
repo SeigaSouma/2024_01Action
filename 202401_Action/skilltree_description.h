@@ -23,18 +23,18 @@ public:
 
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Update(void) override;
+	HRESULT Init() override;
+	void Update() override;
 
 	void SetIdxTex(int nIdx);	// テクスチャのインデックス番号
-	static CSkillTree_Description* Create(void);
+	static CSkillTree_Description* Create();
 
 private:
 
 	//=============================
 	// メンバ関数
 	//=============================
-	HRESULT ReadTexture(void);
+	HRESULT ReadTexture();
 
 	//=============================
 	// メンバ変数

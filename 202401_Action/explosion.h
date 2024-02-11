@@ -39,29 +39,29 @@ public:
 
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	void SetVtx(void);
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
+	void SetVtx();
 
-	TYPE GetType(void);			// 種類取得
+	TYPE GetType();			// 種類取得
 	void SetState(STATE state, int nCntState);	// 状態設定
-	STATE GetState(void);	// 状態取得
+	STATE GetState();	// 状態取得
 
 	static CExplosion *Create(TYPE type, const MyLib::Vector3 pos, const float fSize);
 
 private:
 
 	// メンバ関数
-	void UpdatePos(void);		// 移動
-	void CollisionPlayer(void);		// プレイヤーとの判定
-	void CollisionEnemy(void);		// 敵との判定
+	void UpdatePos();		// 移動
+	void CollisionPlayer();		// プレイヤーとの判定
+	void CollisionEnemy();		// 敵との判定
 	
 	// 状態更新
-	void StateNone(void);		// 何もない状態
-	void StateDamage(void);		// ダメージ状態処理
-	void StateFadeout(void);	// フェードアウト状態処理
+	void StateNone();		// 何もない状態
+	void StateDamage();		// ダメージ状態処理
+	void StateFadeout();	// フェードアウト状態処理
 
 	// メンバ変数
 	TYPE m_type;		// 爆発の種類
@@ -73,8 +73,8 @@ private:
 	int m_nCntEmission;	// 発生物のカウンター
 	float m_fDestSize;	// 目標のサイズ
 
-	typedef void(CExplosion::*STATE_FUNC)(void);
-	typedef void(CExplosion::*COLLISION_FUNC)(void);
+	typedef void(CExplosion::*STATE_FUNC)();
+	typedef void(CExplosion::*COLLISION_FUNC)();
 	static STATE_FUNC m_FuncList[];
 	static COLLISION_FUNC m_CollisionFuncList[];	// 当たり判定のリスト
 };

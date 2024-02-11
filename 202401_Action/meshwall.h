@@ -22,14 +22,14 @@ public:
 	~CMeshWall();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	virtual void SetVtx(void);
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
+	virtual void SetVtx();
 
 	static CMeshWall *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth = 1, int nHeight = 1, int nPriority = 1, const char *aFileName = NULL);
-	virtual CMeshWall *GetMyObject(void);
+	virtual CMeshWall *GetMyObject();
 protected:
 
 private:

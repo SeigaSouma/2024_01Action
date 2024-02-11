@@ -111,7 +111,7 @@ void CObjectChara::BindObjectData(int nCntData)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObjectChara::Init(void)
+HRESULT CObjectChara::Init()
 {
 	// 初期化処理
 	CObjectHierarchy::Init();
@@ -122,7 +122,7 @@ HRESULT CObjectChara::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObjectChara::Uninit(void)
+void CObjectChara::Uninit()
 {
 	if (m_pMotion != NULL)
 	{
@@ -138,7 +138,7 @@ void CObjectChara::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObjectChara::Update(void)
+void CObjectChara::Update()
 {
 	// モーション更新
 	if (m_pMotion != nullptr)
@@ -169,7 +169,7 @@ void CObjectChara::Update(void)
 //==========================================================================
 // モーション中の行動処理
 //==========================================================================
-void CObjectChara::MotionInProgressAction(void)
+void CObjectChara::MotionInProgressAction()
 {
 	// 攻撃判定フラグリセット
 	m_bInDicision = false;
@@ -262,7 +262,7 @@ void CObjectChara::ChangeMotion(const char* pMotionFile)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObjectChara::Draw(void)
+void CObjectChara::Draw()
 {
 	// 描画処理
 	CObjectHierarchy::Draw();
@@ -409,7 +409,7 @@ void CObjectChara::LoadSphereColliders(const std::string textfile)
 //==========================================================================
 // スフィアコライダー書き込み
 //==========================================================================
-void CObjectChara::SaveSphereColliders(void)
+void CObjectChara::SaveSphereColliders()
 {
 	// ファイルにキャラクターのデータを書き込む
 	std::ofstream outFile("character_data.json");
@@ -474,7 +474,7 @@ void CObjectChara::SetHeight(const float fHeight)
 //==========================================================================
 // 身長取得
 //==========================================================================
-float CObjectChara::GetHeight(void)
+float CObjectChara::GetHeight()
 {
 	return m_fHeight;
 }
@@ -490,7 +490,7 @@ void CObjectChara::SetVelocity(const float fVelocity)
 //==========================================================================
 // 移動速度設定
 //==========================================================================
-float CObjectChara::GetVelocity(void) const
+float CObjectChara::GetVelocity() const
 {
 	return m_fVelocity;
 }
@@ -506,7 +506,7 @@ void CObjectChara::SetRotDest(const float fRotDest)
 //==========================================================================
 // 目標の向き設定
 //==========================================================================
-float CObjectChara::GetRotDest(void) const
+float CObjectChara::GetRotDest() const
 {
 	return m_fRotDest;
 }
@@ -522,7 +522,7 @@ void CObjectChara::SetLife(const int nLife)
 //==========================================================================
 // 体力取得
 //==========================================================================
-int CObjectChara::GetLife(void) const
+int CObjectChara::GetLife() const
 {
 	return m_nLife;
 }
@@ -538,7 +538,7 @@ void CObjectChara::SetLifeOrigin(const int nLife)
 //==========================================================================
 // 元の体力取得
 //==========================================================================
-int CObjectChara::GetLifeOrigin(void) const
+int CObjectChara::GetLifeOrigin() const
 {
 	return m_nLifeOrigin;
 }
@@ -546,7 +546,7 @@ int CObjectChara::GetLifeOrigin(void) const
 //==========================================================================
 // モーション開始のインデックス番号取得
 //==========================================================================
-int CObjectChara::GetMotionStartIdx(void) const
+int CObjectChara::GetMotionStartIdx() const
 {
 	return m_nMotionStartIdx;
 }
@@ -554,7 +554,7 @@ int CObjectChara::GetMotionStartIdx(void) const
 //==========================================================================
 // スコア加算量取得
 //==========================================================================
-int CObjectChara::GetAddScoreValue(void) const
+int CObjectChara::GetAddScoreValue() const
 {
 	return m_nAddScore;
 }
@@ -562,7 +562,7 @@ int CObjectChara::GetAddScoreValue(void) const
 //==========================================================================
 // モーションオブジェクト取得
 //==========================================================================
-CMotion* CObjectChara::GetMotion(void)
+CMotion* CObjectChara::GetMotion()
 {
 	return m_pMotion;
 }
@@ -570,7 +570,7 @@ CMotion* CObjectChara::GetMotion(void)
 //==========================================================================
 // オブジェクトキャラクターオブジェクトの取得
 //==========================================================================
-CObjectChara* CObjectChara::GetObjectChara(void)
+CObjectChara* CObjectChara::GetObjectChara()
 {
 	return this;
 }

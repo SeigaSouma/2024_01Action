@@ -161,7 +161,7 @@ void CObjectHierarchy::BindObjectData(int nCntData)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObjectHierarchy::Init(void)
+HRESULT CObjectHierarchy::Init()
 {
 	
 	return S_OK;
@@ -170,7 +170,7 @@ HRESULT CObjectHierarchy::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObjectHierarchy::Uninit(void)
+void CObjectHierarchy::Uninit()
 {
 	for (int nCntModel = 0; nCntModel < mylib_const::MAX_MODEL; nCntModel++)
 	{
@@ -191,7 +191,7 @@ void CObjectHierarchy::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObjectHierarchy::Update(void)
+void CObjectHierarchy::Update()
 {
 
 }
@@ -447,7 +447,7 @@ void CObjectHierarchy::DeleteObject(int nSwitchType)
 //==========================================================================
 // ワールドマトリックスの計算処理
 //==========================================================================
-void CObjectHierarchy::CalWorldMtx(void)
+void CObjectHierarchy::CalWorldMtx()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -476,7 +476,7 @@ void CObjectHierarchy::CalWorldMtx(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObjectHierarchy::Draw(void)
+void CObjectHierarchy::Draw()
 {
 	// ワールドマトリックスの計算処理
 	CalWorldMtx();
@@ -768,7 +768,7 @@ void CObjectHierarchy::SetmtxWorld(const D3DXMATRIX mtx)
 //==========================================================================
 // マトリックス取得
 //==========================================================================
-D3DXMATRIX CObjectHierarchy::GetmtxWorld(void) const
+D3DXMATRIX CObjectHierarchy::GetmtxWorld() const
 {
 	return m_mtxWorld;
 }
@@ -776,7 +776,7 @@ D3DXMATRIX CObjectHierarchy::GetmtxWorld(void) const
 //==========================================================================
 // 中心の位置取得
 //==========================================================================
-MyLib::Vector3 CObjectHierarchy::GetCenterPosition(void) const
+MyLib::Vector3 CObjectHierarchy::GetCenterPosition() const
 {
 	if (m_apModel[0] == NULL)
 	{
@@ -796,7 +796,7 @@ void CObjectHierarchy::SetOriginPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CObjectHierarchy::GetOriginPosition(void) const
+MyLib::Vector3 CObjectHierarchy::GetOriginPosition() const
 {
 	return m_posOrigin;
 }
@@ -812,7 +812,7 @@ void CObjectHierarchy::SetRadius(const float fRadius)
 //==========================================================================
 // 半径取得
 //==========================================================================
-float CObjectHierarchy::GetRadius(void) const
+float CObjectHierarchy::GetRadius() const
 {
 	return m_fRadius;
 }
@@ -820,7 +820,7 @@ float CObjectHierarchy::GetRadius(void) const
 //==========================================================================
 // オブジェクトキャラクターオブジェクトの取得
 //==========================================================================
-CObjectHierarchy *CObjectHierarchy::GetObjectHierarchy(void)
+CObjectHierarchy *CObjectHierarchy::GetObjectHierarchy()
 {
 	return this;
 }
@@ -828,7 +828,7 @@ CObjectHierarchy *CObjectHierarchy::GetObjectHierarchy(void)
 //==========================================================================
 // モデル数取得
 //==========================================================================
-int CObjectHierarchy::GetNumModel(void) 
+int CObjectHierarchy::GetNumModel() 
 {
 	return m_nNumModel;
 }
@@ -844,7 +844,7 @@ void CObjectHierarchy::SetNumModel(int nNumModel)
 //==========================================================================
 // モデル情報の取得
 //==========================================================================
-CModel **CObjectHierarchy::GetModel(void)
+CModel **CObjectHierarchy::GetModel()
 {
 	return &m_apModel[0];
 }
@@ -860,7 +860,7 @@ CObjectHierarchy::Load CObjectHierarchy::GetLoadData(int nIdx)
 //==========================================================================
 // ファイルのインデックス番号取得
 //==========================================================================
-int CObjectHierarchy::GetIdxFile(void)
+int CObjectHierarchy::GetIdxFile()
 {
 	return m_nIdxFile;
 }

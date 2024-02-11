@@ -42,17 +42,17 @@ public:
 	CBlackFrame(int nPriority = 8);
 	~CBlackFrame();
 
-	static CBlackFrame *Create(void);
+	static CBlackFrame *Create();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 	void SetState(STATE state);	// 状態設定
-	STATE GetState(void) { return m_state; }	// 状態設定
-	void Reset(void);			// リセット
+	STATE GetState() { return m_state; }	// 状態設定
+	void Reset();			// リセット
 private:
 	// 列挙型定義
 	enum VTX

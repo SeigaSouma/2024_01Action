@@ -68,7 +68,7 @@ CSkillTree_Line* CSkillTree_Line::Create(const MyLib::Vector3& myposition, const
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Line::Init(void)
+HRESULT CSkillTree_Line::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -118,7 +118,7 @@ HRESULT CSkillTree_Line::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Line::Uninit(void)
+void CSkillTree_Line::Uninit()
 {
 	// 削除
 	m_List.Delete(this);
@@ -130,7 +130,7 @@ void CSkillTree_Line::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Line::Update(void)
+void CSkillTree_Line::Update()
 {
 	MyLib::Vector3 distance = m_SkillLine.parentpos - m_SkillLine.mypos;
 	distance *= 0.5f;
@@ -145,7 +145,7 @@ void CSkillTree_Line::Update(void)
 //==========================================================================
 // 頂点更新
 //==========================================================================
-void CSkillTree_Line::SetVtx(void)
+void CSkillTree_Line::SetVtx()
 {
 	MyLib::Vector3 distance = m_SkillLine.parentpos - m_SkillLine.mypos;
 	distance *= 0.5f;
@@ -166,7 +166,7 @@ void CSkillTree_Line::SetSkillLineInfo(const MyLib::Vector3& myposition, const M
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Line::Draw(void)
+void CSkillTree_Line::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

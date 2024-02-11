@@ -34,55 +34,55 @@ public:
 	~CObject3DMesh();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(TYPE type);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 	void BindTexture(int nIdx);
 
-	int GetNumIndex(void);		// インデックス数
+	int GetNumIndex();		// インデックス数
 	void SetNumIndex(int nWidth, int nHeight);
-	int GetNumVertex(void);		// 頂点数
+	int GetNumVertex();		// 頂点数
 	void SetNumVertex(int nWidth, int nHeight);
-	MyLib::Vector3 *GetVtxPos(void);		// 頂点座標取得
+	MyLib::Vector3 *GetVtxPos();		// 頂点座標取得
 	void SetVtxPos(MyLib::Vector3 *pos);	// 頂点座標取得
-	MyLib::Vector3 *GetVtxNor(void);		// 頂点ベクトル取得
+	MyLib::Vector3 *GetVtxNor();		// 頂点ベクトル取得
 	void SetVtxNor(MyLib::Vector3 *nor);	// 頂点ベクトル
-	D3DXCOLOR *GetVtxCol(void);			// 頂点カラー取得
+	D3DXCOLOR *GetVtxCol();			// 頂点カラー取得
 	void SetVtxCol(D3DXCOLOR *col);		// 頂点カラー設定
-	D3DXVECTOR2 *GetVtxTex(void);		// 頂点テクスチャ取得
+	D3DXVECTOR2 *GetVtxTex();		// 頂点テクスチャ取得
 	void SetVtxTex(D3DXVECTOR2 *tex);	// 頂点テクスチャ設定
-	int GetWidthBlock(void);			// 横分割数
+	int GetWidthBlock();			// 横分割数
 	void SetWidthBlock(int nWidth);		// 横分割数
-	int GetHeightBlock(void);			// 縦分割数
+	int GetHeightBlock();			// 縦分割数
 	void SetHeightBlock(int nHeight);	// 縦分割数
-	float GetWidthLen(void);			// 横の長さ
+	float GetWidthLen();			// 横の長さ
 	void SetWidthLen(float fLen);		// 横の長さ
-	float GetHeightLen(void);			// 縦の長さ
+	float GetHeightLen();			// 縦の長さ
 	void SetHeightLen(float fLen);		// 縦の長さ
-	int GetIdxTex(void);				// テクスチャのインデックス番号取得
+	int GetIdxTex();				// テクスチャのインデックス番号取得
 
 	static CObject3DMesh *Create();
 	static CObject3DMesh *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPriority = mylib_const::PRIORITY_DEFAULT);
 	static CObject3DMesh *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth, int nHeight, TYPE type, const char *pFileName, int nPriority = mylib_const::PRIORITY_DEFAULT);
-	CObject3DMesh *GetObject3DMesh(void);
+	CObject3DMesh *GetObject3DMesh();
 protected:
 
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void);
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff();
 private:
-	HRESULT CreateVertex(void);
-	HRESULT CreateIndex(void);
-	void SetInitVtxField(void);
-	void SetVtxField(void);
-	void SetVtxWall(void);
-	void SetVtxCylinder(void);
-	void SetVtxDome(void);
-	void SetVtxDonuts(void);
-	void SetVtxSphere(void);
+	HRESULT CreateVertex();
+	HRESULT CreateIndex();
+	void SetInitVtxField();
+	void SetVtxField();
+	void SetVtxWall();
+	void SetVtxCylinder();
+	void SetVtxDome();
+	void SetVtxDonuts();
+	void SetVtxSphere();
 	void UPVtxField(MyLib::Vector3 pos);
-	void CalWorldMtx(void);	// ワールドマトリックスの計算処理
+	void CalWorldMtx();	// ワールドマトリックスの計算処理
 
 	MyLib::Vector3 *m_pVtxPos;	// 頂点座標
 	MyLib::Vector3 *m_pVtxNor;	// 頂点法線

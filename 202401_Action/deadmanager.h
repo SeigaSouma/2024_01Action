@@ -26,18 +26,18 @@ public:
 	~CDeadManager();
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
 	// メンバ関数
 	bool IsRespawnPossible() { return m_bRespawnPossible; }	// 復活出来るかのフラグ取得
-	void SetFadeOut(void);	// フェードアウト設定
+	void SetFadeOut();	// フェードアウト設定
 
 	// 静的関数
-	static CDeadManager* GetInstance(void);	// インスタンス取得
-	static CDeadManager* Create(void);		// 生成処理
+	static CDeadManager* GetInstance();	// インスタンス取得
+	static CDeadManager* Create();		// 生成処理
 
 private:
 

@@ -37,7 +37,7 @@ CTutorial::~CTutorial()
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CTutorial::Init(void)
+HRESULT CTutorial::Init()
 {
 	// 初期化処理
 	if (FAILED(CScene::Init()))
@@ -57,7 +57,7 @@ HRESULT CTutorial::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CTutorial::Uninit(void)
+void CTutorial::Uninit()
 {
 	// 終了処理
 	CScene::Uninit();
@@ -66,7 +66,7 @@ void CTutorial::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CTutorial::Update(void)
+void CTutorial::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -93,7 +93,7 @@ void CTutorial::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CTutorial::Draw(void)
+void CTutorial::Draw()
 {
 	
 }

@@ -38,15 +38,15 @@ public:
 	~CFade();
 
 	// ƒƒ“ƒoŠÖ”
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	CObject2D *GetMyObject(void);
-	static CFade *Create(void);
+	CObject2D *GetMyObject();
+	static CFade *Create();
 	void SetFade(CScene::MODE mode);	// Ÿ‚Ìƒ‚[ƒhİ’è
-	STATE GetState(void);	// ó‘Ôæ“¾
+	STATE GetState();	// ó‘Ôæ“¾
 
 private:
 

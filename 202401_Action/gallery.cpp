@@ -346,7 +346,7 @@ void CGallery::SetState(STATE state)
 //==========================================================================
 // 観衆設定
 //==========================================================================
-void CGallery::SetGallery(void)
+void CGallery::SetGallery()
 {
 	char aComment[MAX_COMMENT] = {};	// コメント用
 	int nTexNum = 0;					// ファイルの数

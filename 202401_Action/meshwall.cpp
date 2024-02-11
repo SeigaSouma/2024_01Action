@@ -88,7 +88,7 @@ CMeshWall *CMeshWall::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidt
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMeshWall::Init(void)
+HRESULT CMeshWall::Init()
 {
 	HRESULT hr;
 
@@ -111,7 +111,7 @@ HRESULT CMeshWall::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMeshWall::Uninit(void)
+void CMeshWall::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -120,7 +120,7 @@ void CMeshWall::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CMeshWall::Update(void)
+void CMeshWall::Update()
 {
 	// 頂点情報設定
 	SetVtx();
@@ -129,7 +129,7 @@ void CMeshWall::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMeshWall::Draw(void)
+void CMeshWall::Draw()
 {
 	// 描画処理
 	CObject3DMesh::Draw();
@@ -138,7 +138,7 @@ void CMeshWall::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CMeshWall::SetVtx(void)
+void CMeshWall::SetVtx()
 {
 	// 頂点情報更新
 	CObject3DMesh::SetVtx();
@@ -147,7 +147,7 @@ void CMeshWall::SetVtx(void)
 //==========================================================================
 // メッシュフィールドオブジェクトの取得
 //==========================================================================
-CMeshWall *CMeshWall::GetMyObject(void)
+CMeshWall *CMeshWall::GetMyObject()
 {
 	return this;
 }

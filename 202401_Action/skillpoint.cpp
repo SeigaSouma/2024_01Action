@@ -44,7 +44,7 @@ CSkillPoint::~CSkillPoint()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillPoint *CSkillPoint::Create(void)
+CSkillPoint *CSkillPoint::Create()
 {
 	// 生成用のオブジェクト
 	CSkillPoint *pTitleScreen = NULL;
@@ -71,7 +71,7 @@ CSkillPoint *CSkillPoint::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillPoint::Init(void)
+HRESULT CSkillPoint::Init()
 {
 	// 種類の設定
 	SetType(CObject::TYPE_OBJECT2D);
@@ -106,7 +106,7 @@ HRESULT CSkillPoint::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillPoint::Uninit(void)
+void CSkillPoint::Uninit()
 {
 	// 数字のオブジェクトの終了処理
 	if (m_apNumber != NULL)
@@ -122,7 +122,7 @@ void CSkillPoint::Uninit(void)
 //==========================================================================
 // 削除処理
 //==========================================================================
-void CSkillPoint::Kill(void)
+void CSkillPoint::Kill()
 {
 	// 数字のオブジェクト削除
 	if (m_apNumber != NULL)
@@ -138,7 +138,7 @@ void CSkillPoint::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillPoint::Update(void)
+void CSkillPoint::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -198,7 +198,7 @@ void CSkillPoint::SetPoint(int nValue)
 //==========================================================================
 // ポイント追加
 //==========================================================================
-void CSkillPoint::AddPoint(void)
+void CSkillPoint::AddPoint()
 {
 	m_nPoint++;
 }
@@ -214,7 +214,7 @@ void CSkillPoint::AddPoint(int nValue)
 //==========================================================================
 // ポイント削除
 //==========================================================================
-void CSkillPoint::SubPoint(void)
+void CSkillPoint::SubPoint()
 {
 	m_nPoint--;
 
@@ -239,7 +239,7 @@ void CSkillPoint::SubPoint(int nValue)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillPoint::Draw(void)
+void CSkillPoint::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

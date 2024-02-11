@@ -84,7 +84,7 @@ CObject::~CObject()
 //==========================================================================
 // 全てのオブジェクトの破棄
 //==========================================================================
-void CObject::ReleaseAll(void)
+void CObject::ReleaseAll()
 {
 	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
 	{
@@ -168,7 +168,7 @@ void CObject::ReleaseAll(void)
 //==========================================================================
 // 全てのオブジェクトの更新処理
 //==========================================================================
-void CObject::UpdateAll(void)
+void CObject::UpdateAll()
 {
 #if _DEBUG
 	// エディットの情報取得
@@ -246,7 +246,7 @@ void CObject::UpdateAll(void)
 //==========================================================================
 // 全てのオブジェクトの描画処理
 //==========================================================================
-void CObject::DrawAll(void)
+void CObject::DrawAll()
 {
 	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
 	{
@@ -398,7 +398,7 @@ int CObject::SetEffectParent(CEffect3D *pEffect3D)
 //==========================================================================
 // 親設定したエフェクトの数取得
 //==========================================================================
-int CObject::GetEffectParentNum(void)
+int CObject::GetEffectParentNum()
 {
 	return m_nNumEffectParent;
 }
@@ -426,7 +426,7 @@ void CObject::ReleaseEffect(int nIdx)
 //==========================================================================
 // エフェクトの解放
 //==========================================================================
-void CObject::UninitEffect(void)
+void CObject::UninitEffect()
 {
 	for (int nCntEffect = 0; nCntEffect < mylib_const::MAX_OBJ; nCntEffect++)
 	{
@@ -442,7 +442,7 @@ void CObject::UninitEffect(void)
 //==========================================================================
 // オブジェクトの死亡判定
 //==========================================================================
-void CObject::Release(void)
+void CObject::Release()
 {
 	// エフェクトの解放
 	UninitEffect();
@@ -454,7 +454,7 @@ void CObject::Release(void)
 //==========================================================================
 // オブジェクトの破棄・死亡処理
 //==========================================================================
-void CObject::Death(void)
+void CObject::Death()
 {
 	// 今回の番号保存
 	int nPriority = m_nPriority;
@@ -567,7 +567,7 @@ bool CObject::Hit(const int nValue, MyLib::Vector3 move)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject::SetVtx(void)
+void CObject::SetVtx()
 {
 
 }
@@ -583,7 +583,7 @@ void CObject::SetPosition(const MyLib::Vector3& pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CObject::GetPosition(void) const
+MyLib::Vector3 CObject::GetPosition() const
 {
 	return m_pos;
 }
@@ -599,7 +599,7 @@ void CObject::SetOldPosition(const MyLib::Vector3& posOld)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CObject::GetOldPosition(void) const
+MyLib::Vector3 CObject::GetOldPosition() const
 {
 	return m_posOld;
 }
@@ -615,7 +615,7 @@ void CObject::SetOriginPosition(const MyLib::Vector3& pos)
 //==========================================================================
 // 元の位置取得
 //==========================================================================
-MyLib::Vector3 CObject::GetOriginPosition(void) const
+MyLib::Vector3 CObject::GetOriginPosition() const
 {
 	return m_posOrigin;
 }
@@ -631,7 +631,7 @@ void CObject::SetMove(const MyLib::Vector3& move)
 //==========================================================================
 // 移動量取得
 //==========================================================================
-MyLib::Vector3 CObject::GetMove(void) const
+MyLib::Vector3 CObject::GetMove() const
 {
 	return m_move;
 }
@@ -647,7 +647,7 @@ void CObject::SetRotation(const MyLib::Vector3& rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CObject::GetRotation(void) const
+MyLib::Vector3 CObject::GetRotation() const
 {
 	return m_rot;
 }
@@ -663,7 +663,7 @@ void CObject::SetType(const TYPE type)
 //==========================================================================
 // 種類の取得
 //==========================================================================
-CObject::TYPE CObject::GetType(void) const
+CObject::TYPE CObject::GetType() const
 {
 	return m_type;
 }
@@ -671,7 +671,7 @@ CObject::TYPE CObject::GetType(void) const
 //==========================================================================
 // オブジェクトの取得
 //==========================================================================
-CObject *CObject::GetObject(void)
+CObject *CObject::GetObject()
 {
 	return this;
 }
@@ -687,7 +687,7 @@ CObject *CObject::GetTop(int nPriority)
 //==========================================================================
 // 次のオブジェクト取得
 //==========================================================================
-CObject *CObject::GetNext(void)
+CObject *CObject::GetNext()
 {
 	return this->m_pNext;
 }
@@ -695,7 +695,7 @@ CObject *CObject::GetNext(void)
 //==========================================================================
 // 死亡の判定
 //==========================================================================
-bool CObject::IsDeath(void)
+bool CObject::IsDeath()
 {
 	return m_bDeath;
 }
@@ -703,7 +703,7 @@ bool CObject::IsDeath(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D *CObject::GetObject2D(void)
+CObject2D *CObject::GetObject2D()
 {
 	return NULL;
 }
@@ -711,7 +711,7 @@ CObject2D *CObject::GetObject2D(void)
 //==========================================================================
 // オブジェクト3Dオブジェクトの取得
 //==========================================================================
-CObject3D *CObject::GetObject3D(void)
+CObject3D *CObject::GetObject3D()
 {
 	return NULL;
 }
@@ -719,7 +719,7 @@ CObject3D *CObject::GetObject3D(void)
 //==========================================================================
 // オブジェクト3Dメッシュオブジェクトの取得
 //==========================================================================
-CObject3DMesh *CObject::GetObject3DMesh(void)
+CObject3DMesh *CObject::GetObject3DMesh()
 {
 	return NULL;
 }
@@ -727,7 +727,7 @@ CObject3DMesh *CObject::GetObject3DMesh(void)
 //==========================================================================
 // オブジェクトXオブジェクトの取得
 //==========================================================================
-CObjectX *CObject::GetObjectX(void)
+CObjectX *CObject::GetObjectX()
 {
 	return NULL;
 }
@@ -735,7 +735,7 @@ CObjectX *CObject::GetObjectX(void)
 //==========================================================================
 // オブジェクトキャラクターオブジェクトの取得
 //==========================================================================
-CObjectChara *CObject::GetObjectChara(void)
+CObjectChara *CObject::GetObjectChara()
 {
 	return NULL;
 }

@@ -55,7 +55,7 @@ CTutorialScreen::~CTutorialScreen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CTutorialScreen *CTutorialScreen::Create(void)
+CTutorialScreen *CTutorialScreen::Create()
 {
 	// 生成用のオブジェクト
 	CTutorialScreen *pTitleScreen = NULL;
@@ -82,7 +82,7 @@ CTutorialScreen *CTutorialScreen::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CTutorialScreen::Init(void)
+HRESULT CTutorialScreen::Init()
 {
 	// 種類の設定
 	SetType(CObject::TYPE_OBJECT2D);
@@ -112,7 +112,7 @@ HRESULT CTutorialScreen::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CTutorialScreen::Uninit(void)
+void CTutorialScreen::Uninit()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_LOGO_MAX; nCntSelect++)
 	{
@@ -131,7 +131,7 @@ void CTutorialScreen::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CTutorialScreen::Update(void)
+void CTutorialScreen::Update()
 {
 
 }
@@ -139,7 +139,7 @@ void CTutorialScreen::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CTutorialScreen::Draw(void)
+void CTutorialScreen::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

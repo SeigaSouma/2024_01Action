@@ -112,7 +112,7 @@ CExplosion *CExplosion::Create(TYPE type, const MyLib::Vector3 pos, const float 
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CExplosion::Init(void)
+HRESULT CExplosion::Init()
 {
 	HRESULT hr;
 
@@ -143,7 +143,7 @@ HRESULT CExplosion::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CExplosion::Uninit(void)
+void CExplosion::Uninit()
 {
 	// 終了処理
 	CMeshSphere::Uninit();
@@ -152,7 +152,7 @@ void CExplosion::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CExplosion::Update(void)
+void CExplosion::Update()
 {
 	// 位置更新
 	UpdatePos();
@@ -180,7 +180,7 @@ void CExplosion::Update(void)
 //==========================================================================
 // 移動処理
 //==========================================================================
-void CExplosion::UpdatePos(void)
+void CExplosion::UpdatePos()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -211,7 +211,7 @@ void CExplosion::UpdatePos(void)
 //==========================================================================
 // 通常状態処理
 //==========================================================================
-void CExplosion::StateNone(void)
+void CExplosion::StateNone()
 {
 	float fWidthLen = GetWidthLen();
 	float fHeightLen = GetHeightLen();
@@ -239,7 +239,7 @@ void CExplosion::StateNone(void)
 //==========================================================================
 // ダメージ状態処理
 //==========================================================================
-void CExplosion::StateDamage(void)
+void CExplosion::StateDamage()
 {
 	float fWidthLen = GetWidthLen();
 	float fHeightLen = GetHeightLen();
@@ -256,7 +256,7 @@ void CExplosion::StateDamage(void)
 //==========================================================================
 // フェードアウト状態処理
 //==========================================================================
-void CExplosion::StateFadeout(void)
+void CExplosion::StateFadeout()
 {
 	// 色取得
 	D3DXCOLOR col = GetColor();
@@ -279,7 +279,7 @@ void CExplosion::StateFadeout(void)
 //==========================================================================
 // プレイヤーとの判定
 //==========================================================================
-void CExplosion::CollisionPlayer(void)
+void CExplosion::CollisionPlayer()
 {
 
 	// プレイヤー取得
@@ -315,7 +315,7 @@ void CExplosion::CollisionPlayer(void)
 //==========================================================================
 // 敵との判定
 //==========================================================================
-void CExplosion::CollisionEnemy(void)
+void CExplosion::CollisionEnemy()
 {
 	// 情報取得
 	MyLib::Vector3 pos = GetPosition();
@@ -353,7 +353,7 @@ void CExplosion::CollisionEnemy(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CExplosion::Draw(void)
+void CExplosion::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -385,7 +385,7 @@ void CExplosion::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CExplosion::SetVtx(void)
+void CExplosion::SetVtx()
 {
 	// 頂点設定
 	CMeshSphere::SetVtx();
@@ -403,7 +403,7 @@ void CExplosion::SetState(STATE state, int nCntState)
 //==========================================================================
 // 状態取得
 //==========================================================================
-CExplosion::STATE CExplosion::GetState(void)
+CExplosion::STATE CExplosion::GetState()
 {
 	return m_state;
 }
@@ -411,7 +411,7 @@ CExplosion::STATE CExplosion::GetState(void)
 //==========================================================================
 // 種類取得
 //==========================================================================
-CExplosion::TYPE CExplosion::GetType(void)
+CExplosion::TYPE CExplosion::GetType()
 {
 	return m_type;
 }

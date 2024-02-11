@@ -92,7 +92,7 @@ CLimitArea *CLimitArea::Create(sLimitEreaInfo info)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CLimitArea::Init(void)
+HRESULT CLimitArea::Init()
 {
 
 	// 種類設定
@@ -150,7 +150,7 @@ HRESULT CLimitArea::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CLimitArea::Uninit(void)
+void CLimitArea::Uninit()
 {
 	// 削除
 	m_List.Delete(this);
@@ -172,7 +172,7 @@ void CLimitArea::Uninit(void)
 //==========================================================================
 // 削除処理
 //==========================================================================
-void CLimitArea::Kill(void)
+void CLimitArea::Kill()
 {
 	// 削除
 	m_List.Delete(this);
@@ -194,7 +194,7 @@ void CLimitArea::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CLimitArea::Update(void)
+void CLimitArea::Update()
 {
 	// 状態更新
 	(this->*(m_StateFuncList[m_state]))();
@@ -213,7 +213,7 @@ void CLimitArea::Update(void)
 //==========================================================================
 // 通常状態
 //==========================================================================
-void CLimitArea::StateNone(void)
+void CLimitArea::StateNone()
 {
 	// 状態カウンターリセット
 	m_fTimeState = 0.0f;
@@ -222,7 +222,7 @@ void CLimitArea::StateNone(void)
 //==========================================================================
 // 出現状態
 //==========================================================================
-void CLimitArea::StateAppearance(void)
+void CLimitArea::StateAppearance()
 {
 	// 状態カウンター加算
 	m_fTimeState += CManager::GetInstance()->GetDeltaTime();
@@ -255,7 +255,7 @@ void CLimitArea::StateAppearance(void)
 //==========================================================================
 // フェードアウト状態
 //==========================================================================
-void CLimitArea::StateFadeout(void)
+void CLimitArea::StateFadeout()
 {
 	// 状態カウンター加算
 	m_fTimeState += CManager::GetInstance()->GetDeltaTime();
@@ -290,7 +290,7 @@ void CLimitArea::StateFadeout(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CLimitArea::Draw(void)
+void CLimitArea::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -332,7 +332,7 @@ void CLimitArea::Draw(void)
 //==========================================================================
 // 情報取得
 //==========================================================================
-CLimitArea::sLimitEreaInfo CLimitArea::GetLimitEreaInfo(void)
+CLimitArea::sLimitEreaInfo CLimitArea::GetLimitEreaInfo()
 {
 	return m_sLimitEreaInfo;
 }
@@ -340,7 +340,7 @@ CLimitArea::sLimitEreaInfo CLimitArea::GetLimitEreaInfo(void)
 //==========================================================================
 // 状態取得
 //==========================================================================
-CLimitArea::STATE CLimitArea::GetState(void)
+CLimitArea::STATE CLimitArea::GetState()
 {
 	return m_state;
 }

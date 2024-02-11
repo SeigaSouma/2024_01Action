@@ -81,7 +81,7 @@ CTimer::~CTimer()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CTimer *CTimer::Create(void)
+CTimer *CTimer::Create()
 {
 	// 生成用のオブジェクト
 	CTimer *pScore = NULL;
@@ -173,7 +173,7 @@ HRESULT CTimer::Init(MyLib::Vector3 pos)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CTimer::Uninit(void)
+void CTimer::Uninit()
 {
 	m_pTimer = nullptr;
 }
@@ -181,7 +181,7 @@ void CTimer::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CTimer::Update(void)
+void CTimer::Update()
 {
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
@@ -238,7 +238,7 @@ void CTimer::Update(void)
 //==========================================================================
 // 待機状態
 //==========================================================================
-void CTimer::StateWait(void)
+void CTimer::StateWait()
 {
 	// 時間リセット
 	m_fStateTime = 0.0f;
@@ -247,7 +247,7 @@ void CTimer::StateWait(void)
 //==========================================================================
 // 出現状態
 //==========================================================================
-void CTimer::StatAppearance(void)
+void CTimer::StatAppearance()
 {
 	// 時間加算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -266,7 +266,7 @@ void CTimer::StatAppearance(void)
 //==========================================================================
 // 少し加算状態
 //==========================================================================
-void CTimer::StatAddLittle(void)
+void CTimer::StatAddLittle()
 {
 	// 時間加算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -283,7 +283,7 @@ void CTimer::StatAddLittle(void)
 //==========================================================================
 // 調整状態
 //==========================================================================
-void CTimer::StateAdjustment(void)
+void CTimer::StateAdjustment()
 {
 	// 時間加算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -304,7 +304,7 @@ void CTimer::StateAdjustment(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CTimer::Draw(void)
+void CTimer::Draw()
 {
 
 }

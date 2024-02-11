@@ -73,7 +73,7 @@ CRevivalPercentText* CRevivalPercentText::Create(int respawnpercent, const float
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CRevivalPercentText::Init(void)
+HRESULT CRevivalPercentText::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -127,7 +127,7 @@ void CRevivalPercentText::SetNumberObj(int number)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRevivalPercentText::Uninit(void)
+void CRevivalPercentText::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -142,7 +142,7 @@ void CRevivalPercentText::Uninit(void)
 //==========================================================================
 // 削除処理
 //==========================================================================
-void CRevivalPercentText::Kill(void)
+void CRevivalPercentText::Kill()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -157,7 +157,7 @@ void CRevivalPercentText::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CRevivalPercentText::Update(void)
+void CRevivalPercentText::Update()
 {
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
@@ -176,7 +176,7 @@ void CRevivalPercentText::Update(void)
 //==========================================================================
 // なにもなし
 //==========================================================================
-void CRevivalPercentText::StateNone(void)
+void CRevivalPercentText::StateNone()
 {
 
 }
@@ -184,7 +184,7 @@ void CRevivalPercentText::StateNone(void)
 //==========================================================================
 // フェードイン
 //==========================================================================
-void CRevivalPercentText::StateFadeIn(void)
+void CRevivalPercentText::StateFadeIn()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -207,7 +207,7 @@ void CRevivalPercentText::StateFadeIn(void)
 //==========================================================================
 // フェードアウト
 //==========================================================================
-void CRevivalPercentText::StateFadeOut(void)
+void CRevivalPercentText::StateFadeOut()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -232,7 +232,7 @@ void CRevivalPercentText::StateFadeOut(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CRevivalPercentText::Draw(void)
+void CRevivalPercentText::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

@@ -72,7 +72,7 @@ void CObject2DMulti::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject2DMulti *CObject2DMulti::Create(void)
+CObject2DMulti *CObject2DMulti::Create()
 {
 	// 生成用のオブジェクト
 	CObject2DMulti *pObject2D = NULL;
@@ -126,7 +126,7 @@ CObject2DMulti *CObject2DMulti::Create(int nPriority)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject2DMulti::Init(void)
+HRESULT CObject2DMulti::Init()
 {
 	HRESULT hr;
 
@@ -167,7 +167,7 @@ HRESULT CObject2DMulti::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObject2DMulti::Uninit(void)
+void CObject2DMulti::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -183,7 +183,7 @@ void CObject2DMulti::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject2DMulti::Update(void)
+void CObject2DMulti::Update()
 {
 	// 頂点情報設定
 	SetVtx();
@@ -192,7 +192,7 @@ void CObject2DMulti::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObject2DMulti::Draw(void)
+void CObject2DMulti::Draw()
 {
 
 	// デバイスの取得
@@ -258,7 +258,7 @@ void CObject2DMulti::Draw(LPDIRECT3DTEXTURE9 mutitex)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject2DMulti::SetVtx(void)
+void CObject2DMulti::SetVtx()
 {
 
 	// 頂点情報へのポインタ
@@ -329,7 +329,7 @@ void CObject2DMulti::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CObject2DMulti::GetColor(void) const
+D3DXCOLOR CObject2DMulti::GetColor() const
 {
 	return m_col;
 }
@@ -347,7 +347,7 @@ void CObject2DMulti::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CObject2DMulti::GetSize(void) const
+D3DXVECTOR2 CObject2DMulti::GetSize() const
 {
 	return m_size;
 }
@@ -363,7 +363,7 @@ void CObject2DMulti::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // 元のサイズの取得
 //==========================================================================
-D3DXVECTOR2 CObject2DMulti::GetSizeOrigin(void) const
+D3DXVECTOR2 CObject2DMulti::GetSizeOrigin() const
 {
 	return m_sizeOrigin;
 }
@@ -379,7 +379,7 @@ void CObject2DMulti::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CObject2DMulti::GetTex(void)
+D3DXVECTOR2 *CObject2DMulti::GetTex()
 {
 	return &m_fTex[0];
 }
@@ -395,7 +395,7 @@ void CObject2DMulti::SetLength(const float fLength)
 //==========================================================================
 // 対角線の長さ取得
 //==========================================================================
-float CObject2DMulti::GetLength(void) const
+float CObject2DMulti::GetLength() const
 {
 	return m_fLength;
 }
@@ -411,7 +411,7 @@ void CObject2DMulti::SetAngle(const float fAngle)
 //==========================================================================
 // 対角線の向き取得
 //==========================================================================
-float CObject2DMulti::GetAngle(void) const
+float CObject2DMulti::GetAngle() const
 {
 	return m_fAngle;
 }
@@ -420,7 +420,7 @@ float CObject2DMulti::GetAngle(void) const
 //==========================================================================
 // 頂点座標取得
 //==========================================================================
-MyLib::Vector3 *CObject2DMulti::GetVtxPos(void)
+MyLib::Vector3 *CObject2DMulti::GetVtxPos()
 {
 	return &m_VtxPos[0];
 }
@@ -437,7 +437,7 @@ void CObject2DMulti::SetVtxPos(MyLib::Vector3 *pos)
 //==========================================================================
 // 頂点バッファの取得
 //==========================================================================
-LPDIRECT3DVERTEXBUFFER9 CObject2DMulti::GetVtxBuff(void) const
+LPDIRECT3DVERTEXBUFFER9 CObject2DMulti::GetVtxBuff() const
 {
 	return m_pVtxBuff;
 }
@@ -445,7 +445,7 @@ LPDIRECT3DVERTEXBUFFER9 CObject2DMulti::GetVtxBuff(void) const
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2DMulti *CObject2DMulti::GetObject2DMulti(void)
+CObject2DMulti *CObject2DMulti::GetObject2DMulti()
 {
 	return this;
 }

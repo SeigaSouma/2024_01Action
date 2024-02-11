@@ -91,7 +91,7 @@ CHP_GaugePlayer *CHP_GaugePlayer::Create(MyLib::Vector3 pos, int nMaxLife)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CHP_GaugePlayer::Init(void)
+HRESULT CHP_GaugePlayer::Init()
 {
 	// 最大体力
 	m_nLifeValue = m_nOriginLifeValue;
@@ -139,7 +139,7 @@ HRESULT CHP_GaugePlayer::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CHP_GaugePlayer::Uninit(void)
+void CHP_GaugePlayer::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -153,7 +153,7 @@ void CHP_GaugePlayer::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CHP_GaugePlayer::Kill(void)
+void CHP_GaugePlayer::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -172,7 +172,7 @@ void CHP_GaugePlayer::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CHP_GaugePlayer::Update(void)
+void CHP_GaugePlayer::Update()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -287,7 +287,7 @@ int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CHP_GaugePlayer::Draw(void)
+void CHP_GaugePlayer::Draw()
 {
 
 }

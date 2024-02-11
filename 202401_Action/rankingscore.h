@@ -34,15 +34,15 @@ public:
 	~CRankingScore();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	void SetAllArrival(void);	// 全ての到着設定
-	void UpdateNewRecord(void);	// ニューレコードの更新処理
+	void SetAllArrival();	// 全ての到着設定
+	void UpdateNewRecord();	// ニューレコードの更新処理
 	void SetValue(int nCntRanking);	// 値の設定処理
-	static CRankingScore *Create(void);
+	static CRankingScore *Create();
 private:
 
 	// 列挙型定義
@@ -53,9 +53,9 @@ private:
 		VTX_MAX
 	};
 
-	void Load(void);	// ロード
-	void Save(void);	// セーブ
-	void Sort(void);	// ソート
+	void Load();	// ロード
+	void Save();	// セーブ
+	void Sort();	// ソート
 	void Moving(int nCntRanking);	// 移動処理
 	
 	int m_nNumRanking;				// ランキング数

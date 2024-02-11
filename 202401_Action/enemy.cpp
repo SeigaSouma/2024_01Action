@@ -170,7 +170,7 @@ CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEnemy::Init(void)
+HRESULT CEnemy::Init()
 {
 	// 各種変数の初期化
 	m_state = STATE_NONE;	// 状態
@@ -276,7 +276,7 @@ void CEnemy::SetParent(CEnemy *pParent)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEnemy::Uninit(void)
+void CEnemy::Uninit()
 {
 	
 	// 影を消す
@@ -300,7 +300,7 @@ void CEnemy::Uninit(void)
 //==========================================================================
 // 死亡処理
 //==========================================================================
-void CEnemy::Kill(void)
+void CEnemy::Kill()
 {
 	for (int nCntEnemy = 0; nCntEnemy < mylib_const::MAX_ENEMY; nCntEnemy++)
 	{// 子の数分回す
@@ -357,7 +357,7 @@ void CEnemy::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEnemy::Update(void)
+void CEnemy::Update()
 {
 	// 死亡の判定
 	if (IsDeath() == true)
@@ -485,7 +485,7 @@ void CEnemy::Update(void)
 //==========================================================================
 // 当たり判定
 //==========================================================================
-void CEnemy::Collision(void)
+void CEnemy::Collision()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -563,7 +563,7 @@ void CEnemy::Collision(void)
 //==========================================================================
 // 着地時の処理
 //==========================================================================
-void CEnemy::ProcessLanding(void)
+void CEnemy::ProcessLanding()
 {
 	// 移動量取得
 	MyLib::Vector3 move = GetMove();
@@ -736,7 +736,7 @@ void CEnemy::CounterHitResponse()
 //==========================================================================
 // 種類別更新処理
 //==========================================================================
-void CEnemy::UpdateByType(void)
+void CEnemy::UpdateByType()
 {
 
 }
@@ -744,7 +744,7 @@ void CEnemy::UpdateByType(void)
 //==========================================================================
 // 行動更新
 //==========================================================================
-void CEnemy::UpdateAction(void)
+void CEnemy::UpdateAction()
 {
 
 }
@@ -752,7 +752,7 @@ void CEnemy::UpdateAction(void)
 //==========================================================================
 // ターゲットの方を向く
 //==========================================================================
-void CEnemy::RotationTarget(void)
+void CEnemy::RotationTarget()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -796,7 +796,7 @@ bool CEnemy::CalcLenPlayer(float fLen)
 //==========================================================================
 // 移動方向を向く処理
 //==========================================================================
-void CEnemy::MoveRotation(void)
+void CEnemy::MoveRotation()
 {
 	// 必要な値を取得
 	MyLib::Vector3 rot = GetRotation();
@@ -818,7 +818,7 @@ void CEnemy::MoveRotation(void)
 //==========================================================================
 // 移動
 //==========================================================================
-void CEnemy::Move(void)
+void CEnemy::Move()
 {
 	// 移動フラグを立てる
 	m_sMotionFrag.bMove = true;
@@ -839,7 +839,7 @@ void CEnemy::Move(void)
 //==========================================================================
 // 状態更新処理
 //==========================================================================
-void CEnemy::UpdateState(void)
+void CEnemy::UpdateState()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -912,7 +912,7 @@ void CEnemy::UpdateState(void)
 //==========================================================================
 // 種類別状態更新処理
 //==========================================================================
-void CEnemy::UpdateStateByType(void)
+void CEnemy::UpdateStateByType()
 {
 	return;
 }
@@ -920,7 +920,7 @@ void CEnemy::UpdateStateByType(void)
 //==========================================================================
 // 何もない状態
 //==========================================================================
-void CEnemy::StateNone(void)
+void CEnemy::StateNone()
 {
 	// 行動可能判定
 	m_bActionable = true;
@@ -940,7 +940,7 @@ void CEnemy::StateNone(void)
 //==========================================================================
 // スポーン待機
 //==========================================================================
-void CEnemy::SpawnWait(void)
+void CEnemy::SpawnWait()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -955,7 +955,7 @@ void CEnemy::SpawnWait(void)
 //==========================================================================
 // 出現
 //==========================================================================
-void CEnemy::Spawn(void)
+void CEnemy::Spawn()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -965,7 +965,7 @@ void CEnemy::Spawn(void)
 //==========================================================================
 // ダメージ
 //==========================================================================
-void CEnemy::Damage(void)
+void CEnemy::Damage()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -1021,7 +1021,7 @@ void CEnemy::Damage(void)
 //==========================================================================
 // 死亡
 //==========================================================================
-void CEnemy::Dead(void)
+void CEnemy::Dead()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -1090,7 +1090,7 @@ void CEnemy::Dead(void)
 //==========================================================================
 // フェードアウト
 //==========================================================================
-void CEnemy::FadeOut(void)
+void CEnemy::FadeOut()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -1150,7 +1150,7 @@ void CEnemy::FadeOut(void)
 //==========================================================================
 // プレイヤー追従
 //==========================================================================
-void CEnemy::PlayerChase(void)
+void CEnemy::PlayerChase()
 {
 	// 行動可能判定
 	m_bActionable = true;
@@ -1240,7 +1240,7 @@ void CEnemy::PlayerChase(void)
 //==========================================================================
 // 親追従
 //==========================================================================
-void CEnemy::ParentChase(void)
+void CEnemy::ParentChase()
 {
 	// 行動可能判定
 	m_bActionable = true;
@@ -1378,7 +1378,7 @@ void CEnemy::ParentChase(void)
 //==========================================================================
 // 攻撃処理
 //==========================================================================
-void CEnemy::StateAttack(void)
+void CEnemy::StateAttack()
 {
 	// 行動可能判定
 	m_bActionable = true;
@@ -1553,7 +1553,7 @@ void CEnemy::StateAttack(void)
 //==========================================================================
 // 待機状態
 //==========================================================================
-void CEnemy::StateWait(void)
+void CEnemy::StateWait()
 {
 	// 行動可能判定
 	m_bActionable = true;
@@ -1564,7 +1564,7 @@ void CEnemy::StateWait(void)
 //==========================================================================
 // ダウン状態
 //==========================================================================
-void CEnemy::StateDown(void)
+void CEnemy::StateDown()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -1598,7 +1598,7 @@ void CEnemy::StateDown(void)
 //==========================================================================
 // プレイヤー追従ONにするトリガー
 //==========================================================================
-void CEnemy::TriggerChasePlayer(void)
+void CEnemy::TriggerChasePlayer()
 {
 
 
@@ -1679,7 +1679,7 @@ void CEnemy::TriggerChasePlayer(void)
 //==========================================================================
 // 攻撃状態移行処理
 //==========================================================================
-void CEnemy::ChangeToAttackState(void)
+void CEnemy::ChangeToAttackState()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -1733,7 +1733,7 @@ void CEnemy::ChaseMove(float fMove)
 //==========================================================================
 //  大人の壁
 //==========================================================================
-void CEnemy::LimitArea(void)
+void CEnemy::LimitArea()
 {
 	// 自身の値を取得
 	MyLib::Vector3 pos = GetPosition();
@@ -1898,7 +1898,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CEnemy::Draw(void)
+void CEnemy::Draw()
 {
 	if (m_state == STATE_FADEOUT)
 	{
@@ -1935,7 +1935,7 @@ void CEnemy::SetSpawnPosition(MyLib::Vector3 pos)
 //==========================================================================
 // スポーン地点取得
 //==========================================================================
-MyLib::Vector3 CEnemy::GetSpawnPosition(void)
+MyLib::Vector3 CEnemy::GetSpawnPosition()
 {
 	return m_posOrigin;
 }
@@ -1951,7 +1951,7 @@ void CEnemy::SetState(STATE state)
 //==========================================================================
 // 敵の情報取得
 //==========================================================================
-CEnemy *CEnemy::GetEnemy(void)
+CEnemy *CEnemy::GetEnemy()
 {
 	// 自分自身のポインタを取得
 	return this;

@@ -67,7 +67,7 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CInput::Uninit(void)
+void CInput::Uninit()
 {
 	// 入力デバイスの破棄
 	if (m_pDevice != NULL)
@@ -150,7 +150,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CInputKeyboard::Uninit(void)
+void CInputKeyboard::Uninit()
 {
 	// 終了処理
 	CInput::Uninit();
@@ -159,7 +159,7 @@ void CInputKeyboard::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CInputKeyboard::Update(void)
+void CInputKeyboard::Update()
 {
 	BYTE aKeyState[NUM_KEY_MAX];	// キーボードの入力情報
 
@@ -290,6 +290,9 @@ HRESULT CInputGamepad::Init(HINSTANCE hInstance, HWND hWnd)
 	m_bLeftStickSelect[STICK_Y] = false;				// 左トリガーの選択判定
 	m_bLStickTip = false;					// 左スティックの傾き判定
 
+	memset(m_StateLT, 0, sizeof(m_StateLT));	// LTの判定
+	memset(m_StateRT, 0, sizeof(m_StateRT));	// RTの判定
+
 	// バイブの情報を初期化
 	m_bVibrationUse = true;
 
@@ -305,6 +308,9 @@ HRESULT CInputGamepad::Init(HINSTANCE hInstance, HWND hWnd)
 		memset(&m_aGamepadStateRepeat[nCntPlayer], 0, sizeof(XINPUT_STATE));
 		memset(&m_aGamepadStateRelease[nCntPlayer], 0, sizeof(XINPUT_STATE));
 		memset(&m_aGamepadStateVib[nCntPlayer], 0, sizeof(XINPUT_VIBRATION));
+
+		memset(&m_aGamepadState[nCntPlayer], 0, sizeof(XINPUT_STATE));
+
 	}
 
 	return S_OK;
@@ -313,16 +319,16 @@ HRESULT CInputGamepad::Init(HINSTANCE hInstance, HWND hWnd)
 //==========================================================================
 //ゲームパッドの終了処理
 //==========================================================================
-void CInputGamepad::Uninit(void)
+void CInputGamepad::Uninit()
 {
 	//XInputを無効化
 	XInputEnable(false);
 }
 
 //==========================================================================
-//ゲームパッドの更新処理
+// ゲームパッドの更新処理
 //==========================================================================
-void CInputGamepad::Update(void)
+void CInputGamepad::Update()
 {
 	XINPUT_STATE  aGamepadState[mylib_const::MAX_PLAYER];
 	int nCntPlayer;
@@ -332,7 +338,10 @@ void CInputGamepad::Update(void)
 	{
 		if (XInputGetState(nCntPlayer, &aGamepadState[nCntPlayer]) == ERROR_SUCCESS)
 		{
-			// キーボードのトリガー情報を保存
+			// トリガーの判定処理
+			UpdateTriggerState(nCntPlayer, aGamepadState[nCntPlayer]);
+
+			// トリガー情報を保存
 			m_aGamepadStateTrigger[nCntPlayer].Gamepad.wButtons =
 				(~m_aGamepadState[nCntPlayer].Gamepad.wButtons) & aGamepadState[nCntPlayer].Gamepad.wButtons;
 
@@ -341,7 +350,7 @@ void CInputGamepad::Update(void)
 				(m_aGamepadState[nCntPlayer].Gamepad.wButtons ^ aGamepadState[nCntPlayer].Gamepad.wButtons) & m_aGamepadState[nCntPlayer].Gamepad.wButtons;
 
 
-			// キーボードのプレス情報を保存
+			// プレス情報を保存
 			m_aGamepadState[nCntPlayer] = aGamepadState[nCntPlayer];
 			
 			if ((m_nCntPadrepeat % SHOT_FPS) == 0)
@@ -358,7 +367,7 @@ void CInputGamepad::Update(void)
 			}
 		}
 
-		//タイマーを減算
+		// タイマーを減算
 		m_nCntVibration[nCntPlayer]--;
 
 		if (m_nCntVibration[nCntPlayer] < 0)
@@ -410,7 +419,7 @@ void CInputGamepad::Update(void)
 //==========================================================================
 // スティックのトリガー
 //==========================================================================
-void CInputGamepad::UpdateStickTrigger(void)
+void CInputGamepad::UpdateStickTrigger()
 {
 	bool bTipX = false, bTipY = false;
 	bTipX = !UtilFunc::Calculation::IsNearlyTarget(GetStickMoveL(0).x, 0.0f, 0.01f);
@@ -490,6 +499,43 @@ void CInputGamepad::UpdateStickTrigger(void)
 }
 
 //==========================================================================
+// トリガーの判定処理
+//==========================================================================
+void CInputGamepad::UpdateTriggerState(int nCntPlayer, XINPUT_STATE inputstate)
+{
+	// 判定リセット
+	m_StateLT[nCntPlayer] = sTrigger();	// LTの判定
+	m_StateRT[nCntPlayer] = sTrigger();	// RTの判定
+
+	// トリガー情報を保存
+	// 左トリガー
+	if (inputstate.Gamepad.bLeftTrigger > 0)
+	{
+		// プレス判定
+		m_StateLT[nCntPlayer].bPress = true;
+
+		// トリガー判定
+		if (m_aGamepadState[nCntPlayer].Gamepad.bLeftTrigger == 0)
+		{// 前回操作なし
+			m_StateLT[nCntPlayer].bTrigger = true;
+		}
+	}
+
+	// 右トリガー
+	if (inputstate.Gamepad.bRightTrigger > 0)
+	{
+		// プレス判定
+		m_StateRT[nCntPlayer].bPress = true;
+
+		// トリガー判定
+		if (m_aGamepadState[nCntPlayer].Gamepad.bRightTrigger == 0)
+		{// 前回操作なし
+			m_StateRT[nCntPlayer].bTrigger = true;
+		}
+	}
+}
+
+//==========================================================================
 // バイブの設定処理
 //==========================================================================
 void CInputGamepad::SetVibration(VIBRATION_STATE VibState, int nCntPlayer)
@@ -535,7 +581,7 @@ void CInputGamepad::SetVibration(VIBRATION_STATE VibState, int nCntPlayer)
 //==========================================================================
 // ゲームパッドのバイブ設定処理
 //==========================================================================
-void CInputGamepad::SetEnableVibration(void)
+void CInputGamepad::SetEnableVibration()
 {
 	//切り替え
 	m_bVibrationUse ^= true;
@@ -544,7 +590,7 @@ void CInputGamepad::SetEnableVibration(void)
 //==========================================================================
 // ゲームパッドのバイブ設定処理
 //==========================================================================
-bool CInputGamepad::GetEnableVibration(void)
+bool CInputGamepad::GetEnableVibration()
 {
 	return m_bVibrationUse;
 }
@@ -582,19 +628,35 @@ bool CInputGamepad::GetRepeat(BUTTON nKey, int nCntPlayer)
 }
 
 //==========================================================================
-// ゲームパッドのプレス処理,LT
+// LTのプレス判定
 //==========================================================================
-bool CInputGamepad::GetPressLTrigger(BUTTON nKey, int nCntPlayer)
+bool CInputGamepad::GetPressLT(int nCntPlayer)
 {
-	return (m_aGamepadState[nCntPlayer].Gamepad.bLeftTrigger & (0x01 << nKey)) ? true : false;
+	return m_StateLT[nCntPlayer].bPress;
 }
 
 //==========================================================================
-// ゲームパッドのプレス処理,RT
+// RTのプレス判定
 //==========================================================================
-bool CInputGamepad::GetPressRTrigger(BUTTON nKey, int nCntPlayer)
+bool CInputGamepad::GetPressRT(int nCntPlayer)
 {
-	return (m_aGamepadState[nCntPlayer].Gamepad.bRightTrigger & (0x01 << nKey)) ? true : false;
+	return m_StateRT[nCntPlayer].bPress;
+}
+
+//==========================================================================
+// LTのトリガー判定
+//==========================================================================
+bool CInputGamepad::GetTriggerLT(int nCntPlayer)
+{
+	return m_StateLT[nCntPlayer].bTrigger;
+}
+
+//==========================================================================
+// RTのトリガー判定
+//==========================================================================
+bool CInputGamepad::GetTriggerRT(int nCntPlayer)
+{
+	return m_StateRT[nCntPlayer].bTrigger;
 }
 
 //==========================================================================
@@ -686,22 +748,6 @@ float CInputGamepad::GetStickRotR(int nCntPlayer)
 }
 
 //==========================================================================
-// ゲームパッドのLトリガー
-//==========================================================================
-BYTE CInputGamepad::GetLeftTriggerPress(int nPlayer)
-{
-	return m_aGamepadState[nPlayer].Gamepad.bLeftTrigger;
-}
-
-//==========================================================================
-// ゲームパッドのRトリガー
-//==========================================================================
-BYTE CInputGamepad::GetRightTriggerPress(int nPlayer)
-{
-	return m_aGamepadState[nPlayer].Gamepad.bRightTrigger;
-}
-
-//==========================================================================
 // スティックのトリガー判定
 //==========================================================================
 bool CInputGamepad::GetLStickTrigger(STICK XY)
@@ -720,7 +766,7 @@ bool CInputGamepad::GetRStickTrigger(STICK XY)
 //==========================================================================
 // パッドのリピートFPS
 //==========================================================================
-int CInputGamepad::GetnCntPad(void)
+int CInputGamepad::GetnCntPad()
 {
 	return m_nCntPadrepeat;
 }
@@ -751,9 +797,9 @@ CInputMouse::~CInputMouse()
 
 }
 
-//==========================================
-//  マウスの初期化
-//==========================================
+//==========================================================================
+// マウスの初期化
+//==========================================================================
 HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	// 初期化処理
@@ -800,19 +846,19 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 	return S_OK;
 }
 
-//==========================================
+//==========================================================================
 // マウスの終了処理
-//==========================================
-void CInputMouse::Uninit(void)
+//==========================================================================
+void CInputMouse::Uninit()
 {
 	// 終了処理
 	CInput::Uninit();
 }
 
-//==========================================
+//==========================================================================
 // マウスの更新処理
-//==========================================
-void CInputMouse::Update(void)
+//==========================================================================
+void CInputMouse::Update()
 {
 	DIMOUSESTATE2 mouse; // マウスの入力情報
 
@@ -829,18 +875,18 @@ void CInputMouse::Update(void)
 	}
 }
 
-//==========================================
+//==========================================================================
 // マウスのプレス情報
-//==========================================
+//==========================================================================
 bool CInputMouse::GetPress(BUTTON nKey)
 {
 	return (m_MouseState.rgbButtons[nKey] & 0x80) ? true : false;
 }
 
-//==========================================
+//==========================================================================
 // マウスの移動量
-//==========================================
-MyLib::Vector3 CInputMouse::GetMouseMove(void)
+//==========================================================================
+MyLib::Vector3 CInputMouse::GetMouseMove()
 {
 	return MyLib::Vector3(((float)m_MouseState.lX) * MOUSE_SENS, (-(float)m_MouseState.lY) * MOUSE_SENS, (-(float)m_MouseState.lZ) * MOUSE_SENS);
 }

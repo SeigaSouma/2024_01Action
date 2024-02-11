@@ -24,16 +24,16 @@ public:
 
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
 
 	// 強化関数
 	int UpgradeMaxValue(int addvalue);	// 最大値のアップグレード
 
-	void Kill(void);
+	void Kill();
 	void SetLife(int nLife);
 	int GetMaxLife() { return m_nMaxLifeValue; }
 	static CHP_GaugePlayer* Create(MyLib::Vector3 pos, int nMaxLife);

@@ -22,10 +22,10 @@ public:
 	virtual ~CObject2D_Gauge();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
+	virtual HRESULT Init() override;
 	virtual HRESULT Init(float width, float height, int maxvalue, std::string texturepath = "");
-	virtual void Update(void) override;
-	virtual void SetVtx(void) override;
+	virtual void Update() override;
+	virtual void SetVtx() override;
 
 
 	// 強化関数
@@ -33,16 +33,16 @@ public:
 
 	// その他関数
 	void SetValue(int value);				// 値設定
-	int GetValue(void) { return m_nValue; }	// 値取得
+	int GetValue() { return m_nValue; }	// 値取得
 	void SetMaxValue(int value) { m_nMaxValue = value; }	// 値の最大値設定
-	int GetMaxValue(void) { return m_nMaxValue; }			// 値の最大値取得
+	int GetMaxValue() { return m_nMaxValue; }			// 値の最大値取得
 	void SetMaxWidth(float width) { m_fMaxWidth = width; }	// 幅の最大値設定
-	float GetMaxWidth(void) { return m_fMaxWidth; }			// 幅の最大値取得
+	float GetMaxWidth() { return m_fMaxWidth; }			// 幅の最大値取得
 	void SetMoveFactor(float factor) { m_fMoveFactor = factor; }	// 移動の係数設定
 
 	// 静的関数
 	static CObject2D_Gauge *Create(float width, float height, int maxvalue, std::string texturepath = "", int nPriority = 6);	// 生成処理
-	CObject2D_Gauge *GetObject2Dgauge(void) { return this; }
+	CObject2D_Gauge *GetObject2Dgauge() { return this; }
 protected:
 
 private:
@@ -50,7 +50,7 @@ private:
 	//=============================
 	// メンバ関数
 	//=============================
-	void GaugeDecrement(void);
+	void GaugeDecrement();
 
 	//=============================
 	// メンバ変数

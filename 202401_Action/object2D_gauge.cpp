@@ -88,7 +88,7 @@ CObject2D_Gauge *CObject2D_Gauge::Create(float width, float height, int maxvalue
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject2D_Gauge::Init(void)
+HRESULT CObject2D_Gauge::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -159,7 +159,7 @@ HRESULT CObject2D_Gauge::Init(float width, float height, int maxvalue, std::stri
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject2D_Gauge::Update(void)
+void CObject2D_Gauge::Update()
 {
 	// 減少処理
 	GaugeDecrement();
@@ -171,7 +171,7 @@ void CObject2D_Gauge::Update(void)
 //==========================================================================
 // 減少処理
 //==========================================================================
-void CObject2D_Gauge::GaugeDecrement(void)
+void CObject2D_Gauge::GaugeDecrement()
 {
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
@@ -229,7 +229,7 @@ MyLib::Vector3 CObject2D_Gauge::UpgradeMaxValue(int addvalue)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject2D_Gauge::SetVtx(void)
+void CObject2D_Gauge::SetVtx()
 {
 	// 更新処理
 	CObject2D::SetVtx();

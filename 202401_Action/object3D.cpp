@@ -134,7 +134,7 @@ CObject3D *CObject3D::Create(MyLib::Vector3 pos, MyLib::Vector3 rot)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject3D::Init(void)
+HRESULT CObject3D::Init()
 {
 	HRESULT hr;
 
@@ -169,7 +169,7 @@ HRESULT CObject3D::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObject3D::Uninit(void)
+void CObject3D::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -185,7 +185,7 @@ void CObject3D::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject3D::Update(void)
+void CObject3D::Update()
 {
 	// 頂点情報設定
 	SetVtx();
@@ -194,7 +194,7 @@ void CObject3D::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObject3D::Draw(void)
+void CObject3D::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -241,7 +241,7 @@ void CObject3D::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject3D::SetVtx(void)
+void CObject3D::SetVtx()
 {
 
 	// 頂点情報へのポインタ
@@ -339,7 +339,7 @@ void CObject3D::SetWorldMtx(const D3DXMATRIX mtx)
 //==========================================================================
 // マトリックス取得
 //==========================================================================
-D3DXMATRIX CObject3D::GetWorldMtx(void) const
+D3DXMATRIX CObject3D::GetWorldMtx() const
 {
 	return m_mtxWorld;
 }
@@ -355,7 +355,7 @@ void CObject3D::SetOriginPosition(const MyLib::Vector3 pos)
 //==========================================================================
 //	元の位置取得
 //==========================================================================
-MyLib::Vector3 CObject3D::GetOriginPosition(void) const
+MyLib::Vector3 CObject3D::GetOriginPosition() const
 {
 	return m_posOrigin;
 }
@@ -371,7 +371,7 @@ void CObject3D::SetOriginRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 元の向き取得
 //==========================================================================
-MyLib::Vector3 CObject3D::GetOriginRotation(void) const
+MyLib::Vector3 CObject3D::GetOriginRotation() const
 {
 	return m_rotOrigin;
 }
@@ -387,7 +387,7 @@ void CObject3D::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CObject3D::GetColor(void) const
+D3DXCOLOR CObject3D::GetColor() const
 {
 	return m_col;
 }
@@ -403,7 +403,7 @@ void CObject3D::SetSize(const MyLib::Vector3 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-MyLib::Vector3 CObject3D::GetSize(void) const
+MyLib::Vector3 CObject3D::GetSize() const
 {
 	return m_fSize;
 }
@@ -419,7 +419,7 @@ void CObject3D::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CObject3D::GetTex(void)
+D3DXVECTOR2 *CObject3D::GetTex()
 {
 	return &m_fTex[0];
 }
@@ -427,7 +427,7 @@ D3DXVECTOR2 *CObject3D::GetTex(void)
 //==========================================================================
 // オブジェクト3Dオブジェクトの取得
 //==========================================================================
-CObject3D *CObject3D::GetObject3D(void)
+CObject3D *CObject3D::GetObject3D()
 {
 	return this;
 }
@@ -435,7 +435,7 @@ CObject3D *CObject3D::GetObject3D(void)
 //==========================================================================
 // オブジェクト3Dメッシュオブジェクトの取得
 //==========================================================================
-CObject3DMesh *CObject3D::GetObject3DMesh(void)
+CObject3DMesh *CObject3D::GetObject3DMesh()
 {
 	return NULL;
 }

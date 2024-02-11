@@ -22,12 +22,12 @@ public:
 	~CStaminaGauge_Player();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void Kill(void);	// 削除
+	void Kill();	// 削除
 
 	// 強化関数
 	void UpgradeMaxValue(int addvalue);		// 最大値のアップグレード
@@ -37,7 +37,7 @@ public:
 	void AddValue(float value);	// 値加算
 	void SubValue(float value);	// 値減算
 	void SetValue(float value);	// 値設定
-	float GetValue(void);		// 値取得
+	float GetValue();		// 値取得
 
 	static CStaminaGauge_Player* Create(MyLib::Vector3 pos, int maxvalue);
 private:
@@ -65,19 +65,19 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CStaminaGauge_Player::* STATE_FUNC)(void);
+	typedef void(CStaminaGauge_Player::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 状態系
-	void StateNormal(void);	// 通常状態
-	void StateSub(void);	// 減算状態
+	void StateNormal();	// 通常状態
+	void StateSub();	// 減算状態
 
 	// その他
-	void ChangeColor(void);		// 色変更
-	void CorrectionValue(void);	// 値の補正
+	void ChangeColor();		// 色変更
+	void CorrectionValue();	// 値の補正
 
 	//=============================
 	// メンバ変数

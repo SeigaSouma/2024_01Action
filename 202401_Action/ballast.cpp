@@ -113,7 +113,7 @@ CBallast *CBallast::Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum, fl
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CBallast::Init(void)
+HRESULT CBallast::Init()
 {
 	// 種類の設定
 	SetType(TYPE_BALLAST);
@@ -170,7 +170,7 @@ HRESULT CBallast::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CBallast::Uninit(void)
+void CBallast::Uninit()
 {
 	for (int nCntBallast = 0; nCntBallast < MAX_BALLAST; nCntBallast++)
 	{
@@ -190,7 +190,7 @@ void CBallast::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CBallast::Update(void)
+void CBallast::Update()
 {
 	// 瓦礫の移動カウント加算
 	m_nCntParabola++;
@@ -267,7 +267,7 @@ void CBallast::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CBallast::Draw(void)
+void CBallast::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

@@ -53,7 +53,7 @@ CMessageWin::~CMessageWin()
 //==========================================
 //  初期化処理
 //==========================================
-HRESULT CMessageWin::Init(void)
+HRESULT CMessageWin::Init()
 {
 	// 初期化
 	HRESULT hr = CObject3D::Init();
@@ -85,7 +85,7 @@ HRESULT CMessageWin::Init(void)
 //==========================================
 //  終了処理
 //==========================================
-void CMessageWin::Uninit(void)
+void CMessageWin::Uninit()
 {
 	// 終了
 	CObject3D::Uninit();
@@ -94,7 +94,7 @@ void CMessageWin::Uninit(void)
 //==========================================
 //  更新処理
 //==========================================
-void CMessageWin::Update(void)
+void CMessageWin::Update()
 {
 	/// 移動
 	if (!m_bMove)
@@ -109,7 +109,7 @@ void CMessageWin::Update(void)
 //==========================================
 //  描画処理
 //==========================================
-void CMessageWin::Draw(void)
+void CMessageWin::Draw()
 {
 	// 描画
 	CObject3D::Draw();

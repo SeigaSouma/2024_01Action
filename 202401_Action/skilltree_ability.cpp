@@ -44,7 +44,7 @@ CSkillTree_Ability::~CSkillTree_Ability()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Ability* CSkillTree_Ability::Create(void)
+CSkillTree_Ability* CSkillTree_Ability::Create()
 {
 
 	if (m_pThisPtr == NULL)
@@ -68,7 +68,7 @@ CSkillTree_Ability* CSkillTree_Ability::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Ability::Init(void)
+HRESULT CSkillTree_Ability::Init()
 {
 #if 1
 
@@ -107,7 +107,7 @@ HRESULT CSkillTree_Ability::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Ability::Uninit(void)
+void CSkillTree_Ability::Uninit()
 {
 	if (m_pThisPtr != nullptr)
 	{
@@ -119,7 +119,7 @@ void CSkillTree_Ability::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Ability::Update(void)
+void CSkillTree_Ability::Update()
 {
 	for (const auto& category : m_SkillCategory)
 	{
@@ -138,7 +138,7 @@ void CSkillTree_Ability::Update(void)
 //==========================================================================
 // Jsonからのロード
 //==========================================================================
-void CSkillTree_Ability::LoadJson(void)
+void CSkillTree_Ability::LoadJson()
 {
 	// ファイルからJSONを読み込む
 	std::ifstream file(LOADTEXT);
@@ -157,7 +157,7 @@ void CSkillTree_Ability::LoadJson(void)
 //==========================================================================
 // Jsonへのセーブ
 //==========================================================================
-void CSkillTree_Ability::SaveJson(void)
+void CSkillTree_Ability::SaveJson()
 {
 	// ファイルにキャラクターのデータを書き込む
 	std::ofstream outFile(LOADTEXT);
@@ -177,7 +177,7 @@ void CSkillTree_Ability::SaveJson(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Ability::Draw(void)
+void CSkillTree_Ability::Draw()
 {
 
 }

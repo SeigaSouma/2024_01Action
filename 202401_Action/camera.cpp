@@ -122,6 +122,9 @@ CCamera::CCamera()
 	m_nChasePlayerIndex = 0;					// 追従するプレイヤーのインデックス番号
 	m_RockOnDir = ROCKON_DIR_RIGHT;				// ロックオン時の向き
 	m_stateRockOn = ROCKON_NORMAL;				// ロックオン時の状態
+
+	m_pStateCameraR = nullptr;	// 注視点の状態ポインタ
+
 }
 
 //==========================================================================
@@ -135,7 +138,7 @@ CCamera::~CCamera()
 //==========================================================================
 // カメラの初期化処理
 //==========================================================================
-HRESULT CCamera::Init(void)
+HRESULT CCamera::Init()
 {
 	
 	// ビューポートの設定
@@ -148,6 +151,8 @@ HRESULT CCamera::Init(void)
 	// 視点の代入処理
 	SetCameraV();
 
+	// 注視点の状態設定
+	SetStateCamraR(DEBUG_NEW CStateCameraR());
 	return S_OK;
 }
 
@@ -167,15 +172,19 @@ void CCamera::SetViewPort(MyLib::Vector3 pos, D3DXVECTOR2 size)
 //==========================================================================
 // カメラの終了処理
 //==========================================================================
-void CCamera::Uninit(void)
+void CCamera::Uninit()
 {
-
+	if (m_pStateCameraR != nullptr)
+	{
+		delete m_pStateCameraR;
+		m_pStateCameraR = nullptr;
+	}
 }
 
 //==========================================================================
 // カメラの更新処理
 //==========================================================================
-void CCamera::Update(void)
+void CCamera::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -193,10 +202,9 @@ void CCamera::Update(void)
 	MoveCameraDistance();
 	UpdateSpotLightVec();
 
-	if (m_state == CAMERASTATE_SHAKE)
-	{
-		UpdateState();
-	}
+	// 状態更新
+	UpdateState();
+	
 
 	//#ifdef _DEBUG
 
@@ -243,7 +251,7 @@ void CCamera::Update(void)
 //==========================================================================
 // モード別更新処理
 //==========================================================================
-void CCamera::UpdateByMode(void)
+void CCamera::UpdateByMode()
 {
 	switch (CManager::GetInstance()->GetMode())
 	{
@@ -261,7 +269,7 @@ void CCamera::UpdateByMode(void)
 //==========================================================================
 // 入力機器のカメラ移動
 //==========================================================================
-void CCamera::MoveCameraInput(void)
+void CCamera::MoveCameraInput()
 {
 	// マウスでの移動処理
 	MoveCameraMouse();
@@ -279,8 +287,7 @@ void CCamera::MoveCameraStick(int nIdx)
 	// ゲームパッド情報取得
 	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-	if (m_stateRockOn != ROCKON_COUNTER &&
-		!m_bRockON)
+	if (!m_bRockON)
 	{
 		m_Moverot.y += pInputGamepad->GetStickMoveR(nIdx).x * ROT_MOVE_STICK_Y;
 
@@ -320,7 +327,7 @@ void CCamera::MoveCameraStick(int nIdx)
 //==========================================================================
 // マウスでの移動処理
 //==========================================================================
-void CCamera::MoveCameraMouse(void)
+void CCamera::MoveCameraMouse()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -403,7 +410,7 @@ void CCamera::MoveCameraMouse(void)
 //==========================================================================
 // カメラの視点移動
 //==========================================================================
-void CCamera::MoveCameraV(void)
+void CCamera::MoveCameraV()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -449,7 +456,7 @@ void CCamera::MoveCameraV(void)
 //==========================================================================
 // カメラの注視点移動
 //==========================================================================
-void CCamera::MoveCameraR(void)
+void CCamera::MoveCameraR()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -499,7 +506,7 @@ void CCamera::MoveCameraR(void)
 //==========================================================================
 // カメラの視点・注視点移動
 //==========================================================================
-void CCamera::MoveCameraVR(void)
+void CCamera::MoveCameraVR()
 {
 
 	// 移動量分を加算
@@ -517,7 +524,7 @@ void CCamera::MoveCameraVR(void)
 //==========================================================================
 //  視点・注視点間距離
 //==========================================================================
-void CCamera::MoveCameraDistance(void)
+void CCamera::MoveCameraDistance()
 {
 	// 距離カウンター減算
 	m_nCntDistance--;
@@ -555,7 +562,7 @@ void CCamera::MoveCameraDistance(void)
 //==========================================================================
 // 通常状態のロックオン処理
 //==========================================================================
-void CCamera::RockOnStateNormal(void)
+void CCamera::RockOnStateNormal()
 {
 	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nChasePlayerIndex);
 	MyLib::Vector3 playerpos = pPlayer->GetPosition();
@@ -602,7 +609,6 @@ void CCamera::RockOnStateNormal(void)
 		{
 			m_rotDest.z = DEFAULT_GAMEROT.z;
 		}
-			//m_TargetPos.y - m_RockOnPos.y;
 
 		UtilFunc::Transformation::RotNormalize(m_rotDest);
 
@@ -617,6 +623,9 @@ void CCamera::RockOnStateNormal(void)
 	}
 	else
 	{
+		// 通常状態
+		SetStateCamraR(DEBUG_NEW CStateCameraR());
+
 		m_bRockON = false;
 
 		// 目標の長さ設定
@@ -634,7 +643,7 @@ void CCamera::RockOnStateNormal(void)
 //==========================================================================
 // カウンター状態のロックオン処理
 //==========================================================================
-void CCamera::RockOnStateCounter(void)
+void CCamera::RockOnStateCounter()
 {
 	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nChasePlayerIndex);
 	MyLib::Vector3 playerpos = pPlayer->GetPosition();
@@ -658,7 +667,7 @@ void CCamera::RockOnStateCounter(void)
 //==========================================================================
 // カメラの視点代入処理
 //==========================================================================
-void CCamera::SetCameraV(void)
+void CCamera::SetCameraV()
 {
 
 	switch (CManager::GetInstance()->GetMode())
@@ -694,7 +703,7 @@ void CCamera::SetCameraV(void)
 //==========================================================================
 // カメラの視点代入処理(タイトル)
 //==========================================================================
-void CCamera::SetCameraVTitle(void)
+void CCamera::SetCameraVTitle()
 {
 	if (m_bFollow == false)
 	{// 追従しないとき
@@ -767,7 +776,7 @@ void CCamera::SetCameraVTitle(void)
 //==========================================================================
 // カメラの視点代入処理(ゲーム)
 //==========================================================================
-void CCamera::SetCameraVGame(void)
+void CCamera::SetCameraVGame()
 {
 	if (m_bFollow == false)
 	{// 追従しないとき
@@ -857,7 +866,7 @@ void CCamera::SetCameraVGame(void)
 //==========================================================================
 // カメラの視点代入処理(リザルト)
 //==========================================================================
-void CCamera::SetCameraVResult(void)
+void CCamera::SetCameraVResult()
 {
 	// 視点の代入処理
 	m_posV.x = m_posR.x + cosf(m_rot.z) * sinf(m_rot.y) * -m_fDistance;
@@ -868,7 +877,7 @@ void CCamera::SetCameraVResult(void)
 //==========================================================================
 // カメラの視点代入処理(ランキング)
 //==========================================================================
-void CCamera::SetCameraVRanking(void)
+void CCamera::SetCameraVRanking()
 {
 	// 視点の代入処理
 	m_posV = MyLib::Vector3(RANKING_POS_V.x, RANKING_POS_V.y, RANKING_POS_V.z);
@@ -877,7 +886,7 @@ void CCamera::SetCameraVRanking(void)
 //==========================================================================
 // カメラの注視点代入処理
 //==========================================================================
-void CCamera::SetCameraR(void)
+void CCamera::SetCameraR()
 {
 
 	switch (CManager::GetInstance()->GetMode())
@@ -913,7 +922,7 @@ void CCamera::SetCameraR(void)
 //==========================================================================
 // カメラの注視点代入処理(タイトル)
 //==========================================================================
-void CCamera::SetCameraRTitle(void)
+void CCamera::SetCameraRTitle()
 {
 	if (m_bFollow == false)
 	{// 追従しないとき
@@ -937,7 +946,7 @@ void CCamera::SetCameraRTitle(void)
 //==========================================================================
 // カメラの注視点代入処理(ゲーム)
 //==========================================================================
-void CCamera::SetCameraRGame(void)
+void CCamera::SetCameraRGame()
 {
 	if (m_bFollow == false)
 	{// 追従しないとき
@@ -976,18 +985,8 @@ void CCamera::SetCameraRGame(void)
 		m_fDiffHeight += (m_fDiffHeightDest - m_fDiffHeight) * 0.01f;
 
 		// 注視点の代入処理
-		if (m_bRockON)
-		{
-			m_posRDest.x = (m_TargetPos.x + sinf(m_rot.y) * 0.0f);
-			m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * 0.0f);
-			m_posRDest.y = fYcamera - m_fDiffHeight;
-		}
-		else
-		{
-			m_posRDest.x = (m_TargetPos.x + sinf(m_rot.y) * DISATNCE_POSR_PLAYER);
-			m_posRDest.z = (m_TargetPos.z + cosf(m_rot.y) * DISATNCE_POSR_PLAYER);
-			m_posRDest.y = fYcamera - m_fDiffHeight;
-		}
+		m_pStateCameraR->SetCameraR(this);
+		m_posRDest.y = fYcamera - m_fDiffHeight;
 
 		// 補正する
 		m_posR += (m_posRDest - m_posR) * (0.08f * MULTIPLY_POSR_CORRECTION);
@@ -997,7 +996,7 @@ void CCamera::SetCameraRGame(void)
 //==========================================================================
 // カメラの注視点代入処理(リザルト)
 //==========================================================================
-void CCamera::SetCameraRResult(void)
+void CCamera::SetCameraRResult()
 {
 	// 注視点の代入処理
 	m_posR.x = m_posV.x + cosf(m_rot.z) * sinf(m_rot.y) * m_fDistance;
@@ -1008,7 +1007,7 @@ void CCamera::SetCameraRResult(void)
 //==========================================================================
 // カメラの注視点代入処理(ランキング)
 //==========================================================================
-void CCamera::SetCameraRRanking(void)
+void CCamera::SetCameraRRanking()
 {
 	// 注視点の代入処理
 	m_posR.x = m_posV.x + cosf(m_rot.z) * sinf(m_rot.y) * m_fDistance;
@@ -1019,7 +1018,7 @@ void CCamera::SetCameraRRanking(void)
 //==========================================================================
 // カメラの背面自動追従
 //==========================================================================
-void CCamera::MoveCameraFollow(void)
+void CCamera::MoveCameraFollow()
 {
 
 }
@@ -1027,7 +1026,7 @@ void CCamera::MoveCameraFollow(void)
 //==========================================================================
 // カメラの設定処理
 //==========================================================================
-void CCamera::SetCamera(void)
+void CCamera::SetCamera()
 {
 
 	// デバイスの取得
@@ -1066,7 +1065,7 @@ void CCamera::SetCamera(void)
 //==========================================================================
 // スポットライトのベクトル更新
 //==========================================================================
-void CCamera::UpdateSpotLightVec(void)
+void CCamera::UpdateSpotLightVec()
 {
 	// 方向ベクトル
 	MyLib::Vector3 vec = mylib_const::DEFAULT_VECTOR3;
@@ -1082,14 +1081,8 @@ void CCamera::UpdateSpotLightVec(void)
 }
 
 //==========================================================================
-/**
-@brief	目標の長さ設定
-@param	fLength			[in]	目標の長さ
-@param	nCntTime		[in]	減算するまでの時間
-@param	DecrementValue	[in]	減少量
-@param	fCorrection		[in]	減少補正係数
-@return	void
-*/
+// 目標の長さ設定
+//==========================================================================
 void CCamera::SetLenDest(float fLength, int nCntTime, float DecrementValue, float fCorrection)
 {
 	// 目標の距離設定
@@ -1132,36 +1125,9 @@ void CCamera::SetShake(int nTime, float fLength, float fLengthY)
 }
 
 //==========================================================================
-// カメラの振動処理
-//==========================================================================
-void CCamera::Shake(void)
-{
-	// 長さ取得
-	int nLength = (int)m_nShakeLength;
-	int nLengthY = (int)m_nShakeLengthY;
-
-	m_fMoveShake = (float)UtilFunc::Transformation::Random(-nLength, nLength) * sinf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);	// 揺れの移動量
-	m_fMoveShakeY = (float)UtilFunc::Transformation::Random(-nLengthY, nLengthY);						// Yの揺れの移動量
-
-	// 視点の代入処理
-	m_posV.x += (float)UtilFunc::Transformation::Random(-nLength, nLength) * sinf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
-	m_posV.y += (float)UtilFunc::Transformation::Random(-nLengthY, nLengthY);
-	m_posV.z += (float)UtilFunc::Transformation::Random(-nLength, nLength) * cosf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
-
-	// 注視点の代入処理
-	m_posR.x += (float)UtilFunc::Transformation::Random(-nLength, nLength) * sinf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
-	m_posR.y += (float)UtilFunc::Transformation::Random(-nLengthY, nLengthY);
-	m_posR.z += (float)UtilFunc::Transformation::Random(-nLength, nLength) * cosf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
-
-	// 慣性補正
-	UtilFunc::Correction::InertiaCorrection(m_nShakeLength, 0.0f, 0.1f);
-	UtilFunc::Correction::InertiaCorrection(m_nShakeLengthY, 0.0f, 0.1f);
-}
-
-//==========================================================================
 // カメラの状態更新処理
 //==========================================================================
-void CCamera::UpdateState(void)
+void CCamera::UpdateState()
 {
 	switch (m_state)
 	{
@@ -1209,7 +1175,46 @@ void CCamera::UpdateState(void)
 			}
 		}
 		break;
+
+	case CAMERASTATE_PRAYER:
+		StatePrayer();
+		break;
 	}
+}
+
+//==========================================================================
+// カメラの振動処理
+//==========================================================================
+void CCamera::Shake()
+{
+	// 長さ取得
+	int nLength = (int)m_nShakeLength;
+	int nLengthY = (int)m_nShakeLengthY;
+
+	m_fMoveShake = (float)UtilFunc::Transformation::Random(-nLength, nLength) * sinf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);	// 揺れの移動量
+	m_fMoveShakeY = (float)UtilFunc::Transformation::Random(-nLengthY, nLengthY);						// Yの揺れの移動量
+
+	// 視点の代入処理
+	m_posV.x += (float)UtilFunc::Transformation::Random(-nLength, nLength) * sinf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
+	m_posV.y += (float)UtilFunc::Transformation::Random(-nLengthY, nLengthY);
+	m_posV.z += (float)UtilFunc::Transformation::Random(-nLength, nLength) * cosf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
+
+	// 注視点の代入処理
+	m_posR.x += (float)UtilFunc::Transformation::Random(-nLength, nLength) * sinf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
+	m_posR.y += (float)UtilFunc::Transformation::Random(-nLengthY, nLengthY);
+	m_posR.z += (float)UtilFunc::Transformation::Random(-nLength, nLength) * cosf((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f);
+
+	// 慣性補正
+	UtilFunc::Correction::InertiaCorrection(m_nShakeLength, 0.0f, 0.1f);
+	UtilFunc::Correction::InertiaCorrection(m_nShakeLengthY, 0.0f, 0.1f);
+}
+
+//==========================================================================
+// 祈り更新処理
+//==========================================================================
+void CCamera::StatePrayer()
+{
+	
 }
 
 //==========================================================================
@@ -1217,7 +1222,9 @@ void CCamera::UpdateState(void)
 //==========================================================================
 void CCamera::Reset(CScene::MODE mode)
 {
-	
+	// 通常状態
+	SetStateCamraR(DEBUG_NEW CStateCameraR());
+
 	m_bFollow = true;	// 追従するかどうか
 	m_bRockON = false;	// ロックオンするか
 
@@ -1269,7 +1276,7 @@ void CCamera::Reset(CScene::MODE mode)
 //==========================================================================
 // ゲームのリセット
 //==========================================================================
-void CCamera::ResetGame(void)
+void CCamera::ResetGame()
 {
 	m_posR = MyLib::Vector3(0.0f, 200.0f, 0.0f);				// 注視点(見たい場所)
 	m_posV = MyLib::Vector3(0.0f, 300.0f, m_posR.z + -400.0f);	// 視点(カメラの位置)
@@ -1299,7 +1306,7 @@ void CCamera::ResetGame(void)
 //==========================================================================
 // リセット
 //==========================================================================
-void CCamera::ResetBoss(void)
+void CCamera::ResetBoss()
 {
 	ResetGame();
 }
@@ -1349,7 +1356,7 @@ bool CCamera::IsOnScreen(const MyLib::Vector3 pos)
 //==========================================================================
 // タイトルのリセット
 //==========================================================================
-void CCamera::ResetTitle(void)
+void CCamera::ResetTitle()
 {
 	m_posR = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 注視点(見たい場所)
 	m_posV = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 視点(カメラの位置)
@@ -1379,7 +1386,7 @@ void CCamera::ResetTitle(void)
 //==========================================================================
 // リザルトリセット
 //==========================================================================
-void CCamera::ResetResult(void)
+void CCamera::ResetResult()
 {
 	m_posR = MyLib::Vector3(0.0f, 300.0f, 30.0f);	// 注視点(見たい場所)
 	m_posV = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 視点(カメラの位置)
@@ -1409,7 +1416,7 @@ void CCamera::ResetResult(void)
 //==========================================================================
 // ランキングのリセット
 //==========================================================================
-void CCamera::ResetRanking(void)
+void CCamera::ResetRanking()
 {
 	m_posR = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 注視点(見たい場所)
 	m_posV = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 視点(カメラの位置)
@@ -1449,7 +1456,7 @@ void CCamera::ResetRanking(void)
 //==========================================================================
 // カメラの位置取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetPositionV(void) const
+MyLib::Vector3 CCamera::GetPositionV() const
 {
 	return m_posV;
 }
@@ -1457,7 +1464,7 @@ MyLib::Vector3 CCamera::GetPositionV(void) const
 //==========================================================================
 // カメラの注視点取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetPositionR(void) const
+MyLib::Vector3 CCamera::GetPositionR() const
 {
 	return m_posR;
 }
@@ -1473,7 +1480,7 @@ void CCamera::SetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetRotation(void) const
+MyLib::Vector3 CCamera::GetRotation() const
 {
 	return m_rot;
 }
@@ -1489,7 +1496,7 @@ void CCamera::SetDestRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 目標の向き取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetDestRotation(void)
+MyLib::Vector3 CCamera::GetDestRotation()
 {
 	return m_rotVDest;
 }
@@ -1506,7 +1513,7 @@ void CCamera::SetTargetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 目標の位置取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetTargetPosition(void)
+MyLib::Vector3 CCamera::GetTargetPosition()
 {
 	return m_TargetPos;
 }
@@ -1522,7 +1529,7 @@ void CCamera::SetRockOnPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // ロックオンの位置取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetRockOnPosition(void)
+MyLib::Vector3 CCamera::GetRockOnPosition()
 {
 	return m_RockOnPos;
 }
@@ -1540,6 +1547,15 @@ void CCamera::SetRockOnDistance(const float distance)
 //==========================================================================
 void CCamera::SetRockOn(const MyLib::Vector3 pos, bool bSet)
 {
+	if (bSet)
+	{
+		SetStateCamraR(DEBUG_NEW CStateCameraR_RockOn());
+	}
+	else
+	{
+		SetStateCamraR(DEBUG_NEW CStateCameraR());
+	}
+
 	m_RockOnPos = pos;
 	m_bRockON = bSet;
 }
@@ -1556,7 +1572,7 @@ void CCamera::SetTargetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 追従目標の向き取得
 //==========================================================================
-MyLib::Vector3 CCamera::GetTargetRotation(void)
+MyLib::Vector3 CCamera::GetTargetRotation()
 {
 	return m_TargetRot;
 }
@@ -1572,7 +1588,7 @@ void CCamera::SetOriginDistance(float fDistance)
 //==========================================================================
 // 元になるカメラの距離取得
 //==========================================================================
-float CCamera::GetOriginDistance(void)
+float CCamera::GetOriginDistance()
 {
 	return m_fOriginDistance;
 }
@@ -1588,7 +1604,7 @@ void CCamera::SetPlayerChaseIndex(int nIdx)
 //==========================================================================
 // 追従するプレイヤーのインデックス番号取得
 //==========================================================================
-int CCamera::GetPlayerChaseIndex(void)
+int CCamera::GetPlayerChaseIndex()
 {
 	return m_nChasePlayerIndex;
 }
@@ -1604,7 +1620,7 @@ void CCamera::SetEnableFollow(bool bFollow)
 //==========================================================================
 // 追従状態取得
 //==========================================================================
-bool CCamera::IsFollow(void)
+bool CCamera::IsFollow()
 {
 	return m_bFollow;
 }
@@ -1637,4 +1653,50 @@ void CCamera::SetRockOnState(RockOnState state)
 	}
 
 	m_stateRockOn = state;
+}
+
+//==========================================================================
+// 注視点の状態設定
+//==========================================================================
+void CCamera::SetStateCamraR(CStateCameraR* state)
+{
+	delete m_pStateCameraR;
+	m_pStateCameraR = state;
+}
+
+//==========================================================================
+// 通常の注視点設定
+//==========================================================================
+void CStateCameraR::SetCameraR(CCamera* pCamera)
+{
+	MyLib::Vector3 targetpos = pCamera->GetTargetPosition();
+	MyLib::Vector3 rot = pCamera->GetRotation();
+
+	MyLib::Vector3 posdest;
+	posdest.x = (targetpos.x + sinf(rot.y) * DISATNCE_POSR_PLAYER);
+	posdest.z = (targetpos.z + cosf(rot.y) * DISATNCE_POSR_PLAYER);
+	pCamera->SetPositionRDest(posdest);
+}
+
+//==========================================================================
+// ロックオン中の注視点設定
+//==========================================================================
+void CStateCameraR_RockOn::SetCameraR(CCamera* pCamera)
+{
+	MyLib::Vector3 targetpos = pCamera->GetTargetPosition();
+	MyLib::Vector3 rot = pCamera->GetRotation();
+
+	MyLib::Vector3 posdest;
+	posdest.x = (targetpos.x);
+	posdest.z = (targetpos.z);
+	pCamera->SetPositionRDest(posdest);
+}
+
+//==========================================================================
+// 祈り中の注視点設定
+//==========================================================================
+void CStateCameraR_Prayer::SetCameraR(CCamera* pCamera)
+{
+	MyLib::Vector3 targetpos = pCamera->GetTargetPosition();
+	pCamera->SetPositionRDest(targetpos);
 }

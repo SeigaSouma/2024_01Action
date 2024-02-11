@@ -27,16 +27,16 @@ public:
 	~CPause();
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	void SetPause(void);	// 使用状況変更
-	bool IsPause(void);		// 使用状況取得
+	void SetPause();	// 使用状況変更
+	bool IsPause();		// 使用状況取得
 
-	CObject2D **GetMyObject(void);
-	static CPause *Create(void);
+	CObject2D **GetMyObject();
+	static CPause *Create();
 
 private:
 

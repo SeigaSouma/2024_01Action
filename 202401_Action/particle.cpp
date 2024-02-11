@@ -22,19 +22,19 @@ float m_fMove;			// 移動量
 int m_nLife;			// 寿命
 TYPE m_nType;			// 種類
 
-HRESULT Init(void);
-void Smoke(void);
-void SmokeRed(void);
-void SmokeYel(void);
-void EnemyFade(void);
-void OffSetting(void);
-void Fire_WallTorch(void);
-void Fire_StandTorch(void);
+HRESULT Init();
+void Smoke();
+void SmokeRed();
+void SmokeYel();
+void EnemyFade();
+void OffSetting();
+void Fire_WallTorch();
+void Fire_StandTorch();
 
 //==========================================================================
 // パーティクルの初期化処理
 //==========================================================================
-HRESULT Init(void)
+HRESULT Init()
 {
 
 	// パーティクルの情報の初期化
@@ -113,7 +113,7 @@ void my_particle::Create(const MyLib::Vector3& pos, TYPE nType)
 //==========================================================================
 // チェック用
 //==========================================================================
-void Check(void)
+void Check()
 {
 	for (int nCntUse = 0; nCntUse < 1; nCntUse++)
 	{
@@ -138,7 +138,7 @@ void Check(void)
 //==========================================================================
 // チェック用
 //==========================================================================
-void Check2D(void)
+void Check2D()
 {
 	for (int nCntUse = 0; nCntUse < 5; nCntUse++)
 	{
@@ -169,7 +169,7 @@ void Check2D(void)
 //==========================================================================
 // 煙のパーティクル
 //==========================================================================
-void Smoke(void)
+void Smoke()
 {
 	
 	for (int nCntUse = 0; nCntUse < 3; nCntUse++)
@@ -216,7 +216,7 @@ void Smoke(void)
 //==========================================================================
 // 煙のパーティクル(赤)
 //==========================================================================
-void SmokeRed(void)
+void SmokeRed()
 {
 
 	for (int nCntUse = 0; nCntUse < 10; nCntUse++)
@@ -263,7 +263,7 @@ void SmokeRed(void)
 //==========================================================================
 // 煙のパーティクル(黄)
 //==========================================================================
-void SmokeYel(void)
+void SmokeYel()
 {
 
 	for (int nCntUse = 0; nCntUse < 10; nCntUse++)
@@ -310,7 +310,7 @@ void SmokeYel(void)
 //==========================================================================
 //打ち消しのパーティクル
 //==========================================================================
-void OffSetting(void)
+void OffSetting()
 {
 	float fAngle, fMove;
 
@@ -346,7 +346,7 @@ void OffSetting(void)
 //==========================================================================
 // 敵フェード
 //==========================================================================
-void EnemyFade(void)
+void EnemyFade()
 {
 	for (int nCntUse = 0; nCntUse < 15; nCntUse++)
 	{
@@ -402,7 +402,7 @@ void EnemyFade(void)
 //==========================================================================
 // 置き松明
 //==========================================================================
-void Fire_StandTorch(void)
+void Fire_StandTorch()
 {
 	for (int nCntUse = 0; nCntUse < 2; nCntUse++)
 	{
@@ -451,7 +451,7 @@ void Fire_StandTorch(void)
 //==========================================================================
 // 壁松明
 //==========================================================================
-void Fire_WallTorch(void)
+void Fire_WallTorch()
 {
 	for (int nCntUse = 0; nCntUse < 2; nCntUse++)
 	{

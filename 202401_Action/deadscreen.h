@@ -33,10 +33,10 @@ public:
 	~CDeadScreen();
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
 	void SetState(eState state) { m_state = state; }	// 状態設定
 	static CDeadScreen* Create(float fadetime);	// 生成処理
@@ -46,15 +46,15 @@ private:
 	//=============================
 	// 関数ポインタ
 	//=============================
-	typedef void(CDeadScreen::* STATE_FUNC)(void);
+	typedef void(CDeadScreen::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
-	void StateNone(void);		// なにもなし
-	void StateFadeIn(void);		// フェードイン
-	void StateFadeOut(void);	// フェードアウト
+	void StateNone();		// なにもなし
+	void StateFadeIn();		// フェードイン
+	void StateFadeOut();	// フェードアウト
 
 	//=============================
 	// メンバ変数

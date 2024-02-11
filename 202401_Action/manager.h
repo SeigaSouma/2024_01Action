@@ -52,41 +52,41 @@ public:
 	~CManager();
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void Load(void);// 読み込み
+	void Uninit();
+	void Update();
+	void Draw();
+	void Load();// 読み込み
 
-	static CManager *Create(void);		// 生成処理
-	static CManager *GetInstance(void);	// インスタンス取得
+	static CManager *Create();		// 生成処理
+	static CManager *GetInstance();	// インスタンス取得
 
-	CRenderer *GetRenderer(void);
-	CInputKeyboard *GetInputKeyboard(void);
-	CInputGamepad *GetInputGamepad(void);
-	CInputMouse *GetInputMouse(void);
-	CSound *GetSound(void);
-	CDebugProc *GetDebugProc(void);
-	CLight *GetLight(void);
-	CCamera *GetCamera(void);
-	CEdit *GetEdit(void);
-	CFade *GetFade(void);
-	CInstantFade *GetInstantFade(void);	// 遷移なしフェード取得
-	CBlackFrame *GetBlackFrame(void);	// 黒フレーム取得
-	CPause *GetPause(void);
-	CResultManager *GetResultManager(void);	// リザルトマネージャ取得
-	CRankingManager *GetRankingManager(void);	// ランキングマネージャのオブジェクト
-	CScene *GetScene(void);		// シーン取得
+	CRenderer *GetRenderer();
+	CInputKeyboard *GetInputKeyboard();
+	CInputGamepad *GetInputGamepad();
+	CInputMouse *GetInputMouse();
+	CSound *GetSound();
+	CDebugProc *GetDebugProc();
+	CLight *GetLight();
+	CCamera *GetCamera();
+	CEdit *GetEdit();
+	CFade *GetFade();
+	CInstantFade *GetInstantFade();	// 遷移なしフェード取得
+	CBlackFrame *GetBlackFrame();	// 黒フレーム取得
+	CPause *GetPause();
+	CResultManager *GetResultManager();	// リザルトマネージャ取得
+	CRankingManager *GetRankingManager();	// ランキングマネージャのオブジェクト
+	CScene *GetScene();		// シーン取得
 
-	int GetNumPlayer(void);			// プレイヤーの数取得
+	int GetNumPlayer();			// プレイヤーの数取得
 	void SetNumPlayer(int nNum);	// プレイヤーの数設定
-	float GetDeltaTime(void);								// 経過時間取得
+	float GetDeltaTime();								// 経過時間取得
 	void SetMode(CScene::MODE mode);					// 次のモード設定
-	CScene::MODE GetMode(void);							// 現在のモード取得
+	CScene::MODE GetMode();							// 現在のモード取得
 	void SetEnableHitStop(int nCntHitStop);				// ヒットストップの設定
-	bool IsWireframe(void) { return m_bWireframe; }		// ワイヤーフレーム
-	bool IsHitStop(void) { return m_bHitStop; }			// ワイヤーフレーム
-	CScene::MODE GetOldMode(void) { return m_OldMode; }	// 前回のモード取得
-	bool IsLoadComplete(void) { return m_bLoadComplete; }
+	bool IsWireframe() { return m_bWireframe; }		// ワイヤーフレーム
+	bool IsHitStop() { return m_bHitStop; }			// ワイヤーフレーム
+	CScene::MODE GetOldMode() { return m_OldMode; }	// 前回のモード取得
+	bool IsLoadComplete() { return m_bLoadComplete; }
 private:
 
 	void Reset(CScene::MODE mode);

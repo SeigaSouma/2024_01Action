@@ -39,21 +39,21 @@ public:
 	~CElevation();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void);
+	virtual HRESULT Init();
 	virtual HRESULT Init(const char *pText);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	virtual void SetVtx(void);
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
+	virtual void SetVtx();
 
-	void Release(void);
-	bool IsEdit(void);	// エディットの判定
-	void Save(void);	// セーブ
+	void Release();
+	bool IsEdit();	// エディットの判定
+	void Save();	// セーブ
 	HRESULT Load(const char *pText);	// ロード
-	bool IsChange(void) { return m_bChange; }
+	bool IsChange() { return m_bChange; }
 
 	static CElevation *Create(const char *pText);
-	CElevation *GetElevation(void);
+	CElevation *GetElevation();
 	float GetHeight(const MyLib::Vector3& pos, bool *pLand);	// 高さ取得
 	bool IsHit(const MyLib::Vector3& pos);	// 当たったかの判定
 
@@ -61,7 +61,7 @@ protected:
 
 private:
 
-	void UpdateState(void);				// 状態更新処理
+	void UpdateState();				// 状態更新処理
 	void UPVtxField(MyLib::Vector3 pos);	// 頂点上げ下げ(デバッグ)
 
 	Info m_aInfo;	// 起伏の情報

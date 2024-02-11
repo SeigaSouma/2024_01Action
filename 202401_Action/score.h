@@ -27,23 +27,23 @@ public:
 	CScore(int nPriority = 6);
 	~CScore();
 
-	static CScore *Create(void);
+	static CScore *Create();
 	static CScore *Create(MyLib::Vector3 pos);
 	void SetPosition(const MyLib::Vector3 pos);
-	MyLib::Vector3 GetPosition(void) const;
+	MyLib::Vector3 GetPosition() const;
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(MyLib::Vector3 pos);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Uninit();
+	void Update();
+	void Draw();
 
 	void Add(int nValue);
 
 private:
 	
-	void SetValue(void);
+	void SetValue();
 
 	int m_nNum;								// 値
 	CMultiNumber *m_apNumber;			// 数字のオブジェクト

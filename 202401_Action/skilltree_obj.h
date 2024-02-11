@@ -23,13 +23,17 @@ public:
 	~CSkillTree_Obj();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
+
+	// その他関数
+	void StartUp();	// 起動処理
 
 	// 静的関数
-	static CSkillTree_Obj *Create(void);
+	static CSkillTree_Obj* GetInstance();		// インスタンス取得
+	static CSkillTree_Obj *Create();
 
 private:
 
@@ -39,25 +43,25 @@ private:
 	enum STATE	// 状態
 	{
 		STATE_NONE = 0,	// 何もなし
-		STATE_TRANSFER,	// 転移
+		STATE_STARTUP,	// 起動
 		STATE_MAX
 	};
 
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CSkillTree_Obj::*STATE_FUNC)(void);
+	typedef void(CSkillTree_Obj::*STATE_FUNC)();
 	static STATE_FUNC m_StateFuncList[];	// 状態関数のリスト
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 状態関数
-	void StateNone(void);		// なにもなし
-	void StateTransfer(void);	// 転移
+	void StateNone();		// なにもなし
+	void StateStartUp();	// 起動
 
 	// その他関数
-	void CollisionPlayer(void);	// プレイヤーとの当たり判定処理
+	void CollisionPlayer();	// プレイヤーとの当たり判定処理
 
 	//=============================
 	// メンバ変数
@@ -65,7 +69,7 @@ private:
 	float m_fStateTime;	// 状態カウンター
 	STATE m_state;		// 状態
 	Effekseer::Handle* m_pWeaponHandle;		// エフェクトハンドルのポインタ
-
+	static CSkillTree_Obj* m_pThisPtr;		// 自身のポインタ
 };
 
 

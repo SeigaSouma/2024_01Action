@@ -22,10 +22,10 @@ public:
 	~CSkillTree_Command();
 	
 	//  オーバーライド関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override {}
-	void Draw(void) override {}
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override {}
+	void Draw() override {}
 
 	void SetAlpha(float alpha);	// 不透明度設定
 	static CSkillTree_Command* Create();

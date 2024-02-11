@@ -69,10 +69,10 @@ public:
 
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 	void SetState(STATE state);		// 状態設定
 	STATE GetState() { return m_state; }
@@ -81,10 +81,10 @@ public:
 	virtual void CounterHitResponse();	// ヒット時の反応
 
 	void SetSpawnPosition(MyLib::Vector3 pos);	// スポーン地点設定
-	MyLib::Vector3 GetSpawnPosition(void);	// スポーン地点取得
+	MyLib::Vector3 GetSpawnPosition();	// スポーン地点取得
 	void SetTargetPosition(MyLib::Vector3 pos) { m_TargetPosition = pos; }	// 目標の位置設定
 	void SetEnableRockOn(bool bSet) { m_bRockOnAccepting = bSet; }
-	bool IsRockOnAccept(void) { return m_bRockOnAccepting; }
+	bool IsRockOnAccept() { return m_bRockOnAccepting; }
 
 
 	// エフェクシア
@@ -95,12 +95,12 @@ public:
 	void SetMotion(int motionIdx);	// モーションの設定
 
 	HRESULT RoadText(const char *pFileName);
-	virtual void Kill(void);	// 削除
+	virtual void Kill();	// 削除
 	void SetParent(CEnemy *pParent);		// 親のポインタ設定
 	void SetOriginRotation(MyLib::Vector3 rot);	// 元の向き
-	CEnemy *GetEnemy(void);
+	CEnemy *GetEnemy();
 	TYPE GetType() { return m_type; }	// 種類取得
-	static CListManager<CEnemy> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CEnemy> GetListObj() { return m_List; }	// リスト取得
 	static CEnemy* Create(const char* pFileName, MyLib::Vector3 pos, TYPE type = TYPE_BOSS);
 
 protected:
@@ -131,32 +131,32 @@ protected:
 		float fLength;		// 長さ
 	};
 
-	virtual void ProcessLanding(void);	// 着地時処理
+	virtual void ProcessLanding();	// 着地時処理
 	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
 	virtual void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
 	virtual void ChaseMove(float fMove);	// 追い掛け移動
-	virtual void RotationTarget(void);		// ターゲットの方を向く
+	virtual void RotationTarget();		// ターゲットの方を向く
 	virtual bool CalcLenPlayer(float fLen); // プレイヤーとの距離判定
-	virtual void MoveRotation(void);		// 移動方向を向く
-	virtual void Move(void);				// 移動
+	virtual void MoveRotation();		// 移動方向を向く
+	virtual void Move();				// 移動
 
-	virtual void UpdateAction(void);		// 行動更新
-	virtual void ActionSet(void) = 0;		// 行動の設定
+	virtual void UpdateAction();		// 行動更新
+	virtual void ActionSet() = 0;		// 行動の設定
 
 	// 状態更新系
-	virtual void StateNone(void);			// 何もない状態
-	virtual void SpawnWait(void);			// スポーン待機
-	virtual void Spawn(void);				// スポーン
-	virtual void Damage(void);				// ダメージ
-	virtual void Dead(void);				// 死亡
-	virtual void FadeOut(void);				// フェードアウト
-	virtual void PlayerChase(void);			// プレイヤー追従
-	virtual void ParentChase(void);			// 親追従
-	virtual void StateAttack(void);			// 攻撃処理
-	virtual void TriggerChasePlayer(void);	// プレイヤー追従ONにするトリガー
-	virtual void ChangeToAttackState(void);	// 攻撃状態移行処理
-	virtual void StateWait(void);			// 待機処理
-	virtual void StateDown(void);			// ダウン状態
+	virtual void StateNone();			// 何もない状態
+	virtual void SpawnWait();			// スポーン待機
+	virtual void Spawn();				// スポーン
+	virtual void Damage();				// ダメージ
+	virtual void Dead();				// 死亡
+	virtual void FadeOut();				// フェードアウト
+	virtual void PlayerChase();			// プレイヤー追従
+	virtual void ParentChase();			// 親追従
+	virtual void StateAttack();			// 攻撃処理
+	virtual void TriggerChasePlayer();	// プレイヤー追従ONにするトリガー
+	virtual void ChangeToAttackState();	// 攻撃状態移行処理
+	virtual void StateWait();			// 待機処理
+	virtual void StateDown();			// ダウン状態
 
 	STATE m_state;							// 状態
 	STATE m_Oldstate;						// 前回の状態
@@ -188,14 +188,14 @@ private:
 		MOTION_MAX
 	};
 	
-	void UpdateState(void);					// 状態更新処理
-	virtual void UpdateStateByType(void);	// 種類別状態更新処理
-	virtual void UpdateByType(void);		// 種類別更新処理
-	void Collision(void);					// 当たり判定
-	virtual void MotionSet(void) = 0;		// モーションの設定
+	void UpdateState();					// 状態更新処理
+	virtual void UpdateStateByType();	// 種類別状態更新処理
+	virtual void UpdateByType();		// 種類別更新処理
+	void Collision();					// 当たり判定
+	virtual void MotionSet() = 0;		// モーションの設定
 	void RegistrChild(CEnemy *pChild);
 	void ResetChild(CEnemy *pChild);
-	void LimitArea(void); // 大人の壁判定
+	void LimitArea(); // 大人の壁判定
 
 	//=============================
 	// メンバ変数

@@ -50,7 +50,7 @@ CBlackFrame::~CBlackFrame()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CBlackFrame *CBlackFrame::Create(void)
+CBlackFrame *CBlackFrame::Create()
 {
 	// 生成用のオブジェクト
 	CBlackFrame *pTitleScreen = NULL;
@@ -77,7 +77,7 @@ CBlackFrame *CBlackFrame::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CBlackFrame::Init(void)
+HRESULT CBlackFrame::Init()
 {
 	
 	for (int nCntSelect = 0; nCntSelect < VTX_MAX; nCntSelect++)
@@ -117,7 +117,7 @@ HRESULT CBlackFrame::Init(void)
 //==========================================================================
 // リセット
 //==========================================================================
-void CBlackFrame::Reset(void)
+void CBlackFrame::Reset()
 {
 	m_state = STATE_OUTCOMPLETION;
 	m_nCntMove = 0;
@@ -147,7 +147,7 @@ void CBlackFrame::Reset(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CBlackFrame::Uninit(void)
+void CBlackFrame::Uninit()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_MAX; nCntSelect++)
 	{
@@ -165,7 +165,7 @@ void CBlackFrame::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CBlackFrame::Update(void)
+void CBlackFrame::Update()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_MAX; nCntSelect++)
 	{
@@ -288,7 +288,7 @@ void CBlackFrame::StateOut(int nCntVtx)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CBlackFrame::Draw(void)
+void CBlackFrame::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

@@ -50,22 +50,22 @@ public:
 	CEnemyManager();
 	~CEnemyManager();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
 
 	static CEnemyManager *Create(const std::string pTextFile);
 	HRESULT ReadText(const std::string pTextFile);	// 外部ファイル読み込み処理
-	void SetStageEnemy(void);	// ステージ毎の敵配置
-	void SetStageBoss(void);	// ボスステージの敵配置
+	void SetStageEnemy();	// ステージ毎の敵配置
+	void SetStageBoss();	// ボスステージの敵配置
 	CEnemy **SetEnemy(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPattern);	// 敵配置
-	int GetPatternNum(void);
+	int GetPatternNum();
 
-	bool IsChangeStage(void) { return m_bChangeStage; }	// ステージ変更中か
+	bool IsChangeStage() { return m_bChangeStage; }	// ステージ変更中か
 	void SetEnableChangeStage(bool bChange) { m_bChangeStage = bChange; }	// ステージ変更の状態切り替え
-	STATE GetState(void) { return m_state; }	// 状態取得
+	STATE GetState() { return m_state; }	// 状態取得
 	Pattern GetPattern(int nPattern);	// パターン取得
-	CEnemyBoss *GetBoss(void);		// ボス取得
+	CEnemyBoss *GetBoss();		// ボス取得
 	const char *GetMotionFilename(int nType);
 protected:
 

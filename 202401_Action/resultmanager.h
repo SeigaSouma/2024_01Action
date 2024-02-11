@@ -26,15 +26,15 @@ public:
 	CResultManager();
 	~CResultManager();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Reset(void);	// リセット
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Reset();	// リセット
 
 	void AddScore(int nValue);			// スコア加算
-	int GetBaseScore(void);			// 元のスコアの取得処理
-	int GetToatalScore(void);			// 最終スコアの取得処理
-	static CResultManager *Create(void);	// 生成処理
+	int GetBaseScore();			// 元のスコアの取得処理
+	int GetToatalScore();			// 最終スコアの取得処理
+	static CResultManager *Create();	// 生成処理
 	
 private:
 	int m_nBaseScore;	// 元のスコア

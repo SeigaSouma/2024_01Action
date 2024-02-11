@@ -43,7 +43,7 @@ CMessageLose::~CMessageLose()
 //==========================================
 //  初期化処理
 //==========================================
-HRESULT CMessageLose::Init(void)
+HRESULT CMessageLose::Init()
 {
 	// 初期化
 	HRESULT hr = CObject3D::Init();
@@ -68,7 +68,7 @@ HRESULT CMessageLose::Init(void)
 //==========================================
 //  終了処理
 //==========================================
-void CMessageLose::Uninit(void)
+void CMessageLose::Uninit()
 {
 	// 終了
 	CObject3D::Uninit();
@@ -77,7 +77,7 @@ void CMessageLose::Uninit(void)
 //==========================================
 //  更新処理
 //==========================================
-void CMessageLose::Update(void)
+void CMessageLose::Update()
 {
 	/// 移動
 	if (!m_bMove)
@@ -92,7 +92,7 @@ void CMessageLose::Update(void)
 //==========================================
 //  描画処理
 //==========================================
-void CMessageLose::Draw(void)
+void CMessageLose::Draw()
 {
 	// 描画
 	CObject3D::Draw();

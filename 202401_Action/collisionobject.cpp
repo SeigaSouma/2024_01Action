@@ -43,7 +43,7 @@ CCollisionObject::~CCollisionObject()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CCollisionObject *CCollisionObject::Create(void)
+CCollisionObject *CCollisionObject::Create()
 {
 	// 生成用のオブジェクト
 	CCollisionObject *pEffect = NULL;
@@ -109,7 +109,7 @@ CCollisionObject *CCollisionObject::Create(const MyLib::Vector3 pos, const MyLib
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CCollisionObject::Init(void)
+HRESULT CCollisionObject::Init()
 {
 	HRESULT hr;
 
@@ -145,7 +145,7 @@ HRESULT CCollisionObject::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CCollisionObject::Uninit(void)
+void CCollisionObject::Uninit()
 {
 	// 終了処理
 	CObjectBillboard::Uninit();
@@ -154,7 +154,7 @@ void CCollisionObject::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CCollisionObject::Update(void)
+void CCollisionObject::Update()
 {
 
 	// 位置取得
@@ -203,7 +203,7 @@ void CCollisionObject::Update(void)
 //==========================================================================
 // 敵との当たり判定
 //==========================================================================
-void CCollisionObject::CollisionEnemy(void)
+void CCollisionObject::CollisionEnemy()
 {
 	
 	// 位置取得
@@ -236,7 +236,7 @@ void CCollisionObject::CollisionEnemy(void)
 //==========================================================================
 // プレイヤーとの当たり判定
 //==========================================================================
-void CCollisionObject::CollisionPlayer(void)
+void CCollisionObject::CollisionPlayer()
 {
 
 	// 自分の情報取得
@@ -271,7 +271,7 @@ void CCollisionObject::CollisionPlayer(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CCollisionObject::Draw(void)
+void CCollisionObject::Draw()
 {
 	return;
 #ifdef _DEBUG

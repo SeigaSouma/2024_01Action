@@ -47,36 +47,36 @@ public:
 	CEffect3D(int nPriority = mylib_const::PRIORITY_ZSORT);
 	~CEffect3D();
 
-	static CEffect3D *Create(void);
+	static CEffect3D *Create();
 	static CEffect3D *Create(const MyLib::Vector3& pos, const MyLib::Vector3& move, const D3DXCOLOR& col, const float fRadius, const int nLife, const int moveType, const TYPE type, const float fAddSizeValue = 0.0f);
-	static void LoadTexture(void);	// テクスチャ読み込み
+	static void LoadTexture();	// テクスチャ読み込み
 
 	//  オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, const D3DXCOLOR& col, const float fRadius, const int nLife, const int moveType, const TYPE type);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
-	void SetDisableAddAlpha(void) { m_bAddAlpha = false; }	// 加算合成取り消し
+	void SetDisableAddAlpha() { m_bAddAlpha = false; }	// 加算合成取り消し
 	void SetPositionDest(MyLib::Vector3 pos);	// 目標の位置設定
-	void SetEnableGravity(void) { m_bGravity = true; }	// 重力有効
-	void SetDisableZSort(void) { m_bZSort = false; }	// Zソート無効
+	void SetEnableGravity() { m_bGravity = true; }	// 重力有効
+	void SetDisableZSort() { m_bZSort = false; }	// Zソート無効
 	void SetGravityValue(float fValue);					// 重力の値設定
 	void SetUp(MyLib::Vector3 setup, D3DXMATRIX *pMtxParent, CObject *pObj, int nParentIdx);	// セットアップ
 	void UpdatePosition(MyLib::Vector3 rot);	// 位置更新
-	void UninitParent(void);	// 親の破棄
-	static int GetNumAll(void);	// 総数取得
+	void UninitParent();	// 親の破棄
+	static int GetNumAll();	// 総数取得
 
 private:
 
 	// メンバ関数
-	void UpdateMove(void);	// 移動処理
-	void SubSize(void);
-	void SuperSubSize(void);
-	void AddSize(void);
-	void Gensui(void);
+	void UpdateMove();	// 移動処理
+	void SubSize();
+	void SuperSubSize();
+	void AddSize();
+	void Gensui();
 
 	// メンバ変数
 	MyLib::Vector3 m_posOrigin;		// 原点

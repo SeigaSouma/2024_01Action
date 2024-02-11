@@ -28,13 +28,13 @@ public:
 	~CResult();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	static CResultScore *GetResultScore(void);
-	static void SetEnableArrival(void);
+	static CResultScore *GetResultScore();
+	static void SetEnableArrival();
 
 private:
 

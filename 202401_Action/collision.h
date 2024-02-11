@@ -47,7 +47,7 @@ private:
 //	~CCollisionSquare2D();	// デストラクタ
 //
 //
-//	static CCollisionSquare2D *Create(void);	// 生成処理
+//	static CCollisionSquare2D *Create();	// 生成処理
 //
 //private:
 //};

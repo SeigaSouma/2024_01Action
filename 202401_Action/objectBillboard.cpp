@@ -60,7 +60,7 @@ void CObjectBillboard::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectBillboard* CObjectBillboard::Create(void)
+CObjectBillboard* CObjectBillboard::Create()
 {
 	// メモリの確保
 	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard;
@@ -100,7 +100,7 @@ CObjectBillboard* CObjectBillboard::Create(MyLib::Vector3 pos, MyLib::Vector3 ro
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObjectBillboard::Init(void)
+HRESULT CObjectBillboard::Init()
 {
 	HRESULT hr;
 
@@ -140,7 +140,7 @@ HRESULT CObjectBillboard::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObjectBillboard::Uninit(void)
+void CObjectBillboard::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -157,7 +157,7 @@ void CObjectBillboard::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObjectBillboard::Update(void)
+void CObjectBillboard::Update()
 {
 	// 頂点情報設定
 	SetVtx();
@@ -166,7 +166,7 @@ void CObjectBillboard::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObjectBillboard::Draw(void)
+void CObjectBillboard::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -233,7 +233,7 @@ void CObjectBillboard::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObjectBillboard::SetVtx(void)
+void CObjectBillboard::SetVtx()
 {
 
 	// 頂点情報へのポインタ
@@ -309,7 +309,7 @@ void CObjectBillboard::SetWorldMtx(const D3DXMATRIX mtx)
 //==========================================================================
 // マトリックス取得
 //==========================================================================
-D3DXMATRIX CObjectBillboard::GetWorldMtx(void) const
+D3DXMATRIX CObjectBillboard::GetWorldMtx() const
 {
 	return m_mtxWorld;
 }
@@ -325,7 +325,7 @@ void CObjectBillboard::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CObjectBillboard::GetColor(void) const
+D3DXCOLOR CObjectBillboard::GetColor() const
 {
 	return m_col;
 }
@@ -343,7 +343,7 @@ void CObjectBillboard::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CObjectBillboard::GetSize(void) const
+D3DXVECTOR2 CObjectBillboard::GetSize() const
 {
 	return m_fSize;
 }
@@ -359,7 +359,7 @@ void CObjectBillboard::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // 元のサイズの取得
 //==========================================================================
-D3DXVECTOR2 CObjectBillboard::GetSizeOrigin(void) const
+D3DXVECTOR2 CObjectBillboard::GetSizeOrigin() const
 {
 	return m_sizeOrigin;
 }
@@ -375,7 +375,7 @@ void CObjectBillboard::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CObjectBillboard::GetTex(void)
+D3DXVECTOR2 *CObjectBillboard::GetTex()
 {
 	return &m_fTex[0];
 }
@@ -383,7 +383,7 @@ D3DXVECTOR2 *CObjectBillboard::GetTex(void)
 //==========================================================================
 // 頂点バッファの取得
 //==========================================================================
-LPDIRECT3DVERTEXBUFFER9 CObjectBillboard::GetVtxBuff(void) const
+LPDIRECT3DVERTEXBUFFER9 CObjectBillboard::GetVtxBuff() const
 {
 	return m_pVtxBuff;
 }
@@ -391,7 +391,7 @@ LPDIRECT3DVERTEXBUFFER9 CObjectBillboard::GetVtxBuff(void) const
 //==========================================================================
 // ビルボードオブジェクトの取得
 //==========================================================================
-CObjectBillboard *CObjectBillboard::GetObjectBillBoard(void)
+CObjectBillboard *CObjectBillboard::GetObjectBillBoard()
 {
 	return this;
 }

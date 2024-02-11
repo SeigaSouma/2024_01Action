@@ -69,7 +69,7 @@ CObjectBillboardAnim *CObjectBillboardAnim::Create(MyLib::Vector3 pos, const int
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObjectBillboardAnim::Init(void)
+HRESULT CObjectBillboardAnim::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObjectBillboard::Init();
@@ -119,7 +119,7 @@ HRESULT CObjectBillboardAnim::Init(const int nDivisionU, const int nDivisionV, c
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObjectBillboardAnim::Update(void)
+void CObjectBillboardAnim::Update()
 {
 
 	// カウントを更新
@@ -153,7 +153,7 @@ void CObjectBillboardAnim::Update(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObjectBillboardAnim::SetVtx(void)
+void CObjectBillboardAnim::SetVtx()
 {
 	// 頂点情報へのポインタ
 	VERTEX_3D *pVtx;

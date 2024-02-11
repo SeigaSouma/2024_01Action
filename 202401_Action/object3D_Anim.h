@@ -22,15 +22,15 @@ public:
 	virtual ~CObject3DAnim();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
+	virtual HRESULT Init() override;
 	virtual HRESULT Init(const int nDivisionU, const int nDivisionV, const int nInterval);
-	virtual void Update(void) override;
-	virtual void SetVtx(void) override;
+	virtual void Update() override;
+	virtual void SetVtx() override;
 
-	void SetDesableAutoDeath(void) { m_bAutoDeath = false; }	// 自動削除の判定削除
-	bool IsFinish(void) { return m_bFinish; }					// 終了の判定
+	void SetDesableAutoDeath() { m_bAutoDeath = false; }	// 自動削除の判定削除
+	bool IsFinish() { return m_bFinish; }					// 終了の判定
 	static CObject3DAnim *Create(MyLib::Vector3 pos, const int nDivisionU, const int nDivisionV, const int nInterval, bool bAutoDeath = true);
-	CObject3DAnim *GetObject3DAnim(void) { return this; }
+	CObject3DAnim *GetObject3DAnim() { return this; }
 protected:
 
 private:

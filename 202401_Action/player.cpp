@@ -40,6 +40,7 @@
 #include "damagepoint.h"
 #include "deadmanager.h"
 #include "gallery.h"
+#include "skilltree_obj.h"
 
 #include "playercontrol.h"
 
@@ -181,7 +182,7 @@ CPlayer *CPlayer::Create(int nIdx)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CPlayer::Init(void)
+HRESULT CPlayer::Init()
 {
 	// 種類の設定
 	SetType(TYPE_PLAYER);
@@ -269,7 +270,7 @@ void CPlayer::ChangeGuardGrade(CPlayerGuard* guard)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CPlayer::Uninit(void)
+void CPlayer::Uninit()
 {
 	// 影を消す
 	if (m_pShadow != nullptr)
@@ -328,7 +329,7 @@ void CPlayer::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CPlayer::Kill(void)
+void CPlayer::Kill()
 {
 	// 遷移なしフェード追加
 	CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
@@ -414,7 +415,7 @@ void CPlayer::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CPlayer::Update(void)
+void CPlayer::Update()
 {
 	if (IsDeath() == true)
 	{
@@ -541,7 +542,7 @@ void CPlayer::Update(void)
 //==========================================================================
 // 操作処理
 //==========================================================================
-void CPlayer::Controll(void)
+void CPlayer::Controll()
 {
 
 	// キーボード情報取得
@@ -1001,7 +1002,7 @@ void CPlayer::SetMotion(int motionIdx)
 //==========================================================================
 // モーションの設定
 //==========================================================================
-void CPlayer::MotionSet(void)
+void CPlayer::MotionSet()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -1054,6 +1055,11 @@ void CPlayer::MotionSet(void)
 			// やられモーション
 			pMotion->Set(MOTION_KNOCKBACK);
 		}
+		else if (CGame::GetInstance()->GetGameManager()->GetType() == CGameManager::SCENE_SKILLTREE)
+		{
+			// 祈りモーション設定
+			pMotion->Set(CPlayer::MOTION_PRAYER);
+		}
 		else
 		{
 			// ニュートラルモーション
@@ -1065,7 +1071,7 @@ void CPlayer::MotionSet(void)
 //==========================================================================
 // モーション別の状態設定
 //==========================================================================
-void CPlayer::MotionBySetState(void)
+void CPlayer::MotionBySetState()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -1129,6 +1135,7 @@ void CPlayer::MotionBySetState(void)
 
 	default:
 		m_bAttacking = false;	// 攻撃中判定
+		m_sMotionFrag.bATK = false;
 		m_nComboStage = 0;		// コンボの段階
 		break;
 	}
@@ -1144,7 +1151,7 @@ void CPlayer::MotionBySetState(void)
 //==========================================================================
 // フラグリセット
 //==========================================================================
-void CPlayer::ResetFrag(void)
+void CPlayer::ResetFrag()
 {
 	m_bCounterAccepting = false;	// カウンター受付中
 }
@@ -1152,7 +1159,7 @@ void CPlayer::ResetFrag(void)
 //==========================================================================
 // ロックオン
 //==========================================================================
-void CPlayer::RockOn(void)
+void CPlayer::RockOn()
 {
 	// カメラ取得
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
@@ -1205,7 +1212,7 @@ void CPlayer::RockOn(void)
 //==========================================================================
 // ロックオン対象切り替え
 //==========================================================================
-void CPlayer::SwitchRockOnTarget(void)
+void CPlayer::SwitchRockOnTarget()
 {
 	// カメラ取得
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
@@ -1279,7 +1286,7 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	switch (nType)
 	{
-	case MOTION_ATK:	// 雪玉を拾う
+	case MOTION_ATK:
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_SNOWGET);
 		break;
 
@@ -1326,6 +1333,10 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		}
 		break;
 
+	case MOTION_PRAYER:
+		CSkillTree_Obj::GetInstance()->StartUp();
+		break;
+
 	default:
 		break;
 	}
@@ -1355,6 +1366,17 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 
 	case MOTION_AVOID:
 		m_state = STATE_AVOID;
+		break;
+
+	case MOTION_PRAYER:
+		MyLib::Vector3 objpos = CSkillTree_Obj::GetInstance()->GetPosition();
+		MyLib::Vector3 pos = GetPosition();
+
+		UtilFunc::Correction::InertiaCorrection(pos.x, 0.0f, 0.1f);
+		UtilFunc::Correction::InertiaCorrection(pos.z, objpos.z - 20.0f, 0.1f);
+
+		SetRotDest(pos.AngleXZ(objpos));
+		SetPosition(pos);
 		break;
 	}
 
@@ -1420,7 +1442,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 //==========================================================================
 // 位置制限
 //==========================================================================
-void CPlayer::LimitPos(void)
+void CPlayer::LimitPos()
 {
 	MyLib::Vector3 pos = GetPosition();
 
@@ -1915,7 +1937,7 @@ void CPlayer::DeadSetting(MyLib::HitResult_Character* result)
 //==========================================================================
 // なし
 //==========================================================================
-void CPlayer::StateNone(void)
+void CPlayer::StateNone()
 {
 	// 色設定
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -1924,7 +1946,7 @@ void CPlayer::StateNone(void)
 //==========================================================================
 // 無敵状態
 //==========================================================================
-void CPlayer::StateInvincible(void)
+void CPlayer::StateInvincible()
 {
 	// 状態遷移カウンター減算
 	m_nCntState--;
@@ -1959,7 +1981,7 @@ void CPlayer::StateInvincible(void)
 //==========================================================================
 // ダメージ状態
 //==========================================================================
-void CPlayer::StateDamage(void)
+void CPlayer::StateDamage()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -2050,7 +2072,7 @@ void CPlayer::StateDamage(void)
 //==========================================================================
 // 死亡状態
 //==========================================================================
-void CPlayer::StateDead(void)
+void CPlayer::StateDead()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -2127,7 +2149,7 @@ void CPlayer::StateDead(void)
 //==========================================================================
 // 死亡待機
 //==========================================================================
-void CPlayer::StateDeadWait(void)
+void CPlayer::StateDeadWait()
 {
 	// ぶっ倒れモーション
 	GetMotion()->Set(MOTION_DEAD);
@@ -2136,7 +2158,7 @@ void CPlayer::StateDeadWait(void)
 //==========================================================================
 // フェードアウト状態
 //==========================================================================
-void CPlayer::StateFadeOut(void)
+void CPlayer::StateFadeOut()
 {
 	// 状態遷移カウンター減算
 	m_nCntState--;
@@ -2162,7 +2184,7 @@ void CPlayer::StateFadeOut(void)
 //==========================================================================
 // ノックバック
 //==========================================================================
-void CPlayer::StateKnockBack(void)
+void CPlayer::StateKnockBack()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -2257,7 +2279,7 @@ void CPlayer::StateKnockBack(void)
 //==========================================================================
 // リスポーン
 //==========================================================================
-void CPlayer::StateRespawn(void)
+void CPlayer::StateRespawn()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -2284,7 +2306,7 @@ void CPlayer::StateRespawn(void)
 //==========================================================================
 // カウンター状態
 //==========================================================================
-void CPlayer::StateCounter(void)
+void CPlayer::StateCounter()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -2333,7 +2355,7 @@ void CPlayer::StateCounter(void)
 //==========================================================================
 // 回避
 //==========================================================================
-void CPlayer::StateAvoid(void)
+void CPlayer::StateAvoid()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -2353,7 +2375,7 @@ void CPlayer::StateAvoid(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CPlayer::Draw(void)
+void CPlayer::Draw()
 {
 
 	// 描画処理
@@ -2383,7 +2405,7 @@ void CPlayer::SetState(STATE state, int nCntState)
 //==========================================================================
 // 状態取得
 //==========================================================================
-CPlayer::STATE CPlayer::GetState(void)
+CPlayer::STATE CPlayer::GetState()
 {
 	return m_state;
 }

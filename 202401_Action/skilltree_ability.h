@@ -191,16 +191,16 @@ public:
 	CSkillTree_Ability();
 	~CSkillTree_Ability();
 	
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	void LoadJson(void);	// Jsonからのロード
-	void SaveJson(void);	// Jsonへのセーブ
+	void LoadJson();	// Jsonからのロード
+	void SaveJson();	// Jsonへのセーブ
 
 	static CSkillTree_Ability* GetInstance() { return m_pThisPtr; }	// インスタンス取得
-	static CSkillTree_Ability* Create(void);	// 生成処理
+	static CSkillTree_Ability* Create();	// 生成処理
 
 
 private:

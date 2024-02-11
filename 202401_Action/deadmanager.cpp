@@ -55,7 +55,7 @@ CDeadManager::~CDeadManager()
 //==========================================================================
 // インスタンス取得
 //==========================================================================
-CDeadManager* CDeadManager::GetInstance(void)
+CDeadManager* CDeadManager::GetInstance()
 {
 	if (m_pThisPtr == nullptr)
 	{
@@ -67,7 +67,7 @@ CDeadManager* CDeadManager::GetInstance(void)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CDeadManager* CDeadManager::Create(void)
+CDeadManager* CDeadManager::Create()
 {
 	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
@@ -84,7 +84,7 @@ CDeadManager* CDeadManager::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CDeadManager::Init(void)
+HRESULT CDeadManager::Init()
 {
 	// 種類の設定
 	SetType(TYPE_OBJECT2D);
@@ -101,7 +101,7 @@ HRESULT CDeadManager::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CDeadManager::Uninit(void)
+void CDeadManager::Uninit()
 {
 	// 開放処理
 	Release();
@@ -114,7 +114,7 @@ void CDeadManager::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CDeadManager::Update(void)
+void CDeadManager::Update()
 {
 	// 時間加算
 	m_fTime += CManager::GetInstance()->GetDeltaTime();
@@ -149,7 +149,7 @@ void CDeadManager::Update(void)
 //==========================================================================
 // フェードアウト設定
 //==========================================================================
-void CDeadManager::SetFadeOut(void)
+void CDeadManager::SetFadeOut()
 {
 	m_pScreen->SetState(CDeadScreen::STATE_FADEOUT);		// スクリーンのオブジェ
 	m_pText->SetState(CDeadText::STATE_FADEOUT);			// 数字のオブジェクト
@@ -167,7 +167,7 @@ bool CDeadManager::DrawingRevival(int winningPercent)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CDeadManager::Draw(void)
+void CDeadManager::Draw()
 {
 
 }

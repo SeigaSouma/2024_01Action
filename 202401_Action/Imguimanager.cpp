@@ -60,7 +60,7 @@ void ImguiMgr::Init(HWND hwnd, LPDIRECT3DDEVICE9 pd3dDevice)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void ImguiMgr::Uninit(void)
+void ImguiMgr::Uninit()
 {
 	// ImGuiの終了
 	ImGui_ImplDX9_Shutdown();
@@ -71,7 +71,7 @@ void ImguiMgr::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void ImguiMgr::Update(void)
+void ImguiMgr::Update()
 {
 	// ImGuiフレームの開始
 	ImGui_ImplWin32_NewFrame();
@@ -263,7 +263,7 @@ void ImguiMgr::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void ImguiMgr::Draw(void)
+void ImguiMgr::Draw()
 {
 
 	// ImGuiフレームの終了

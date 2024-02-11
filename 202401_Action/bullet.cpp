@@ -146,7 +146,7 @@ CBullet *CBullet::Create(TYPE type, MOVETYPE movetype, const MyLib::Vector3 pos,
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CBullet::Init(void)
+HRESULT CBullet::Init()
 {
 	HRESULT hr;
 
@@ -185,7 +185,7 @@ HRESULT CBullet::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CBullet::Uninit(void)
+void CBullet::Uninit()
 {
 	
 	// 削除
@@ -201,7 +201,7 @@ void CBullet::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CBullet::Update(void)
+void CBullet::Update()
 {
 	if (GetHeightLen() < 40.0f)
 	{// 重力
@@ -257,7 +257,7 @@ void CBullet::Update(void)
 //==========================================================================
 // 移動処理
 //==========================================================================
-void CBullet::UpdatePos(void)
+void CBullet::UpdatePos()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -293,7 +293,7 @@ void CBullet::UpdatePos(void)
 //==========================================================================
 // 通常状態処理
 //==========================================================================
-void CBullet::StateNone(void)
+void CBullet::StateNone()
 {
 	// 状態遷移カウンター減算
 	m_nCntState--;
@@ -307,7 +307,7 @@ void CBullet::StateNone(void)
 //==========================================================================
 // ダメージ状態処理
 //==========================================================================
-void CBullet::StateDamage(void)
+void CBullet::StateDamage()
 {
 	// 状態遷移カウンター減算
 	m_nCntState--;
@@ -322,7 +322,7 @@ void CBullet::StateDamage(void)
 //==========================================================================
 // プレイヤーとの判定
 //==========================================================================
-void CBullet::CollisionPlayer(void)
+void CBullet::CollisionPlayer()
 {
 
 	// プレイヤー取得
@@ -361,7 +361,7 @@ void CBullet::CollisionPlayer(void)
 //==========================================================================
 // 敵との判定
 //==========================================================================
-void CBullet::CollisionEnemy(void)
+void CBullet::CollisionEnemy()
 {
 	// 情報取得
 	MyLib::Vector3 pos = GetPosition();
@@ -406,7 +406,7 @@ void CBullet::CollisionEnemy(void)
 //==========================================================================
 // プレイヤー弾の更新
 //==========================================================================
-void CBullet::UpdateTypePlayer(void)
+void CBullet::UpdateTypePlayer()
 {
 
 }
@@ -414,7 +414,7 @@ void CBullet::UpdateTypePlayer(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CBullet::Draw(void)
+void CBullet::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -442,7 +442,7 @@ void CBullet::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CBullet::SetVtx(void)
+void CBullet::SetVtx()
 {
 	// 頂点設定
 	CMeshSphere::SetVtx();
@@ -460,7 +460,7 @@ void CBullet::SetState(STATE state, int nCntState)
 //==========================================================================
 // 状態取得
 //==========================================================================
-CBullet::STATE CBullet::GetState(void)
+CBullet::STATE CBullet::GetState()
 {
 	return m_state;
 }
@@ -482,7 +482,7 @@ void CBullet::SetType(TYPE type)
 //==========================================================================
 // 種類取得
 //==========================================================================
-CBullet::TYPE CBullet::GetType(void)
+CBullet::TYPE CBullet::GetType()
 {
 	return m_type;
 }
@@ -506,7 +506,7 @@ void CBullet::SetParabolaHeight(float fHeight)
 //==========================================================================
 // 総数取得
 //==========================================================================
-int CBullet::GetNumAll(void)
+int CBullet::GetNumAll()
 {
 	return m_nNumAll;
 }

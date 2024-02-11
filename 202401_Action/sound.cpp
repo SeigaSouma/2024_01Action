@@ -236,7 +236,7 @@ HRESULT CSound::Init(HWND hWnd)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSound::Uninit(void)
+void CSound::Uninit()
 {
 	// 一時停止
 	for(int nCntSound = 0; nCntSound < LABEL_MAX; nCntSound++)
@@ -336,7 +336,7 @@ void CSound::StopSound(LABEL label)
 //==========================================================================
 // セグメント停止(全て)
 //==========================================================================
-void CSound::StopSound(void)
+void CSound::StopSound()
 {
 	// 一時停止
 	for(int nCntSound = 0; nCntSound < LABEL_MAX; nCntSound++)
@@ -464,7 +464,7 @@ void CSound::VolumeChange(float fVolume)
 //==========================================================================
 // 音量取得(3桁表示)
 //==========================================================================
-int CSound::GetVolume(void)
+int CSound::GetVolume()
 {
 	return (int)((m_fVolume + 0.009) * 100);
 }

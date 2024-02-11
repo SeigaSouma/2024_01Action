@@ -104,7 +104,7 @@ CManager::~CManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CManager *CManager::Create(void)
+CManager *CManager::Create()
 {
 	if (m_pManager == nullptr)
 	{// まだ生成していなかったら
@@ -124,7 +124,7 @@ CManager *CManager::Create(void)
 //==========================================================================
 // インスタンス取得
 //==========================================================================
-CManager *CManager::GetInstance(void)
+CManager *CManager::GetInstance()
 {
 	return m_pManager;
 }
@@ -373,7 +373,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //==========================================================================
 // 読み込み
 //==========================================================================
-void CManager::Load(void)
+void CManager::Load()
 {
 
 	// 全てのテクスチャ読み込み
@@ -524,7 +524,7 @@ void CManager::Reset(CScene::MODE mode)
 //==========================================================================
 // 現在のモード取得
 //==========================================================================
-CScene::MODE CManager::GetMode(void)
+CScene::MODE CManager::GetMode()
 {
 	// モード取得
 	if (m_pScene != nullptr)
@@ -540,7 +540,7 @@ CScene::MODE CManager::GetMode(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CManager::Uninit(void)
+void CManager::Uninit()
 {
 	// 全てのオブジェクト破棄
 	CObject::ReleaseAll();
@@ -746,7 +746,7 @@ void CManager::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CManager::Update(void)
+void CManager::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = GetInputKeyboard();
@@ -955,7 +955,7 @@ void CManager::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CManager::Draw(void)
+void CManager::Draw()
 {
 	/*if (!m_bLoadComplete)
 	{
@@ -980,7 +980,7 @@ void CManager::Draw(void)
 //==========================================================================
 // プレイヤーの数取得
 //==========================================================================
-int CManager::GetNumPlayer(void)
+int CManager::GetNumPlayer()
 {
 	return m_nNumPlayer;
 }
@@ -999,7 +999,7 @@ void CManager::SetNumPlayer(int nNum)
 //==========================================================================
 // 経過時間取得
 //==========================================================================
-float CManager::GetDeltaTime(void)
+float CManager::GetDeltaTime()
 {
 	return m_fDeltaTime;
 }
@@ -1016,7 +1016,7 @@ void CManager::SetEnableHitStop(int nCntHitStop)
 //==========================================================================
 // レンダラーの取得
 //==========================================================================
-CRenderer *CManager::GetRenderer(void)
+CRenderer *CManager::GetRenderer()
 {
 	return m_pRenderer;
 }
@@ -1024,7 +1024,7 @@ CRenderer *CManager::GetRenderer(void)
 //==========================================================================
 // キーボードの取得
 //==========================================================================
-CInputKeyboard *CManager::GetInputKeyboard(void)
+CInputKeyboard *CManager::GetInputKeyboard()
 {
 	return m_pInputKeyboard;
 }
@@ -1032,7 +1032,7 @@ CInputKeyboard *CManager::GetInputKeyboard(void)
 //==========================================================================
 // ゲームパッドの取得
 //==========================================================================
-CInputGamepad *CManager::GetInputGamepad(void)
+CInputGamepad *CManager::GetInputGamepad()
 {
 	return m_pInputGamepad;
 }
@@ -1040,7 +1040,7 @@ CInputGamepad *CManager::GetInputGamepad(void)
 //==========================================================================
 // マウスの取得
 //==========================================================================
-CInputMouse *CManager::GetInputMouse(void)
+CInputMouse *CManager::GetInputMouse()
 {
 	return m_pInputMouse;
 }
@@ -1048,7 +1048,7 @@ CInputMouse *CManager::GetInputMouse(void)
 //==========================================================================
 // サウンドの取得
 //==========================================================================
-CSound *CManager::GetSound(void)
+CSound *CManager::GetSound()
 {
 	return m_pSound;
 }
@@ -1056,7 +1056,7 @@ CSound *CManager::GetSound(void)
 //==========================================================================
 // デバッグ表示の取得
 //==========================================================================
-CDebugProc *CManager::GetDebugProc(void)
+CDebugProc *CManager::GetDebugProc()
 {
 	return m_pDebugProc;
 }
@@ -1064,7 +1064,7 @@ CDebugProc *CManager::GetDebugProc(void)
 //==========================================================================
 // ライトの取得
 //==========================================================================
-CLight *CManager::GetLight(void)
+CLight *CManager::GetLight()
 {
 	return m_pLight;
 }
@@ -1072,7 +1072,7 @@ CLight *CManager::GetLight(void)
 //==========================================================================
 // カメラの取得
 //==========================================================================
-CCamera *CManager::GetCamera(void)
+CCamera *CManager::GetCamera()
 {
 	return m_pCamera;
 }
@@ -1080,7 +1080,7 @@ CCamera *CManager::GetCamera(void)
 //==========================================================================
 // エディットの取得
 //==========================================================================
-CEdit *CManager::GetEdit(void)
+CEdit *CManager::GetEdit()
 {
 	return m_pEdit;
 }
@@ -1088,7 +1088,7 @@ CEdit *CManager::GetEdit(void)
 //==========================================================================
 // フェードの取得
 //==========================================================================
-CFade *CManager::GetFade(void)
+CFade *CManager::GetFade()
 {
 	return m_pFade;
 }
@@ -1096,7 +1096,7 @@ CFade *CManager::GetFade(void)
 //==========================================================================
 // 遷移なしフェードの取得
 //==========================================================================
-CInstantFade *CManager::GetInstantFade(void)
+CInstantFade *CManager::GetInstantFade()
 {
 	return m_pInstantFade;
 }
@@ -1104,7 +1104,7 @@ CInstantFade *CManager::GetInstantFade(void)
 //==========================================================================
 // 黒フレームの取得
 //==========================================================================
-CBlackFrame *CManager::GetBlackFrame(void)
+CBlackFrame *CManager::GetBlackFrame()
 {
 	return m_pBlackFrame;
 }
@@ -1112,7 +1112,7 @@ CBlackFrame *CManager::GetBlackFrame(void)
 //==========================================================================
 // ポーズの取得
 //==========================================================================
-CPause *CManager::GetPause(void)
+CPause *CManager::GetPause()
 {
 	return m_pPause;
 }
@@ -1120,7 +1120,7 @@ CPause *CManager::GetPause(void)
 //==========================================================================
 // リザルトマネージャ取得
 //==========================================================================
-CResultManager *CManager::GetResultManager(void)
+CResultManager *CManager::GetResultManager()
 {
 	return m_pResultManager;
 }
@@ -1128,7 +1128,7 @@ CResultManager *CManager::GetResultManager(void)
 //==========================================================================
 // ランキングマネージャのオブジェクト
 //==========================================================================
-CRankingManager *CManager::GetRankingManager(void)
+CRankingManager *CManager::GetRankingManager()
 {
 	return m_pRankingManager;
 }
@@ -1136,7 +1136,7 @@ CRankingManager *CManager::GetRankingManager(void)
 //==========================================================================
 // シーン取得
 //==========================================================================
-CScene *CManager::GetScene(void)
+CScene *CManager::GetScene()
 {
 	return m_pScene;
 }

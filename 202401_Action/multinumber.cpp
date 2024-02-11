@@ -159,7 +159,7 @@ CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNu
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMultiNumber::Init(void)
+HRESULT CMultiNumber::Init()
 {
 	// 数分メモリ確保
 	m_ppMultiNumber = DEBUG_NEW(CNumber*[m_nNumNumber]);
@@ -215,7 +215,7 @@ HRESULT CMultiNumber::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMultiNumber::Uninit(void)
+void CMultiNumber::Uninit()
 {
 	// 終了処理
 	if (m_ppMultiNumber != NULL)
@@ -241,7 +241,7 @@ void CMultiNumber::Uninit(void)
 //==========================================================================
 // 解放処理
 //==========================================================================
-void CMultiNumber::Release(void)
+void CMultiNumber::Release()
 {
 	// 終了処理
 	if (m_ppMultiNumber != NULL)
@@ -266,7 +266,7 @@ void CMultiNumber::Release(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CMultiNumber::Update(void)
+void CMultiNumber::Update()
 {
 	if (m_bDigitDraw == false)
 	{// 桁数描画じゃない場合
@@ -287,7 +287,7 @@ void CMultiNumber::Update(void)
 //==========================================================================
 // 描画設定
 //==========================================================================
-void CMultiNumber::SettingDisp(void)
+void CMultiNumber::SettingDisp()
 {
 	int nNumberDigit = UtilFunc::Calculation::GetDigit(m_nNum);
 
@@ -340,7 +340,7 @@ void CMultiNumber::SettingDisp(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMultiNumber::Draw(void)
+void CMultiNumber::Draw()
 {
 	int nNumNumber = m_nNumNumber;
 	if (m_bDigitDraw == true)
@@ -383,7 +383,7 @@ void CMultiNumber::SetValue(int nValue)
 //==========================================================================
 // 値の取得処理
 //==========================================================================
-int CMultiNumber::GetValue(void)
+int CMultiNumber::GetValue()
 {
 	return m_nNum;
 }
@@ -391,7 +391,7 @@ int CMultiNumber::GetValue(void)
 //==========================================================================
 // 値の設定処理
 //==========================================================================
-void CMultiNumber::SetValue(void)
+void CMultiNumber::SetValue()
 {
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
@@ -444,7 +444,7 @@ void CMultiNumber::SetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CMultiNumber::GetPosition(void) const
+MyLib::Vector3 CMultiNumber::GetPosition() const
 {
 	return m_pos;
 }
@@ -460,7 +460,7 @@ void CMultiNumber::SetOriginPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CMultiNumber::GetOriginPosition(void) const
+MyLib::Vector3 CMultiNumber::GetOriginPosition() const
 {
 	return m_posOrigin;
 }
@@ -483,7 +483,7 @@ void CMultiNumber::SetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CMultiNumber::GetRotation(void) const
+MyLib::Vector3 CMultiNumber::GetRotation() const
 {
 	return m_rot;
 }
@@ -507,7 +507,7 @@ void CMultiNumber::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CMultiNumber::GetColor(void) const
+D3DXCOLOR CMultiNumber::GetColor() const
 {
 	return m_col;
 }
@@ -531,7 +531,7 @@ void CMultiNumber::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CMultiNumber::GetSize(void) const
+D3DXVECTOR2 CMultiNumber::GetSize() const
 {
 	return m_size;
 }
@@ -547,7 +547,7 @@ void CMultiNumber::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CMultiNumber::GetSizeOrigin(void) const
+D3DXVECTOR2 CMultiNumber::GetSizeOrigin() const
 {
 	return m_sizeOrigin;
 }

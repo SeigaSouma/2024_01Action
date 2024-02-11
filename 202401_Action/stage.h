@@ -25,15 +25,15 @@ public:
 	CStage();
 	~CStage();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Release(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Release();
+	void Update();
+	void Draw();
 
 	void ChangeStage(const char* pTextFile);	// ステージ切り替え
 	CObjectX *GetObj(int nIdx);
-	int GetNumAll(void);		// 総数取得
+	int GetNumAll();		// 総数取得
 	static CStage *Create(const char *pTextFile);
 
 private:
@@ -41,7 +41,7 @@ private:
 	// メンバ関数
 	HRESULT ReadXFile(const char *pTextFile);	// モデル読み込み処理
 	HRESULT ReadText(const char *pTextFile);		// 外部ファイル読み込み処理
-	HRESULT SaveText(void);		// 外部ファイル書き込み処理
+	HRESULT SaveText();		// 外部ファイル書き込み処理
 
 	// メンバ変数
 	int m_nNumAll;

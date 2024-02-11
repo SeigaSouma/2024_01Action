@@ -23,13 +23,13 @@ public:
 	CLoadManager();
 	~CLoadManager();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 	void LoadScene(CScene::MODE mode);
-	void UnLoad(void);	// ロード解放
+	void UnLoad();	// ロード解放
 	void ResetLoad();	// ロードリセット
 	bool IsLoadComplete();	// ロードが完了フラグ取得
 
@@ -41,7 +41,7 @@ private:
 	//=============================
 	// メンバ関数
 	//=============================
-	void LoadInBackground(void);
+	void LoadInBackground();
 	void Load();
 	void ResetInternalLoad();	// 新しいシーンをセットする前のリセット
 

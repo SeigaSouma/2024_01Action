@@ -25,12 +25,12 @@ public:
 	static CShadow *Create(MyLib::Vector3 pos, float size = 50.0f);
 
 	// オーバーライドされた関数ああ
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	static int GetNumAll(void);
+	static int GetNumAll();
 
 private:
 

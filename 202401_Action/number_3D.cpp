@@ -55,7 +55,7 @@ HRESULT CNumber3D::Init(int nPriority)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CNumber3D::Uninit(void)
+void CNumber3D::Uninit()
 {
 	// 終了処理
 	if (m_aObject3D != NULL)
@@ -67,7 +67,7 @@ void CNumber3D::Uninit(void)
 //==========================================================================
 // 解放処理
 //==========================================================================
-void CNumber3D::Release(void)
+void CNumber3D::Release()
 {
 	if (m_aObject3D != NULL)
 	{// NULLじゃなかったら
@@ -79,7 +79,7 @@ void CNumber3D::Release(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CNumber3D::Update(void)
+void CNumber3D::Update()
 {
 	// 更新処理
 	if (m_aObject3D != NULL)
@@ -91,7 +91,7 @@ void CNumber3D::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CNumber3D::Draw(void)
+void CNumber3D::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -129,7 +129,7 @@ void CNumber3D::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CNumber3D::SetVtx(void)
+void CNumber3D::SetVtx()
 {
 	m_aObject3D->SetVtx();
 }
@@ -164,7 +164,7 @@ void CNumber3D::SetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CNumber3D::GetPosition(void) const
+MyLib::Vector3 CNumber3D::GetPosition() const
 {
 	return m_aObject3D->GetPosition();
 }
@@ -180,7 +180,7 @@ void CNumber3D::SetMove(const MyLib::Vector3 move)
 //==========================================================================
 // 移動量取得
 //==========================================================================
-MyLib::Vector3 CNumber3D::GetMove(void) const
+MyLib::Vector3 CNumber3D::GetMove() const
 {
 	return m_aObject3D->GetMove();
 }
@@ -196,7 +196,7 @@ void CNumber3D::SetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CNumber3D::GetRotation(void) const
+MyLib::Vector3 CNumber3D::GetRotation() const
 {
 	return m_aObject3D->GetRotation();
 }
@@ -212,7 +212,7 @@ void CNumber3D::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CNumber3D::GetColor(void) const
+D3DXCOLOR CNumber3D::GetColor() const
 {
 	return m_aObject3D->GetColor();
 }
@@ -228,7 +228,7 @@ void CNumber3D::SetSize3D(const MyLib::Vector3 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-MyLib::Vector3 CNumber3D::GetSize3D(void) const
+MyLib::Vector3 CNumber3D::GetSize3D() const
 {
 	return m_aObject3D->GetSize();
 }
@@ -244,7 +244,7 @@ void CNumber3D::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CNumber3D::GetTex(void)
+D3DXVECTOR2 *CNumber3D::GetTex()
 {
 	return m_aObject3D->GetTex();
 }
@@ -252,7 +252,7 @@ D3DXVECTOR2 *CNumber3D::GetTex(void)
 //==========================================================================
 // オブジェクト3Dオブジェクトの取得
 //==========================================================================
-CObject3D *CNumber3D::GetObject3D(void)
+CObject3D *CNumber3D::GetObject3D()
 {
 	return m_aObject3D;
 }

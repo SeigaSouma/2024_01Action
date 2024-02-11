@@ -22,15 +22,15 @@ public:
 	~CTargetPoint();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
-	void Control(void);	// 操作
+	void Control();	// 操作
 	static CTargetPoint *Create(MyLib::Vector3 pos, float fWidthLen, float fHeightLen);
-	CTargetPoint *GetObject3DMesh(void);
+	CTargetPoint *GetObject3DMesh();
 
 private:
 

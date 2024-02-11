@@ -47,32 +47,32 @@ public:
 	~CGame();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void ResetBeforeBoss(void);
-	EEditType GetEditType(void) { return m_EditType; }
-	CScore *GetScore(void);
-	CTimer *GetTimer(void) { return m_pTimer; }	// タイマー取得
-	CStage *GetStage(void);
-	CGameManager *GetGameManager(void);
+	void ResetBeforeBoss();
+	EEditType GetEditType() { return m_EditType; }
+	CScore *GetScore();
+	CTimer *GetTimer() { return m_pTimer; }	// タイマー取得
+	CStage *GetStage();
+	CGameManager *GetGameManager();
 	void SetEnableClear(bool bClear) { m_clear = bClear; }	// クリアのフラグ
-	bool IsClearFrag(void) { return m_clear; } // クリアフラグの取得
-	CEnemyManager* GetEnemyManager(void);
-	CEnemyBase* GetEnemyBase(void);		// 敵の拠点
-	bool IsEdit(void) { return m_bEdit; }	// エディットの判定
+	bool IsClearFrag() { return m_clear; } // クリアフラグの取得
+	CEnemyManager* GetEnemyManager();
+	CEnemyBase* GetEnemyBase();		// 敵の拠点
+	bool IsEdit() { return m_bEdit; }	// エディットの判定
 	float GetRockOnDistance() { return m_fMaxRokOnDistance; }	// ロックオンの最大距離取得
 
 	// 静的関数
-	static CGame* GetInstance(void);	// インスタンス取得
-	static CGame* Create(void);		// 生成処理
+	static CGame* GetInstance();	// インスタンス取得
+	static CGame* Create();		// 生成処理
 
 private:
 
 	// メンバ関数
-	void EditReset(void);
+	void EditReset();
 
 	// メンバ変数
 	CScore *m_pScore;						// スコアのオブジェクト

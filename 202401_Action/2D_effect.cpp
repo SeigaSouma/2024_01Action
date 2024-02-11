@@ -69,7 +69,7 @@ CEffect2D::~CEffect2D()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CEffect2D *CEffect2D::Create(void)
+CEffect2D *CEffect2D::Create()
 {
 	// 生成用のオブジェクト
 	CEffect2D *pEffect = NULL;
@@ -159,7 +159,7 @@ CEffect2D *CEffect2D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move
 //==========================================================================
 // エフェクトの初期化処理
 //==========================================================================
-HRESULT CEffect2D::Init(void)
+HRESULT CEffect2D::Init()
 {
 	HRESULT hr;
 
@@ -274,7 +274,7 @@ HRESULT CEffect2D::Init(const MyLib::Vector3 pos, const MyLib::Vector3 move, con
 //==========================================================================
 // エフェクトの終了処理
 //==========================================================================
-void CEffect2D::Uninit(void)
+void CEffect2D::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -283,7 +283,7 @@ void CEffect2D::Uninit(void)
 //==========================================================================
 // エフェクトの更新処理
 //==========================================================================
-void CEffect2D::Update(void)
+void CEffect2D::Update()
 {
 
 	// 位置取得
@@ -356,7 +356,7 @@ void CEffect2D::Update(void)
 //==========================================================================
 // エフェクトの縮小処理
 //==========================================================================
-void CEffect2D::SubSize(void)
+void CEffect2D::SubSize()
 {
 	int nEffect_2DType = rand() % 3;
 
@@ -377,7 +377,7 @@ void CEffect2D::SubSize(void)
 //==========================================================================
 // エフェクトの縮小処理
 //==========================================================================
-void CEffect2D::SuperSubSize(void)
+void CEffect2D::SuperSubSize()
 {
 	m_fRadius = m_fMaxRadius * (float)m_nLife / (float)m_nMaxLife;
 }
@@ -385,7 +385,7 @@ void CEffect2D::SuperSubSize(void)
 //==========================================================================
 // エフェクトの拡大処理
 //==========================================================================
-void CEffect2D::AddSize(void)
+void CEffect2D::AddSize()
 {
 	int nEffect_2DType = rand() % 3;
 
@@ -406,7 +406,7 @@ void CEffect2D::AddSize(void)
 //==========================================================================
 // エフェクトの減衰処理
 //==========================================================================
-void CEffect2D::Gensui(void)
+void CEffect2D::Gensui()
 {
 	// 移動量取得
 	MyLib::Vector3 move = GetMove();
@@ -424,7 +424,7 @@ void CEffect2D::Gensui(void)
 //==========================================================================
 // エフェクトの描画処理
 //==========================================================================
-void CEffect2D::Draw(void)
+void CEffect2D::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -459,7 +459,7 @@ void CEffect2D::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CEffect2D::SetVtx(void)
+void CEffect2D::SetVtx()
 {
 	// 頂点設定
 	CObject2D::SetVtx();
@@ -468,7 +468,7 @@ void CEffect2D::SetVtx(void)
 //==========================================================================
 // 総数取得
 //==========================================================================
-int CEffect2D::GetNumAll(void)
+int CEffect2D::GetNumAll()
 {
 	return m_nNumAll;
 }

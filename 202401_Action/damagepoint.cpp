@@ -68,7 +68,7 @@ CDamagePoint* CDamagePoint::Create(MyLib::Vector3 pos, int nDamage)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CDamagePoint::Init(void)
+HRESULT CDamagePoint::Init()
 {
 	SetType(CObject::TYPE_OBJECT2D);
 
@@ -83,7 +83,7 @@ HRESULT CDamagePoint::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CDamagePoint::Uninit(void)
+void CDamagePoint::Uninit()
 {
 	// 数字のオブジェクトの終了処理
 	if (m_apNumber != nullptr)
@@ -96,7 +96,7 @@ void CDamagePoint::Uninit(void)
 	Release();
 }
 
-void CDamagePoint::Kill(void)
+void CDamagePoint::Kill()
 {
 	// 数字のオブジェクトの終了処理
 	if (m_apNumber != nullptr)
@@ -112,7 +112,7 @@ void CDamagePoint::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CDamagePoint::Update(void)
+void CDamagePoint::Update()
 {
 	float deltatime = CManager::GetInstance()->GetDeltaTime();
 
@@ -145,7 +145,7 @@ void CDamagePoint::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CDamagePoint::Draw(void)
+void CDamagePoint::Draw()
 {
 	if (m_apNumber != nullptr)
 	{

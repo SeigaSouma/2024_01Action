@@ -70,7 +70,7 @@ CDeadText* CDeadText::Create(const float fadein, const float fadeout)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CDeadText::Init(void)
+HRESULT CDeadText::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -105,7 +105,7 @@ HRESULT CDeadText::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CDeadText::Uninit(void)
+void CDeadText::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -114,7 +114,7 @@ void CDeadText::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CDeadText::Update(void)
+void CDeadText::Update()
 {
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
@@ -130,7 +130,7 @@ void CDeadText::Update(void)
 //==========================================================================
 // なにもなし
 //==========================================================================
-void CDeadText::StateNone(void)
+void CDeadText::StateNone()
 {
 
 }
@@ -138,7 +138,7 @@ void CDeadText::StateNone(void)
 //==========================================================================
 // フェードイン
 //==========================================================================
-void CDeadText::StateFadeIn(void)
+void CDeadText::StateFadeIn()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -159,7 +159,7 @@ void CDeadText::StateFadeIn(void)
 //==========================================================================
 // フェードアウト
 //==========================================================================
-void CDeadText::StateFadeOut(void)
+void CDeadText::StateFadeOut()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -182,7 +182,7 @@ void CDeadText::StateFadeOut(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CDeadText::Draw(void)
+void CDeadText::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

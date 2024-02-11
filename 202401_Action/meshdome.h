@@ -22,15 +22,15 @@ public:
 	~CMeshDome();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
 	static CMeshDome *Create();
 	static CMeshDome *Create(const float fMove, const char *aFileName = NULL, const int nWidth = 16, const int nHeight = 8, int nPriority = mylib_const::PRIORITY_DEFAULT);
-	CMeshDome *GetMyObject(void);
+	CMeshDome *GetMyObject();
 
 private:
 	float m_fMove;	// 回転移動量

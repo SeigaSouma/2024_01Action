@@ -40,7 +40,7 @@ CInstantFade::~CInstantFade()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CInstantFade *CInstantFade::Create(void)
+CInstantFade *CInstantFade::Create()
 {
 	// 生成用のオブジェクト
 	CInstantFade *pFade = NULL;
@@ -75,7 +75,7 @@ CInstantFade *CInstantFade::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CInstantFade::Init(void)
+HRESULT CInstantFade::Init()
 {
 	// 生成処理
 	m_aObject2D = CObject2D::Create(8);
@@ -96,7 +96,7 @@ HRESULT CInstantFade::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CInstantFade::Uninit(void)
+void CInstantFade::Uninit()
 {
 	if (m_aObject2D != NULL)
 	{// NULLじゃなかったら
@@ -111,7 +111,7 @@ void CInstantFade::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CInstantFade::Update(void)
+void CInstantFade::Update()
 {
 	// 色取得
 	D3DXCOLOR col = m_aObject2D->GetColor();
@@ -160,7 +160,7 @@ void CInstantFade::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CInstantFade::Draw(void)
+void CInstantFade::Draw()
 {
 	// 描画処理
 	m_aObject2D->Draw();
@@ -185,7 +185,7 @@ void CInstantFade::SetFade(D3DXCOLOR FadeColor, int nDuration)
 //==========================================================================
 // 状態取得
 //==========================================================================
-CInstantFade::STATE CInstantFade::GetState(void)
+CInstantFade::STATE CInstantFade::GetState()
 {
 	return m_state;
 }
@@ -193,7 +193,7 @@ CInstantFade::STATE CInstantFade::GetState(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D *CInstantFade::GetMyObject(void)
+CObject2D *CInstantFade::GetMyObject()
 {
 	return m_aObject2D;
 }

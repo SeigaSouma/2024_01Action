@@ -29,20 +29,20 @@ public:
 	CCollisionObject(int nPriority = 5);
 	~CCollisionObject();
 
-	static CCollisionObject *Create(void);
+	static CCollisionObject *Create();
 	static CCollisionObject *Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const float fRadius, const int nLife, const int nDamage, eMyTag tag);
 
 	//  オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 private:
 
 	// メンバ関数
-	void CollisionEnemy(void);	// 敵との当たり判定
-	void CollisionPlayer(void);	// プレイヤーとの当たり判定
+	void CollisionEnemy();	// 敵との当たり判定
+	void CollisionPlayer();	// プレイヤーとの当たり判定
 
 	// メンバ変数
 	float m_fRadius;		// 半径

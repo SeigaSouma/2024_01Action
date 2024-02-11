@@ -23,30 +23,30 @@ public:
 	virtual ~CObject3D();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	virtual void SetVtx(void);
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
+	virtual void SetVtx();
 	virtual void BindTexture(int nIdx);
 
 	void SetWorldMtx(const D3DXMATRIX mtx);		// マトリックス設定
-	D3DXMATRIX GetWorldMtx(void) const;			// マトリックス取得
+	D3DXMATRIX GetWorldMtx() const;			// マトリックス取得
 	void SetOriginPosition(const MyLib::Vector3 pos);	//	元の位置設定
-	MyLib::Vector3 GetOriginPosition(void) const;		//	元の位置取得
+	MyLib::Vector3 GetOriginPosition() const;		//	元の位置取得
 	void SetOriginRotation(const MyLib::Vector3 rot);	// 元の向き設定
-	MyLib::Vector3 GetOriginRotation(void) const;		// 元の向き取得
+	MyLib::Vector3 GetOriginRotation() const;		// 元の向き取得
 	void SetColor(const D3DXCOLOR col);			// 色設定
-	D3DXCOLOR GetColor(void) const;				// 色取得
+	D3DXCOLOR GetColor() const;				// 色取得
 	void SetSize(const MyLib::Vector3 size);		// サイズの設定
-	MyLib::Vector3 GetSize(void) const;			// サイズの取得
+	MyLib::Vector3 GetSize() const;			// サイズの取得
 	virtual void SetTex(D3DXVECTOR2 *tex);				// テクスチャ座標の設定
-	virtual D3DXVECTOR2 *GetTex(void);					// テクスチャ座標の取得
+	virtual D3DXVECTOR2 *GetTex();					// テクスチャ座標の取得
 
 	static CObject3D *Create(int nPriority);
 	static CObject3D *Create(MyLib::Vector3 pos, MyLib::Vector3 rot);
-	CObject3D *GetObject3D(void);
-	virtual CObject3DMesh *GetObject3DMesh(void);
+	CObject3D *GetObject3D();
+	virtual CObject3DMesh *GetObject3DMesh();
 
 protected:
 

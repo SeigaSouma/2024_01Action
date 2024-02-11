@@ -89,7 +89,7 @@ CEnemyBase *CEnemyBase::Create(const char *pFileName)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEnemyBase::Init(void)
+HRESULT CEnemyBase::Init()
 {
 	// 敵マネージャ取得
 	CEnemyManager *pEnemyManager = CGame::GetInstance()->GetEnemyManager();
@@ -168,7 +168,7 @@ void CEnemyBase::DeletePos(int nStage, int nIdx)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEnemyBase::Uninit(void)
+void CEnemyBase::Uninit()
 {
 	
 }
@@ -176,7 +176,7 @@ void CEnemyBase::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEnemyBase::Update(void)
+void CEnemyBase::Update()
 {
 #if _DEBUG
 
@@ -325,7 +325,7 @@ HRESULT CEnemyBase::ReadText(const char *pFileName)
 //==========================================================================
 // 外部ファイル書き出し処理
 //==========================================================================
-void CEnemyBase::Save(void)
+void CEnemyBase::Save()
 {
 
 	FILE *pFile = NULL;	// ファイルポインタを宣言
@@ -380,7 +380,7 @@ void CEnemyBase::Save(void)
 //==========================================================================
 // 軸数取得
 //==========================================================================
-int CEnemyBase::GetSpawnPointNum(void)
+int CEnemyBase::GetSpawnPointNum()
 {
 	return m_EnemyBaseInfo.size() - 1;
 }

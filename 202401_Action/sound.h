@@ -78,12 +78,12 @@ public:
 	~CSound();
 
 	HRESULT Init(HWND hWnd);
-	void Uninit(void);
+	void Uninit();
 	HRESULT PlaySound(LABEL label);
-	void StopSound(void);
+	void StopSound();
 	void StopSound(LABEL label);
 	void VolumeChange(float fVolume);
-	int GetVolume(void);
+	int GetVolume();
 	void SetFrequency(LABEL label, float fValue);	// é¸îgêîê›íË
 
 private:

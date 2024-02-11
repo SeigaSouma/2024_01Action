@@ -59,8 +59,8 @@ public:
 	CMyEffekseer();
 	~CMyEffekseer();
 
-	void Uninit(void);
-	void Update(void);
+	void Uninit();
+	void Update();
 
 	/**
 	@brief	エフェクトの設定
@@ -86,13 +86,13 @@ public:
 	void Stop(Effekseer::Handle handle);	// 停止
 
 	static CMyEffekseer* GetInstance() { return m_pMyEffekseer; }	// インスタンス取得
-	static CMyEffekseer* Create(void);								// インスタンス生成
+	static CMyEffekseer* Create();								// インスタンス生成
 
 private:
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Draw(void);
+	HRESULT Init();
+	void Draw();
 	void SetupEffekseerModules(::Effekseer::ManagerRef efkManager);	// モジュールのセットアップ
 	::EffekseerRendererDX9::RendererRef GetEffekseerRenderer() { return efkRenderer; }	// エフェクシアのレンダラー取得
 	Effekseer::EffectRef LoadEffect(std::string efkpath);

@@ -51,7 +51,7 @@ CEnemyCookie::~CEnemyCookie()
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEnemyCookie::Init(void)
+HRESULT CEnemyCookie::Init()
 {
 	//初期化処理
 	CEnemy::Init();
@@ -65,7 +65,7 @@ HRESULT CEnemyCookie::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEnemyCookie::Uninit(void)
+void CEnemyCookie::Uninit()
 {
 	// 終了処理
 	CEnemy::Uninit();
@@ -74,7 +74,7 @@ void CEnemyCookie::Uninit(void)
 //==========================================================================
 // 殺す
 //==========================================================================
-void CEnemyCookie::Kill(void)
+void CEnemyCookie::Kill()
 {
 	// 死亡処理
 	CEnemy::Kill();
@@ -83,7 +83,7 @@ void CEnemyCookie::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEnemyCookie::Update(void)
+void CEnemyCookie::Update()
 {
 	// 死亡の判定
 	if (IsDeath() == true)
@@ -98,7 +98,7 @@ void CEnemyCookie::Update(void)
 //==========================================================================
 // 行動設定
 //==========================================================================
-void CEnemyCookie::ActionSet(void)
+void CEnemyCookie::ActionSet()
 {
 
 }
@@ -106,7 +106,7 @@ void CEnemyCookie::ActionSet(void)
 //==========================================================================
 // 行動更新
 //==========================================================================
-void CEnemyCookie::UpdateAction(void)
+void CEnemyCookie::UpdateAction()
 {
 	if (!m_bActionable)
 	{
@@ -120,7 +120,7 @@ void CEnemyCookie::UpdateAction(void)
 //==========================================================================
 // 待機
 //==========================================================================
-void CEnemyCookie::ActWait(void)
+void CEnemyCookie::ActWait()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -154,7 +154,7 @@ void CEnemyCookie::ActWait(void)
 //==========================================================================
 // 追い掛け
 //==========================================================================
-void CEnemyCookie::ActChase(void)
+void CEnemyCookie::ActChase()
 {
 	// 移動フラグを立てる
 	m_sMotionFrag.bMove = true;
@@ -169,7 +169,7 @@ void CEnemyCookie::ActChase(void)
 //==========================================================================
 // 歩き追い掛け
 //==========================================================================
-void CEnemyCookie::ChaseNormal(void)
+void CEnemyCookie::ChaseNormal()
 {
 	// 情報取得
 	MyLib::Vector3 move = GetMove();
@@ -187,7 +187,7 @@ void CEnemyCookie::ChaseNormal(void)
 //==========================================================================
 // 近接攻撃
 //==========================================================================
-void CEnemyCookie::ActAttackProximity(void)
+void CEnemyCookie::ActAttackProximity()
 {
 	if (m_bCatchUp == false)
 	{// 追い着いてない時
@@ -225,7 +225,7 @@ void CEnemyCookie::ActAttackProximity(void)
 //==========================================================================
 // パンチ攻撃
 //==========================================================================
-void CEnemyCookie::AttackPunch(void)
+void CEnemyCookie::AttackPunch()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -262,7 +262,7 @@ void CEnemyCookie::AttackPunch(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CEnemyCookie::Draw(void)
+void CEnemyCookie::Draw()
 {
 	// 描画処理
 	CEnemy::Draw();
@@ -271,7 +271,7 @@ void CEnemyCookie::Draw(void)
 //==========================================================================
 // モーションセット
 //==========================================================================
-void CEnemyCookie::MotionSet(void)
+void CEnemyCookie::MotionSet()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -321,7 +321,7 @@ void CEnemyCookie::MotionSet(void)
 //==========================================================================
 // ターゲットの方を向く
 //==========================================================================
-void CEnemyCookie::RotationTarget(void)
+void CEnemyCookie::RotationTarget()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();

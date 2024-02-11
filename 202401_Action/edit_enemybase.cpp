@@ -59,7 +59,7 @@ CEditEnemyBase::~CEditEnemyBase()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CEditEnemyBase *CEditEnemyBase::Create(void)
+CEditEnemyBase *CEditEnemyBase::Create()
 {
 	// 生成用のオブジェクト
 	CEditEnemyBase *pObjBase = NULL;
@@ -90,7 +90,7 @@ CEditEnemyBase *CEditEnemyBase::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEditEnemyBase::Init(void)
+HRESULT CEditEnemyBase::Init()
 {
 	m_pos = CManager::GetInstance()->GetCamera()->GetPositionR();
 	m_apObjX = CObjectX::Create(MARKOBJ, mylib_const::DEFAULT_VECTOR3, mylib_const::DEFAULT_VECTOR3, false);	// オブジェクトX
@@ -101,7 +101,7 @@ HRESULT CEditEnemyBase::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEditEnemyBase::Uninit(void)
+void CEditEnemyBase::Uninit()
 {
 	
 }
@@ -109,7 +109,7 @@ void CEditEnemyBase::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEditEnemyBase::Release(void)
+void CEditEnemyBase::Release()
 {
 	if (m_apObjX != NULL)
 	{
@@ -121,7 +121,7 @@ void CEditEnemyBase::Release(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEditEnemyBase::Update(void)
+void CEditEnemyBase::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -338,7 +338,7 @@ void CEditEnemyBase::Control(MyLib::Vector3 &pos)
 //==========================================================================
 // 種類変更
 //==========================================================================
-void CEditEnemyBase::ChangeType(void)
+void CEditEnemyBase::ChangeType()
 {
 	int nNumAll = CGame::GetInstance()->GetEnemyManager()->GetPatternNum();
 
@@ -413,7 +413,7 @@ void CEditEnemyBase::ChangeType(void)
 //==========================================================================
 // モデル掴む
 //==========================================================================
-void CEditEnemyBase::Grab(void)
+void CEditEnemyBase::Grab()
 {
 
 	// キーボード情報取得
@@ -450,7 +450,7 @@ void CEditEnemyBase::Grab(void)
 //==========================================================================
 // モデル掴む
 //==========================================================================
-void CEditEnemyBase::Delete(void)
+void CEditEnemyBase::Delete()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -475,7 +475,7 @@ void CEditEnemyBase::Delete(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CEditEnemyBase::Draw(void)
+void CEditEnemyBase::Draw()
 {
 
 }

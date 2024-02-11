@@ -92,7 +92,7 @@ CStageClearText *CStageClearText::Create(const MyLib::Vector3 pos)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CStageClearText::Init(void)
+HRESULT CStageClearText::Init()
 {
 	HRESULT hr;
 
@@ -128,7 +128,7 @@ HRESULT CStageClearText::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CStageClearText::Uninit(void)
+void CStageClearText::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -137,7 +137,7 @@ void CStageClearText::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CStageClearText::Update(void)
+void CStageClearText::Update()
 {
 	if (IsDeath())
 	{
@@ -159,7 +159,7 @@ void CStageClearText::Update(void)
 //==========================================================================
 // 何もない状態
 //==========================================================================
-void CStageClearText::StateNone(void)
+void CStageClearText::StateNone()
 {
 	// 状態遷移カウンター減算
 	m_nCntState--;
@@ -173,7 +173,7 @@ void CStageClearText::StateNone(void)
 //==========================================================================
 // 拡大状態
 //==========================================================================
-void CStageClearText::StateScaleUP(void)
+void CStageClearText::StateScaleUP()
 {
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
@@ -199,7 +199,7 @@ void CStageClearText::StateScaleUP(void)
 //==========================================================================
 // 縮小状態
 //==========================================================================
-void CStageClearText::StateScaleDOWN(void)
+void CStageClearText::StateScaleDOWN()
 {
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
@@ -225,7 +225,7 @@ void CStageClearText::StateScaleDOWN(void)
 //==========================================================================
 // 整い状態
 //==========================================================================
-void CStageClearText::StateScaleNone(void)
+void CStageClearText::StateScaleNone()
 {
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
@@ -252,7 +252,7 @@ void CStageClearText::StateScaleNone(void)
 //==========================================================================
 // フェードアウト状態
 //==========================================================================
-void CStageClearText::StateFadeOut(void)
+void CStageClearText::StateFadeOut()
 {
 	// 色取得
 	D3DXCOLOR col = GetColor();
@@ -277,7 +277,7 @@ void CStageClearText::StateFadeOut(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CStageClearText::Draw(void)
+void CStageClearText::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -299,7 +299,7 @@ void CStageClearText::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CStageClearText::SetVtx(void)
+void CStageClearText::SetVtx()
 {
 	// 頂点設定
 	CObject2D::SetVtx();

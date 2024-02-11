@@ -89,7 +89,7 @@ CSantaBag *CSantaBag::Create(const MyLib::Vector3 pos)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSantaBag::Init(void)
+HRESULT CSantaBag::Init()
 {
 	// 各種変数の初期化
 	m_nLifeMax = MAX_LIFE;
@@ -113,7 +113,7 @@ HRESULT CSantaBag::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSantaBag::Uninit(void)
+void CSantaBag::Uninit()
 {
 
 	// リストから削除
@@ -126,7 +126,7 @@ void CSantaBag::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSantaBag::Update(void)
+void CSantaBag::Update()
 {
 	// 状態カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -150,7 +150,7 @@ void CSantaBag::Update(void)
 //==========================================================================
 // なにもない状態
 //==========================================================================
-void CSantaBag::StateNone(void)
+void CSantaBag::StateNone()
 {
 	// 通常色に変更
 	m_MatCol = mylib_const::DEFAULT_COLOR;
@@ -163,7 +163,7 @@ void CSantaBag::StateNone(void)
 //==========================================================================
 // ダメージ状態
 //==========================================================================
-void CSantaBag::StateDamage(void)
+void CSantaBag::StateDamage()
 {
 	// 赤色に変更
 	m_MatCol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
@@ -178,7 +178,7 @@ void CSantaBag::StateDamage(void)
 //==========================================================================
 // 無敵状態
 //==========================================================================
-void CSantaBag::StateInvicible(void)
+void CSantaBag::StateInvicible()
 {
 	// 赤色に変更
 	m_MatCol = D3DXCOLOR(1.0f, 1.0f, 1.0f, sinf(D3DX_PI * (TIME_INVICIBLE - m_fStateTime) * NUM_TKTK));
@@ -193,7 +193,7 @@ void CSantaBag::StateInvicible(void)
 //==========================================================================
 // ヒット処理
 //==========================================================================
-void CSantaBag::Hit(void)
+void CSantaBag::Hit()
 {
 	if (m_state != STATE_NONE)
 	{
@@ -214,7 +214,7 @@ void CSantaBag::Hit(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSantaBag::Draw(void)
+void CSantaBag::Draw()
 {
 	// 描画
 	if (m_state == STATE_NONE)

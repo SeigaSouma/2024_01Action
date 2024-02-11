@@ -41,18 +41,18 @@ public:
 	~CLimitArea();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
-	void Kill(void);	// 削除処理
+	void Kill();	// 削除処理
 
 	static CLimitArea *Create(sLimitEreaInfo info);	// 生成処理
-	STATE GetState(void);		// 状態取得
+	STATE GetState();		// 状態取得
 	void SetState(STATE state);	// 状態設定
-	sLimitEreaInfo GetLimitEreaInfo(void);	// エリア情報取得
-	static CListManager<CLimitArea> GetListObj(void) { return m_List; }	// リスト取得
+	sLimitEreaInfo GetLimitEreaInfo();	// エリア情報取得
+	static CListManager<CLimitArea> GetListObj() { return m_List; }	// リスト取得
 
 protected:
 
@@ -71,15 +71,15 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CLimitArea::*STATE_FUNC)(void);
+	typedef void(CLimitArea::*STATE_FUNC)();
 	static STATE_FUNC m_StateFuncList[];	// 状態の関数リスト
 
 	//=============================
 	// メンバ関数
 	//=============================
-	void StateNone(void);		// 通常
-	void StateAppearance(void);	// 出現状態
-	void StateFadeout(void);	// フェードアウト
+	void StateNone();		// 通常
+	void StateAppearance();	// 出現状態
+	void StateFadeout();	// フェードアウト
 
 	//=============================
 	// メンバ変数

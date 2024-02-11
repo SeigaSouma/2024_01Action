@@ -20,9 +20,9 @@ public:
 	CLight();
 	~CLight();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
 
 	void UpdateSpotLightDirection(MyLib::Vector3 vec);	// スポットライトの向き更新
 private:

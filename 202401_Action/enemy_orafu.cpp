@@ -54,7 +54,7 @@ CEnemyOrafu::~CEnemyOrafu()
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEnemyOrafu::Init(void)
+HRESULT CEnemyOrafu::Init()
 {
 	//初期化処理
 	CEnemy::Init();
@@ -68,7 +68,7 @@ HRESULT CEnemyOrafu::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEnemyOrafu::Uninit(void)
+void CEnemyOrafu::Uninit()
 {
 	// 終了処理
 	CEnemy::Uninit();
@@ -77,7 +77,7 @@ void CEnemyOrafu::Uninit(void)
 //==========================================================================
 // 殺す
 //==========================================================================
-void CEnemyOrafu::Kill(void)
+void CEnemyOrafu::Kill()
 {
 	// 死亡処理
 	CEnemy::Kill();
@@ -86,7 +86,7 @@ void CEnemyOrafu::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEnemyOrafu::Update(void)
+void CEnemyOrafu::Update()
 {
 	// 死亡の判定
 	if (IsDeath() == true)
@@ -101,7 +101,7 @@ void CEnemyOrafu::Update(void)
 //==========================================================================
 // 行動設定
 //==========================================================================
-void CEnemyOrafu::ActionSet(void)
+void CEnemyOrafu::ActionSet()
 {
 
 }
@@ -109,7 +109,7 @@ void CEnemyOrafu::ActionSet(void)
 //==========================================================================
 // 行動更新
 //==========================================================================
-void CEnemyOrafu::UpdateAction(void)
+void CEnemyOrafu::UpdateAction()
 {
 	if (!m_bActionable)
 	{
@@ -123,7 +123,7 @@ void CEnemyOrafu::UpdateAction(void)
 //==========================================================================
 // 待機
 //==========================================================================
-void CEnemyOrafu::ActWait(void)
+void CEnemyOrafu::ActWait()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -164,7 +164,7 @@ void CEnemyOrafu::ActWait(void)
 //==========================================================================
 // 追い掛け
 //==========================================================================
-void CEnemyOrafu::ActChase(void)
+void CEnemyOrafu::ActChase()
 {
 	// 移動フラグを立てる
 	m_sMotionFrag.bMove = true;
@@ -196,7 +196,7 @@ void CEnemyOrafu::ActChase(void)
 //==========================================================================
 // 歩き追い掛け
 //==========================================================================
-void CEnemyOrafu::ChaseNormal(void)
+void CEnemyOrafu::ChaseNormal()
 {
 	// 情報取得
 	MyLib::Vector3 move = GetMove();
@@ -214,7 +214,7 @@ void CEnemyOrafu::ChaseNormal(void)
 //==========================================================================
 // 近接攻撃
 //==========================================================================
-void CEnemyOrafu::ActAttackProximity(void)
+void CEnemyOrafu::ActAttackProximity()
 {
 	if (m_bCatchUp == false)
 	{// 追い着いてない時
@@ -260,7 +260,7 @@ void CEnemyOrafu::ActAttackProximity(void)
 //==========================================================================
 // パンチ攻撃
 //==========================================================================
-void CEnemyOrafu::AttackPunch(void)
+void CEnemyOrafu::AttackPunch()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
@@ -297,7 +297,7 @@ void CEnemyOrafu::AttackPunch(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CEnemyOrafu::Draw(void)
+void CEnemyOrafu::Draw()
 {
 	// 描画処理
 	CEnemy::Draw();
@@ -306,7 +306,7 @@ void CEnemyOrafu::Draw(void)
 //==========================================================================
 // モーションセット
 //==========================================================================
-void CEnemyOrafu::MotionSet(void)
+void CEnemyOrafu::MotionSet()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();

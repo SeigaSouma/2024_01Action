@@ -58,21 +58,21 @@ public:
 	~CObjectHierarchy();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 	virtual void Draw(D3DXCOLOR col);
 	virtual void Draw(float fAlpha);
 
 	void SetmtxWorld(const D3DXMATRIX mtxWorld);
-	D3DXMATRIX GetWorldMtx(void) const { return m_mtxWorld; }			// マトリックス取得
-	D3DXMATRIX GetmtxWorld(void) const;			// ワールドマトリックス取得
-	MyLib::Vector3 GetCenterPosition(void) const;		// 中心の位置取得
+	D3DXMATRIX GetWorldMtx() const { return m_mtxWorld; }			// マトリックス取得
+	D3DXMATRIX GetmtxWorld() const;			// ワールドマトリックス取得
+	MyLib::Vector3 GetCenterPosition() const;		// 中心の位置取得
 	void SetOriginPosition(const MyLib::Vector3 pos);	// 最初の位置設定
-	MyLib::Vector3 GetOriginPosition(void) const;		// 最初の位置取得
+	MyLib::Vector3 GetOriginPosition() const;		// 最初の位置取得
 	void SetRadius(const float fRadius);		// 半径設定
-	float GetRadius(void) const;				// 半径取得
+	float GetRadius() const;				// 半径取得
 
 	HRESULT ReadText(const std::string pTextFile);	// 外部ファイル読み込み処理
 	virtual HRESULT SetCharacter(const std::string pTextFile);	// キャラクター設定
@@ -82,12 +82,12 @@ public:
 	void SetObject(int nNewParts);			// モデルの設定
 	void DeleteObject(int nSwitchType);		// モデル削除
 
-	int GetNumModel(void);					// モデル数取得
+	int GetNumModel();					// モデル数取得
 	void SetNumModel(int nNumModel);		// モデル数設定
-	int GetIdxFile(void);					// ファイルのインデックス番号取得
+	int GetIdxFile();					// ファイルのインデックス番号取得
 	Load GetLoadData(int nIdx);				// 読み込み情報取得
-	CModel **GetModel(void);				// モデル取得
-	CObjectHierarchy* GetObjectHierarchy(void);	// 階層オブジェクト取得
+	CModel **GetModel();				// モデル取得
+	CObjectHierarchy* GetObjectHierarchy();	// 階層オブジェクト取得
 	static CObjectHierarchy *Create(const std::string pTextFile);
 
 protected:
@@ -102,7 +102,7 @@ protected:
 private:
 
 	// メンバ関数
-	void CalWorldMtx(void);		// ワールドマトリックスの計算処理
+	void CalWorldMtx();		// ワールドマトリックスの計算処理
 
 	// メンバ変数
 	D3DXMATRIX	m_mtxWorld;		// ワールドマトリックス

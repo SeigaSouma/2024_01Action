@@ -78,7 +78,7 @@ HRESULT MyMap::Create(const char *pTextFile)
 //==========================================================================
 // 解放処理
 //==========================================================================
-void MyMap::Release(void)
+void MyMap::Release()
 {
 	for (int nCntObj = 0; nCntObj < mylib_const::MAX_OBJ; nCntObj++)
 	{
@@ -115,7 +115,7 @@ void MyMap::ChangeMap(const char* pTextFile)
 //==========================================================================
 // 外部ファイル書き込み処理
 //==========================================================================
-HRESULT MyMap::SaveText(void)
+HRESULT MyMap::SaveText()
 {
 #if TOPCUR
 	FILE *pFile = NULL;	// ファイルポインタを宣言
@@ -418,7 +418,7 @@ HRESULT MyMap::SaveText(void)
 //==========================================================================
 // テクスチャ読み込み処理
 //==========================================================================
-HRESULT MyMap::ReadTexture(void)
+HRESULT MyMap::ReadTexture()
 {
 	char aComment[MAX_COMMENT] = {};	// コメント用
 	int nFileNum = 0;					// ファイルの数
@@ -909,7 +909,7 @@ std::string MyMap::GetModelFileName(int nIdx)
 //==========================================================================
 // 総数取得
 //==========================================================================
-int MyMap::GetNumModelAll(void)
+int MyMap::GetNumModelAll()
 {
 	return mapdate::nNumModelAll;
 }

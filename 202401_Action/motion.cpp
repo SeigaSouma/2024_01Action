@@ -90,7 +90,7 @@ CMotion *CMotion::Create(const std::string pTextFile, CObjectChara* pObjChara)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMotion::Init(void)
+HRESULT CMotion::Init()
 {
 	m_nNumAll = 0;			// モーションの総数
 	m_nType = 0;			// 現在のモーションの種類
@@ -110,7 +110,7 @@ HRESULT CMotion::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMotion::Uninit(void)
+void CMotion::Uninit()
 {
 	if (m_pInfo != nullptr)
 	{
@@ -750,7 +750,7 @@ void CMotion::Set(int nType, bool bBlend)
 //==========================================================================
 // 現在のモーションタイプ取得
 //==========================================================================
-int CMotion::GetType(void)
+int CMotion::GetType()
 {
 	return m_nType;
 }
@@ -758,7 +758,7 @@ int CMotion::GetType(void)
 //==========================================================================
 // 前回のモーションタイプ取得
 //==========================================================================
-int CMotion::GetOldType(void)
+int CMotion::GetOldType()
 {
 	return m_nOldType;
 }
@@ -766,7 +766,7 @@ int CMotion::GetOldType(void)
 //==========================================================================
 // 終了しているかの判定
 //==========================================================================
-bool CMotion::IsFinish(void)
+bool CMotion::IsFinish()
 {
 	return m_bFinish;
 }
@@ -976,7 +976,7 @@ void CMotion::SetFrameCount(float fCnt)
 //==========================================================================
 // カウント取得
 //==========================================================================
-float CMotion::GetAllCount(void)
+float CMotion::GetAllCount()
 {
 	return m_fCntAllFrame;
 }

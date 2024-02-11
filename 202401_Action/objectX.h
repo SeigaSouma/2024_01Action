@@ -31,39 +31,39 @@ public:
 	~CObjectX();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(const char *pFileName);
 	HRESULT Init(int nIdxXFile);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Uninit();
+	void Update();
+	void Draw();
 	void Draw(D3DXCOLOR col);
 	void Draw(float fAlpha);
 	void BindTexture(int *nIdx);
 	void BindXData(int nIdxXFile);
 
 	void SetWorldMtx(const D3DXMATRIX mtx);		// マトリックス設定
-	D3DXMATRIX GetWorldMtx(void) const;			// マトリックス取得
+	D3DXMATRIX GetWorldMtx() const;			// マトリックス取得
 	void SetScale(const MyLib::Vector3 scale);		// スケール設定
-	MyLib::Vector3 GetScale(void) const;			// スケール取得
+	MyLib::Vector3 GetScale() const;			// スケール取得
 	void SetColor(const D3DXCOLOR col);			// 色設定
-	D3DXCOLOR GetColor(void) const;				// 色取得
+	D3DXCOLOR GetColor() const;				// 色取得
 	void SetSize(const MyLib::Vector3 size);		// サイズの設定
-	MyLib::Vector3 GetSize(void) const;			// サイズの取得
-	MyLib::Vector3 GetVtxMax(void) const;			// 頂点の最大値取得
-	MyLib::Vector3 GetVtxMin(void) const;			// 頂点の最小値取得
-	int GetIdxXFile(void) const;				// Xファイルのインデックス取得
-	bool GetUseShadow(void) const;				// 影を使っているかどうか
+	MyLib::Vector3 GetSize() const;			// サイズの取得
+	MyLib::Vector3 GetVtxMax() const;			// 頂点の最大値取得
+	MyLib::Vector3 GetVtxMin() const;			// 頂点の最小値取得
+	int GetIdxXFile() const;				// Xファイルのインデックス取得
+	bool GetUseShadow() const;				// 影を使っているかどうか
 
 	float GetHeight(MyLib::Vector3 pos, bool &bLand);	// 高さ取得
 
-	void Kill(void);
+	void Kill();
 	static CObjectX *Create();
 	static CObjectX *Create(const char *pFileName);
 	static CObjectX *Create(const char *pFileName, const MyLib::Vector3& pos, const MyLib::Vector3& rot = 0.0f, bool bShadow = false);
 	static CObjectX *Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib::Vector3& rot = 0.0f, bool bShadow = false);
-	CObjectX *GetObjectX(void);
-	static int GetNumAll(void);
+	CObjectX *GetObjectX();
+	static int GetNumAll();
 protected:
 
 private:

@@ -125,7 +125,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRenderer::Uninit(void)
+void CRenderer::Uninit()
 {
 	// Direct3Dデバイスの破棄
 	if (m_pD3DDevice != NULL)
@@ -145,7 +145,7 @@ void CRenderer::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CRenderer::Update(void)
+void CRenderer::Update()
 {
 	// 全ての更新
 	CObject::UpdateAll();
@@ -154,7 +154,7 @@ void CRenderer::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CRenderer::Draw(void)
+void CRenderer::Draw()
 {
 	static bool bDisp = true;
 
@@ -254,7 +254,7 @@ void CRenderer::Draw(void)
 //==========================================================================
 // デバイスの取得
 //==========================================================================
-LPDIRECT3DDEVICE9 CRenderer::GetDevice(void) const
+LPDIRECT3DDEVICE9 CRenderer::GetDevice() const
 {
 	return m_pD3DDevice;
 }

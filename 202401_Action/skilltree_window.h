@@ -23,9 +23,9 @@ public:
 
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
+	HRESULT Init() override;
 
-	static CSkillTree_Window* Create(void);
+	static CSkillTree_Window* Create();
 
 private:
 

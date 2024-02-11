@@ -49,6 +49,7 @@ public:
 		MOTION_KNOCKBACK,	// ノックバック
 		MOTION_DEAD,		// 死亡
 		MOTION_RESPAWN,		// 復活
+		MOTION_PRAYER,		// 祈り
 		MOTION_GUARD,		// ガード
 		MOTION_GUARD_DMG,	// ガードダメージ
 		MOTION_COUNTER_ACCEPT,		// 反撃受け付け
@@ -90,19 +91,19 @@ public:
 	~CPlayer();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 	MyLib::HitResult_Character Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
 	MyLib::HitResult_Character Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
 	MyLib::HitResult_Character ProcessHit(const int nValue);
 
-	STATE GetState(void);		// 状態取得
+	STATE GetState();		// 状態取得
 	void SetState(STATE state, int nCntState = 0);	// 状態設定
-	virtual void Kill(void);			// 死亡処理
-	void SwitchRockOnTarget(void);		// ロック対象切り替え
+	virtual void Kill();			// 死亡処理
+	void SwitchRockOnTarget();		// ロック対象切り替え
 
 	// モーション
 	void SetMotion(int motionIdx);	// モーションの設定
@@ -116,10 +117,10 @@ public:
 
 	// 転移ビーコン
 	void SetEnableTouchBeacon(bool bTouch) { m_bTouchBeacon = bTouch; }	// ビーコンに触れてる判定設定
-	bool IsTouchBeacon(void) { return m_bTouchBeacon; }	// ビーコンに触れてる判定取得
+	bool IsTouchBeacon() { return m_bTouchBeacon; }	// ビーコンに触れてる判定取得
 
 	// スキルポイント
-	CSkillPoint* GetSkillPoint(void) { return m_pSkillPoint; }
+	CSkillPoint* GetSkillPoint() { return m_pSkillPoint; }
 
 	// スタミナ
 	CStaminaGauge_Player* GetStaminaGauge() { return m_pStaminaGauge; }
@@ -135,8 +136,8 @@ public:
 	void ChangeGuardGrade(CPlayerGuard* guard);	// ガード性能変更
 
 	// リスポーン
-	void RespawnSetting(void);	// リスポーン時の設定
-	int GetRespawnPercent(void) { return m_nRespawnPercent; }	// リスポーン確率取得
+	void RespawnSetting();	// リスポーン時の設定
+	int GetRespawnPercent() { return m_nRespawnPercent; }	// リスポーン確率取得
 	void SetRespawnPercent(int value);	// リスポーン確率設定
 
 	// 反撃
@@ -157,12 +158,12 @@ public:
 	int GetMyPlayerIdx() { return m_nMyPlayerIdx; }
 
 	static CPlayer* Create(int nIdx);	// 生成
-	static CListManager<CPlayer> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CPlayer> GetListObj() { return m_List; }	// リスト取得
 
 protected:
 
 	bool Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move);	// 当たり判定
-	void MotionSet(void);	// モーションの設定
+	void MotionSet();	// モーションの設定
 
 	bool m_bJump;				// ジャンプ中かどうか
 	bool m_bLandOld;			// 過去の着地情報
@@ -179,30 +180,30 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CPlayer::* STATE_FUNC)(void);
+	typedef void(CPlayer::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 状態関数
-	void StateNone(void);		// なし
-	void StateInvincible(void);	// 無敵
-	void StateDamage(void);		// ダメージ
-	void StateKnockBack(void);	// ノックバック
-	void StateDead(void);		// 死亡
-	void StateDeadWait(void);	// 死亡待機
-	void StateFadeOut(void);	// フェードアウト
-	void StateRespawn(void);	// リスポーン
-	void StateCounter(void);	// カウンター中
-	void StateAvoid(void);		// 回避
+	void StateNone();		// なし
+	void StateInvincible();	// 無敵
+	void StateDamage();		// ダメージ
+	void StateKnockBack();	// ノックバック
+	void StateDead();		// 死亡
+	void StateDeadWait();	// 死亡待機
+	void StateFadeOut();	// フェードアウト
+	void StateRespawn();	// リスポーン
+	void StateCounter();	// カウンター中
+	void StateAvoid();		// 回避
 
 	// その他関数
-	virtual void Controll(void);	// 操作
-	void LimitPos(void);			// 位置制限
-	void MotionBySetState(void);	// モーション別の状態設定
-	void ResetFrag(void);			// フラグリセット
-	void RockOn(void);				// ロックオン
+	virtual void Controll();	// 操作
+	void LimitPos();			// 位置制限
+	void MotionBySetState();	// モーション別の状態設定
+	void ResetFrag();			// フラグリセット
+	void RockOn();				// ロックオン
 
 	// モーション系関数
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理

@@ -44,20 +44,20 @@ public:
 	CXLoad();
 	~CXLoad();
 
-	HRESULT Init(void);
-	void Uninit(void);
+	HRESULT Init();
+	void Uninit();
 	int XLoad(std::string file);
 
 	SXFile *GetMyObject(int nIdx);
-	int GetNumAll(void);		// 総数
+	int GetNumAll();		// 総数
 
-	static CXLoad* Create(void);
-	static CXLoad* GetInstance(void) { return m_pXX; }
+	static CXLoad* Create();
+	static CXLoad* GetInstance() { return m_pXX; }
 protected:
 
 private:
 	HRESULT Load(std::string file);
-	static void Unload(void);
+	static void Unload();
 
 	std::vector<SXFile> m_XFileInfo;	// Xファイルの情報
 	static CXLoad* m_pXX;	// 自身のポインタ

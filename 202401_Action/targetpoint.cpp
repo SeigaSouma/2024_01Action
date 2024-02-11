@@ -91,7 +91,7 @@ CTargetPoint *CTargetPoint::Create(MyLib::Vector3 pos, float fWidthLen, float fH
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CTargetPoint::Init(void)
+HRESULT CTargetPoint::Init()
 {
 	HRESULT hr;
 
@@ -115,7 +115,7 @@ HRESULT CTargetPoint::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CTargetPoint::Uninit(void)
+void CTargetPoint::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -124,7 +124,7 @@ void CTargetPoint::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CTargetPoint::Update(void)
+void CTargetPoint::Update()
 {
 
 	// 色取得
@@ -146,7 +146,7 @@ void CTargetPoint::Update(void)
 //==========================================================================
 // 操作
 //==========================================================================
-void CTargetPoint::Control(void)
+void CTargetPoint::Control()
 {
 
 	// 位置取得
@@ -248,7 +248,7 @@ void CTargetPoint::Control(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CTargetPoint::Draw(void)
+void CTargetPoint::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -282,7 +282,7 @@ void CTargetPoint::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CTargetPoint::SetVtx(void)
+void CTargetPoint::SetVtx()
 {
 	// 頂点情報更新
 	CObject3DMesh::SetVtx();
@@ -291,7 +291,7 @@ void CTargetPoint::SetVtx(void)
 //==========================================================================
 // 目標地点オブジェクトの取得
 //==========================================================================
-CTargetPoint *CTargetPoint::GetObject3DMesh(void)
+CTargetPoint *CTargetPoint::GetObject3DMesh()
 {
 	return this;
 }

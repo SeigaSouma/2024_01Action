@@ -32,14 +32,14 @@ public:
 	~CTransferBeacon();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 	// 静的関数
 	static CTransferBeacon *Create(eTransType transtype, const MyLib::Vector3 pos = MyLib::Vector3(0.0f, 150.0f, 0.0f));
-	static CListManager<CTransferBeacon> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CTransferBeacon> GetListObj() { return m_List; }	// リスト取得
 
 private:
 
@@ -56,18 +56,18 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CTransferBeacon::*STATE_FUNC)(void);
+	typedef void(CTransferBeacon::*STATE_FUNC)();
 	static STATE_FUNC m_StateFuncList[];	// 状態関数のリスト
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 状態関数
-	void StateNone(void);		// なにもなし
-	void StateTransfer(void);	// 転移
+	void StateNone();		// なにもなし
+	void StateTransfer();	// 転移
 
 	// その他関数
-	void CollisionPlayer(void);	// プレイヤーとの当たり判定処理
+	void CollisionPlayer();	// プレイヤーとの当たり判定処理
 
 	//=============================
 	// メンバ変数

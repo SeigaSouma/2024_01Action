@@ -37,7 +37,7 @@ CRankingManager::~CRankingManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CRankingManager *CRankingManager::Create(void)
+CRankingManager *CRankingManager::Create()
 {
 	// 生成用のオブジェクト
 	CRankingManager *pManager = NULL;
@@ -69,7 +69,7 @@ CRankingManager *CRankingManager::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CRankingManager::Init(void)
+HRESULT CRankingManager::Init()
 {
 	return S_OK;
 }
@@ -77,7 +77,7 @@ HRESULT CRankingManager::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRankingManager::Uninit(void)
+void CRankingManager::Uninit()
 {
 
 }
@@ -85,7 +85,7 @@ void CRankingManager::Uninit(void)
 //==========================================================================
 // リセット
 //==========================================================================
-void CRankingManager::Reset(void)
+void CRankingManager::Reset()
 {
 	// 値のクリア
 	m_nNowScore = 0;	// 今回のスコア
@@ -94,7 +94,7 @@ void CRankingManager::Reset(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CRankingManager::Update(void)
+void CRankingManager::Update()
 {
 	
 }
@@ -110,7 +110,7 @@ void CRankingManager::SetNowScore(int nScore)
 //==========================================================================
 // 今回のスコア取得
 //==========================================================================
-int CRankingManager::GetNowScore(void)
+int CRankingManager::GetNowScore()
 {
 	return m_nNowScore;
 }

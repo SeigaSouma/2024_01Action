@@ -22,10 +22,10 @@ public:
 	~CMeshSphere();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 	void SetSizeDest(float fSize);	// 目標のサイズ設定
 	static CMeshSphere *Create(MyLib::Vector3 pos, float fSize, const char *pFileName, int nPriority = mylib_const::PRIORITY_DEF2D);	// 生成処理

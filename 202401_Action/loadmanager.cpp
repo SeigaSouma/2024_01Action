@@ -37,7 +37,7 @@ CLoadManager::~CLoadManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CLoadManager* CLoadManager::Create(void)
+CLoadManager* CLoadManager::Create()
 {
 
 	// メモリの確保
@@ -56,7 +56,7 @@ CLoadManager* CLoadManager::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CLoadManager::Init(void)
+HRESULT CLoadManager::Init()
 {
 	// ロードスレッドがまだ生きているなら待機
 	if (m_LoadingThread.joinable()) 
@@ -69,7 +69,7 @@ HRESULT CLoadManager::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CLoadManager::Uninit(void)
+void CLoadManager::Uninit()
 {
 	if (m_pLoadScreen != nullptr)
 	{
@@ -82,7 +82,7 @@ void CLoadManager::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CLoadManager::Update(void)
+void CLoadManager::Update()
 {
 	if (m_pLoadScreen != nullptr)
 	{
@@ -93,7 +93,7 @@ void CLoadManager::Update(void)
 //==========================================================================
 // ロード解放
 //==========================================================================
-void CLoadManager::UnLoad(void)
+void CLoadManager::UnLoad()
 {
 	if (m_LoadingThread.joinable())
 	{
@@ -160,7 +160,7 @@ void CLoadManager::LoadScene(CScene::MODE mode)
 //==========================================================================
 // ロード画面を非同期で表示
 //==========================================================================
-void CLoadManager::LoadInBackground(void)
+void CLoadManager::LoadInBackground()
 {
 	// ロードが再び始まるのでフラグをリセット
 	m_bLoadComplete = false;
@@ -203,7 +203,7 @@ void CLoadManager::Load()
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CLoadManager::Draw(void)
+void CLoadManager::Draw()
 {
 	if (m_pLoadScreen != nullptr)
 	{

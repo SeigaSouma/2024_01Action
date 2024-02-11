@@ -25,23 +25,23 @@ public:
 	~CEdit();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(const char *pFileName);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Uninit();
+	void Update();
+	void Draw();
 
 	static CEdit *Create();
-	void Release(void);
-	static int GetNumAll(void);
+	void Release();
+	static int GetNumAll();
 protected:
 
 private:
-	HRESULT ReadText(void);
+	HRESULT ReadText();
 	void Control(CObjectX *pObjX);
-	void ChangeType(void);
-	void GrabModel(void);
-	void DeleteModel(void);
+	void ChangeType();
+	void GrabModel();
+	void DeleteModel();
 
 	static CObjectX *m_pObjX;
 	MyLib::Vector3 m_posOld;	// 前回の位置

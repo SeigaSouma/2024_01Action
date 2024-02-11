@@ -25,44 +25,44 @@ public:
 	~CObject2D();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(int nNumVertex);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Uninit();
+	void Update();
+	void Draw();
 	void Draw(int nNumVertex);
 	void Draw(LPDIRECT3DTEXTURE9 mutitex);
-	virtual void SetVtx(void);
+	virtual void SetVtx();
 	virtual void SetVtx(int nNumVertex);
 	void BindTexture(int nIdx);
-	int GetIdxTexture(void) { return m_nTexIdx; }
+	int GetIdxTexture() { return m_nTexIdx; }
 
 	virtual void SetColor(const D3DXCOLOR col);			// 色設定
-	virtual D3DXCOLOR GetColor(void) const;				// 色取得
+	virtual D3DXCOLOR GetColor() const;				// 色取得
 	virtual void SetSize(const D3DXVECTOR2 size);		// サイズの設定
-	virtual D3DXVECTOR2 GetSize(void) const;			// サイズの取得
+	virtual D3DXVECTOR2 GetSize() const;			// サイズの取得
 	virtual void SetSizeOrigin(const D3DXVECTOR2 size);	// 元のサイズの設定
-	virtual D3DXVECTOR2 GetSizeOrigin(void) const;		// 元のサイズの取得
+	virtual D3DXVECTOR2 GetSizeOrigin() const;		// 元のサイズの取得
 	virtual void SetTex(D3DXVECTOR2 *tex);				// テクスチャ座標の設定
-	virtual D3DXVECTOR2 *GetTex(void);					// テクスチャ座標の取得
-	virtual MyLib::Vector3 *GetVtxPos(void);				// 頂点座標取得
+	virtual D3DXVECTOR2 *GetTex();					// テクスチャ座標の取得
+	virtual MyLib::Vector3 *GetVtxPos();				// 頂点座標取得
 	virtual void SetVtxPos(MyLib::Vector3 *pos);			// 頂点座標取得
 	
-	template<class T>T *GetTemplate(void);
+	template<class T>T *GetTemplate();
 
 	static CObject2D *Create();
 	static CObject2D *Create(int nPriority);
 	static CObject2D *Create(int nPriority, int nNumVtx);
-	CObject2D *GetObject2D(void);
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) const;
+	CObject2D *GetObject2D();
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff() const;
 protected:
 
 private:
 
 	void SetLength(const float fLength);		// 対角線の長さ設定
-	float GetLength(void) const;				// 対角線の長さ取得
+	float GetLength() const;				// 対角線の長さ取得
 	void SetAngle(const float fAngle);			// 対角線の向き設定
-	float GetAngle(void) const;					// 対角線の向き取得
+	float GetAngle() const;					// 対角線の向き取得
 
 	D3DXCOLOR m_col;			// 色
 	D3DXVECTOR2 m_size;			// サイズ

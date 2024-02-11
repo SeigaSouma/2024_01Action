@@ -29,29 +29,29 @@ public:
 
 	// メンバ関数
 	HRESULT Init(int nPriority) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-	void Release(void) override;	// 開放処理
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+	void Release() override;	// 開放処理
 
 	void SetPosition(const MyLib::Vector3 pos) override;	// 位置設定
-	MyLib::Vector3 GetPosition(void) const override;		// 位置取得
+	MyLib::Vector3 GetPosition() const override;		// 位置取得
 	void SetMove(const MyLib::Vector3 move) override;		// 移動量設定
-	MyLib::Vector3 GetMove(void) const override;			// 移動量取得
+	MyLib::Vector3 GetMove() const override;			// 移動量取得
 	void SetRotation(const MyLib::Vector3 rot) override;	// 向き設定
-	MyLib::Vector3 GetRotation(void) const override;		// 向き取得
+	MyLib::Vector3 GetRotation() const override;		// 向き取得
 
 	void SetColor(const D3DXCOLOR col) override;			// 色設定
-	D3DXCOLOR GetColor(void) const override;				// 色取得
+	D3DXCOLOR GetColor() const override;				// 色取得
 	void SetSize3D(const MyLib::Vector3 size) override;		// サイズの設定
-	MyLib::Vector3 GetSize3D(void) const override;			// サイズの取得
+	MyLib::Vector3 GetSize3D() const override;			// サイズの取得
 	void SetTex(D3DXVECTOR2 *tex) override;				// テクスチャ座標の設定
-	D3DXVECTOR2 *GetTex(void) override;					// テクスチャ座標の取得
+	D3DXVECTOR2 *GetTex() override;					// テクスチャ座標の取得
 
-	void SetVtx(void) override;
+	void SetVtx() override;
 	void BindTexture(int nIdx) override;
 	void SetType(const CObject::TYPE type) override;
-	CObject3D *GetObject3D(void) override;
+	CObject3D *GetObject3D() override;
 
 private:
 	CObject3D *m_aObject3D;				// オブジェクト3Dのオブジェクト

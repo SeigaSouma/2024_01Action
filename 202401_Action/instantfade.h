@@ -37,15 +37,15 @@ public:
 	~CInstantFade();
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	CObject2D *GetMyObject(void);
-	static CInstantFade *Create(void);
+	CObject2D *GetMyObject();
+	static CInstantFade *Create();
 	void SetFade(D3DXCOLOR FadeColor = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), int nDuration = 30);	// フェード設定
-	STATE GetState(void);	// 状態取得
+	STATE GetState();	// 状態取得
 
 private:
 

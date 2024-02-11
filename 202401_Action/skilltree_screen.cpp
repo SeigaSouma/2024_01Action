@@ -41,7 +41,7 @@ CSkillTree_Screen::~CSkillTree_Screen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Screen* CSkillTree_Screen::Create(void)
+CSkillTree_Screen* CSkillTree_Screen::Create()
 {
 	// 生成用のオブジェクト
 	CSkillTree_Screen* pEffect = NULL;
@@ -61,7 +61,7 @@ CSkillTree_Screen* CSkillTree_Screen::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Screen::Init(void)
+HRESULT CSkillTree_Screen::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -93,7 +93,7 @@ HRESULT CSkillTree_Screen::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Screen::Uninit(void)
+void CSkillTree_Screen::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -102,7 +102,7 @@ void CSkillTree_Screen::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Screen::Update(void)
+void CSkillTree_Screen::Update()
 {
 	D3DXVECTOR2* tex = GetTex();
 	tex[0].x += SCROLL;
@@ -117,7 +117,7 @@ void CSkillTree_Screen::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Screen::Draw(void)
+void CSkillTree_Screen::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -139,7 +139,7 @@ void CSkillTree_Screen::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CSkillTree_Screen::SetVtx(void)
+void CSkillTree_Screen::SetVtx()
 {
 	// 頂点設定
 	CObject2D::SetVtx();

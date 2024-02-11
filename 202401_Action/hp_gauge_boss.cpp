@@ -88,7 +88,7 @@ CHP_GaugeBoss *CHP_GaugeBoss::Create(MyLib::Vector3 pos, int nMaxLife)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CHP_GaugeBoss::Init(void)
+HRESULT CHP_GaugeBoss::Init()
 {
 	// 種類設定
 	SetType(CObject::TYPE_OBJECT2D);
@@ -126,7 +126,7 @@ HRESULT CHP_GaugeBoss::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CHP_GaugeBoss::Uninit(void)
+void CHP_GaugeBoss::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -146,7 +146,7 @@ void CHP_GaugeBoss::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CHP_GaugeBoss::Kill(void)
+void CHP_GaugeBoss::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -167,7 +167,7 @@ void CHP_GaugeBoss::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CHP_GaugeBoss::Update(void)
+void CHP_GaugeBoss::Update()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -239,7 +239,7 @@ void CHP_GaugeBoss::GaugeDecrement(int nCntGauge)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CHP_GaugeBoss::Draw(void)
+void CHP_GaugeBoss::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

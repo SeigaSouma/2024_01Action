@@ -25,15 +25,15 @@ public:
 	static CHP_Gauge *Create(float fPosLen, int nMaxLife, float fSizeBuff = 1.0f);
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 	void SetVtx(int nCntGauge);
 
 	void UpdatePosition(MyLib::Vector3 pos, int nLife);
-	static int GetNumAll(void);
+	static int GetNumAll();
 
 private:
 

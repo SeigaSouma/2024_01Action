@@ -49,16 +49,16 @@ public:
 	CBG(int nPriority = 0);
 	~CBG();
 
-	static HRESULT Load(void);
-	static void Unload(void);
-	static CBG *Create(void);
+	static HRESULT Load();
+	static void Unload();
+	static CBG *Create();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 	void SetVtx(int nCntBg);
 
 	void SetMoveTex(const MyLib::Vector3 move);

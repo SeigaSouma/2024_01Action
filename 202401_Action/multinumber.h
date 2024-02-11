@@ -39,32 +39,32 @@ public:
 	static CMultiNumber *Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNum, CNumber::EObjectType objtype, const char *pTextureFile, bool bDigitDraw = false, int nPriority = 8);
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 	void AddNumber(int nValue);
-	void SetValue(void);		// 値の設定処理
+	void SetValue();		// 値の設定処理
 	void SetValue(int nValue);	// 値の設定処理(オーバーロード)
-	int GetValue(void);			// 値の取得処理
+	int GetValue();			// 値の取得処理
 	void SetPosition(const MyLib::Vector3 pos);	// 位置設定
-	MyLib::Vector3 GetPosition(void) const;		// 位置取得
+	MyLib::Vector3 GetPosition() const;		// 位置取得
 	void SetOriginPosition(const MyLib::Vector3 pos);	// 位置設定
-	MyLib::Vector3 GetOriginPosition(void) const;		// 位置取得
+	MyLib::Vector3 GetOriginPosition() const;		// 位置取得
 	void SetRotation(const MyLib::Vector3 pos);	// 位置設定
-	MyLib::Vector3 GetRotation(void) const;		// 位置取得
+	MyLib::Vector3 GetRotation() const;		// 位置取得
 	void SetColor(const D3DXCOLOR col);			// 色設定
-	D3DXCOLOR GetColor(void) const;				// 色取得
-	void Release(void);	// 開放処理
+	D3DXCOLOR GetColor() const;				// 色取得
+	void Release();	// 開放処理
 	void SetSize(const D3DXVECTOR2 size);		// サイズ設定
-	D3DXVECTOR2 GetSize(void) const;			// サイズ取得
+	D3DXVECTOR2 GetSize() const;			// サイズ取得
 	void SetSizeOrigin(const D3DXVECTOR2 size);		// サイズ設定
-	D3DXVECTOR2 GetSizeOrigin(void) const;			// サイズ取得
+	D3DXVECTOR2 GetSizeOrigin() const;			// サイズ取得
 
 private:
 
-	void SettingDisp(void);
+	void SettingDisp();
 
 	// メンバ変数
 	MyLib::Vector3 m_pos;				// 位置

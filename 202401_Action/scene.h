@@ -40,16 +40,16 @@ public:
 	~CScene();
 
 	// オーバーライドする関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
 
-	void ResetScene(void);	// シーンのリセット
+	void ResetScene();	// シーンのリセット
 	static CScene *Create(MODE mode);
-	static CXLoad *GetXLoad(void);			// Xファイルのデータ取得
-	static CElevation *GetElevation(void);	// オブジェクト3Dの取得
-	MODE GetMode(void);						// 現在のモード取得
+	static CXLoad *GetXLoad();			// Xファイルのデータ取得
+	static CElevation *GetElevation();	// オブジェクト3Dの取得
+	MODE GetMode();						// 現在のモード取得
 
 protected:
 

@@ -26,21 +26,21 @@ public:
 	~CEditEnemyBase();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(const char *pFileName);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Uninit();
+	void Update();
+	void Draw();
 
-	void Release(void);
-	static CEditEnemyBase *Create(void);	// 生成処理
+	void Release();
+	static CEditEnemyBase *Create();	// 生成処理
 
 private:
 
 	void Control(MyLib::Vector3 &pos);	// 操作
-	void Grab(void);	// 掴み
-	void Delete(void);	// 削除
-	void ChangeType(void);
+	void Grab();	// 掴み
+	void Delete();	// 削除
+	void ChangeType();
 
 	int m_nIdxMapPoint;			// マップポイントのインデックス番号
 	float m_fPointRatio;		// 移動割合

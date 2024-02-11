@@ -69,7 +69,7 @@ CObject2D_Anim *CObject2D_Anim::Create(MyLib::Vector3 pos, const int nDivisionU,
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObject2D_Anim::Init(void)
+HRESULT CObject2D_Anim::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -121,7 +121,7 @@ HRESULT CObject2D_Anim::Init(const int nDivisionU, const int nDivisionV, const i
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObject2D_Anim::Update(void)
+void CObject2D_Anim::Update()
 {
 
 	// カウントを更新
@@ -155,7 +155,7 @@ void CObject2D_Anim::Update(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObject2D_Anim::SetVtx(void)
+void CObject2D_Anim::SetVtx()
 {
 	// 更新処理
 	CObject2D::SetVtx();

@@ -46,30 +46,30 @@ public:
 	CTimer(int nPriority = 6);
 	~CTimer();
 
-	static CTimer *Create(void);
+	static CTimer *Create();
 	static CTimer *Create(MyLib::Vector3 pos);
-	static CTimer *GetInstance(void) { return m_pTimer; }
+	static CTimer *GetInstance() { return m_pTimer; }
 
 	HRESULT Init(MyLib::Vector3 pos);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	float GetTime(void) { return m_fTime; }
+	void Uninit();
+	void Update();
+	void Draw();
+	float GetTime() { return m_fTime; }
 
-	CTimer::eState GetState(void) { return m_state; }
+	CTimer::eState GetState() { return m_state; }
 	void SetState(eState state) { m_state = state; }
 
 private:
 
 	// 関数リスト
-	typedef void(CTimer::*STATE_FUNC)(void);
+	typedef void(CTimer::*STATE_FUNC)();
 	static STATE_FUNC m_StateFuncList[];	// 状態関数リスト
 
 	// メンバ関数
-	void StateWait(void);
-	void StatAppearance(void);
-	void StatAddLittle(void);
-	void StateAdjustment(void);
+	void StateWait();
+	void StatAppearance();
+	void StatAddLittle();
+	void StateAdjustment();
 
 	// メンバ変数
 	eState m_state;					// 状態

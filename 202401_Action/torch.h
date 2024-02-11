@@ -30,15 +30,15 @@ public:
 	~CTorch();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override {}
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override {}
 
-	void Kill(void);	// 削除
+	void Kill();	// 削除
 
 	// 静的関数
 	static CTorch *Create(TYPE type, const MyLib::Vector3& pos, const MyLib::Vector3& rot);
-	static void SetTorch(void);
+	static void SetTorch();
 
 	static CListManager<CTorch> GetList() { return m_List; }
 
@@ -66,8 +66,8 @@ public:
 	CTorchStand() {}
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Update(void) override;
+	virtual HRESULT Init() override;
+	virtual void Update() override;
 };
 
 class CTorchWall : public CTorch
@@ -76,8 +76,8 @@ public:
 	CTorchWall() {}
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Update(void) override;
+	virtual HRESULT Init() override;
+	virtual void Update() override;
 };
 
 #endif

@@ -51,7 +51,7 @@ CMeshField::~CMeshField()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CMeshField *CMeshField::Create(void)
+CMeshField *CMeshField::Create()
 {
 	// 生成用のオブジェクト
 	CMeshField *pObjMeshField = NULL;
@@ -142,7 +142,7 @@ CMeshField *CMeshField::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWi
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMeshField::Init(void)
+HRESULT CMeshField::Init()
 {
 	HRESULT hr;
 
@@ -167,7 +167,7 @@ HRESULT CMeshField::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMeshField::Uninit(void)
+void CMeshField::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -176,7 +176,7 @@ void CMeshField::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CMeshField::Update(void)
+void CMeshField::Update()
 {
 	// 頂点情報設定
 	//SetVtx();
@@ -185,7 +185,7 @@ void CMeshField::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMeshField::Draw(void)
+void CMeshField::Draw()
 {
 	//  デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -201,7 +201,7 @@ void CMeshField::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CMeshField::SetVtx(void)
+void CMeshField::SetVtx()
 {
 	// 頂点情報更新
 	CObject3DMesh::SetVtx();
@@ -210,7 +210,7 @@ void CMeshField::SetVtx(void)
 //==========================================================================
 // メッシュフィールドオブジェクトの取得
 //==========================================================================
-CMeshField *CMeshField::GetMyObject(void)
+CMeshField *CMeshField::GetMyObject()
 {
 	return this;
 }

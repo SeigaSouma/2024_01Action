@@ -43,7 +43,7 @@ CLoadScreen::~CLoadScreen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CLoadScreen *CLoadScreen::Create(void)
+CLoadScreen *CLoadScreen::Create()
 {
 	// 生成用のオブジェクト
 	CLoadScreen *pFade = NULL;
@@ -73,7 +73,7 @@ CLoadScreen *CLoadScreen::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CLoadScreen::Init(void)
+HRESULT CLoadScreen::Init()
 {
 	// 生成処理
 	m_aObject2D = CObject2D_Anim::Create(0.0f, 5, 2, 2, false);
@@ -98,7 +98,7 @@ HRESULT CLoadScreen::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CLoadScreen::Uninit(void)
+void CLoadScreen::Uninit()
 {
 	if (m_aObject2D != NULL)
 	{// NULLじゃなかったら
@@ -109,7 +109,7 @@ void CLoadScreen::Uninit(void)
 	}
 }
 
-void CLoadScreen::Kill(void)
+void CLoadScreen::Kill()
 {
 	if (m_aObject2D != NULL)
 	{
@@ -123,7 +123,7 @@ void CLoadScreen::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CLoadScreen::Update(void)
+void CLoadScreen::Update()
 {
 	if (m_aObject2D == nullptr)
 	{
@@ -143,7 +143,7 @@ void CLoadScreen::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CLoadScreen::Draw(void)
+void CLoadScreen::Draw()
 {
 	// 描画処理
 	m_aObject2D->Draw();
@@ -152,7 +152,7 @@ void CLoadScreen::Draw(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D_Anim*CLoadScreen::GetMyObject(void)
+CObject2D_Anim*CLoadScreen::GetMyObject()
 {
 	return m_aObject2D;
 }

@@ -41,7 +41,7 @@ CMeshDome::~CMeshDome()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CMeshDome *CMeshDome::Create(void)
+CMeshDome *CMeshDome::Create()
 {
 	// 生成用のオブジェクト
 	CMeshDome *pObjMeshCylinder = NULL;
@@ -144,7 +144,7 @@ CMeshDome *CMeshDome::Create(const float fMove, const char *aFileName, const int
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMeshDome::Init(void)
+HRESULT CMeshDome::Init()
 {
 	HRESULT hr;
 
@@ -168,7 +168,7 @@ HRESULT CMeshDome::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMeshDome::Uninit(void)
+void CMeshDome::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -177,7 +177,7 @@ void CMeshDome::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CMeshDome::Update(void)
+void CMeshDome::Update()
 {
 	MyLib::Vector3 rot = GetRotation();	// 向き
 
@@ -198,7 +198,7 @@ void CMeshDome::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMeshDome::Draw(void)
+void CMeshDome::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -216,7 +216,7 @@ void CMeshDome::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CMeshDome::SetVtx(void)
+void CMeshDome::SetVtx()
 {
 	// 頂点情報更新
 	CObject3DMesh::SetVtx();
@@ -225,7 +225,7 @@ void CMeshDome::SetVtx(void)
 //==========================================================================
 // メッシュドームオブジェクトの取得
 //==========================================================================
-CMeshDome *CMeshDome::GetMyObject(void)
+CMeshDome *CMeshDome::GetMyObject()
 {
 	return this;
 }

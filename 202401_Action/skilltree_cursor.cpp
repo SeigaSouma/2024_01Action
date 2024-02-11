@@ -81,7 +81,7 @@ CSkillTree_Cursor *CSkillTree_Cursor::Create(int nIdx)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Cursor::Init(void)
+HRESULT CSkillTree_Cursor::Init()
 {
 	HRESULT hr;
 
@@ -115,7 +115,7 @@ HRESULT CSkillTree_Cursor::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree_Cursor::Uninit(void)
+void CSkillTree_Cursor::Uninit()
 {
 	// 終了処理
 	CObject2D::Uninit();
@@ -124,7 +124,7 @@ void CSkillTree_Cursor::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Cursor::Update(void)
+void CSkillTree_Cursor::Update()
 {
 
 	if (CSkillTree::GetInstance()->GetState() == CSkillTree::STATE_NONE)
@@ -248,7 +248,7 @@ void CSkillTree_Cursor::Controll()
 //==========================================================================
 // アイコンとの当たり判定
 //==========================================================================
-void CSkillTree_Cursor::CollisionIcon(void)
+void CSkillTree_Cursor::CollisionIcon()
 {
 	// アイコン取得
 	std::vector<CSkillTree_Icon*> iconList = CSkillTree::GetInstance()->GetIcon();
@@ -292,7 +292,7 @@ void CSkillTree_Cursor::CollisionIcon(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree_Cursor::Draw(void)
+void CSkillTree_Cursor::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -314,7 +314,7 @@ void CSkillTree_Cursor::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CSkillTree_Cursor::SetVtx(void)
+void CSkillTree_Cursor::SetVtx()
 {
 	// 頂点設定
 	CObject2D::SetVtx();

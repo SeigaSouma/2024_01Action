@@ -78,7 +78,7 @@ CEffect3D::~CEffect3D()
 //==========================================================================
 // テクスチャ読み込み
 //==========================================================================
-void CEffect3D::LoadTexture(void)
+void CEffect3D::LoadTexture()
 {
 	// テクスチャの読み込み
 	for (int nCntTex = 0; nCntTex < sizeof(m_apTextureFile) / sizeof(*m_apTextureFile); nCntTex++)
@@ -90,7 +90,7 @@ void CEffect3D::LoadTexture(void)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CEffect3D *CEffect3D::Create(void)
+CEffect3D *CEffect3D::Create()
 {
 	// 生成用のオブジェクト
 	CEffect3D *pEffect = NULL;
@@ -140,7 +140,7 @@ CEffect3D* CEffect3D::Create(const MyLib::Vector3& pos, const MyLib::Vector3& mo
 //==========================================================================
 // エフェクトの初期化処理
 //==========================================================================
-HRESULT CEffect3D::Init(void)
+HRESULT CEffect3D::Init()
 {
 	HRESULT hr;
 
@@ -272,7 +272,7 @@ HRESULT CEffect3D::Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, c
 //==========================================================================
 // エフェクトの終了処理
 //==========================================================================
-void CEffect3D::Uninit(void)
+void CEffect3D::Uninit()
 {
 	if (m_pParent != NULL)
 	{
@@ -291,7 +291,7 @@ void CEffect3D::Uninit(void)
 //==========================================================================
 // 親の破棄
 //==========================================================================
-void CEffect3D::UninitParent(void)
+void CEffect3D::UninitParent()
 {
 	// 親をNULLにする
 	m_pParent = NULL;
@@ -300,7 +300,7 @@ void CEffect3D::UninitParent(void)
 //==========================================================================
 // エフェクトの更新処理
 //==========================================================================
-void CEffect3D::Update(void)
+void CEffect3D::Update()
 {
 	// 過去の位置設定
 	SetOldPosition(GetPosition());
@@ -358,7 +358,7 @@ void CEffect3D::Update(void)
 //==========================================================================
 // 移動処理
 //==========================================================================
-void CEffect3D::UpdateMove(void)
+void CEffect3D::UpdateMove()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -446,7 +446,7 @@ void CEffect3D::UpdatePosition(MyLib::Vector3 rot)
 //==========================================================================
 // エフェクトの縮小処理
 //==========================================================================
-void CEffect3D::SubSize(void)
+void CEffect3D::SubSize()
 {
 	int nEffect_3DType = rand() % 3;
 
@@ -467,7 +467,7 @@ void CEffect3D::SubSize(void)
 //==========================================================================
 // エフェクトの縮小処理
 //==========================================================================
-void CEffect3D::SuperSubSize(void)
+void CEffect3D::SuperSubSize()
 {
 	m_fRadius = m_fMaxRadius * (float)m_nLife / (float)m_nMaxLife;
 }
@@ -475,7 +475,7 @@ void CEffect3D::SuperSubSize(void)
 //==========================================================================
 // エフェクトの拡大処理
 //==========================================================================
-void CEffect3D::AddSize(void)
+void CEffect3D::AddSize()
 {
 	// 拡大
 	m_fRadius += m_fAddSizeValue;
@@ -484,7 +484,7 @@ void CEffect3D::AddSize(void)
 //==========================================================================
 // エフェクトの減衰処理
 //==========================================================================
-void CEffect3D::Gensui(void)
+void CEffect3D::Gensui()
 {
 	// 移動量取得
 	MyLib::Vector3 move = GetMove();
@@ -503,7 +503,7 @@ void CEffect3D::Gensui(void)
 //==========================================================================
 // エフェクトの描画処理
 //==========================================================================
-void CEffect3D::Draw(void)
+void CEffect3D::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -555,7 +555,7 @@ void CEffect3D::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CEffect3D::SetVtx(void)
+void CEffect3D::SetVtx()
 {
 	// 頂点設定
 	CObjectBillboard::SetVtx();
@@ -582,7 +582,7 @@ void CEffect3D::SetGravityValue(float fValue)
 //==========================================================================
 // 総数取得
 //==========================================================================
-int CEffect3D::GetNumAll(void)
+int CEffect3D::GetNumAll()
 {
 	return m_nNumAll;
 }

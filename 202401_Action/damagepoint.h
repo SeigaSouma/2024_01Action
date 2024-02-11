@@ -27,12 +27,12 @@ public:
 	~CDamagePoint();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void Kill(void);
+	void Kill();
 
 	static CDamagePoint* Create(MyLib::Vector3 pos, int nDamage);
 
@@ -41,7 +41,7 @@ private:
 	//=============================
 	// メンバ関数
 	//=============================
-	void SetValue(void);
+	void SetValue();
 
 	//=============================
 	// メンバ変数

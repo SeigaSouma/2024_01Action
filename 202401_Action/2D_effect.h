@@ -44,27 +44,27 @@ public:
 	CEffect2D(int nPriority = mylib_const::PRIORITY_DEF2D);
 	~CEffect2D();
 
-	static HRESULT Load(void);
-	static void Unload(void);
-	static CEffect2D *Create(void);
+	static HRESULT Load();
+	static void Unload();
+	static CEffect2D *Create();
 	static CEffect2D *Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type);
 	static CEffect2D *Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const MyLib::Vector3 rot, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type);
 
 	//  オーバーライドされた関数
-	HRESULT Init(void);
+	HRESULT Init();
 	HRESULT Init(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
-	static int GetNumAll(void);
+	static int GetNumAll();
 
 private:
-	void SubSize(void);
-	void SuperSubSize(void);
-	void AddSize(void);
-	void Gensui(void);
+	void SubSize();
+	void SuperSubSize();
+	void AddSize();
+	void Gensui();
 
 	D3DXCOLOR m_colOrigin;	// 色
 	float m_fRadius;		// 半径

@@ -98,7 +98,7 @@ void CNumber::SetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CNumber::GetPosition(void) const
+MyLib::Vector3 CNumber::GetPosition() const
 {
 	return mylib_const::DEFAULT_VECTOR3;
 }
@@ -113,7 +113,7 @@ void CNumber::SetMove(const MyLib::Vector3 move)
 //==========================================================================
 // 移動量取得
 //==========================================================================
-MyLib::Vector3 CNumber::GetMove(void) const
+MyLib::Vector3 CNumber::GetMove() const
 {
 	return mylib_const::DEFAULT_VECTOR3;
 }
@@ -128,7 +128,7 @@ void CNumber::SetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CNumber::GetRotation(void) const
+MyLib::Vector3 CNumber::GetRotation() const
 {
 	return mylib_const::DEFAULT_VECTOR3;
 }
@@ -143,7 +143,7 @@ void CNumber::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CNumber::GetColor(void) const
+D3DXCOLOR CNumber::GetColor() const
 {
 	return mylib_const::DEFAULT_COLOR;
 }
@@ -158,7 +158,7 @@ void CNumber::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CNumber::GetSize(void) const
+D3DXVECTOR2 CNumber::GetSize() const
 {
 	return D3DXVECTOR2(0.0f, 0.0f);
 }
@@ -173,7 +173,7 @@ void CNumber::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // 元のサイズの取得
 //==========================================================================
-D3DXVECTOR2 CNumber::GetSizeOrigin(void) const
+D3DXVECTOR2 CNumber::GetSizeOrigin() const
 {
 	return D3DXVECTOR2(0.0f, 0.0f);
 }
@@ -188,7 +188,7 @@ void CNumber::SetSize3D(const MyLib::Vector3 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-MyLib::Vector3 CNumber::GetSize3D(void) const
+MyLib::Vector3 CNumber::GetSize3D() const
 {
 	return MyLib::Vector3(0.0f, 0.0f, 0.0f);
 }
@@ -203,7 +203,7 @@ void CNumber::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CNumber::GetTex(void)
+D3DXVECTOR2 *CNumber::GetTex()
 {
 	return NULL;
 }
@@ -211,7 +211,7 @@ D3DXVECTOR2 *CNumber::GetTex(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D *CNumber::GetObject2D(void)
+CObject2D *CNumber::GetObject2D()
 {
 	return NULL;
 }
@@ -219,7 +219,7 @@ CObject2D *CNumber::GetObject2D(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject3D *CNumber::GetObject3D(void)
+CObject3D *CNumber::GetObject3D()
 {
 	return NULL;
 }
@@ -227,7 +227,7 @@ CObject3D *CNumber::GetObject3D(void)
 //==========================================================================
 // オブジェクトビルボードオブジェクトの取得
 //==========================================================================
-CObjectBillboard *CNumber::GetObjectBillboard(void)
+CObjectBillboard *CNumber::GetObjectBillboard()
 {
 	return NULL;
 }

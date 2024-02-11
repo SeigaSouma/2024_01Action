@@ -70,7 +70,7 @@ CRankingScore::~CRankingScore()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CRankingScore *CRankingScore::Create(void)
+CRankingScore *CRankingScore::Create()
 {
 	// 生成用のオブジェクト
 	CRankingScore *pScore = NULL;
@@ -97,7 +97,7 @@ CRankingScore *CRankingScore::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CRankingScore::Init(void)
+HRESULT CRankingScore::Init()
 {
 	// 種類設定
 	SetType(CObject::TYPE_SCORE);
@@ -180,7 +180,7 @@ HRESULT CRankingScore::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRankingScore::Uninit(void)
+void CRankingScore::Uninit()
 {
 	// 終了処理
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
@@ -217,7 +217,7 @@ void CRankingScore::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CRankingScore::Update(void)
+void CRankingScore::Update()
 {
 	for (int nCntRanking = 0; nCntRanking < RANKINGNUM; nCntRanking++)
 	{
@@ -293,7 +293,7 @@ void CRankingScore::Moving(int nCntRanking)
 //==========================================================================
 // ニューレコードの更新処理
 //==========================================================================
-void CRankingScore::UpdateNewRecord(void)
+void CRankingScore::UpdateNewRecord()
 {
 	for (int nCntScore = 0; nCntScore < RANKINGSCORE_DIGIT; nCntScore++)
 	{
@@ -323,7 +323,7 @@ void CRankingScore::UpdateNewRecord(void)
 //==========================================================================
 // 全ての到着設定
 //==========================================================================
-void CRankingScore::SetAllArrival(void)
+void CRankingScore::SetAllArrival()
 {
 
 	for (int nCntScore = 0; nCntScore < RANKINGSCORE_DIGIT; nCntScore++)
@@ -408,7 +408,7 @@ void CRankingScore::SetValue(int nCntRanking)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CRankingScore::Draw(void)
+void CRankingScore::Draw()
 {
 
 }
@@ -416,7 +416,7 @@ void CRankingScore::Draw(void)
 //==============================================================
 // ソート処理
 //==============================================================
-void CRankingScore::Sort(void)
+void CRankingScore::Sort()
 {
 	// 降順処理
 	for (int nCntData = 0; nCntData < m_nNumRanking - 1; nCntData++)
@@ -474,7 +474,7 @@ void CRankingScore::Sort(void)
 //==============================================================
 // セーブ処理
 //==============================================================
-void CRankingScore::Save(void)
+void CRankingScore::Save()
 {
 	FILE *pFile;
 
@@ -496,7 +496,7 @@ void CRankingScore::Save(void)
 //==============================================================
 // ロード処理
 //==============================================================
-void CRankingScore::Load(void)
+void CRankingScore::Load()
 {
 	FILE *pFile;
 

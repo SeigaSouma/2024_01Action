@@ -39,7 +39,7 @@ CMeshCylinder::~CMeshCylinder()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CMeshCylinder *CMeshCylinder::Create(void)
+CMeshCylinder *CMeshCylinder::Create()
 {
 	// 生成用のオブジェクト
 	CMeshCylinder *pObjMeshCylinder = NULL;
@@ -142,7 +142,7 @@ CMeshCylinder *CMeshCylinder::Create(const char *aFileName)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMeshCylinder::Init(void)
+HRESULT CMeshCylinder::Init()
 {
 	HRESULT hr;
 
@@ -166,7 +166,7 @@ HRESULT CMeshCylinder::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMeshCylinder::Uninit(void)
+void CMeshCylinder::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -175,7 +175,7 @@ void CMeshCylinder::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CMeshCylinder::Update(void)
+void CMeshCylinder::Update()
 {
 	// 頂点情報設定
 	SetVtx();
@@ -184,7 +184,7 @@ void CMeshCylinder::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMeshCylinder::Draw(void)
+void CMeshCylinder::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -220,7 +220,7 @@ void CMeshCylinder::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CMeshCylinder::SetVtx(void)
+void CMeshCylinder::SetVtx()
 {
 	// 頂点情報更新
 	CObject3DMesh::SetVtx();
@@ -229,7 +229,7 @@ void CMeshCylinder::SetVtx(void)
 //==========================================================================
 // メッシュシリンダーオブジェクトの取得
 //==========================================================================
-CMeshCylinder *CMeshCylinder::GetMyObject(void)
+CMeshCylinder *CMeshCylinder::GetMyObject()
 {
 	return this;
 }

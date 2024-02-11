@@ -35,12 +35,12 @@ public:
 	~CRevivalPercentText();
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void Kill(void);
+	void Kill();
 	void SetState(eState state) { m_state = state; }	// 状態設定
 	static CRevivalPercentText* Create(int respawnpercent, const float fadetime);	// 生成処理
 
@@ -49,16 +49,16 @@ private:
 	//=============================
 	// 関数ポインタ
 	//=============================
-	typedef void(CRevivalPercentText::* STATE_FUNC)(void);
+	typedef void(CRevivalPercentText::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 状態系
-	void StateNone(void);		// なにもなし
-	void StateFadeIn(void);		// フェードイン
-	void StateFadeOut(void);	// フェードアウト
+	void StateNone();		// なにもなし
+	void StateFadeIn();		// フェードイン
+	void StateFadeOut();	// フェードアウト
 
 	// その他関数
 	void SetNumberObj(int number);

@@ -72,7 +72,7 @@ CGame::~CGame()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CGame* CGame::Create(void)
+CGame* CGame::Create()
 {
 	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
@@ -92,7 +92,7 @@ CGame* CGame::Create(void)
 //==========================================================================
 // インスタンス取得
 //==========================================================================
-CGame* CGame::GetInstance(void)
+CGame* CGame::GetInstance()
 {
 	if (m_pThisPtr == nullptr)
 	{
@@ -104,7 +104,7 @@ CGame* CGame::GetInstance(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CGame::Init(void)
+HRESULT CGame::Init()
 {
 	// エディット判定OFF
 	m_bEdit = false;
@@ -210,7 +210,7 @@ HRESULT CGame::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CGame::Uninit(void)
+void CGame::Uninit()
 {
 
 	// スコアの破棄
@@ -281,7 +281,6 @@ void CGame::Uninit(void)
 
 	if (m_pThisPtr != nullptr)
 	{
-		//delete m_pThisPtr;
 		m_pThisPtr = nullptr;
 	}
 }
@@ -289,7 +288,7 @@ void CGame::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CGame::Update(void)
+void CGame::Update()
 {
 
 	// ゲームマネージャ
@@ -400,7 +399,7 @@ void CGame::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CGame::Draw(void)
+void CGame::Draw()
 {
 
 }
@@ -408,7 +407,7 @@ void CGame::Draw(void)
 //==========================================================================
 // スコアの取得
 //==========================================================================
-CScore *CGame::GetScore(void)
+CScore *CGame::GetScore()
 {
 	return m_pScore;
 }
@@ -416,7 +415,7 @@ CScore *CGame::GetScore(void)
 //==========================================================================
 // ステージの取得
 //==========================================================================
-CStage *CGame::GetStage(void)
+CStage *CGame::GetStage()
 {
 	return m_pStage;
 }
@@ -424,7 +423,7 @@ CStage *CGame::GetStage(void)
 //==========================================================================
 // ゲームマネージャの取得
 //==========================================================================
-CGameManager *CGame::GetGameManager(void)
+CGameManager *CGame::GetGameManager()
 {
 	return m_pGameManager;
 }
@@ -432,7 +431,7 @@ CGameManager *CGame::GetGameManager(void)
 //==========================================================================
 // 敵マネージャの取得
 //==========================================================================
-CEnemyManager *CGame::GetEnemyManager(void)
+CEnemyManager *CGame::GetEnemyManager()
 {
 	return m_pEnemyManager;
 }
@@ -440,7 +439,7 @@ CEnemyManager *CGame::GetEnemyManager(void)
 //==========================================================================
 // 敵の拠点
 //==========================================================================
-CEnemyBase *CGame::GetEnemyBase(void)
+CEnemyBase *CGame::GetEnemyBase()
 {
 	return m_pEnemyBase;
 }
@@ -448,7 +447,7 @@ CEnemyBase *CGame::GetEnemyBase(void)
 //==========================================================================
 // リセット処理
 //==========================================================================
-void CGame::ResetBeforeBoss(void)
+void CGame::ResetBeforeBoss()
 {
 	// ステージの破棄
 	if (m_pStage != nullptr)
@@ -494,7 +493,7 @@ void CGame::ResetBeforeBoss(void)
 //==========================================================================
 // エディターリセット処理
 //==========================================================================
-void CGame::EditReset(void)
+void CGame::EditReset()
 {
 	
 	if (m_pEditEnemyBase != nullptr)

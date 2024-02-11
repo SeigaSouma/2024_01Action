@@ -49,36 +49,36 @@ public:
 
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	void SetVtx(void);
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
+	void SetVtx();
 
 	void SetType(TYPE type);	// 種類設定
-	TYPE GetType(void);			// 種類取得
+	TYPE GetType();			// 種類取得
 	void SetState(STATE state, int nCntState);	// 状態設定
-	STATE GetState(void);	// 状態取得
+	STATE GetState();	// 状態取得
 	void SetTargetPosition(MyLib::Vector3 pos);	// 目標の位置
 	void SetParabolaHeight(float fHeight);		// 放物線の最大高さ
 
-	void SetReverseAutoDeath(void) { m_bAutoDeath = m_bAutoDeath ?  false : true; }	// 自動削除の判定削除
-	bool IsFinish(void) { return m_bFinish; }					// 終了の判定
+	void SetReverseAutoDeath() { m_bAutoDeath = m_bAutoDeath ?  false : true; }	// 自動削除の判定削除
+	bool IsFinish() { return m_bFinish; }					// 終了の判定
 
-	static int GetNumAll(void);
+	static int GetNumAll();
 	static CBullet *Create(TYPE type, MOVETYPE movetype, const MyLib::Vector3 pos, const MyLib::Vector3 rot, const MyLib::Vector3 move, const float fSize);
-	static CListManager<CBullet> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CBullet> GetListObj() { return m_List; }	// リスト取得
 
 private:
-	void UpdatePos(void);		// 移動
-	void UpdateTypePlayer(void);	// プレイヤー弾の更新
-	void CollisionPlayer(void);		// プレイヤーとの判定
-	void CollisionEnemy(void);		// 敵との判定
-	void StateNone(void);		// 何もない状態
-	void StateDamage(void);		// ダメージ状態処理
+	void UpdatePos();		// 移動
+	void UpdateTypePlayer();	// プレイヤー弾の更新
+	void CollisionPlayer();		// プレイヤーとの判定
+	void CollisionEnemy();		// 敵との判定
+	void StateNone();		// 何もない状態
+	void StateDamage();		// ダメージ状態処理
 
-	typedef void(CBullet::* STATE_FUNC)(void);
-	typedef void(CBullet::* COLLISION_FUNC)(void);
+	typedef void(CBullet::* STATE_FUNC)();
+	typedef void(CBullet::* COLLISION_FUNC)();
 	static STATE_FUNC m_FuncList[];
 	static COLLISION_FUNC m_CollisionFuncList[];	// 当たり判定のリスト
 

@@ -44,10 +44,10 @@ public:
 	static CBallast *Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum = 10, float scale = 1.0f, float fAlpha = 1.0f, TYPE type = TYPE_STONE);
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 private:
 

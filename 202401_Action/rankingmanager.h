@@ -24,14 +24,14 @@ public:
 	CRankingManager();
 	~CRankingManager();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
 
-	void Reset(void);				// リセット
+	void Reset();				// リセット
 	void SetNowScore(int nScore);	// 今回のスコア設定
-	int GetNowScore(void);			// 今回のスコア取得
-	static CRankingManager *Create(void);	// 生成処理
+	int GetNowScore();			// 今回のスコア取得
+	static CRankingManager *Create();	// 生成処理
 	
 private:
 	int m_nNowScore;	// 今回のスコア

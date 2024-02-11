@@ -64,7 +64,7 @@ CResultScore::~CResultScore()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CResultScore *CResultScore::Create(void)
+CResultScore *CResultScore::Create()
 {
 	// 生成用のオブジェクト
 	CResultScore *pScore = NULL;
@@ -91,7 +91,7 @@ CResultScore *CResultScore::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CResultScore::Init(void)
+HRESULT CResultScore::Init()
 {
 	// 種類設定
 	SetType(CObject::TYPE_SCORE);
@@ -114,7 +114,7 @@ HRESULT CResultScore::Init(void)
 //==========================================================================
 // 最終スコアの生成
 //==========================================================================
-void CResultScore::CreateToatalScore(void)
+void CResultScore::CreateToatalScore()
 {
 	// 生成処理
 	m_pToatalObj2D = CObject2D::Create(7);
@@ -139,7 +139,7 @@ void CResultScore::CreateToatalScore(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CResultScore::Uninit(void)
+void CResultScore::Uninit()
 {
 	
 	// 終了処理
@@ -167,7 +167,7 @@ void CResultScore::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CResultScore::Update(void)
+void CResultScore::Update()
 {
 	// 最終スコアの移動処理
 	MoveToatalScore();
@@ -179,7 +179,7 @@ void CResultScore::Update(void)
 //==========================================================================
 // 最終スコアの移動処理
 //==========================================================================
-void CResultScore::MoveToatalScore(void)
+void CResultScore::MoveToatalScore()
 {
 	if (m_pToatalObj2D == NULL)
 	{// 最終スコアが生成されていたら
@@ -250,7 +250,7 @@ void CResultScore::MoveToatalScore(void)
 //==========================================================================
 // 最終スコアの設定処理
 //==========================================================================
-void CResultScore::SetToatalValue(void)
+void CResultScore::SetToatalValue()
 {
 	if (m_pToatalScore == NULL)
 	{// NULLだったら
@@ -264,7 +264,7 @@ void CResultScore::SetToatalValue(void)
 //==========================================================================
 // 全ての到着設定
 //==========================================================================
-void CResultScore::SetAllArrival(void)
+void CResultScore::SetAllArrival()
 {
 	m_bArrivalToatal = true;		// 最終スコアの到着判定
 	m_bSetToatal = true;			// 最終スコアの設定判定
@@ -301,7 +301,7 @@ void CResultScore::SetAllArrival(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CResultScore::Draw(void)
+void CResultScore::Draw()
 {
 
 }

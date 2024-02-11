@@ -41,19 +41,19 @@ public:
 	~CBeam();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
 	static CBeam *Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const float fLength, const int nLife, const int nDisity, const int nDamage, CCollisionObject::eMyTag TagType, eBeamType BeamType = TYPE_NORMAL);
-	void SetDisableAddAlpha(void);	// 加算合成取り消し
+	void SetDisableAddAlpha();	// 加算合成取り消し
 
 private:
 
 	// メンバ関数
-	void UpdateEffect(void);
-	void UpdateBillboard(void);
+	void UpdateEffect();
+	void UpdateBillboard();
 
 	// メンバ変数
 	float m_fRadius;		// 半径

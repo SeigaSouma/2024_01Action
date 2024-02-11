@@ -26,13 +26,13 @@ public:
 	CTutorialScreen(int nPriority = 8);
 	~CTutorialScreen();
 
-	static CTutorialScreen *Create(void);
+	static CTutorialScreen *Create();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 private:
 	// 列挙型定義

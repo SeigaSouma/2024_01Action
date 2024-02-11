@@ -89,7 +89,7 @@ CObjectCircleGauge2D *CObjectCircleGauge2D::Create(int nPolygon, float fSize)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObjectCircleGauge2D::Init(void)
+HRESULT CObjectCircleGauge2D::Init()
 {
 	HRESULT hr;
 
@@ -123,7 +123,7 @@ HRESULT CObjectCircleGauge2D::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObjectCircleGauge2D::Uninit(void)
+void CObjectCircleGauge2D::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -139,7 +139,7 @@ void CObjectCircleGauge2D::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObjectCircleGauge2D::Update(void)
+void CObjectCircleGauge2D::Update()
 {
 	// 割合更新
 	m_fRate += (m_fRateDest - m_fRate) * 0.15f;
@@ -151,7 +151,7 @@ void CObjectCircleGauge2D::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObjectCircleGauge2D::Draw(void)
+void CObjectCircleGauge2D::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -172,7 +172,7 @@ void CObjectCircleGauge2D::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CObjectCircleGauge2D::SetVtx(void)
+void CObjectCircleGauge2D::SetVtx()
 {
 
 	// 頂点情報へのポインタ
@@ -291,7 +291,7 @@ void CObjectCircleGauge2D::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CObjectCircleGauge2D::GetColor(void) const
+D3DXCOLOR CObjectCircleGauge2D::GetColor() const
 {
 	return m_col;
 }
@@ -307,7 +307,7 @@ void CObjectCircleGauge2D::SetRate(const float fRate)
 //==========================================================================
 // 割合取得
 //==========================================================================
-float CObjectCircleGauge2D::GetRate(void) const
+float CObjectCircleGauge2D::GetRate() const
 {
 	return m_fRate;
 }
@@ -323,7 +323,7 @@ void CObjectCircleGauge2D::SetRateDest(const float fRate)
 //==========================================================================
 // 目標の割合取得
 //==========================================================================
-float CObjectCircleGauge2D::GetRateDest(void) const
+float CObjectCircleGauge2D::GetRateDest() const
 {
 	return m_fRateDest;
 }

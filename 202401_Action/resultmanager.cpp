@@ -38,7 +38,7 @@ CResultManager::~CResultManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CResultManager *CResultManager::Create(void)
+CResultManager *CResultManager::Create()
 {
 	// 生成用のオブジェクト
 	CResultManager *pManager = NULL;
@@ -70,7 +70,7 @@ CResultManager *CResultManager::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CResultManager::Init(void)
+HRESULT CResultManager::Init()
 {
 	return S_OK;
 }
@@ -78,7 +78,7 @@ HRESULT CResultManager::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CResultManager::Uninit(void)
+void CResultManager::Uninit()
 {
 
 }
@@ -86,7 +86,7 @@ void CResultManager::Uninit(void)
 //==========================================================================
 // リセット
 //==========================================================================
-void CResultManager::Reset(void)
+void CResultManager::Reset()
 {
 	// 値のクリア
 	m_nBaseScore = 0;		// スコア
@@ -96,7 +96,7 @@ void CResultManager::Reset(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CResultManager::Update(void)
+void CResultManager::Update()
 {
 	
 }
@@ -113,7 +113,7 @@ void CResultManager::AddScore(int nValue)
 //==========================================================================
 // スコアの取得処理
 //==========================================================================
-int CResultManager::GetBaseScore(void)
+int CResultManager::GetBaseScore()
 {
 	return m_nBaseScore;
 }
@@ -121,7 +121,7 @@ int CResultManager::GetBaseScore(void)
 //==========================================================================
 // スコアの取得処理
 //==========================================================================
-int CResultManager::GetToatalScore(void)
+int CResultManager::GetToatalScore()
 {
 	return m_nToatalScore;
 }

@@ -70,7 +70,7 @@ void CObjectX::BindXData(int nIdxXFile)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectX *CObjectX::Create(void)
+CObjectX *CObjectX::Create()
 {
 	// 生成用のオブジェクト
 	CObjectX *pObjectX = NULL;
@@ -223,7 +223,7 @@ CObjectX *CObjectX::Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CObjectX::Init(void)
+HRESULT CObjectX::Init()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -298,7 +298,7 @@ HRESULT CObjectX::Init(int nIdxXFile)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CObjectX::Uninit(void)
+void CObjectX::Uninit()
 {
 	// 影を消す
 	if (m_pShadow != NULL)
@@ -318,7 +318,7 @@ void CObjectX::Uninit(void)
 //==========================================================================
 // 死亡処理
 //==========================================================================
-void CObjectX::Kill(void)
+void CObjectX::Kill()
 {
 	// 影を消す
 	if (m_pShadow != NULL)
@@ -334,7 +334,7 @@ void CObjectX::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CObjectX::Update(void)
+void CObjectX::Update()
 {
 #if 0
 	// Xファイルのデータ取得
@@ -424,7 +424,7 @@ float CObjectX::GetHeight(MyLib::Vector3 pos, bool &bLand)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CObjectX::Draw(void)
+void CObjectX::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -677,7 +677,7 @@ void CObjectX::SetWorldMtx(const D3DXMATRIX mtx)
 //==========================================================================
 // マトリックス取得
 //==========================================================================
-D3DXMATRIX CObjectX::GetWorldMtx(void) const
+D3DXMATRIX CObjectX::GetWorldMtx() const
 {
 	return m_mtxWorld;
 }
@@ -693,7 +693,7 @@ void CObjectX::SetScale(const MyLib::Vector3 scale)
 //==========================================================================
 // スケール取得
 //==========================================================================
-MyLib::Vector3 CObjectX::GetScale(void) const
+MyLib::Vector3 CObjectX::GetScale() const
 {
 	return m_scale;
 }
@@ -709,7 +709,7 @@ void CObjectX::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CObjectX::GetColor(void) const
+D3DXCOLOR CObjectX::GetColor() const
 {
 	return m_col;
 }
@@ -725,7 +725,7 @@ void CObjectX::SetSize(const MyLib::Vector3 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-MyLib::Vector3 CObjectX::GetSize(void) const
+MyLib::Vector3 CObjectX::GetSize() const
 {
 	return m_fSize;
 }
@@ -733,7 +733,7 @@ MyLib::Vector3 CObjectX::GetSize(void) const
 //==========================================================================
 // 頂点の最大値取得
 //==========================================================================
-MyLib::Vector3 CObjectX::GetVtxMax(void) const
+MyLib::Vector3 CObjectX::GetVtxMax() const
 {
 	// Xファイルのデータ取得
 	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMax;
@@ -742,7 +742,7 @@ MyLib::Vector3 CObjectX::GetVtxMax(void) const
 //==========================================================================
 // 頂点の最小値取得
 //==========================================================================
-MyLib::Vector3 CObjectX::GetVtxMin(void) const
+MyLib::Vector3 CObjectX::GetVtxMin() const
 {
 	// Xファイルのデータ取得
 	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMin;
@@ -751,7 +751,7 @@ MyLib::Vector3 CObjectX::GetVtxMin(void) const
 //==========================================================================
 // Xファイルのインデックス取得
 //==========================================================================
-int CObjectX::GetIdxXFile(void) const
+int CObjectX::GetIdxXFile() const
 {
 	return m_nIdxXFile;
 }
@@ -759,7 +759,7 @@ int CObjectX::GetIdxXFile(void) const
 //==========================================================================
 // 影を使っているかどうか
 //==========================================================================
-bool CObjectX::GetUseShadow(void) const
+bool CObjectX::GetUseShadow() const
 {
 	return m_bShadow;
 }
@@ -767,7 +767,7 @@ bool CObjectX::GetUseShadow(void) const
 //==========================================================================
 // オブジェクトXオブジェクトの取得
 //==========================================================================
-CObjectX *CObjectX::GetObjectX(void)
+CObjectX *CObjectX::GetObjectX()
 {
 	return this;
 }
@@ -775,7 +775,7 @@ CObjectX *CObjectX::GetObjectX(void)
 //==========================================================================
 // 総数取得
 //==========================================================================
-int CObjectX::GetNumAll(void)
+int CObjectX::GetNumAll()
 {
 	return m_nNumAll;
 }

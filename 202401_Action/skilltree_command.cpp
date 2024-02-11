@@ -61,7 +61,7 @@ CSkillTree_Command* CSkillTree_Command::Create()
 //==========================================================================
 // èâä˙âªèàóù
 //==========================================================================
-HRESULT CSkillTree_Command::Init(void)
+HRESULT CSkillTree_Command::Init()
 {
 	HRESULT hr;
 
@@ -97,7 +97,7 @@ HRESULT CSkillTree_Command::Init(void)
 //==========================================================================
 // èIóπèàóù
 //==========================================================================
-void CSkillTree_Command::Uninit(void)
+void CSkillTree_Command::Uninit()
 {
 	for (int i = 0; i < ICONTYPE_MAX; i++)
 	{

@@ -22,17 +22,17 @@ public:
 	~CBulletObstacle();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 	static CBulletObstacle* Create(const MyLib::Vector3& pos, const MyLib::Vector3& rot, const D3DXVECTOR2& paraboramove, const float size);	// 生成
 
 private:
-	void UpdatePos(void);			// 移動
-	void CollisionPlayer(void);		// プレイヤーとの判定
-	void LimitPos(void);			// 位置制限
+	void UpdatePos();			// 移動
+	void CollisionPlayer();		// プレイヤーとの判定
+	void LimitPos();			// 位置制限
 
 	float m_fRadius;		// 半径
 	int m_nCntMove;	// 移動カウンター

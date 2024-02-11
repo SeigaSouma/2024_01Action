@@ -201,7 +201,7 @@ COLLIDER_FILENAME = data/TEXT/character/player/tyuuni/sphere_collider.json
 #------------------------------------------------------------------------------
 # ƒ‚[ƒVƒ‡ƒ“”
 #------------------------------------------------------------------------------
-NUM_MOTION = 18
+NUM_MOTION = 19
 
 #------------------------------------------------------------------------------
 # ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹–¼
@@ -217,7 +217,8 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [6]ƒWƒƒƒ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [7]—‰º’†
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [8]ƒmƒbƒNƒoƒbƒN
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [9]€–S
-MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_respawn.txt			# [9]•œŠˆ
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_respawn.txt		# [9]•œŠˆ
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_prayer.txt		# [9]‹F‚è
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_guard.txt		# [10]ƒK[ƒh
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_guarddmg.txt		# [10]ƒK[ƒhƒ_ƒ[ƒW
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_wait.txt		# [10]”½Œ‚‘Ò‹@

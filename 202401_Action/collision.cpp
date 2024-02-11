@@ -54,7 +54,7 @@ CCollision *CCollision::Create(eCollisionType collisionType)
 ////==========================================================================
 //// èâä˙âªèàóù
 ////==========================================================================
-//HRESULT CCollision::Init(void)
+//HRESULT CCollision::Init()
 //{
 //
 //	return S_OK;
@@ -63,7 +63,7 @@ CCollision *CCollision::Create(eCollisionType collisionType)
 ////==========================================================================
 //// èIóπèàóù
 ////==========================================================================
-//void CCollision::Uninit(void)
+//void CCollision::Uninit()
 //{
 //
 //}
@@ -71,7 +71,7 @@ CCollision *CCollision::Create(eCollisionType collisionType)
 ////==========================================================================
 //// çXêVèàóù
 ////==========================================================================
-//void CCollision::Update(void)
+//void CCollision::Update()
 //{
 //
 //}
@@ -79,7 +79,7 @@ CCollision *CCollision::Create(eCollisionType collisionType)
 ////==========================================================================
 //// ï`âÊèàóù
 ////==========================================================================
-//void CCollision::Draw(void)
+//void CCollision::Draw()
 //{
 //	
 //}

@@ -22,15 +22,15 @@ public:
 	~CMeshCylinder();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
 	static CMeshCylinder *Create();
 	static CMeshCylinder *Create(const char *aFileName = NULL);
-	CMeshCylinder *GetMyObject(void);
+	CMeshCylinder *GetMyObject();
 
 private:
 	int m_nTexIdx;	// テクスチャのインデックス番号

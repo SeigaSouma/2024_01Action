@@ -63,7 +63,7 @@ void CModel::BindXData(int nIdxXFile)
 //==========================================================================
 // テクスチャ割り当て
 //==========================================================================
-void CModel::BindTexture(void)
+void CModel::BindTexture()
 {
 	if (m_nIdxTexture != NULL)
 	{
@@ -166,7 +166,7 @@ HRESULT CModel::Init(const char *pFileName)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CModel::Uninit(void)
+void CModel::Uninit()
 {
 	//// 親モデルのポインタ
 	//if (m_pParent != NULL)
@@ -182,7 +182,7 @@ void CModel::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CModel::Update(void)
+void CModel::Update()
 {
 	// Xファイルのデータ取得
 	CXLoad *pXLoad = CScene::GetXLoad();
@@ -197,7 +197,7 @@ void CModel::Update(void)
 //==========================================================================
 // ワールドマトリックス計算
 //==========================================================================
-void CModel::CalWorldMtx(void)
+void CModel::CalWorldMtx()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -281,7 +281,7 @@ void CModel::CalWorldMtx(void)
 //==========================================================================
 // シャドウマトリックスの描画
 //==========================================================================
-void CModel::DrawShadowMtx(void)
+void CModel::DrawShadowMtx()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -353,7 +353,7 @@ void CModel::DrawShadowMtx(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CModel::Draw(void)
+void CModel::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -532,7 +532,7 @@ void CModel::SetWorldMtx(const D3DXMATRIX mtx)
 //==========================================================================
 // マトリックス取得
 //==========================================================================
-D3DXMATRIX CModel::GetWorldMtx(void) 
+D3DXMATRIX CModel::GetWorldMtx() 
 {
 	return m_mtxWorld;
 }
@@ -540,7 +540,7 @@ D3DXMATRIX CModel::GetWorldMtx(void)
 //==========================================================================
 // ポインタマトリックス取得
 //==========================================================================
-D3DXMATRIX *CModel::GetPtrWorldMtx(void)
+D3DXMATRIX *CModel::GetPtrWorldMtx()
 {
 	return &m_mtxWorld;
 }
@@ -556,7 +556,7 @@ void CModel::SetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CModel::GetPosition(void) const
+MyLib::Vector3 CModel::GetPosition() const
 {
 	return m_pos;
 }
@@ -572,7 +572,7 @@ void CModel::SetOldPosition(const MyLib::Vector3 posOld)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CModel::GetOldPosition(void) const
+MyLib::Vector3 CModel::GetOldPosition() const
 {
 	return m_posOld;
 }
@@ -588,7 +588,7 @@ void  CModel::SetOriginPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 元の位置取得
 //==========================================================================
-MyLib::Vector3  CModel::GetOriginPosition(void) const
+MyLib::Vector3  CModel::GetOriginPosition() const
 {
 	return m_posOrigin;
 }
@@ -604,7 +604,7 @@ void CModel::SetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CModel::GetRotation(void) const
+MyLib::Vector3 CModel::GetRotation() const
 {
 	return m_rot;
 }
@@ -620,7 +620,7 @@ void CModel::SetOriginRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 元の向き取得
 //==========================================================================
-MyLib::Vector3 CModel::GetOriginRotation(void) const
+MyLib::Vector3 CModel::GetOriginRotation() const
 {
 	return m_rotOrigin;
 }
@@ -636,7 +636,7 @@ void CModel::SetScale(const MyLib::Vector3 scale)
 //==========================================================================
 // スケール取得
 //==========================================================================
-MyLib::Vector3 CModel::GetScale(void) const
+MyLib::Vector3 CModel::GetScale() const
 {
 	return m_scale;
 }
@@ -644,7 +644,7 @@ MyLib::Vector3 CModel::GetScale(void) const
 //==========================================================================
 // 頂点の最大値取得
 //==========================================================================
-MyLib::Vector3 CModel::GetVtxMax(void) const
+MyLib::Vector3 CModel::GetVtxMax() const
 {
 	// Xファイルのデータ取得
 	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMax;
@@ -653,7 +653,7 @@ MyLib::Vector3 CModel::GetVtxMax(void) const
 //==========================================================================
 // 頂点の最小値取得
 //==========================================================================
-MyLib::Vector3 CModel::GetVtxMin(void) const
+MyLib::Vector3 CModel::GetVtxMin() const
 {
 	// Xファイルのデータ取得
 	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMin;
@@ -662,7 +662,7 @@ MyLib::Vector3 CModel::GetVtxMin(void) const
 //==========================================================================
 // モデルオブジェクトの取得
 //==========================================================================
-CModel *CModel::GetModel(void)
+CModel *CModel::GetModel()
 {
 	return this;
 }
@@ -670,7 +670,7 @@ CModel *CModel::GetModel(void)
 //==========================================================================
 // 総数取得
 //==========================================================================
-int CModel::GetNumAll(void)
+int CModel::GetNumAll()
 {
 	return m_nNumAll;
 }

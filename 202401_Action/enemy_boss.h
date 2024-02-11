@@ -47,11 +47,11 @@ public:
 	~CEnemyBoss();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-	void Kill(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+	void Kill() override;
 	void NormalHitResponse() override;	// ヒット時の反応
 	void CounterHitResponse() override;	// ヒット時の反応
 
@@ -60,7 +60,7 @@ public:
 	void ChangeNextATKState(CBossState* state) { m_pNextATKState = state; }
 
 
-	void ActChase(void);		// 追い掛け
+	void ActChase();		// 追い掛け
 	void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
 
 	void PerformAttack();		// 攻撃実行処理
@@ -82,16 +82,16 @@ private:
 	// メンバ関数
 	//=============================
 	// 行動関数
-	void ActionSet(void) override;		// 行動の設定
-	void UpdateAction(void) override;	// 行動更新
-	void ActWait(void);					// 待機
+	void ActionSet() override;		// 行動の設定
+	void UpdateAction() override;	// 行動更新
+	void ActWait();					// 待機
 
 	// 状態関数
-	virtual void StateDown(void) override;	// ダウン状態
+	virtual void StateDown() override;	// ダウン状態
 
 
 	// その他関数
-	void MotionSet(void) override;	// モーションの設定
+	void MotionSet() override;	// モーションの設定
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
 	void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
 

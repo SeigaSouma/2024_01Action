@@ -45,7 +45,7 @@ CSkillTree_Description::~CSkillTree_Description()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Description* CSkillTree_Description::Create(void)
+CSkillTree_Description* CSkillTree_Description::Create()
 {
 	// 生成用のオブジェクト
 	CSkillTree_Description* pWindow = nullptr;
@@ -65,7 +65,7 @@ CSkillTree_Description* CSkillTree_Description::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Description::Init(void)
+HRESULT CSkillTree_Description::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();
@@ -104,7 +104,7 @@ HRESULT CSkillTree_Description::Init(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree_Description::Update(void)
+void CSkillTree_Description::Update()
 {
 	CObject2D::Update();
 
@@ -128,7 +128,7 @@ void CSkillTree_Description::SetIdxTex(int nIdx)
 //==========================================================================
 // テクスチャ読み込み処理
 //==========================================================================
-HRESULT CSkillTree_Description::ReadTexture(void)
+HRESULT CSkillTree_Description::ReadTexture()
 {
 	char aComment[MAX_COMMENT] = {};	// コメント用
 	int nTexNum = 0;					// ファイルの数

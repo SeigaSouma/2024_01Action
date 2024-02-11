@@ -51,7 +51,7 @@ HRESULT CNumber2D::Init(int nPriority)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CNumber2D::Uninit(void)
+void CNumber2D::Uninit()
 {
 	// 終了処理
 	if (m_aObject2D != NULL)
@@ -63,7 +63,7 @@ void CNumber2D::Uninit(void)
 //==========================================================================
 // 解放処理
 //==========================================================================
-void CNumber2D::Release(void)
+void CNumber2D::Release()
 {
 	if (m_aObject2D != NULL)
 	{// NULLじゃなかったら
@@ -75,7 +75,7 @@ void CNumber2D::Release(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CNumber2D::Update(void)
+void CNumber2D::Update()
 {
 	// 更新処理
 	if (m_aObject2D != NULL)
@@ -87,7 +87,7 @@ void CNumber2D::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CNumber2D::Draw(void)
+void CNumber2D::Draw()
 {
 	// 描画処理
 	if (m_aObject2D != NULL)
@@ -99,7 +99,7 @@ void CNumber2D::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CNumber2D::SetVtx(void)
+void CNumber2D::SetVtx()
 {
 	m_aObject2D->SetVtx();
 }
@@ -134,7 +134,7 @@ void CNumber2D::SetPosition(const MyLib::Vector3 pos)
 //==========================================================================
 // 位置取得
 //==========================================================================
-MyLib::Vector3 CNumber2D::GetPosition(void) const
+MyLib::Vector3 CNumber2D::GetPosition() const
 {
 	return m_aObject2D->GetPosition();
 }
@@ -150,7 +150,7 @@ void CNumber2D::SetMove(const MyLib::Vector3 move)
 //==========================================================================
 // 移動量取得
 //==========================================================================
-MyLib::Vector3 CNumber2D::GetMove(void) const
+MyLib::Vector3 CNumber2D::GetMove() const
 {
 	return m_aObject2D->GetMove();
 }
@@ -166,7 +166,7 @@ void CNumber2D::SetRotation(const MyLib::Vector3 rot)
 //==========================================================================
 // 向き取得
 //==========================================================================
-MyLib::Vector3 CNumber2D::GetRotation(void) const
+MyLib::Vector3 CNumber2D::GetRotation() const
 {
 	return m_aObject2D->GetRotation();
 }
@@ -182,7 +182,7 @@ void CNumber2D::SetColor(const D3DXCOLOR col)
 //==========================================================================
 // 色取得
 //==========================================================================
-D3DXCOLOR CNumber2D::GetColor(void) const
+D3DXCOLOR CNumber2D::GetColor() const
 {
 	return m_aObject2D->GetColor();
 }
@@ -198,7 +198,7 @@ void CNumber2D::SetSize(const D3DXVECTOR2 size)
 //==========================================================================
 // サイズ取得
 //==========================================================================
-D3DXVECTOR2 CNumber2D::GetSize(void) const
+D3DXVECTOR2 CNumber2D::GetSize() const
 {
 	return m_aObject2D->GetSize();
 }
@@ -214,7 +214,7 @@ void CNumber2D::SetSizeOrigin(const D3DXVECTOR2 size)
 //==========================================================================
 // 元のサイズの取得
 //==========================================================================
-D3DXVECTOR2 CNumber2D::GetSizeOrigin(void) const
+D3DXVECTOR2 CNumber2D::GetSizeOrigin() const
 {
 	return m_aObject2D->GetSizeOrigin();
 }
@@ -230,7 +230,7 @@ void CNumber2D::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 // テクスチャ座標取得
 //==========================================================================
-D3DXVECTOR2 *CNumber2D::GetTex(void)
+D3DXVECTOR2 *CNumber2D::GetTex()
 {
 	return m_aObject2D->GetTex();
 }
@@ -238,7 +238,7 @@ D3DXVECTOR2 *CNumber2D::GetTex(void)
 //==========================================================================
 // オブジェクト2Dオブジェクトの取得
 //==========================================================================
-CObject2D *CNumber2D::GetObject2D(void)
+CObject2D *CNumber2D::GetObject2D()
 {
 	return m_aObject2D;
 }

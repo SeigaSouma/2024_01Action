@@ -99,7 +99,7 @@ CStaminaGauge_Player *CStaminaGauge_Player::Create(MyLib::Vector3 pos, int maxva
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CStaminaGauge_Player::Init(void)
+HRESULT CStaminaGauge_Player::Init()
 {
 	// 各種変数の初期化処理
 	m_fStaminaValue = m_fMaxStaminaValue;	// スタミナの値
@@ -142,7 +142,7 @@ HRESULT CStaminaGauge_Player::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CStaminaGauge_Player::Uninit(void)
+void CStaminaGauge_Player::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -156,7 +156,7 @@ void CStaminaGauge_Player::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CStaminaGauge_Player::Kill(void)
+void CStaminaGauge_Player::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -175,7 +175,7 @@ void CStaminaGauge_Player::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CStaminaGauge_Player::Update(void)
+void CStaminaGauge_Player::Update()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -192,7 +192,7 @@ void CStaminaGauge_Player::Update(void)
 //==========================================================================
 // 通常状態
 //==========================================================================
-void CStaminaGauge_Player::StateNormal(void)
+void CStaminaGauge_Player::StateNormal()
 {
 	// カウンターリセット
 	m_fStateTime = 0.0f;
@@ -204,7 +204,7 @@ void CStaminaGauge_Player::StateNormal(void)
 //==========================================================================
 // 減算状態
 //==========================================================================
-void CStaminaGauge_Player::StateSub(void)
+void CStaminaGauge_Player::StateSub()
 {
 	// カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -217,7 +217,7 @@ void CStaminaGauge_Player::StateSub(void)
 //==========================================================================
 // 色更新
 //==========================================================================
-void CStaminaGauge_Player::ChangeColor(void)
+void CStaminaGauge_Player::ChangeColor()
 {
 	CObject2D_Gauge* pGauge = m_pObj2DGauge[VTXTYPE_GAUGE];
 
@@ -269,7 +269,7 @@ void CStaminaGauge_Player::ChangeColor(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CStaminaGauge_Player::Draw(void)
+void CStaminaGauge_Player::Draw()
 {
 
 }
@@ -377,7 +377,7 @@ void CStaminaGauge_Player::UpgradeAutoHeal(float multiply)
 //==========================================================================
 // 値の補正
 //==========================================================================
-void CStaminaGauge_Player::CorrectionValue(void)
+void CStaminaGauge_Player::CorrectionValue()
 {
 	UtilFunc::Transformation::ValueNormalize(m_fStaminaValue, m_fMaxStaminaValue, 0.0f);
 
@@ -387,7 +387,7 @@ void CStaminaGauge_Player::CorrectionValue(void)
 //==========================================================================
 // 値取得
 //==========================================================================
-float CStaminaGauge_Player::GetValue(void)
+float CStaminaGauge_Player::GetValue()
 {
 	return m_fStaminaValue;
 }

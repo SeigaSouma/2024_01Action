@@ -70,7 +70,7 @@ CGameManager::~CGameManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CGameManager* CGameManager::Create(void)
+CGameManager* CGameManager::Create()
 {
 	// メモリ確保
 	CGameManager* pManager = DEBUG_NEW CGameManager;
@@ -93,7 +93,7 @@ CGameManager* CGameManager::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CGameManager::Init(void)
+HRESULT CGameManager::Init()
 {
 	m_bControll = true;			// 操作できるか
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
@@ -112,7 +112,7 @@ HRESULT CGameManager::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CGameManager::Uninit(void)
+void CGameManager::Uninit()
 {
 	if (m_pSkilltreeAbillity != nullptr)
 	{
@@ -124,7 +124,7 @@ void CGameManager::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CGameManager::Update(void)
+void CGameManager::Update()
 {
 	//if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1 <= m_nNowStage)
 	//{// 総ステージ数を超えたら
@@ -187,7 +187,7 @@ void CGameManager::Update(void)
 //==========================================================================
 // ゲームクリア時の設定
 //==========================================================================
-void CGameManager::GameClearSettings(void)
+void CGameManager::GameClearSettings()
 {
 	// クリアテキスト生成
 	CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
@@ -221,7 +221,7 @@ void CGameManager::GameClearSettings(void)
 //==========================================================================
 // メイン遷移中
 //==========================================================================
-void CGameManager::SceneTransition(void)
+void CGameManager::SceneTransition()
 {
 	// 遷移なしフェードの状態取得
 	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
@@ -277,7 +277,7 @@ void CGameManager::SceneTransition(void)
 //==========================================================================
 // 強化シーン
 //==========================================================================
-void CGameManager::SceneEnhance(void)
+void CGameManager::SceneEnhance()
 {
 	// 遷移なしフェードの状態取得
 	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
@@ -365,7 +365,7 @@ void CGameManager::SceneEnhance(void)
 //==========================================================================
 // 復活
 //==========================================================================
-void CGameManager::SceneReaspawn(void)
+void CGameManager::SceneReaspawn()
 {
 	// 遷移なしフェードの状態取得
 	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
@@ -445,7 +445,7 @@ void CGameManager::SceneReaspawn(void)
 //==========================================================================
 // ボス設定
 //==========================================================================
-void CGameManager::SetBoss(void)
+void CGameManager::SetBoss()
 {
 	// BGMストップ
 	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL_BGM_GAME);
@@ -490,7 +490,7 @@ void CGameManager::SetBoss(void)
 //==========================================================================
 // 敵設定
 //==========================================================================
-void CGameManager::SetEnemy(void)
+void CGameManager::SetEnemy()
 {
 
 	// ステージ切り替え
@@ -537,7 +537,7 @@ void CGameManager::SetEnemy(void)
 //==========================================================================
 // ステージの加算
 //==========================================================================
-void CGameManager::AddNowStage(void)
+void CGameManager::AddNowStage()
 {
 	// 加算
 	m_nNowStage++;
@@ -554,7 +554,7 @@ void CGameManager::AddNowStage(void)
 //==========================================================================
 // 現在のステージ取得
 //==========================================================================
-int CGameManager::GetNowStage(void)
+int CGameManager::GetNowStage()
 {
 	return m_nNowStage;
 }
@@ -579,7 +579,7 @@ void CGameManager::SetType(SceneType type)
 //==========================================================================
 // シーンの種類取得
 //==========================================================================
-CGameManager::SceneType CGameManager::GetType(void)
+CGameManager::SceneType CGameManager::GetType()
 {
 	return m_SceneType;
 }

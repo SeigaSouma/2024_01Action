@@ -23,17 +23,17 @@ public:
 	~CSantaBag();
 
 	// オーバーライドされた関数
-	virtual HRESULT Init(void) override;
-	virtual void Uninit(void) override;
-	virtual void Update(void) override;
-	virtual void Draw(void) override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 	// メンバ関数
-	void Hit(void);	// ヒット処理
+	void Hit();	// ヒット処理
 
 	// 静的関数
 	static CSantaBag *Create(const MyLib::Vector3 pos);
-	static CListManager<CSantaBag> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CSantaBag> GetListObj() { return m_List; }	// リスト取得
 
 private:
 
@@ -48,16 +48,16 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CSantaBag::*STATE_FUNC)(void);
+	typedef void(CSantaBag::*STATE_FUNC)();
 	static STATE_FUNC m_StateFuncList[];	// 状態関数のリスト
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 状態関数
-	void StateNone(void);		// なにもない状態
-	void StateDamage(void);		// ダメージ状態
-	void StateInvicible(void);	// 無敵状態
+	void StateNone();		// なにもない状態
+	void StateDamage();		// ダメージ状態
+	void StateInvicible();	// 無敵状態
 
 
 	//=============================

@@ -45,7 +45,7 @@ CTexture::~CTexture()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CTexture* CTexture::Create(void)
+CTexture* CTexture::Create()
 {
 	if (m_pTexture == nullptr)
 	{// まだ生成していなかったら
@@ -66,7 +66,7 @@ CTexture* CTexture::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-void CTexture::Init(void)
+void CTexture::Init()
 {
 	STexture init = {};
 	m_TexInfo.emplace_back();
@@ -75,7 +75,7 @@ void CTexture::Init(void)
 //==========================================================================
 // 全てのテクスチャ読み込み
 //==========================================================================
-HRESULT CTexture::LoadAll(void)
+HRESULT CTexture::LoadAll()
 {
 #if 0
 	// 全検索
@@ -139,7 +139,7 @@ void CTexture::SearchAllImages(const std::wstring& folderPath, std::vector<std::
 //==========================================================================
 // 全てのテクスチャの破棄
 //==========================================================================
-void CTexture::Unload(void)
+void CTexture::Unload()
 {
 
 	for (const auto& texture : m_TexInfo)
@@ -251,7 +251,7 @@ LPDIRECT3DTEXTURE9 CTexture::GetAdress(int nIdx)
 //==========================================================================
 // テクスチャの総数取得
 //==========================================================================
-int CTexture::GetNumAll(void)
+int CTexture::GetNumAll()
 {
 	return static_cast<int>(m_TexInfo.size());
 }

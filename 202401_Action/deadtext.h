@@ -33,10 +33,10 @@ public:
 	~CDeadText();
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
 	void SetState(eState state) { m_state = state; }	// 状態設定
 	static CDeadText* Create(const float fadein, const float fadeout);		// 生成処理
@@ -46,15 +46,15 @@ private:
 	//=============================
 	// 関数ポインタ
 	//=============================
-	typedef void(CDeadText::* STATE_FUNC)(void);
+	typedef void(CDeadText::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
-	void StateNone(void);		// なにもなし
-	void StateFadeIn(void);		// フェードイン
-	void StateFadeOut(void);	// フェードアウト
+	void StateNone();		// なにもなし
+	void StateFadeIn();		// フェードイン
+	void StateFadeOut();	// フェードアウト
 
 	//=============================
 	// メンバ変数

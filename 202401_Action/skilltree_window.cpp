@@ -37,7 +37,7 @@ CSkillTree_Window::~CSkillTree_Window()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree_Window* CSkillTree_Window::Create(void)
+CSkillTree_Window* CSkillTree_Window::Create()
 {
 	// 生成用のオブジェクト
 	CSkillTree_Window* pWindow = nullptr;
@@ -57,7 +57,7 @@ CSkillTree_Window* CSkillTree_Window::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree_Window::Init(void)
+HRESULT CSkillTree_Window::Init()
 {
 	// 初期化処理
 	HRESULT hr = CObject2D::Init();

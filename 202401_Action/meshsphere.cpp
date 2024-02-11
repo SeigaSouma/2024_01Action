@@ -125,7 +125,7 @@ CMeshSphere *CMeshSphere::Create(MyLib::Vector3 pos, float fSize, int nTexIdx, i
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CMeshSphere::Init(void)
+HRESULT CMeshSphere::Init()
 {
 	HRESULT hr;
 
@@ -145,7 +145,7 @@ HRESULT CMeshSphere::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CMeshSphere::Uninit(void)
+void CMeshSphere::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -154,7 +154,7 @@ void CMeshSphere::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CMeshSphere::Update(void)
+void CMeshSphere::Update()
 {
 	// キーボード情報取得
 	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -189,7 +189,7 @@ void CMeshSphere::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CMeshSphere::Draw(void)
+void CMeshSphere::Draw()
 {
 	//  デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

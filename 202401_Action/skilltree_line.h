@@ -42,14 +42,14 @@ public:
 	~CSkillTree_Line();
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-	void SetVtx(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+	void SetVtx() override;
 
 	void SetSkillLineInfo(const MyLib::Vector3& myposition, const MyLib::Vector3& parentposition);
-	static CListManager<CSkillTree_Line> GetListObj(void) { return m_List; }	// リスト取得
+	static CListManager<CSkillTree_Line> GetListObj() { return m_List; }	// リスト取得
 	static CSkillTree_Line* Create(const MyLib::Vector3& myposition, const MyLib::Vector3& parentposition);
 	static CSkillTree_Line* Create(CSkillTree_Icon* myIcon, CSkillTree_Icon* parentIcon);
 private:

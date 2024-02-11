@@ -42,27 +42,27 @@ public:
 	~CSkillTree();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void Kill(void);	// 削除
-	void LoadJson(void);	// Jsonからのロード
-	void SaveJson(void);	// Jsonへのセーブ
-	void SetScreen(void);	// スクリーン上に設定
-	void OutScreen(void);	// スクリーンから捌ける
+	void Kill();	// 削除
+	void LoadJson();	// Jsonからのロード
+	void SaveJson();	// Jsonへのセーブ
+	void SetScreen();	// スクリーン上に設定
+	void OutScreen();	// スクリーンから捌ける
 
 	eState GetState() { return m_state; }	// 状態取得
 	void SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering);	// 習得状況設定
 	void SetMastering(std::vector<CSkillTree_Icon::eMastering> mastering);	// 習得状況設定
 	std::vector<CSkillTree_Icon::eMastering> GetMastering();			// 習得状況取得
-	std::vector<CSkillTree_Icon*> GetIcon(void) const;	// アイコン取得
+	std::vector<CSkillTree_Icon*> GetIcon() const;	// アイコン取得
 	std::vector<CSkillTree_Icon::sSkillIcon> GetIconInfo() { return m_SkillInfo; }
 	CSkillTree_Description* GetDescription() { return m_pDescription; }	// 説明文取得
 
 	static CSkillTree* GetInstance() { return m_pThisPtr; }	// インスタンス取得
-	static CSkillTree* Create(void);
+	static CSkillTree* Create();
 
 	// JSONからの読み込み
 	void from_json(const json& j)
@@ -92,15 +92,15 @@ private:
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CSkillTree::* STATE_FUNC)(void);	// 状態処理のリスト
+	typedef void(CSkillTree::* STATE_FUNC)();	// 状態処理のリスト
 	static STATE_FUNC m_StateFuncList[];
 
 	//=============================
 	// メンバ関数
 	//=============================
-	void StateNone(void);	// 何もない状態
-	void StateFadeIn(void);	// フェードイン状態
-	void StateFadeOut(void);// フェードアウト状態
+	void StateNone();	// 何もない状態
+	void StateFadeIn();	// フェードイン状態
+	void StateFadeOut();// フェードアウト状態
 
 	//=============================
 	// メンバ変数

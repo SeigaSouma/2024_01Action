@@ -91,7 +91,7 @@ CRevivalTimeGauge* CRevivalTimeGauge::Create(const float fadetime, MyLib::Vector
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CRevivalTimeGauge::Init(void)
+HRESULT CRevivalTimeGauge::Init()
 {
 	// 各種変数の初期化処理
 	m_fValue = DEFAULT_TIMER;	// タイマーの値
@@ -133,7 +133,7 @@ HRESULT CRevivalTimeGauge::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRevivalTimeGauge::Uninit(void)
+void CRevivalTimeGauge::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -147,7 +147,7 @@ void CRevivalTimeGauge::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRevivalTimeGauge::Kill(void)
+void CRevivalTimeGauge::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -166,7 +166,7 @@ void CRevivalTimeGauge::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CRevivalTimeGauge::Update(void)
+void CRevivalTimeGauge::Update()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -185,7 +185,7 @@ void CRevivalTimeGauge::Update(void)
 //==========================================================================
 // なにもなし
 //==========================================================================
-void CRevivalTimeGauge::StateNone(void)
+void CRevivalTimeGauge::StateNone()
 {
 
 	m_fValue -= CManager::GetInstance()->GetDeltaTime();
@@ -210,7 +210,7 @@ void CRevivalTimeGauge::StateNone(void)
 //==========================================================================
 // フェードイン
 //==========================================================================
-void CRevivalTimeGauge::StateFadeIn(void)
+void CRevivalTimeGauge::StateFadeIn()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -226,7 +226,7 @@ void CRevivalTimeGauge::StateFadeIn(void)
 //==========================================================================
 // フェードアウト
 //==========================================================================
-void CRevivalTimeGauge::StateFadeOut(void)
+void CRevivalTimeGauge::StateFadeOut()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -244,7 +244,7 @@ void CRevivalTimeGauge::StateFadeOut(void)
 //==========================================================================
 // 時間がなくなった瞬間
 //==========================================================================
-void CRevivalTimeGauge::StateTimeComplete(void)
+void CRevivalTimeGauge::StateTimeComplete()
 {
 	CDeadManager* pDeadMgr = CDeadManager::GetInstance();
 	CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
@@ -265,7 +265,7 @@ void CRevivalTimeGauge::StateTimeComplete(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CRevivalTimeGauge::Draw(void)
+void CRevivalTimeGauge::Draw()
 {
 
 }

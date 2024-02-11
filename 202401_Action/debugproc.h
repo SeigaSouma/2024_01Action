@@ -26,11 +26,11 @@ public:
 	~CDebugProc();
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Uninit();
+	void Update();
+	void Draw();
 	void Print(const char *fmt, ...);
-	static void SetText(void);		// İ’èˆ—
+	static void SetText();		// İ’èˆ—
 
 private:
 

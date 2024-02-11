@@ -10,6 +10,8 @@
 #include "main.h"
 #include "scene.h"
 
+class CStateCameraR;
+
 //==========================================================================
 // クラス定義
 //==========================================================================
@@ -23,6 +25,8 @@ private:
 	{
 		CAMERASTATE_NONE = 0,	// 通常
 		CAMERASTATE_SHAKE,		// 振動
+		CAMERASTATE_PRAYER,		// 祈り
+		CAMERASTATE_MAX
 	};
 
 public:
@@ -54,84 +58,112 @@ public:
 	CCamera();
 	~CCamera();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void SetCamera(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void SetCamera();
 
 	void SetRotation(const MyLib::Vector3 rot);	// 向き設定
-	MyLib::Vector3 GetRotation(void) const;		// 向き取得
-	MyLib::Vector3 GetPositionV(void) const;		// カメラの位置取得
-	MyLib::Vector3 GetPositionR(void) const;		// カメラの注視点取得
+	MyLib::Vector3 GetRotation() const;		// 向き取得
+	MyLib::Vector3 GetPositionV() const;		// カメラの位置取得
+	MyLib::Vector3 GetPositionR() const;		// カメラの注視点取得
 	void SetOriginDistance(float fDistance);	// 元になるカメラの距離設定
-	float GetOriginDistance(void);				// 元になるカメラの距離取得
+	float GetOriginDistance();				// 元になるカメラの距離取得
 	void SetDestRotation(const MyLib::Vector3 rot);	// 目標の向き設定
-	MyLib::Vector3 GetDestRotation(void);				// 目標の向き取得
+	MyLib::Vector3 GetDestRotation();				// 目標の向き取得
 	void SetTargetPosition(const MyLib::Vector3 pos);	// 追従目標の位置設定
-	MyLib::Vector3 GetTargetPosition(void);			// 追従目標の位置取得
+	MyLib::Vector3 GetTargetPosition();			// 追従目標の位置取得
 	void SetTargetRotation(const MyLib::Vector3 rot);	// ロックオンの向き設定
+
+	// 移動量系
+	MyLib::Vector3 GetMoveRot() { return m_Moverot; }	// 向きの移動量取得
+	void SetMoveRot(const MyLib::Vector3& rot) { m_Moverot = rot; }	// 向きの移動量取得
+
+
+	// ロックオン
 	void SetRockOnPosition(const MyLib::Vector3 pos);	// ロックオンの位置設定
 	void SetRockOnDistance(const float distance);	// ロックオンの下限距離設定
-	MyLib::Vector3 GetRockOnPosition(void);			// 追従目標の位置取得
+	MyLib::Vector3 GetRockOnPosition();			// 追従目標の位置取得
 	void SetRockOn(const MyLib::Vector3 pos, bool bSet);	// ロックオン設定
 	void SetRockDir(RockOnDir dir) { m_RockOnDir = dir; }	// ロックオン時のズレ向き設定
+	void SetRockOnState(RockOnState state);	// ロックオン状態設定
+	CCamera::RockOnState GetRockOnState() { return m_stateRockOn; }	// ロックオン状態取得
 
-	MyLib::Vector3 GetTargetRotation(void);			// 追従目標の向き取得
-	D3DXMATRIX GetMtxView(void) { return m_mtxView; }
-	D3DXMATRIX GetMtxProjection(void) { return m_mtxProjection; }
+	MyLib::Vector3 GetTargetRotation();			// 追従目標の向き取得
+	D3DXMATRIX GetMtxView() { return m_mtxView; }
+	D3DXMATRIX GetMtxProjection() { return m_mtxProjection; }
 
 	void SetShake(int nTime, float fLength, float fLengthY);	// 振動設定
-	void SetLenDest(float fLength, int nCntTime = 120, float DecrementValue = 2.0f, float fCorrection = 0.1f);	// 目標の長さ設定
+
+	/**
+	@brief	目標の長さ設定
+	@param	fLength			[in]	目標の長さ
+	@param	nCntTime		[in]	減算するまでの時間
+	@param	DecrementValue	[in]	減少量
+	@param	fCorrection		[in]	減少補正係数
+	@return	void
+	*/
+	void SetLenDest(float fLength, int nCntTime = 120, float DecrementValue = 2.0f, float fCorrection = 0.1f);
 	void SetPlayerChaseIndex(int nIdx);				// 追従するプレイヤーのインデックス番号設定
-	int GetPlayerChaseIndex(void);					// 追従するプレイヤーのインデックス番号取得
-	bool IsFollow(void);										// 追従状態取得
-	bool IsRockOn(void) { return m_bRockON; }					// 追従状態取得
+	int GetPlayerChaseIndex();					// 追従するプレイヤーのインデックス番号取得
+	bool IsFollow();										// 追従状態取得
+	bool IsRockOn() { return m_bRockON; }					// 追従状態取得
+	bool IsRotationZ() { return m_bRotationZ; }
 	void SetEnableFollow(bool bFollow);							// 追従の判定設定
 	void SetViewPort(MyLib::Vector3 pos, D3DXVECTOR2 size);		// ビューポートの設定
 	void Reset(CScene::MODE mode);				// リセット
-	void ResetBoss(void);						// リセット
+	void ResetBoss();						// リセット
 	bool IsOnScreen(const MyLib::Vector3 pos);	// スクリーン内の判定
 	void MoveCameraStick(int nIdx = 0);			// スティック操作
 
-	void SetRockOnState(RockOnState state);	// ロックオン状態設定
-	CCamera::RockOnState GetRockOnState(void) { return m_stateRockOn; }	// ロックオン状態取得
+	// 情報取得
+	void SetPositionR(const MyLib::Vector3& pos) { m_posR = pos; }
+	MyLib::Vector3 GetPositionR() { return m_posR; }
+	void SetPositionRDest(const MyLib::Vector3& pos) { m_posRDest = pos; }
+	MyLib::Vector3 GetPositionRDest() { return m_posRDest; }
+
+	// ステートパターン設定
+	void SetStateCamraR(CStateCameraR* state);	// 注視点の状態設定
 
 private:
 
 	// 関数リスト
-	typedef void(CCamera::* ROCKON_STATE_FUNC)(void);
+	typedef void(CCamera::* ROCKON_STATE_FUNC)();
 	static ROCKON_STATE_FUNC m_RockOnStateFunc[];
 
 	// メンバ変数
-	void UpdateByMode(void);	// モード別更新処理
-	void MoveCameraInput(void);
-	void MoveCameraMouse(void);
-	void MoveCameraVR(void);
-	void MoveCameraV(void);
-	void MoveCameraR(void);
-	void MoveCameraDistance(void);
-	void SetCameraV(void);
-	void SetCameraVTitle(void);
-	void SetCameraVGame(void);
-	void SetCameraVResult(void);
-	void SetCameraVRanking(void);
-	void SetCameraR(void);
-	void SetCameraRTitle(void);
-	void SetCameraRGame(void);
-	void SetCameraRResult(void);
-	void SetCameraRRanking(void);
-	void MoveCameraFollow(void);
-	void Shake(void);
-	void UpdateState(void);
-	void UpdateSpotLightVec(void);
-	void RockOnStateNormal(void);	// 通常状態のロックオン処理
-	void RockOnStateCounter(void);	// カウンター状態のロックオン処理
+	void UpdateByMode();	// モード別更新処理
+	void MoveCameraInput();
+	void MoveCameraMouse();
+	void MoveCameraVR();
+	void MoveCameraV();
+	void MoveCameraR();
+	void MoveCameraDistance();
+	void SetCameraV();
+	void SetCameraVTitle();
+	void SetCameraVGame();
+	void SetCameraVResult();
+	void SetCameraVRanking();
+	void SetCameraR();
+	void SetCameraRTitle();
+	void SetCameraRGame();
+	void SetCameraRResult();
+	void SetCameraRRanking();
+	void MoveCameraFollow();
+	void Shake();
+	void StatePrayer();	// 祈り
+	void UpdateState();
+	void UpdateSpotLightVec();
+	void RockOnStateNormal();	// 通常状態のロックオン処理
+	void RockOnStateCounter();	// カウンター状態のロックオン処理
+
+	
 
 	// リセット
-	void ResetGame(void);
-	void ResetTitle(void);
-	void ResetResult(void);
-	void ResetRanking(void);
+	void ResetGame();
+	void ResetTitle();
+	void ResetResult();
+	void ResetRanking();
 
 	D3DXMATRIX	m_mtxProjection;		// プロジェクションマトリックス
 	D3DXMATRIX	m_mtxView;				// ビューマトリックス
@@ -181,6 +213,45 @@ private:
 	int m_nChasePlayerIndex;			// 追従するプレイヤーのインデックス番号
 	RockOnDir m_RockOnDir;				// ロックオン時の向き
 	RockOnState m_stateRockOn;			// ロックオン時の状態
+
+	CStateCameraR* m_pStateCameraR;	// 注視点の状態ポインタ
+};
+
+//=============================
+// 注視点の状態クラス
+//=============================
+class CStateCameraR
+{
+public:
+	CStateCameraR() {}
+
+	virtual void SetCameraR(CCamera* pCamera);
+};
+
+class CStateCameraR_RockOn : public CStateCameraR
+{
+public:
+	CStateCameraR_RockOn() {}
+
+	virtual void SetCameraR(CCamera* pCamera) override;
+};
+
+class CStateCameraR_Prayer : public CStateCameraR
+{
+public:
+	CStateCameraR_Prayer() {}
+
+	virtual void SetCameraR(CCamera* pCamera) override;
+};
+
+
+//=============================
+// 状態パターン
+//=============================
+class CCameraState
+{
+public:
+	CCameraState() {}
 };
 
 #endif

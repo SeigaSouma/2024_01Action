@@ -25,11 +25,11 @@ public:
 	static CStageClearText *Create(const MyLib::Vector3 pos);
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	void SetVtx(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	void SetVtx();
 
 private:
 
@@ -45,18 +45,18 @@ private:
 	};
 
 	// メンバ関数
-	void StateNone(void);		// 何もない状態
-	void StateScaleUP(void);	// 拡大状態
-	void StateScaleDOWN(void);	// 縮小状態
-	void StateScaleNone(void);	// 整い状態
-	void StateFadeOut(void);	// フェードアウト状態
+	void StateNone();		// 何もない状態
+	void StateScaleUP();	// 拡大状態
+	void StateScaleDOWN();	// 縮小状態
+	void StateScaleNone();	// 整い状態
+	void StateFadeOut();	// フェードアウト状態
 
 	// メンバ変数
 	int m_nTexIdx;		// テクスチャのインデックス番号
 	int m_nCntState;	// 状態遷移カウンター
 	eState m_state;		// 状態
 
-	typedef void(CStageClearText::*STATE_FUNC)(void);	// 状態処理のリスト
+	typedef void(CStageClearText::*STATE_FUNC)();	// 状態処理のリスト
 	static STATE_FUNC m_StateFuncList[];
 };
 

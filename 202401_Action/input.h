@@ -28,8 +28,8 @@ public:
 	virtual ~CInput();
 
 	virtual HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-	virtual void Uninit(void);
-	virtual void Update(void) = 0;
+	virtual void Uninit();
+	virtual void Update() = 0;
 
 protected:
 	static int nNumAll;					// 総数
@@ -46,8 +46,8 @@ public:
 	~CInputKeyboard();
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-	void Uninit(void);
-	void Update(void);
+	void Uninit();
+	void Update();
 	bool GetPress(int nKey);
 	bool GetTrigger(int nKey);
 	bool GetRelease(int nKey);
@@ -114,34 +114,42 @@ public:
 	~CInputGamepad();
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-	void Uninit(void);
-	void Update(void);
+	void Uninit();
+	void Update();
+
+	// ボタン系
 	bool GetPress(BUTTON nKey, int nCntPlayer);
-	bool GetPressLTrigger(BUTTON nKey, int nCntPlayer);
-	bool GetPressRTrigger(BUTTON nKey, int nCntPlayer);
 	bool GetTrigger(BUTTON nKey, int nCntPlayer);
 	bool GetRepeat(BUTTON nKey, int nCntPlayer);
 	bool GetRelease(int nKey, int nCntPlayer);
-	MyLib::Vector3 GetStickMoveL(int nCntPlayer);
-	MyLib::Vector3 GetStickMoveR(int nCntPlayer);
-	MyLib::Vector3 GetStickPositionRatioL(int nCntPlayer);
-	MyLib::Vector3 GetStickPositionRatioR(int nCntPlayer);
-	float GetStickRotL(int nCntPlayer);					// スティックの向き取得
-	float GetStickRotR(int nCntPlayer);					// スティックの向き取得
-	bool IsTipStick(void) { return m_bLStickTip; }		// スティックが倒れてるかの判定
-	BYTE GetLeftTriggerPress(int nPlayer);
-	BYTE GetRightTriggerPress(int nPlayer);
-	void SetVibration(VIBRATION_STATE VibState, int nCntPlayer);
+
+	// トリガー系
+	bool GetPressLT(int nCntPlayer);	// LTのプレス判定
+	bool GetPressRT(int nCntPlayer);	// RTのプレス判定
+	bool GetTriggerLT(int nCntPlayer);	// LTのトリガー判定
+	bool GetTriggerRT(int nCntPlayer);	// RTのトリガー判定
+
+	// スティック系
 	bool GetLStickTrigger(STICK XY);	// スティックのトリガー判定
 	bool GetRStickTrigger(STICK XY);	// スティックのトリガー判定
-	void SetEnableVibration(void);
-	bool GetEnableVibration(void);
-	int GetnCntPad(void);
+	MyLib::Vector3 GetStickMoveL(int nCntPlayer);
+	MyLib::Vector3 GetStickMoveR(int nCntPlayer);
+	MyLib::Vector3 GetStickPositionRatioL(int nCntPlayer);	// 左スティックの割合取得
+	MyLib::Vector3 GetStickPositionRatioR(int nCntPlayer);	// 右スティックの割合取得
+	float GetStickRotL(int nCntPlayer);					// スティックの向き取得
+	float GetStickRotR(int nCntPlayer);					// スティックの向き取得
+	bool IsTipStick() { return m_bLStickTip; }		// スティックが倒れてるかの判定
+
+	// バイブレーション系
+	void SetEnableVibration();
+	bool GetEnableVibration();
+	void SetVibration(VIBRATION_STATE VibState, int nCntPlayer);
+	int GetnCntPad();
 
 private:
 
-	// 
-	void UpdateStickTrigger(void);
+	void UpdateStickTrigger();		// スティックのトリガー判定
+	void UpdateTriggerState(int nCntPlayer, XINPUT_STATE inputstate);	// トリガーの判定処理
 
 	// メンバ変数
 	XINPUT_STATE m_aGamepadState[mylib_const::MAX_PLAYER];				// プレス情報
@@ -153,10 +161,23 @@ private:
 	int m_nCntVibration[mylib_const::MAX_PLAYER];						// 振動の時間
 	int m_nMaxCntVibration[mylib_const::MAX_PLAYER];					// 振動の時間
 	int m_nCntPadrepeat;									// リピート用カウント
-	bool m_bLeftStickSelect[STICK_MAX];						// 左トリガーの選択判定
-	bool m_bLeftStickTrigger[STICK_MAX];					// 左トリガーのトリガー判定
-	bool m_bRightStickSelect[STICK_MAX];					// 右トリガーの選択判定
-	bool m_bRightStickTrigger[STICK_MAX];					// 右トリガーのトリガー判定
+
+	// トリガー
+	struct sTrigger
+	{
+		bool bPress;	// プレス判定
+		bool bTrigger;	// トリガー判定
+
+		sTrigger() :bPress(false), bTrigger(false) {}
+	};
+	sTrigger m_StateLT[mylib_const::MAX_PLAYER];	// LTの判定
+	sTrigger m_StateRT[mylib_const::MAX_PLAYER];	// RTの判定
+
+	// スティック
+	bool m_bLeftStickSelect[STICK_MAX];						// 左スティックの選択判定
+	bool m_bLeftStickTrigger[STICK_MAX];					// 左スティックのトリガー判定
+	bool m_bRightStickSelect[STICK_MAX];					// 右スティックの選択判定
+	bool m_bRightStickTrigger[STICK_MAX];					// 右スティックのトリガー判定
 	bool m_bLStickTip;										// 左スティックの傾き判定
 	bool m_bVibrationUse;									// バイブを使用するかどうか
 };
@@ -180,10 +201,10 @@ public:
 	~CInputMouse();
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-	void Uninit(void);
-	void Update(void);
+	void Uninit();
+	void Update();
 	bool GetPress(BUTTON nKey);
-	MyLib::Vector3 GetMouseMove(void);
+	MyLib::Vector3 GetMouseMove();
 
 private:
 	DIMOUSESTATE2 m_MouseState;			//全入力情報の保管

@@ -1533,7 +1533,7 @@ namespace UtilFunc	// 便利関数
 		@brief	ランダムな円周率取得
 		@return	抽選されたランダム値
 		*/
-		inline float GetRandomPi(void)
+		inline float GetRandomPi()
 		{
 			return static_cast<float>(UtilFunc::Transformation::Random(-314, 314) * 0.01f);
 		}
@@ -1542,7 +1542,7 @@ namespace UtilFunc	// 便利関数
 		@brief	球範囲のランダムベクトル取得
 		@return	球のランダムなベクトル値
 		*/
-		inline MyLib::Vector3 GetRandomVecSphere(void)
+		inline MyLib::Vector3 GetRandomVecSphere()
 		{
 			// 球ベクトル
 			MyLib::Vector3 vecSphere = mylib_const::DEFAULT_VECTOR3;

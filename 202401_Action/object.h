@@ -76,60 +76,60 @@ public:
 	virtual ~CObject();
 
 	// 派生クラスでオーバーライドされた関数が絶対必要(純粋仮想関数)
-	virtual HRESULT Init(void) = 0;
-	virtual void Uninit(void) = 0;
-	virtual void Update(void) = 0;
-	virtual void Draw(void) = 0;
+	virtual HRESULT Init() = 0;
+	virtual void Uninit() = 0;
+	virtual void Update() = 0;
+	virtual void Draw() = 0;
 
-	virtual void SetVtx(void);
+	virtual void SetVtx();
 	virtual void SetPosition(const MyLib::Vector3& pos);		// 位置設定
-	virtual MyLib::Vector3 GetPosition(void) const;			// 位置取得
+	virtual MyLib::Vector3 GetPosition() const;			// 位置取得
 	virtual void SetOldPosition(const MyLib::Vector3& posOld);	// 過去の位置設定
-	virtual MyLib::Vector3 GetOldPosition(void) const;			// 過去の位置取得
+	virtual MyLib::Vector3 GetOldPosition() const;			// 過去の位置取得
 	virtual void SetOriginPosition(const MyLib::Vector3& pos);	// 元の位置設定
-	virtual MyLib::Vector3 GetOriginPosition(void) const;		// 元の位置取得
+	virtual MyLib::Vector3 GetOriginPosition() const;		// 元の位置取得
 	virtual void SetMove(const MyLib::Vector3& move);			// 移動量設定
-	virtual MyLib::Vector3 GetMove(void) const;				// 移動量取得
+	virtual MyLib::Vector3 GetMove() const;				// 移動量取得
 	virtual void SetRotation(const MyLib::Vector3& rot);		// 向き設定
-	virtual MyLib::Vector3 GetRotation(void) const;			// 向き取得
+	virtual MyLib::Vector3 GetRotation() const;			// 向き取得
 	virtual bool Hit(const int nValue);						// 嘆きのバーチャルヒット処理
 	virtual bool Hit(const int nValue, MyLib::Vector3 move);
 
 	float ScreenZ() const;
 	static bool ZSort(const CObject *obj1, const CObject *obj2);	// Zソートの比較関数
-	int GetPriority(void) { return m_nPriority; }	// 優先順位取得
+	int GetPriority() { return m_nPriority; }	// 優先順位取得
 	void SetEnableDisp(bool bDisp) { m_bDisp = bDisp; }		// 描画設定
-	bool IsDisp(void) { return m_bDisp; }					// 描画状況取得
-	void SetEnableHitstopMove(void) { m_bHitstopMove = true; }	// ヒットストップ中に動くフラグ有効
+	bool IsDisp() { return m_bDisp; }					// 描画状況取得
+	void SetEnableHitstopMove() { m_bHitstopMove = true; }	// ヒットストップ中に動くフラグ有効
 
 	int SetEffectParent(CEffect3D *pEffect3D);	// エフェクト設定
 	CEffect3D *GetEffectParent(int nIdx);	// 親設定したエフェクト取得
-	int GetEffectParentNum(void);			// 親設定したエフェクトの数取得
+	int GetEffectParentNum();			// 親設定したエフェクトの数取得
 	void ReleaseEffect(int nIdx);			// エフェクトの解放
-	void UninitEffect(void);				// エフェクトの解放
+	void UninitEffect();				// エフェクトの解放
 
-	static void ReleaseAll(void);
-	static void UpdateAll(void);
-	static void DrawAll(void);
-	static const int GetNumAll(void) { return m_nNumAll; }
+	static void ReleaseAll();
+	static void UpdateAll();
+	static void DrawAll();
+	static const int GetNumAll() { return m_nNumAll; }
 	static const int GetNumPriorityAll(int nPriority) { return m_nNumPriorityAll[nPriority]; }
 
 	static CObject *GetTop(int nPriority);	// 先頭のオブジェクト取得
-	CObject *GetNext(void);					// 次のオブジェクト取得
-	bool IsDeath(void);						// 死亡の判定
+	CObject *GetNext();					// 次のオブジェクト取得
+	bool IsDeath();						// 死亡の判定
 	void SetType(const TYPE type);
-	TYPE GetType(void) const;
-	virtual CObject *GetObject(void);
-	virtual CObject2D *GetObject2D(void);
-	virtual CObject3D *GetObject3D(void);
-	virtual CObject3DMesh *GetObject3DMesh(void);
-	virtual CObjectX *GetObjectX(void);
-	virtual CObjectChara *GetObjectChara(void);
+	TYPE GetType() const;
+	virtual CObject *GetObject();
+	virtual CObject2D *GetObject2D();
+	virtual CObject3D *GetObject3D();
+	virtual CObject3DMesh *GetObject3DMesh();
+	virtual CObjectX *GetObjectX();
+	virtual CObjectChara *GetObjectChara();
 
 protected:
 
-	void Release(void);	// 開放処理
-	void Death(void);	// 死亡処理
+	void Release();	// 開放処理
+	void Death();	// 死亡処理
 
 private:
 

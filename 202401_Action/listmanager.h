@@ -19,17 +19,17 @@ public:
 	CListManager();			// コンストラクタ
 	~CListManager();		// デストラクタ
 
-	HRESULT Init(void);
-	void Uninit(void);
+	HRESULT Init();
+	void Uninit();
 
 	void Regist(T* pList);				// 割り当て
 	void Delete(T* pList);				// 削除
 	bool ListLoop(T** ppList);			// リストループ処理
 	T* GetData(int nIdx);				// データ取得
 	int FindIdx(T* pList);				// リストからインデックス検索
-	void KillAll(void);					// 全て削除
-	int GetNumAll(void);				// アイテムの総数取得
-	std::list<T*> GetList(void) const;	// アイテムのリスト取得
+	void KillAll();					// 全て削除
+	int GetNumAll();				// アイテムの総数取得
+	std::list<T*> GetList() const;	// アイテムのリスト取得
 
 private:
 
@@ -60,7 +60,7 @@ template<class T> CListManager<T>::~CListManager()
 //==========================================================================
 // 初期化処理
 //==========================================================================
-template<class T> HRESULT CListManager<T>::Init(void)
+template<class T> HRESULT CListManager<T>::Init()
 {
 	// 総数リセット
 	m_nNumAll = 0;
@@ -181,7 +181,7 @@ template<class T> int CListManager<T>::FindIdx(T* pList)
 //==========================================================================
 // 終了処理
 //==========================================================================
-template<class T> void CListManager<T>::Uninit(void)
+template<class T> void CListManager<T>::Uninit()
 {
 	// クリア
 	m_ListObj.clear();
@@ -193,7 +193,7 @@ template<class T> void CListManager<T>::Uninit(void)
 //==========================================================================
 // 全て削除
 //==========================================================================
-template<class T> void CListManager<T>::KillAll(void)
+template<class T> void CListManager<T>::KillAll()
 {
 	Iterator it = m_ListObj.begin();
 
@@ -219,7 +219,7 @@ template<class T> void CListManager<T>::KillAll(void)
 //==========================================================================
 // 総数取得
 //==========================================================================
-template<class T> int CListManager<T>::GetNumAll(void)
+template<class T> int CListManager<T>::GetNumAll()
 {
 	return m_nNumAll;
 }
@@ -227,7 +227,7 @@ template<class T> int CListManager<T>::GetNumAll(void)
 //==========================================================================
 // リスト取得
 //==========================================================================
-template<class T> std::list<T*> CListManager<T>::GetList(void) const
+template<class T> std::list<T*> CListManager<T>::GetList() const
 {
 	return m_ListObj;
 }

@@ -22,11 +22,11 @@ public:
 	~CSkillTree_Cursor();
 	
 	//  オーバーライド関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-	void SetVtx(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+	void SetVtx() override;
 
 	static CSkillTree_Cursor* Create(int nIdx);
 private:
@@ -35,7 +35,7 @@ private:
 	// メンバ関数
 	//=============================
 	void Controll();
-	void CollisionIcon(void);	// アイコンとの当たり判定
+	void CollisionIcon();	// アイコンとの当たり判定
 
 	//=============================
 	// メンバ変数

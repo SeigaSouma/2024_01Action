@@ -78,22 +78,22 @@ public:
 	~CGallery();
 
 	// オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void Kill(void);	// 削除
+	void Kill();	// 削除
 	void SetState(STATE state);	// 状態設定
 	static CGallery* Create(const MyLib::Vector3& pos, const MyLib::Vector3& rot);	// 生成
 	static CListManager<CGallery> GetList() { return m_List; }
-	static void SetGallery(void);
+	static void SetGallery();
 private:
 
 	//=============================
 	// 関数リスト
 	//=============================
-	typedef void(CGallery::* STATE_FUNC)(void);
+	typedef void(CGallery::* STATE_FUNC)();
 	static STATE_FUNC m_StateFunc[];
 
 	//=============================

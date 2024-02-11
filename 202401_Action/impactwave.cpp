@@ -124,7 +124,7 @@ CImpactWave *CImpactWave::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, D3DXCOL
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CImpactWave::Init(void)
+HRESULT CImpactWave::Init()
 {
 	HRESULT hr;
 
@@ -188,7 +188,7 @@ HRESULT CImpactWave::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CImpactWave::Uninit(void)
+void CImpactWave::Uninit()
 {
 	// 終了処理
 	CObject3DMesh::Uninit();
@@ -197,7 +197,7 @@ void CImpactWave::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CImpactWave::Update(void)
+void CImpactWave::Update()
 {
 	// 色取得
 	D3DXCOLOR col = GetColor();
@@ -236,7 +236,7 @@ void CImpactWave::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CImpactWave::Draw(void)
+void CImpactWave::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -284,7 +284,7 @@ void CImpactWave::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CImpactWave::SetVtx(void)
+void CImpactWave::SetVtx()
 {
 	MyLib::Vector3 *pVtxPos = GetVtxPos();	// 頂点座標取得
 	D3DXVECTOR2 *pVtxTex = GetVtxTex();	// テクスチャ座標取得
@@ -334,7 +334,7 @@ void CImpactWave::SetLife(const int nLife)
 //==========================================================================
 // 寿命取得
 //==========================================================================
-int CImpactWave::GetLife(void) const
+int CImpactWave::GetLife() const
 {
 	return m_nLife;
 }
@@ -350,7 +350,7 @@ void CImpactWave::SetMaxLife(const int nLife)
 //==========================================================================
 // 最大寿命取得
 //==========================================================================
-int CImpactWave::GetMaxLife(void) const
+int CImpactWave::GetMaxLife() const
 {
 	return m_nMaxLife;
 }
@@ -366,7 +366,7 @@ void CImpactWave::SetColOrigin(const D3DXCOLOR col)
 //==========================================================================
 // 元の色取得
 //==========================================================================
-D3DXCOLOR CImpactWave::GetColOrigin(void) const
+D3DXCOLOR CImpactWave::GetColOrigin() const
 {
 	return m_colOrigin;
 }
@@ -382,7 +382,7 @@ void CImpactWave::SetOutWidth(const float fOutWidth)
 //==========================================================================
 // 外周取得
 //==========================================================================
-float CImpactWave::GetOutWidth(void) const
+float CImpactWave::GetOutWidth() const
 {
 	return m_fOutWidth;
 }
@@ -398,7 +398,7 @@ void CImpactWave::SetInWidth(const float fInWidth)
 //==========================================================================
 // 内周取得
 //==========================================================================
-float CImpactWave::GetInWidth(void) const
+float CImpactWave::GetInWidth() const
 {
 	return m_fInWidth;
 }
@@ -414,7 +414,7 @@ void CImpactWave::SetRotWidth(const float fRot)
 //==========================================================================
 // 一分割あたりの角度取得
 //==========================================================================
-float CImpactWave::GetRotWidth(void) const
+float CImpactWave::GetRotWidth() const
 {
 	return m_fRotWidth;
 }
@@ -430,7 +430,7 @@ void CImpactWave::SetMoveSize(const float fMoveSize)
 //==========================================================================
 // サイズの移動量取得
 //==========================================================================
-float CImpactWave::GetMoveSize(void) const
+float CImpactWave::GetMoveSize() const
 {
 	return m_fMove;
 }
@@ -446,7 +446,7 @@ void CImpactWave::SetTexDivision(const int nDivision)
 //==========================================================================
 // テクスチャ分割数取得
 //==========================================================================
-int CImpactWave::GetTexDivision(void) const
+int CImpactWave::GetTexDivision() const
 {
 	return m_nTexDivision;
 }
@@ -470,7 +470,7 @@ const char *CImpactWave::GetFileName(int nTexType)
 //==========================================================================
 // メッシュシリンダーオブジェクトの取得
 //==========================================================================
-CImpactWave *CImpactWave::GetMyObject(void)
+CImpactWave *CImpactWave::GetMyObject()
 {
 	return this;
 }

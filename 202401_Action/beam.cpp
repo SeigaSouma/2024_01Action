@@ -102,7 +102,7 @@ CBeam *CBeam::Create(
 //==========================================================================
 // 加算合成取り消し
 //==========================================================================
-void CBeam::SetDisableAddAlpha(void)
+void CBeam::SetDisableAddAlpha()
 {
 	for (int i = 0; i < static_cast<int>(m_pEffect.size()); i++)
 	{
@@ -118,7 +118,7 @@ void CBeam::SetDisableAddAlpha(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CBeam::Init(void)
+HRESULT CBeam::Init()
 {
 	// 種類の設定
 	SetType(TYPE_OBJECT3D);
@@ -197,7 +197,7 @@ HRESULT CBeam::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CBeam::Uninit(void)
+void CBeam::Uninit()
 {
 	// 要素全削除
 	m_pEffect.clear();
@@ -219,7 +219,7 @@ void CBeam::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CBeam::Update(void)
+void CBeam::Update()
 {
 	// 寿命減算
 	m_nLife--;
@@ -246,7 +246,7 @@ void CBeam::Update(void)
 //==========================================================================
 // エフェクトの更新
 //==========================================================================
-void CBeam::UpdateEffect(void)
+void CBeam::UpdateEffect()
 {
 	for (int i = 0; i < static_cast<int>(m_pEffect.size()); i++)
 	{
@@ -278,7 +278,7 @@ void CBeam::UpdateEffect(void)
 //==========================================================================
 // ビルビードの更新
 //==========================================================================
-void CBeam::UpdateBillboard(void)
+void CBeam::UpdateBillboard()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -386,7 +386,7 @@ void CBeam::UpdateBillboard(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CBeam::Draw(void)
+void CBeam::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

@@ -63,7 +63,7 @@ CRockOnMarker* CRockOnMarker::Create(const MyLib::Vector3& pos)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CRockOnMarker::Init(void)
+HRESULT CRockOnMarker::Init()
 {
 
 	// 種類の設定
@@ -121,7 +121,7 @@ HRESULT CRockOnMarker::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRockOnMarker::Uninit(void)
+void CRockOnMarker::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -135,7 +135,7 @@ void CRockOnMarker::Uninit(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CRockOnMarker::Kill(void)
+void CRockOnMarker::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -154,7 +154,7 @@ void CRockOnMarker::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CRockOnMarker::Update(void)
+void CRockOnMarker::Update()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -187,7 +187,7 @@ void CRockOnMarker::Update(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CRockOnMarker::Draw(void)
+void CRockOnMarker::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

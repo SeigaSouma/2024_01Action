@@ -46,35 +46,35 @@ public:
 	CGameManager();
 	~CGameManager();
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
 
 	void SetType(SceneType type);	// シーンの種類設定
-	SceneType GetType(void);		// シーンの種類取得
-	void SetEnableRush(void) { m_bEndRush = true; }		// ラッシュの終了フラグを有効にする
-	bool IsRushEnd(void) { return m_bEndRush; }			// 終了のフラグ取得
+	SceneType GetType();		// シーンの種類取得
+	void SetEnableRush() { m_bEndRush = true; }		// ラッシュの終了フラグを有効にする
+	bool IsRushEnd() { return m_bEndRush; }			// 終了のフラグ取得
 	void SetEnableControll(bool bControll) { m_bControll = bControll; }		// 操作フラグを切り替えする
-	bool IsControll(void) { return m_bControll; }				// 操作のフラグ取得
-	bool IsEndNormalStage(void) { return m_bEndNormalStage; }	// 通常ステージのア終了判定
-	void AddNowStage(void);	// ステージの加算
-	int GetNowStage(void);	// 現在のステージ取得
+	bool IsControll() { return m_bControll; }				// 操作のフラグ取得
+	bool IsEndNormalStage() { return m_bEndNormalStage; }	// 通常ステージのア終了判定
+	void AddNowStage();	// ステージの加算
+	int GetNowStage();	// 現在のステージ取得
 	void SetNumStage(int nStage) { m_nNumStage = nStage; }	// ステージの総数設定
-	int GetNumStage(void) { return m_nNumStage; }			// ステージの総数取得
+	int GetNumStage() { return m_nNumStage; }			// ステージの総数取得
 
 	void SetPrevEnhance();	// 前回の強化内容設定
 
-	void GameClearSettings(void);	// ゲームクリア時の設定
-	static CGameManager *Create(void);	// 生成処理
+	void GameClearSettings();	// ゲームクリア時の設定
+	static CGameManager *Create();	// 生成処理
 
 private:
 
 	// メンバ関数
-	void SceneTransition(void);	// 遷移中
-	void SceneEnhance(void);
-	void SceneReaspawn(void);	// 復活
-	void SetEnemy(void);
-	void SetBoss(void);
+	void SceneTransition();	// 遷移中
+	void SceneEnhance();
+	void SceneReaspawn();	// 復活
+	void SetEnemy();
+	void SetBoss();
 
 	// メンバ変数
 	CSkillTree_Ability* m_pSkilltreeAbillity;	// スキルツリー能力のポインタ

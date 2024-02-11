@@ -83,7 +83,7 @@ CBulletObstacle* CBulletObstacle::Create(const MyLib::Vector3& pos, const MyLib:
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CBulletObstacle::Init(void)
+HRESULT CBulletObstacle::Init()
 {
 	// 種類の設定
 	CObject::SetType(TYPE_BULLET);
@@ -100,7 +100,7 @@ HRESULT CBulletObstacle::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CBulletObstacle::Uninit(void)
+void CBulletObstacle::Uninit()
 {
 	// 終了処理
 	CObjectX::Uninit();
@@ -109,7 +109,7 @@ void CBulletObstacle::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CBulletObstacle::Update(void)
+void CBulletObstacle::Update()
 {
 	// 位置更新
 	UpdatePos();
@@ -124,7 +124,7 @@ void CBulletObstacle::Update(void)
 //==========================================================================
 // 移動処理
 //==========================================================================
-void CBulletObstacle::UpdatePos(void)
+void CBulletObstacle::UpdatePos()
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -152,7 +152,7 @@ void CBulletObstacle::UpdatePos(void)
 //==========================================================================
 // 位置制限
 //==========================================================================
-void CBulletObstacle::LimitPos(void)
+void CBulletObstacle::LimitPos()
 {
 	MyLib::Vector3 pos = GetPosition();
 
@@ -175,7 +175,7 @@ void CBulletObstacle::LimitPos(void)
 //==========================================================================
 // プレイヤーとの判定
 //==========================================================================
-void CBulletObstacle::CollisionPlayer(void)
+void CBulletObstacle::CollisionPlayer()
 {
 	// プレイヤー情報取得
 	CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
@@ -208,7 +208,7 @@ void CBulletObstacle::CollisionPlayer(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CBulletObstacle::Draw(void)
+void CBulletObstacle::Draw()
 {
 	// 描画
 	CObjectX::Draw();

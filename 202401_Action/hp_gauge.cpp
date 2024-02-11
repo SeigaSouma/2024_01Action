@@ -105,7 +105,7 @@ CHP_Gauge* CHP_Gauge::Create(float fPosLen, int nMaxLife, float fSizeBuff)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CHP_Gauge::Init(void)
+HRESULT CHP_Gauge::Init()
 {
 	// 最大体力
 	m_nLife = m_nMaxLife;
@@ -153,7 +153,7 @@ HRESULT CHP_Gauge::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CHP_Gauge::Uninit(void)
+void CHP_Gauge::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
@@ -187,7 +187,7 @@ void CHP_Gauge::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CHP_Gauge::Update(void)
+void CHP_Gauge::Update()
 {
 
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
@@ -309,7 +309,7 @@ void CHP_Gauge::ChangeColor(int nCntGauge)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CHP_Gauge::Draw(void)
+void CHP_Gauge::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -330,7 +330,7 @@ void CHP_Gauge::Draw(void)
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
-void CHP_Gauge::SetVtx(void)
+void CHP_Gauge::SetVtx()
 {
 
 }

@@ -31,13 +31,13 @@ public:
 	CTitleScreen(int nPriority = 8);
 	~CTitleScreen();
 
-	static CTitleScreen *Create(void);
+	static CTitleScreen *Create();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
 private:
 	// 列挙型定義

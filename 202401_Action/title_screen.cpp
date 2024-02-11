@@ -69,7 +69,7 @@ CTitleScreen::~CTitleScreen()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CTitleScreen *CTitleScreen::Create(void)
+CTitleScreen *CTitleScreen::Create()
 {
 	// 生成用のオブジェクト
 	CTitleScreen *pTitleScreen = NULL;
@@ -96,7 +96,7 @@ CTitleScreen *CTitleScreen::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CTitleScreen::Init(void)
+HRESULT CTitleScreen::Init()
 {
 	// 種類の設定
 	SetType(CObject::TYPE_OBJECT2D);
@@ -201,7 +201,7 @@ HRESULT CTitleScreen::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CTitleScreen::Uninit(void)
+void CTitleScreen::Uninit()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_LOGO_MAX; nCntSelect++)
 	{
@@ -230,7 +230,7 @@ void CTitleScreen::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CTitleScreen::Update(void)
+void CTitleScreen::Update()
 {
 
 	// 斬撃更新
@@ -450,7 +450,7 @@ void CTitleScreen::UpdateSelect(int nCntSelect)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CTitleScreen::Draw(void)
+void CTitleScreen::Draw()
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();

@@ -90,7 +90,7 @@ CTransferBeacon *CTransferBeacon::Create(eTransType transtype, const MyLib::Vect
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CTransferBeacon::Init(void)
+HRESULT CTransferBeacon::Init()
 {
 	// リストに追加
 	m_List.Regist(this);
@@ -110,7 +110,7 @@ HRESULT CTransferBeacon::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CTransferBeacon::Uninit(void)
+void CTransferBeacon::Uninit()
 {
 	// リストから削除
 	m_List.Delete(this);
@@ -122,7 +122,7 @@ void CTransferBeacon::Uninit(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CTransferBeacon::Update(void)
+void CTransferBeacon::Update()
 {
 	// 状態カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -143,7 +143,7 @@ void CTransferBeacon::Update(void)
 //==========================================================================
 // プレイヤーとの当たり判定処理
 //==========================================================================
-void CTransferBeacon::CollisionPlayer(void)
+void CTransferBeacon::CollisionPlayer()
 {
 	if (!CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できないとき
@@ -212,7 +212,7 @@ void CTransferBeacon::CollisionPlayer(void)
 //==========================================================================
 // なにもない状態
 //==========================================================================
-void CTransferBeacon::StateNone(void)
+void CTransferBeacon::StateNone()
 {
 	m_fStateTime = 0.0f;
 }
@@ -220,7 +220,7 @@ void CTransferBeacon::StateNone(void)
 //==========================================================================
 // 転移状態
 //==========================================================================
-void CTransferBeacon::StateTransfer(void)
+void CTransferBeacon::StateTransfer()
 {
 	m_fStateTime = 0.0f;
 
@@ -237,7 +237,7 @@ void CTransferBeacon::StateTransfer(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CTransferBeacon::Draw(void)
+void CTransferBeacon::Draw()
 {
 	// 描画
 	CObjectX::Draw();

@@ -17,6 +17,7 @@
 #include "skilltree_command.h"
 #include "skilltree_window.h"
 #include "skilltree_description.h"
+#include "camera.h"
 #include "game.h"
 
 //==========================================================================
@@ -74,7 +75,7 @@ CSkillTree::~CSkillTree()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillTree *CSkillTree::Create(void)
+CSkillTree *CSkillTree::Create()
 {
 	if (m_pThisPtr == NULL)
 	{// まだ生成していなかったら
@@ -98,7 +99,7 @@ CSkillTree *CSkillTree::Create(void)
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CSkillTree::Init(void)
+HRESULT CSkillTree::Init()
 {
 	// 種類の設定
 	SetType(CObject::TYPE_OBJECT2D);
@@ -142,7 +143,7 @@ HRESULT CSkillTree::Init(void)
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CSkillTree::Uninit(void)
+void CSkillTree::Uninit()
 {
 	m_pThisPtr = nullptr;
 
@@ -153,7 +154,7 @@ void CSkillTree::Uninit(void)
 //==========================================================================
 // 削除
 //==========================================================================
-void CSkillTree::Kill(void)
+void CSkillTree::Kill()
 {
 	// アイコンの終了
 	for (auto const& iconinfo : m_pSkillIcon)
@@ -204,7 +205,7 @@ void CSkillTree::Kill(void)
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CSkillTree::Update(void)
+void CSkillTree::Update()
 {
 	if (IsDeath())
 	{
@@ -250,7 +251,7 @@ void CSkillTree::Update(void)
 //==========================================================================
 // 何もない状態
 //==========================================================================
-void CSkillTree::StateNone(void)
+void CSkillTree::StateNone()
 {
 	if (!m_bOnScreen)
 	{
@@ -264,13 +265,16 @@ void CSkillTree::StateNone(void)
 		pInputKeyboard->GetTrigger(DIK_BACK))
 	{
 		m_state = STATE_FADEOUT;
+
+		// 通常状態に設定
+		CManager::GetInstance()->GetCamera()->SetStateCamraR(DEBUG_NEW CStateCameraR());
 	}
 }
 
 //==========================================================================
 // フェードイン状態
 //==========================================================================
-void CSkillTree::StateFadeIn(void)
+void CSkillTree::StateFadeIn()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
@@ -338,7 +342,7 @@ void CSkillTree::StateFadeIn(void)
 //==========================================================================
 // フェードアウト状態
 //==========================================================================
-void CSkillTree::StateFadeOut(void)
+void CSkillTree::StateFadeOut()
 {
 	// 状態遷移カウンター減算
 	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
@@ -415,7 +419,7 @@ void CSkillTree::StateFadeOut(void)
 //==========================================================================
 // Jsonからのロード
 //==========================================================================
-void CSkillTree::LoadJson(void)
+void CSkillTree::LoadJson()
 {
 	// ファイルからJSONを読み込む
 	std::ifstream file(LOADTEXT);
@@ -434,7 +438,7 @@ void CSkillTree::LoadJson(void)
 //==========================================================================
 // Jsonへのセーブ
 //==========================================================================
-void CSkillTree::SaveJson(void)
+void CSkillTree::SaveJson()
 {
 	// ファイルにキャラクターのデータを書き込む
 	std::ofstream outFile(LOADTEXT);
@@ -454,7 +458,7 @@ void CSkillTree::SaveJson(void)
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CSkillTree::Draw(void)
+void CSkillTree::Draw()
 {
 	
 }
@@ -462,7 +466,7 @@ void CSkillTree::Draw(void)
 //==========================================================================
 // アイコン取得
 //==========================================================================
-std::vector<CSkillTree_Icon*> CSkillTree::GetIcon(void) const
+std::vector<CSkillTree_Icon*> CSkillTree::GetIcon() const
 {
 	return m_pSkillIcon;
 }
@@ -472,7 +476,7 @@ std::vector<CSkillTree_Icon*> CSkillTree::GetIcon(void) const
 //==========================================================================
 void CSkillTree::SetMastering(std::vector<CSkillTree_Icon::eMastering> mastering)
 {
-	for (int i = 0; i < m_SkillInfo.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_SkillInfo.size()); i++)
 	{
 		m_SkillInfo[i].mastering = mastering[i];
 	}
@@ -515,7 +519,7 @@ std::vector<CSkillTree_Icon::eMastering> CSkillTree::GetMastering()
 //==========================================================================
 // スクリーン上に設定
 //==========================================================================
-void CSkillTree::SetScreen(void)
+void CSkillTree::SetScreen()
 {
 	if (m_bOnScreen)
 	{
@@ -565,7 +569,7 @@ void CSkillTree::SetScreen(void)
 //==========================================================================
 // スクリーンから捌ける
 //==========================================================================
-void CSkillTree::OutScreen(void)
+void CSkillTree::OutScreen()
 {
 	if (!m_bOnScreen)
 	{

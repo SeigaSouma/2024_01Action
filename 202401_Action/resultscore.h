@@ -33,20 +33,20 @@ public:
 	~CResultScore();
 
 	// オーバーライドされた関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
 
-	void SetAllArrival(void);	// 全ての到着設定
+	void SetAllArrival();	// 全ての到着設定
 	void SetValue(int nScore);	// 値の設定処理
-	static CResultScore *Create(void);
-	bool IsSetToatal(void) { return m_bSetToatal; }
+	static CResultScore *Create();
+	bool IsSetToatal() { return m_bSetToatal; }
 private:
 	
-	void CreateToatalScore(void);	// 最終スコアの生成
-	void SetToatalValue(void);		// 最終スコアの値設定処理
-	void MoveToatalScore(void);		// 最終スコアの移動処理
+	void CreateToatalScore();	// 最終スコアの生成
+	void SetToatalValue();		// 最終スコアの値設定処理
+	void MoveToatalScore();		// 最終スコアの移動処理
 
 	int m_nToatalNum;				// 値
 	int m_nToatalNumDest;			// 目標の値

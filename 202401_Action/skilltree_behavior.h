@@ -83,18 +83,18 @@ class CAbillityStamina : public CEnhance
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CAbillityStamina::* STAGE_FUNC)(void);
+	typedef void(CAbillityStamina::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void Add01(void) { m_pPlayer->UpgradeMaxStamina(20); }
-	void AutoHeal01(void){ m_pPlayer->UpgradeAutoHealStamina(1.3f); }
-	void Add02(void) { m_pPlayer->UpgradeMaxStamina(40); }
-	void AutoHeal02(void) { m_pPlayer->UpgradeAutoHealStamina(1.75f); }
-	void Add03(void) { m_pPlayer->UpgradeMaxStamina(60); }
+	void Add01() { m_pPlayer->UpgradeMaxStamina(20); }
+	void AutoHeal01(){ m_pPlayer->UpgradeAutoHealStamina(1.3f); }
+	void Add02() { m_pPlayer->UpgradeMaxStamina(40); }
+	void AutoHeal02() { m_pPlayer->UpgradeAutoHealStamina(1.75f); }
+	void Add03() { m_pPlayer->UpgradeMaxStamina(60); }
 
 };
 
@@ -112,15 +112,15 @@ class CAbillityLife : public CEnhance
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CAbillityLife::* STAGE_FUNC)(void);
+	typedef void(CAbillityLife::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void Add01(void) { m_pPlayer->UpgradeLife(20); }
-	void Add02(void) { m_pPlayer->UpgradeLife(40); }
+	void Add01() { m_pPlayer->UpgradeLife(20); }
+	void Add02() { m_pPlayer->UpgradeLife(40); }
 
 };
 
@@ -138,18 +138,18 @@ class CAbillityCounter : public CEnhance
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CAbillityCounter::* STAGE_FUNC)(void);
+	typedef void(CAbillityCounter::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void SubNeedStamina01(void) { m_pPlayer->SetCounterSubValue(30.0f); }
-	void HealStamina01(void) { m_pPlayer->SetCounterHealValue(10.0f); }
-	void SubNeedStamina02(void) { m_pPlayer->SetCounterSubValue(20.0f); }
-	void HealStamina02(void) { m_pPlayer->SetCounterHealValue(20.0f); }
-	void SubNeedStamina03(void) { m_pPlayer->SetCounterSubValue(10.0f); }
+	void SubNeedStamina01() { m_pPlayer->SetCounterSubValue(30.0f); }
+	void HealStamina01() { m_pPlayer->SetCounterHealValue(10.0f); }
+	void SubNeedStamina02() { m_pPlayer->SetCounterSubValue(20.0f); }
+	void HealStamina02() { m_pPlayer->SetCounterHealValue(20.0f); }
+	void SubNeedStamina03() { m_pPlayer->SetCounterSubValue(10.0f); }
 
 };
 
@@ -167,14 +167,14 @@ class CAbillityRespawn : public CEnhance
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CAbillityRespawn::* STAGE_FUNC)(void);
+	typedef void(CAbillityRespawn::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void AddRespawnPercent(void) {}
+	void AddRespawnPercent() {}
 
 };
 
@@ -193,17 +193,17 @@ class CAbillityGuard : public CEnhance
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CAbillityGuard::* STAGE_FUNC)(void);
+	typedef void(CAbillityGuard::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void SubNeedStamina01(void) { m_pPlayer->SetGuardSubValue(30.0f); }
-	void SubNeedStamina02(void) { m_pPlayer->SetGuardSubValue(15.0f); }
-	void KnockbackMitigation01(void) { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level1()); }
-	void KnockbackMitigation02(void) { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level2()); }
+	void SubNeedStamina01() { m_pPlayer->SetGuardSubValue(30.0f); }
+	void SubNeedStamina02() { m_pPlayer->SetGuardSubValue(15.0f); }
+	void KnockbackMitigation01() { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level1()); }
+	void KnockbackMitigation02() { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level2()); }
 
 };
 
@@ -249,14 +249,14 @@ class CUnlockCombo : public CUnlock
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CUnlockCombo::* STAGE_FUNC)(void);
+	typedef void(CUnlockCombo::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void State01(void) {}
+	void State01() {}
 
 };
 
@@ -274,14 +274,14 @@ class CUnlockCounter : public CUnlock
 	//=============================
 	// ステージ関数リスト
 	//=============================
-	typedef void(CUnlockCounter::* STAGE_FUNC)(void);
+	typedef void(CUnlockCounter::* STAGE_FUNC)();
 	static STAGE_FUNC m_StageFunc[];
 
 	//=============================
 	// メンバ関数
 	//=============================
 	// 段階別
-	void State01(void) { m_pPlayer->ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence_Level1()); }
+	void State01() { m_pPlayer->ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence_Level1()); }
 
 };
 

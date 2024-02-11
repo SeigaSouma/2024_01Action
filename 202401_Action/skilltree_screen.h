@@ -23,13 +23,13 @@ public:
 
 	
 	//  オーバーライドされた関数
-	HRESULT Init(void) override;
-	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 
-	void SetVtx(void);
-	static CSkillTree_Screen* Create(void);
+	void SetVtx();
+	static CSkillTree_Screen* Create();
 
 private:
 
