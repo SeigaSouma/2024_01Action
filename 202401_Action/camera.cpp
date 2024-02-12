@@ -19,6 +19,7 @@
 #include "light.h"
 #include "3D_effect.h"
 #include "calculation.h"
+#include "limitarea.h"
 
 //==========================================================================
 // マクロ定義
@@ -112,6 +113,7 @@ CCamera::CCamera()
 	m_fDiffHeightDest = 0.0f;					// 目標の高さの差分
 	m_bFollow = false;							// 追従するかどうか
 	m_bRotationZ = false;						// Z回転出来るかどうか
+	m_bRotationY = false;						// Y回転出来るかどうか
 	m_bRockON = false;							// ロックオンするか
 	m_state = CAMERASTATE_NONE;					// 状態
 	m_nCntState = 0;							// 状態カウンター
@@ -125,6 +127,7 @@ CCamera::CCamera()
 
 	m_StateCameraR = POSR_STATE_NORMAL;		// 注視点の状態
 	m_pStateCameraR = nullptr;	// 注視点の状態ポインタ
+	m_pStateCameraV = nullptr;	// 視点の状態ポインタ
 	m_pControlState = nullptr;	// 操作の状態ポインタ
 
 }
@@ -156,6 +159,9 @@ HRESULT CCamera::Init()
 	// 注視点の状態設定
 	SetStateCamraR(DEBUG_NEW CStateCameraR());
 
+	// 視点の状態設定
+	SetStateCameraV(DEBUG_NEW CStateCameraV());
+
 	// 操作の状態設定
 	SetControlState(DEBUG_NEW CCameraControlState_Normal(this));
 
@@ -184,6 +190,13 @@ void CCamera::Uninit()
 	{
 		delete m_pStateCameraR;
 		m_pStateCameraR = nullptr;
+	}
+
+	// 視点の状態ポインタ
+	if (m_pStateCameraV != nullptr)
+	{
+		delete m_pStateCameraV;
+		m_pStateCameraV = nullptr;
 	}
 
 	if (m_pControlState != nullptr)
@@ -760,6 +773,9 @@ void CCamera::SetCameraVTitle()
 //==========================================================================
 void CCamera::SetCameraVGame()
 {
+	// Y回転のフラグ
+	m_bRotationY = true;
+
 	if (m_bFollow == false)
 	{// 追従しないとき
 
@@ -776,10 +792,8 @@ void CCamera::SetCameraVGame()
 		m_posVDest.z = m_posR.z + cosf(m_rot.z) * cosf(m_rot.y) * -m_fDistance;
 		m_posVDest.y = m_posR.y + sinf(m_rot.z) * -m_fDistance;
 
-		if (m_posVDest.LengthXZ() > mylib_const::RADIUS_STAGE)
-		{// 補正
-			m_posVDest = m_posVDest.Normal() * mylib_const::RADIUS_STAGE;
-		}
+		// 位置制限
+		m_pStateCameraV->LimitPos(this);
 
 		float fDistance = 0.0f;
 		m_fHeightMaxDest = m_posVDest.y;
@@ -1206,6 +1220,7 @@ void CCamera::Reset(CScene::MODE mode)
 {
 	// 通常状態
 	SetStateCamraR(DEBUG_NEW CStateCameraR());
+	SetStateCameraV(DEBUG_NEW CStateCameraV());
 
 	// 操作の状態設定
 	SetControlState(DEBUG_NEW CCameraControlState_Normal(this));
@@ -1653,6 +1668,15 @@ void CCamera::SetStateCamraR(CStateCameraR* state)
 }
 
 //==========================================================================
+// 視点の状態設定
+//==========================================================================
+void CCamera::SetStateCameraV(CStateCameraV* state)
+{
+	delete m_pStateCameraV;
+	m_pStateCameraV = state;
+}
+
+//==========================================================================
 // 操作の状態設定
 //==========================================================================
 void CCamera::SetControlState(CCameraControlState* state)
@@ -1673,6 +1697,53 @@ void CStateCameraR::SetCameraR(CCamera* pCamera)
 	posdest.x = (targetpos.x + sinf(rot.y) * DISATNCE_POSR_PLAYER);
 	posdest.z = (targetpos.z + cosf(rot.y) * DISATNCE_POSR_PLAYER);
 	pCamera->SetPositionRDest(posdest);
+}
+
+//==========================================================================
+// メインの位置制限
+//==========================================================================
+void CStateCameraV::LimitPos(CCamera* pCamera)
+{
+	MyLib::Vector3 posVDest = pCamera->GetPositionVDest();
+
+	if (posVDest.LengthXZ() > mylib_const::RADIUS_STAGE)
+	{// 補正
+		posVDest = posVDest.Normal() * mylib_const::RADIUS_STAGE;
+	}
+	if (posVDest.LengthXZ() > mylib_const::RADIUS_STAGE)
+	{// 補正
+		posVDest = posVDest.Normal() * mylib_const::RADIUS_STAGE;
+	}
+
+	pCamera->SetPositionVDest(posVDest);
+}
+
+//==========================================================================
+// 強化ステージの位置制限
+//==========================================================================
+void CStateCameraV_Enhance::LimitPos(CCamera* pCamera)
+{
+	CStateCameraV::LimitPos(pCamera);
+
+	MyLib::Vector3 posVDest = pCamera->GetPositionVDest();
+
+	CListManager<CLimitArea> areaList = CLimitArea::GetListObj();
+	CLimitArea* pArea = nullptr;
+
+	float radius = 80.0f;
+
+	while (areaList.ListLoop(&pArea))
+	{
+		CLimitArea::sLimitEreaInfo info = pArea->GetLimitEreaInfo();
+
+		// 大人の壁を適用
+		//if (posVDest.x + radius >= info.fMaxX) { posVDest.x = info.fMaxX - radius; }
+		//if (posVDest.x - radius <= info.fMinX) { posVDest.x = info.fMinX + radius; }
+		if (posVDest.z + radius >= info.fMaxZ) { posVDest.z = info.fMaxZ - radius; }
+		//if (posVDest.z - radius <= info.fMinZ) { posVDest.z = info.fMinZ + radius; }
+	}
+	pCamera->SetPositionVDest(posVDest);
+
 }
 
 //==========================================================================
@@ -1711,7 +1782,10 @@ void CCameraControlState::MoveCamera(CCamera* pCamera)
 	MyLib::Vector3 moverot = pCamera->GetMoveRot();
 	MyLib::Vector3 rot = pCamera->GetRotation();
 
-	moverot.y += pInputGamepad->GetStickMoveR(0).x * ROT_MOVE_STICK_Y;
+	if (pCamera->IsRotationY())
+	{
+		moverot.y += pInputGamepad->GetStickMoveR(0).x * ROT_MOVE_STICK_Y;
+	}
 
 	if (rot.z > MIN_STICKROT &&
 		(pCamera->IsRotationZ() || pInputGamepad->GetStickMoveR(0).y < 0.0f))

@@ -108,6 +108,7 @@ HRESULT CSkillTree_Cursor::Init()
 	// ˆÊ’uÝ’è
 	SetPosition(LOCK_POSITION);
 	m_WorldPos = -LOCK_POSITION;
+	CSkillTree::GetInstance()->SetPosition(LOCK_POSITION);
 
 	return S_OK;
 }

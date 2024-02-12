@@ -18,6 +18,7 @@
 #include "skilltree_window.h"
 #include "skilltree_description.h"
 #include "skilltree_obj.h"
+#include "skilltree_reset.h"
 #include "camera.h"
 #include "player.h"
 #include "game.h"
@@ -46,6 +47,7 @@ CSkillTree::STATE_FUNC CSkillTree::m_StateFuncList[] =
 	&CSkillTree::StateNone,		// なにもなし
 	&CSkillTree::StateFadeIn,	// フェードイン
 	&CSkillTree::StateFadeOut,	// フェードアウト
+	&CSkillTree::StateReset,	// リセット
 };
 
 //==========================================================================
@@ -63,6 +65,7 @@ CSkillTree::CSkillTree(int nPriority) : CObject(nPriority)
 	m_pCommand = nullptr;	// コマンドのオブジェクト
 	m_pWindow = nullptr;	// ウィンドウのオブジェクト
 	m_pDescription = nullptr;	// 説明文のオブジェクト
+	m_pReset = nullptr;			// リセット用のオブジェクト
 	m_bOnScreen = false;	// スクリーン上にいるかのフラグ
 }
 
@@ -197,6 +200,12 @@ void CSkillTree::Kill()
 		m_pDescription = nullptr;
 	}
 
+	// リセット終了
+	if (m_pReset != nullptr)
+	{
+		m_pReset->Uninit();
+		m_pReset = nullptr;
+	}
 
 
 	m_pThisPtr = nullptr;
@@ -263,6 +272,16 @@ void CSkillTree::StateNone()
 	// ゲームパッド情報取得
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	
+	// リセット
+	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, 0))
+	{
+		// リセット
+		m_state = STATE_RESET;
+		return;
+	}
+
+	// 戻る
 	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, 0) ||
 		pInputKeyboard->GetTrigger(DIK_BACK))
 	{
@@ -270,7 +289,6 @@ void CSkillTree::StateNone()
 
 		// 通常状態に設定
 		CManager::GetInstance()->GetCamera()->SetStateCamraR(DEBUG_NEW CStateCameraR());
-
 
 		// 祈り後状態に設定
 		CCamera* pCamera = CManager::GetInstance()->GetCamera();
@@ -438,6 +456,28 @@ void CSkillTree::StateFadeOut()
 	}
 }
 
+//==========================================================================
+// リセットの更新
+//==========================================================================
+void CSkillTree::StateReset()
+{
+	if (m_pReset == nullptr)
+	{
+		// リセット生成
+		m_pReset = CSkillTree_Reset::Create();
+	}
+
+	// ゲームパッド情報取得
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+
+	//// リセット
+	//if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, 0))
+	//{
+	//	// リセット生成
+	//	m_pReset = CSkillTree_Reset::Create();
+	//}
+}
 
 //==========================================================================
 // Jsonからのロード
@@ -540,6 +580,27 @@ std::vector<CSkillTree_Icon::eMastering> CSkillTree::GetMastering()
 }
 
 //==========================================================================
+// 習得状況リセット
+//==========================================================================
+void CSkillTree::ResetMastering()
+{
+	// 全てリセット
+	for (auto& info : m_SkillInfo)
+	{
+		info.mastering = CSkillTree_Icon::MASTERING_YET;
+	}
+
+	// 全てリセット
+	if (!m_pSkillIcon.empty())
+	{
+		for (auto const& icon : m_pSkillIcon)
+		{
+			icon->SetMastering(CSkillTree_Icon::MASTERING_YET);
+		}
+	}
+}
+
+//==========================================================================
 // スクリーン上に設定
 //==========================================================================
 void CSkillTree::SetScreen()
@@ -628,4 +689,20 @@ void CSkillTree::OutScreen()
 
 	// スクリーン上にいるかのフラグ
 	m_bOnScreen = false;
+}
+
+//==========================================================================
+// リセット捌ける
+//==========================================================================
+void CSkillTree::OutReset()
+{
+	if (m_pReset == nullptr)
+	{
+		return;
+	}
+
+	// 削除
+	m_pReset->Kill();
+	m_pReset = nullptr;
+	m_state = STATE_NONE;
 }

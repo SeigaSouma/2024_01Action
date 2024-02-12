@@ -273,6 +273,8 @@
     <ClCompile Include="skilltree_icon.cpp" />
     <ClCompile Include="skilltree_line.cpp" />
     <ClCompile Include="skilltree_obj.cpp" />
+    <ClCompile Include="skilltree_reset.cpp" />
+    <ClCompile Include="skilltree_reset_impossible.cpp" />
     <ClCompile Include="skilltree_screen.cpp" />
     <ClCompile Include="skilltree_window.cpp" />
     <ClCompile Include="sound.cpp" />
@@ -408,6 +410,8 @@
     <ClInclude Include="skilltree_icon.h" />
     <ClInclude Include="skilltree_line.h" />
     <ClInclude Include="skilltree_obj.h" />
+    <ClInclude Include="skilltree_reset.h" />
+    <ClInclude Include="skilltree_reset_impossible.h" />
     <ClInclude Include="skilltree_screen.h" />
     <ClInclude Include="skilltree_window.h" />
     <ClInclude Include="sound.h" />

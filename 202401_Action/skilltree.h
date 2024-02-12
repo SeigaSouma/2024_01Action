@@ -17,6 +17,7 @@ class CSkillTree_Line;
 class CSkillTree_Command;
 class CSkillTree_Window;
 class CSkillTree_Description;
+class CSkillTree_Reset;
 
 //==========================================================================
 // クラス定義
@@ -35,6 +36,7 @@ public:
 		STATE_NONE = 0,	// なにもなし
 		STATE_FADEIN,	// フェードイン
 		STATE_FADEOUT,	// フェードアウト
+		STATE_RESET,	// リセット
 		STATE_MAX
 	};
 
@@ -52,11 +54,13 @@ public:
 	void SaveJson();	// Jsonへのセーブ
 	void SetScreen();	// スクリーン上に設定
 	void OutScreen();	// スクリーンから捌ける
+	void OutReset();	// リセット捌ける
 
 	eState GetState() { return m_state; }	// 状態取得
 	void SetMastering(int nIdx, CSkillTree_Icon::eMastering mastering);	// 習得状況設定
 	void SetMastering(std::vector<CSkillTree_Icon::eMastering> mastering);	// 習得状況設定
 	std::vector<CSkillTree_Icon::eMastering> GetMastering();			// 習得状況取得
+	void ResetMastering();												// 習得状況リセット
 	std::vector<CSkillTree_Icon*> GetIcon() const;	// アイコン取得
 	std::vector<CSkillTree_Icon::sSkillIcon> GetIconInfo() { return m_SkillInfo; }
 	CSkillTree_Description* GetDescription() { return m_pDescription; }	// 説明文取得
@@ -101,6 +105,7 @@ private:
 	void StateNone();	// 何もない状態
 	void StateFadeIn();	// フェードイン状態
 	void StateFadeOut();// フェードアウト状態
+	void StateReset();		// リセット状態
 
 	//=============================
 	// メンバ変数
@@ -119,6 +124,7 @@ private:
 	CSkillTree_Command* m_pCommand;	// コマンドのオブジェクト
 	CSkillTree_Window* m_pWindow;	// ウィンドウのオブジェクト
 	CSkillTree_Description* m_pDescription;	// 説明文のオブジェクト
+	CSkillTree_Reset* m_pReset;				// リセット用のオブジェクト
 	bool m_bOnScreen;				// スクリーン上にいるかのフラグ
 	static CSkillTree* m_pThisPtr;	// 自身のポインタ
 };

@@ -308,6 +308,7 @@ void CGameManager::SceneEnhance()
 	if (pCamera != NULL)
 	{
 		pCamera->Reset(CScene::MODE_GAME);
+		pCamera->SetStateCameraV(DEBUG_NEW CStateCameraV_Enhance());
 	}
 
 	// エフェクト全て停止

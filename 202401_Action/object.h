@@ -95,6 +95,9 @@ public:
 	virtual bool Hit(const int nValue);						// 嘆きのバーチャルヒット処理
 	virtual bool Hit(const int nValue, MyLib::Vector3 move);
 
+	// 変更処理
+	virtual void AddPosition(const MyLib::Vector3& pos);		// 位置設定
+
 	float ScreenZ() const;
 	static bool ZSort(const CObject *obj1, const CObject *obj2);	// Zソートの比較関数
 	int GetPriority() { return m_nPriority; }	// 優先順位取得

@@ -11,6 +11,7 @@
 #include "scene.h"
 
 class CStateCameraR;	// 注視点の状態
+class CStateCameraV;	// 視点の状態
 class CCameraControlState;	// 状態別操作
 
 //==========================================================================
@@ -126,7 +127,9 @@ public:
 	bool IsFollow();										// 追従状態取得
 	bool IsRockOn() { return m_bRockON; }					// 追従状態取得
 	bool IsRotationZ() { return m_bRotationZ; }
+	bool IsRotationY() { return m_bRotationY; }
 	void SetEnableFollow(bool bFollow);							// 追従の判定設定
+	void SetEnableRotationY(bool bRotation) { m_bRotationY = bRotation; }	// Y回転のフラグ
 	void SetViewPort(MyLib::Vector3 pos, D3DXVECTOR2 size);		// ビューポートの設定
 	void Reset(CScene::MODE mode);				// リセット
 	void ResetBoss();						// リセット
@@ -138,9 +141,12 @@ public:
 	MyLib::Vector3 GetPositionR() { return m_posR; }
 	void SetPositionRDest(const MyLib::Vector3& pos) { m_posRDest = pos; }
 	MyLib::Vector3 GetPositionRDest() { return m_posRDest; }
+	void SetPositionVDest(const MyLib::Vector3& pos) { m_posVDest = pos; }
+	MyLib::Vector3 GetPositionVDest() { return m_posVDest; }
 
 	// ステートパターン設定
 	void SetStateCamraR(CStateCameraR* state);	// 注視点の状態設定
+	void SetStateCameraV(CStateCameraV* state);	// 視点の状態設定
 	void SetStateCameraR(PosRState state) { m_StateCameraR = state; }
 	PosRState GetStateCameraR() { return m_StateCameraR; }
 
@@ -216,6 +222,7 @@ private:
 	float m_fDestChaseDistance;			// 目標の追従の間隔
 	bool m_bFollow;						// 追従するかどうか
 	bool m_bRotationZ;					// Z回転出来るかどうか
+	bool m_bRotationY;					// Y回転出来るかどうか
 	bool m_bRockON;						// ロックオン中か
 	int m_nCntState;					// 状態カウンター
 	int m_nCntDistance;					// 距離カウンター
@@ -232,6 +239,7 @@ private:
 
 	PosRState m_StateCameraR;		// 注視点の状態
 	CStateCameraR* m_pStateCameraR;	// 注視点の状態ポインタ
+	CStateCameraV* m_pStateCameraV;	// 視点の状態ポインタ
 	CCameraControlState* m_pControlState;	// 操作の状態ポインタ
 };
 
@@ -260,6 +268,32 @@ public:
 	CStateCameraR_Prayer() {}
 
 	virtual void SetCameraR(CCamera* pCamera) override;
+};
+
+
+//=============================
+// 視点の状態クラス
+//=============================
+class CStateCameraV
+{
+public:
+	CStateCameraV() {}
+
+	virtual void LimitPos(CCamera* pCamera);	// 位置制限
+};
+
+class CStateCameraV_Main : public CStateCameraV
+{
+public:
+	CStateCameraV_Main() {}
+};
+
+class CStateCameraV_Enhance : public CStateCameraV
+{
+public:
+	CStateCameraV_Enhance() {}
+
+	virtual void LimitPos(CCamera* pCamera) override;	// 位置制限
 };
 
 

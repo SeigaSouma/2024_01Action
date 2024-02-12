@@ -98,7 +98,7 @@ HRESULT CSkillPoint::Init()
 	//multi = CTexture::GetInstance()->GetAdress(nMultiIdx);
 
 	// ê∂ê¨èàóù
-	m_apNumber = CMultiNumber::Create({1150.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true);
+	m_apNumber = CMultiNumber::Create({1150.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true, GetPriority());
 
 	return S_OK;
 }

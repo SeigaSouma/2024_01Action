@@ -21,7 +21,7 @@ class CSkillPoint : public CObject2D
 {
 public:
 
-	CSkillPoint(int nPriority = 8);
+	CSkillPoint(int nPriority = 9);
 	~CSkillPoint();
 
 	HRESULT Init();

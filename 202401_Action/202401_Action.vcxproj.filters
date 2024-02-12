@@ -510,6 +510,12 @@
     <ClCompile Include="fog.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="skilltree_reset.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="skilltree_reset_impossible.cpp">
+      <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -910,6 +916,12 @@
     </ClInclude>
     <ClInclude Include="fog.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_reset.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="skilltree_reset_impossible.h">
+      <Filter>ヘッダー ファイル\skilltree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
