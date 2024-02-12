@@ -722,6 +722,8 @@ void CPlayer::Controll()
 				m_sMotionFrag.bJump = true;
 				move.y += 17.0f;
 
+				pMotion->Set(MOTION_JUMP);
+
 				// サウンド再生
 				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_JUMP);
 			}
@@ -1260,8 +1262,11 @@ void CPlayer::SwitchRockOnTarget()
 			i++;
 		}
 
-		// 今までロックオンしてた対象リセット
-		enemyList.GetData(m_nIdxRockOn)->SetEnableRockOn(false);
+		if (enemyList.GetData(m_nIdxRockOn) != nullptr)
+		{
+			// 今までロックオンしてた対象リセット
+			enemyList.GetData(m_nIdxRockOn)->SetEnableRockOn(false);
+		}
 
 		// ロックオン設定
 		CEnemy* pSetEnemy = enemyList.GetData(nMaxIdx);

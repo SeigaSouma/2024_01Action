@@ -35,6 +35,7 @@
 #include "myeffekseer.h"
 #include "gallery.h"
 #include "torch.h"
+#include "controlassist.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -80,11 +81,6 @@ CGame* CGame::Create()
 		// インスタンス生成
 		m_pThisPtr = DEBUG_NEW CGame;
 	}
-	else
-	{
-		// インスタンス取得
-		m_pThisPtr->GetInstance();
-	}
 
 	return m_pThisPtr;
 }
@@ -94,10 +90,6 @@ CGame* CGame::Create()
 //==========================================================================
 CGame* CGame::GetInstance()
 {
-	if (m_pThisPtr == nullptr)
-	{
-		m_pThisPtr = Create();
-	}
 	return m_pThisPtr;
 }
 
@@ -203,6 +195,12 @@ HRESULT CGame::Init()
 		MyLib::Vector3(0.0f, 0.0f, 0.0f),
 		0.0f, 0.0f, 100.0f, false);
 
+
+	// 操作補助生成
+	CControlAssist* pAssist = CControlAssist::Create();
+	pAssist->ResetText();
+	pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
+
 	// 成功
 	return S_OK;
 }
@@ -212,6 +210,7 @@ HRESULT CGame::Init()
 //==========================================================================
 void CGame::Uninit()
 {
+	m_pThisPtr = nullptr;
 
 	// スコアの破棄
 	if (m_pScore != nullptr)
@@ -278,11 +277,6 @@ void CGame::Uninit()
 
 	// 終了処理
 	CScene::Uninit();
-
-	if (m_pThisPtr != nullptr)
-	{
-		m_pThisPtr = nullptr;
-	}
 }
 
 //==========================================================================

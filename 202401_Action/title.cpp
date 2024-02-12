@@ -10,13 +10,15 @@
 #include "renderer.h"
 #include "calculation.h"
 #include "debugproc.h"
-#include "title_screen.h"
 #include "sound.h"
 #include "particle.h"
+#include "gallery.h"
+#include "torch.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
+CTitle* CTitle::m_pThisPtr = nullptr;	// 自身のポインタ
 
 //==========================================================================
 // コンストラクタ
@@ -36,6 +38,29 @@ CTitle::~CTitle()
 }
 
 //==========================================================================
+// 生成処理
+//==========================================================================
+CTitle* CTitle::Create()
+{
+	if (m_pThisPtr == nullptr)
+	{// まだ生成していなかったら
+
+		// インスタンス生成
+		m_pThisPtr = DEBUG_NEW CTitle;
+	}
+
+	return m_pThisPtr;
+}
+
+//==========================================================================
+// インスタンス取得
+//==========================================================================
+CTitle* CTitle::GetInstance()
+{
+	return m_pThisPtr;
+}
+
+//==========================================================================
 // 初期化処理
 //==========================================================================
 HRESULT CTitle::Init()
@@ -50,6 +75,21 @@ HRESULT CTitle::Init()
 		return E_FAIL;
 	}
 
+
+	// 観衆設定
+	CGallery::SetGallery();
+
+	// 観衆のリスト取得
+	CListManager<CGallery> galleryList = CGallery::GetList();
+	CGallery* pGallery = nullptr;
+	while (galleryList.ListLoop(&pGallery))
+	{
+		pGallery->SetState(CGallery::STATE_CLEARHEAT);
+	}
+
+	// 松明設定
+	CTorch::SetTorch();
+
 	// タイトル画面
 	//CTitleScreen::Create();
 
@@ -62,6 +102,8 @@ HRESULT CTitle::Init()
 //==========================================================================
 void CTitle::Uninit()
 {
+	m_pThisPtr = nullptr;
+
 	// 終了処理
 	CScene::Uninit();
 }

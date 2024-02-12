@@ -55,6 +55,7 @@ private:
 	int m_nSelect;	// 選択肢
 	
 	CObject2D* m_pSelectObj[SELECT_MAX];	// 選択肢のオブジェクト
+	static std::vector<int> m_nTexIdx;		// テクスチャのインデックス番号
 };
 
 #endif

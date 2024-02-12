@@ -38,7 +38,7 @@ public:
 	virtual void Draw() override;
 
 	// 静的関数
-	static CTransferBeacon *Create(eTransType transtype, const MyLib::Vector3 pos = MyLib::Vector3(0.0f, 150.0f, 0.0f));
+	static CTransferBeacon *Create(eTransType transtype, const MyLib::Vector3& pos = MyLib::Vector3(0.0f, 150.0f, 0.0f));
 	static CListManager<CTransferBeacon> GetListObj() { return m_List; }	// リスト取得
 
 private:
@@ -72,6 +72,7 @@ private:
 	//=============================
 	// メンバ変数
 	//=============================
+	int m_nCntEffect;
 	float m_fStateTime;	// 状態カウンター
 	STATE m_state;		// 状態
 	eTransType m_TransType;	// 転移種類

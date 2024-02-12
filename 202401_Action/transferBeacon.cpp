@@ -15,16 +15,17 @@
 #include "instantfade.h"
 #include "player.h"
 #include "input.h"
+#include "3D_effect.h"
+#include "MyEffekseer.h"
 
 //==========================================================================
 // 定数定義
 //==========================================================================
 namespace
 {
-	const char* BAGMODEL = "data\\MODEL\\compactcore_01.x";
+	const char* BAGMODEL = "data\\MODEL\\transfer\\transferstone.x";
 	const float RADIUS = 80.0f;	// 半径
-	const float TIME_DMG = static_cast<float>(30) / static_cast<float>(mylib_const::DEFAULT_FPS);		// ダメージ時間 
-	const float TIME_INVICIBLE = static_cast<float>(60) / static_cast<float>(mylib_const::DEFAULT_FPS);	// 無敵時間
+	const float TIME_VERTICAL = 3.0f;		// 上昇時間
 }
 
 //==========================================================================
@@ -47,6 +48,7 @@ CListManager<CTransferBeacon> CTransferBeacon::m_List = {};	// リスト
 CTransferBeacon::CTransferBeacon(int nPriority) : CObjectX(nPriority)
 {
 	// 値のクリア
+	m_nCntEffect = 0;
 	m_fStateTime = 0.0f;	// 状態カウンター
 	m_state = STATE_NONE;	// 状態
 	m_TransType = TRANSTYPE_ENHANCE;	// 転移種類
@@ -63,13 +65,10 @@ CTransferBeacon::~CTransferBeacon()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CTransferBeacon *CTransferBeacon::Create(eTransType transtype, const MyLib::Vector3 pos)
+CTransferBeacon *CTransferBeacon::Create(eTransType transtype, const MyLib::Vector3& pos)
 {
-	// 生成用のオブジェクト
-	CTransferBeacon *pBag = NULL;
-
 	// メモリの確保
-	pBag = DEBUG_NEW CTransferBeacon;
+	CTransferBeacon* pBag = DEBUG_NEW CTransferBeacon;
 
 	if (pBag != NULL)
 	{// メモリの確保が出来ていたら
@@ -104,6 +103,7 @@ HRESULT CTransferBeacon::Init()
 	{
 		return E_FAIL;
 	}
+
 	return S_OK;
 }
 
@@ -124,8 +124,34 @@ void CTransferBeacon::Uninit()
 //==========================================================================
 void CTransferBeacon::Update()
 {
-	// 状態カウンター減算
-	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
+	// 状態カウンター加算
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+
+	MyLib::Vector3 pos = GetPosition();
+	pos.y = 150.0f + sinf(D3DX_PI * (m_fStateTime / TIME_VERTICAL)) * 10.0f;
+	SetPosition(pos);
+
+	m_nCntEffect = (m_nCntEffect + 1) % 6;
+	if (m_nCntEffect == 0)
+	{
+		float move = UtilFunc::Transformation::Random(-100, 100) * 0.01f;
+		float moveY = UtilFunc::Transformation::Random(20, 30) * 0.1f;
+		float radius = UtilFunc::Transformation::Random(50, 80);
+
+		pos.y -= 20.0f;
+		CEffect3D* pEffect = CEffect3D::Create(
+			pos,
+			MyLib::Vector3(move, moveY, move),
+			D3DXCOLOR(0.2f, 1.0f, 0.4f, 1.0f),
+			radius, 60, CEffect3D::MOVEEFFECT_SUB, CEffect3D::TYPE_SMOKE);
+		//pEffect->SetDisableZSort();
+	}
+
+	if (m_fStateTime >= TIME_VERTICAL * 2.0f)
+	{
+		m_fStateTime = 0.0f;
+	}
+
 
 	// プレイヤーとの当たり判定
 	CollisionPlayer();
@@ -214,7 +240,7 @@ void CTransferBeacon::CollisionPlayer()
 //==========================================================================
 void CTransferBeacon::StateNone()
 {
-	m_fStateTime = 0.0f;
+	
 }
 
 //==========================================================================
@@ -222,7 +248,6 @@ void CTransferBeacon::StateNone()
 //==========================================================================
 void CTransferBeacon::StateTransfer()
 {
-	m_fStateTime = 0.0f;
 
 	// 向き取得
 	MyLib::Vector3 rot = GetRotation();

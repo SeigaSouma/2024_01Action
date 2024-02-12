@@ -254,19 +254,20 @@ void CSkillTree_Obj::StartUp()
 //==========================================================================
 void CSkillTree_Obj::ReStartUp()
 {
-	// ループエフェクト再生
-	if (m_pWeaponHandle == nullptr)
-	{
-		MyLib::Vector3 pos = POSITION;
-		pos.y += 250.0f;
-		pos.z += 50.0f;
 
-		CMyEffekseer::GetInstance()->SetEffect(
-			&m_pWeaponHandle,
-			CMyEffekseer::EFKLABEL_STONEBASE_LIGHT,
-			pos,
-			0.0f, 0.0f, 100.0f, false);
-	}
+	// エフェクト全て停止
+	CMyEffekseer::GetInstance()->StopAll();
+
+	// ループエフェクト再生
+	MyLib::Vector3 pos = POSITION;
+	pos.y += 250.0f;
+	pos.z += 50.0f;
+
+	CMyEffekseer::GetInstance()->SetEffect(
+		&m_pWeaponHandle,
+		CMyEffekseer::EFKLABEL_STONEBASE_LIGHT,
+		pos,
+		0.0f, 0.0f, 100.0f, false);
 }
 
 //==========================================================================

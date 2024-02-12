@@ -50,6 +50,7 @@ public:
 		EFKLABEL_BOSS_ROLLING,		// ボスのローリング
 		EFKLABEL_STONEBASE_LIGHT,		// 石板の光
 		EFKLABEL_STONEBASE_BEGIN,		// 石板起動
+		EFKLABEL_TRANSFER,				// 転移
 		EFKLABEL_MAX
 	};
 

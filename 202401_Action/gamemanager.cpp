@@ -31,6 +31,7 @@
 #include "limitarea.h"
 #include "calculation.h"
 #include "fog.h"
+#include "controlassist.h"
 
 
 //==========================================================================
@@ -195,15 +196,23 @@ void CGameManager::GameClearSettings()
 	// 転移ビーコン生成
 	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE);
 
+	// 転移
+	CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL_TRANSFER,
+		MyLib::Vector3(0.0f, 50.0f, 0.0f),
+		0.0f, 0.0f, 100.0f, false);
+
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
 	CPlayer* pPlayer = playerList.GetData(0);
 
 	// クリアポイント追加
-	pPlayer->GetSkillPoint()->AddPoint(POINT_WAVECLEAR);
+	CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
+	pSkillPoint->AddPoint(POINT_WAVECLEAR);
+	pSkillPoint->SetSlideIn();
 
 	// 前回のポイント保存
-	m_nPrevPoint = pPlayer->GetSkillPoint()->GetPoint();
+	m_nPrevPoint = pSkillPoint->GetPoint();
 
 	// 前回の習得状況保存
 	m_PrevSkillIconMastering = CSkillTree::GetInstance()->GetMastering();
@@ -262,9 +271,24 @@ void CGameManager::SceneTransition()
 			MyLib::Vector3(0.0f, 0.0f, 0.0f),
 			0.0f, 0.0f, 100.0f, false);
 
+		// プレイヤー取得
+		CListManager<CPlayer> playerList = CPlayer::GetListObj();
+		CPlayer* pPlayer = playerList.GetData(0);
+
+		// クリアポイント追加
+		CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
+		pSkillPoint->SetState(CSkillPoint::STATE_WAIT);
+
+
 		if (!m_bEndNormalStage)
 		{// 通常ステージが終わっていなかったら
 			SetEnemy();
+
+			// 操作補助生成
+			CControlAssist* pAssist = CControlAssist::Create();
+			pAssist->ResetText();
+			pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
+			pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
 		}
 		else
 		{// ボスステージ
@@ -314,6 +338,13 @@ void CGameManager::SceneEnhance()
 	// エフェクト全て停止
 	CMyEffekseer::GetInstance()->StopAll();
 
+	// 操作補助削除
+	CControlAssist* pAssist = CControlAssist::GetInstance();
+	if (pAssist != nullptr)
+	{
+		pAssist->ResetText();
+	}
+
 
 	// ステージ加算
 	AddNowStage();
@@ -335,10 +366,20 @@ void CGameManager::SceneEnhance()
 	while (playerList.ListLoop(&pPlayer))
 	{
 		pPlayer->SetPosition(0.0f);
+		pPlayer->GetSkillPoint()->SetState(CSkillPoint::STATE_ENHANCE);
 	}
 
 	// 転移ビーコン生成
 	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_GAMEMAIN);
+
+	// エフェクト全て停止
+	CMyEffekseer::GetInstance()->StopAll();
+
+	// 転移
+	CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL_TRANSFER,
+		MyLib::Vector3(0.0f, 5.0f, 0.0f),
+		0.0f, 0.0f, 100.0f, false);
 
 	// スキルツリーオブジェクト生成
 	CSkillTree_Obj::Create();

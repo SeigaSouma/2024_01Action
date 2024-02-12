@@ -33,8 +33,8 @@ namespace
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-CXLoad *CScene::m_pXLoad = NULL;				// Xファイルのオブジェクト
-CElevation *CScene::m_pObject3DMesh = NULL;		// オブジェクト3Dメッシュのオブジェクト
+CXLoad *CScene::m_pXLoad = nullptr;				// Xファイルのオブジェクト
+CElevation *CScene::m_pObject3DMesh = nullptr;		// オブジェクト3Dメッシュのオブジェクト
 
 //==========================================================================
 // コンストラクタ
@@ -59,16 +59,16 @@ CScene::~CScene()
 CScene *CScene::Create(CScene::MODE mode)
 {
 	// 生成用のオブジェクト
-	CScene *pScene = NULL;
+	CScene *pScene = nullptr;
 
-	if (pScene == NULL)
-	{// NULLだったら
+	if (pScene == nullptr)
+	{// nullptrだったら
 
 		// 生成処理
 		switch (mode)
 		{
 		case CScene::MODE_TITLE:
-			pScene = DEBUG_NEW CTitle;
+			pScene = CTitle::Create();
 			break;
 
 		case CScene::MODE_TUTORIAL:
@@ -88,7 +88,7 @@ CScene *CScene::Create(CScene::MODE mode)
 			break;
 		}
 
-		if (pScene != NULL)
+		if (pScene != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// モードの設定
@@ -98,7 +98,7 @@ CScene *CScene::Create(CScene::MODE mode)
 		return pScene;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -111,14 +111,14 @@ HRESULT CScene::Init()
 	//**********************************
 	// Xファイル
 	//**********************************
-	if (m_pXLoad != NULL)
+	if (m_pXLoad != nullptr)
 	{// 確保されていたら
 		return E_FAIL;
 	}
 
 	// メモリ確保
 	m_pXLoad = CXLoad::Create();
-	if (m_pXLoad == NULL)
+	if (m_pXLoad == nullptr)
 	{// メモリの確保が出来ていなかったら
 		return E_FAIL;
 	}
@@ -153,14 +153,14 @@ HRESULT CScene::Init()
 void CScene::Uninit()
 {
 	// Xファイルの破棄
-	if (m_pXLoad != NULL)
+	if (m_pXLoad != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
 		m_pXLoad->Uninit();
 
 		// メモリの開放
-		m_pXLoad = NULL;
+		m_pXLoad = nullptr;
 	}
 
 }
@@ -190,10 +190,10 @@ void CScene::ResetScene()
 	// 破棄フェーズ
 	//**********************************
 	// 起伏の地面
-	if (m_pObject3DMesh != NULL)
+	if (m_pObject3DMesh != nullptr)
 	{
 		m_pObject3DMesh->Uninit();
-		m_pObject3DMesh = NULL;
+		m_pObject3DMesh = nullptr;
 	}
 
 	// マップ

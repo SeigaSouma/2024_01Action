@@ -8,7 +8,6 @@
 #ifndef _TITLE_H_
 #define _TITLE_H_	// 二重インクルード防止
 
-#include "main.h"
 #include "manager.h"
 
 //==========================================================================
@@ -18,7 +17,7 @@
 //==========================================================================
 // クラス定義
 //==========================================================================
-// タイトルクラス定義
+// タイトルクラス
 class CTitle : public CScene
 {
 public:
@@ -27,14 +26,22 @@ public:
 	~CTitle();
 
 	// オーバーライドされた関数
-	HRESULT Init();
-	void Uninit();
-	void Update();
-	void Draw();
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
+
+	// 静的関数
+	static CTitle* GetInstance();	// インスタンス取得
+	static CTitle* Create();		// 生成処理
 
 private:
-	int m_nCntSwitch;		// 切り替えのカウンター
 
+	//=============================
+	// メンバ変数
+	//=============================
+	int m_nCntSwitch;		// 切り替えのカウンター
+	static CTitle* m_pThisPtr;	// 自身のポインタ
 };
 
 

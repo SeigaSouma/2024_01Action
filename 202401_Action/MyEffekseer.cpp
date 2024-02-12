@@ -27,6 +27,7 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/SonicBoom.efkefc",			// ボスのローリング
 	"data/Effekseer/stonebase_light.efkefc",			// 石板の光
 	"data/Effekseer/stonebase_begin.efkefc",			// 石板起動
+	"data/Effekseer/transfer.efkefc",			// 石板起動
 };
 CMyEffekseer* CMyEffekseer::m_pMyEffekseer = nullptr;	// 自身のポインタ
 

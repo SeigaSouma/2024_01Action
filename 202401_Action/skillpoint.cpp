@@ -18,10 +18,31 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skillpoint\\cyberwall_03.png";
+	const char* TEXTURE = "data\\TEXTURE\\skillpoint\\skillpoint_01.png";
 	const char* TEXTURE2 = "data\\TEXTURE\\leaf002.png";
 	const char* NUMBER_TEXTURE = "data\\TEXTURE\\number\\number_blackclover_01.png";
+	const float WIDTH_FRAME = 280.0f;	// フレームの幅
+	const float TIME_SLIDE = 0.5f;		// スライドにかかる時間
+	const float TIME_DECIDE = 1.0f;		// 到着
+	const float TIME_ARRIVE = 2.0f;		// 到着
+	const MyLib::Vector3 DISTANCE_NUMBER = MyLib::Vector3(150.0f, 0.0f, 0.0f);
+	const MyLib::Vector3 DESTPOSITION_SLIDEIN = MyLib::Vector3(SCREEN_WIDTH - WIDTH_FRAME, 80.0f, 0.0f);	// スライドインの目標位置
+	const MyLib::Vector3 DESTPOSITION_SLIDEOUT = MyLib::Vector3(SCREEN_WIDTH + WIDTH_FRAME, 80.0f, 0.0f);	// スライドアウトの目標位置
+
 }
+
+//==========================================================================
+// 関数リスト
+//==========================================================================
+CSkillPoint::STATE_FUNC CSkillPoint::m_StateFunc[] =
+{
+	&CSkillPoint::StateArrive,			// 到着
+	&CSkillPoint::StateSlideIn,			// スライドイン
+	&CSkillPoint::StateSlideCompletion,	// スライド完了
+	&CSkillPoint::StateSlideOut,		// スライドアウト
+	&CSkillPoint::StateWait,			// 待機
+	&CSkillPoint::StateEnhance,			// 強化
+};
 
 //==========================================================================
 // コンストラクタ
@@ -29,7 +50,11 @@ namespace
 CSkillPoint::CSkillPoint(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
-	m_nPoint = 0;	// ポイント
+	m_nPoint = 0;			// ポイント
+	m_nVisualValue = 0;		// 見た目上の数値
+	m_fStateTime = 0.0f;	// 状態タイマー
+	m_fSlideTime = 0.0f;	// スライドタイマー
+	m_State = STATE_ARRIVE;	// 状態
 	m_apNumber = nullptr;	// 数字のオブジェクト
 }
 
@@ -73,8 +98,9 @@ CSkillPoint *CSkillPoint::Create()
 //==========================================================================
 HRESULT CSkillPoint::Init()
 {
-	// 種類の設定
-	SetType(CObject::TYPE_OBJECT2D);
+	// 各種変数初期化
+	m_State = STATE_WAIT;
+
 
 	// 初期化
 	CObject2D::Init();
@@ -82,23 +108,19 @@ HRESULT CSkillPoint::Init()
 
 	// テクスチャの割り当て
 	int nIdx = CTexture::GetInstance()->Regist(TEXTURE);
-
-	// テクスチャの割り当て
 	BindTexture(nIdx);
 
-	D3DXVECTOR2 size;
-	// サイズ取得
-	SetSize(CTexture::GetInstance()->GetImageSize(nIdx) * 0.1f);	// サイズ
-	SetSizeOrigin(GetSize());	// サイズ
-	SetPosition(MyLib::Vector3(1000.0f, 80.0f, 0.0f));	// 位置
+	// サイズ設定
+	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nIdx);
+	size = UtilFunc::Transformation::AdjustSizeByWidth(size, WIDTH_FRAME);
+	SetSize(size);
+	SetSizeOrigin(GetSize());
 
-
-	//// テクスチャの割り当て
-	//int nMultiIdx = CTexture::GetInstance()->Regist(TEXTURE2);
-	//multi = CTexture::GetInstance()->GetAdress(nMultiIdx);
+	// 位置設定
+	SetPosition(DESTPOSITION_SLIDEOUT);
 
 	// 生成処理
-	m_apNumber = CMultiNumber::Create({1150.0f, 80.0f, 0.0f}, D3DXVECTOR2(GetSize().x, GetSize().x), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true, GetPriority());
+	m_apNumber = CMultiNumber::Create(GetPosition() + DISTANCE_NUMBER, D3DXVECTOR2(50.0f, 50.0f), 2, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true, GetPriority());
 
 	return S_OK;
 }
@@ -143,44 +165,126 @@ void CSkillPoint::Update()
 	// キーボード情報取得
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
-
-
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-
-
-	// ゲージの位置やサイズの更新（ここでゲージの位置やサイズを変更する）
-	D3DXVECTOR2 size = GetSize();
-	D3DXVECTOR2* pTex = GetTex();
-
-	if (pInputKeyboard->GetPress(DIK_UP) == true)
-	{//←キーが押された,左移動]
-		pTex[1].x += 0.01f;
-		pTex[3].x += 0.01f;
-		/*size.x += 1.0f;*/
+	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
+	{
+		m_State = STATE_SLIDEIN;
 	}
-	if (pInputKeyboard->GetPress(DIK_DOWN) == true)
-	{//←キーが押された,左移動
-		//size.x -= 1.0f;
-		pTex[1].x -= 0.01f;
-		pTex[3].x -= 0.01f;
+	if (pInputKeyboard->GetTrigger(DIK_RIGHT) == true)
+	{
+		m_State = STATE_SLIDEOUT;
 	}
-	SetSize(size);
 
-
-	// クリッピング領域をゲージの進捗に合わせて変更
-	float clipWidth = 2.0f * (GetSize().x / GetSizeOrigin().x) - 1.0f;
-
-
+	// 状態更新
+	(this->*(m_StateFunc[m_State]))();
 
 	// 更新処理
 	CObject2D::Update();
 
 	// 値の設定処理
+	m_apNumber->SetPosition(GetPosition() + DISTANCE_NUMBER);
 	m_apNumber->Update();
-	m_apNumber->SetValue(m_nPoint);
+	m_apNumber->SetValue(m_nVisualValue);
+}
 
+//==========================================================================
+// 到着
+//==========================================================================
+void CSkillPoint::StateArrive()
+{
+	// タイマー更新
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+	m_fSlideTime = TIME_SLIDE;
 
+	if (TIME_ARRIVE <= m_fStateTime)
+	{
+		m_fStateTime = 0.0f;
+		m_State = STATE_SLIDEOUT;
+	}
+}
+
+//==========================================================================
+// スライドイン
+//==========================================================================
+void CSkillPoint::StateSlideIn()
+{
+	// タイマー加算
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+	m_fSlideTime += CManager::GetInstance()->GetDeltaTime();
+
+	// 位置更新
+	MyLib::Vector3 pos = GetPosition();
+	pos.x = UtilFunc::Correction::EasingEaseOut(DESTPOSITION_SLIDEOUT.x, DESTPOSITION_SLIDEIN.x, m_fSlideTime / TIME_SLIDE);
+	SetPosition(pos);
+
+	if (m_fSlideTime >= TIME_SLIDE)
+	{
+		m_fSlideTime = TIME_SLIDE;
+		m_fStateTime = 0.0f;
+		m_State = STATE_SLIDECOMPLETION;
+	}
+}
+
+//==========================================================================
+// スライド完了
+//==========================================================================
+void CSkillPoint::StateSlideCompletion()
+{
+	// タイマー加算
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+
+	if (TIME_DECIDE <= m_fStateTime)
+	{
+		// 見た目上の数値を更新
+		m_nVisualValue = m_nPoint;
+		m_fStateTime = 0.0f;
+		m_State = STATE_ARRIVE;
+	}
+}
+
+//==========================================================================
+// スライドアウト
+//==========================================================================
+void CSkillPoint::StateSlideOut()
+{
+	// タイマー更新
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+	m_fSlideTime -= CManager::GetInstance()->GetDeltaTime();
+
+	// 位置更新
+	MyLib::Vector3 pos = GetPosition();
+	pos.x = UtilFunc::Correction::EasingEaseOut(DESTPOSITION_SLIDEIN.x, DESTPOSITION_SLIDEOUT.x, 1.0f - (m_fSlideTime / TIME_SLIDE));
+	SetPosition(pos);
+
+	if (m_fSlideTime <= 0.0f)
+	{
+		m_fSlideTime = 0.0f;
+		m_fStateTime = 0.0f;
+		m_State = STATE_WAIT;
+	}
+}
+
+//==========================================================================
+// 待機
+//==========================================================================
+void CSkillPoint::StateWait()
+{
+	// 見た目上の数値を常に更新
+	m_nVisualValue = m_nPoint;
+
+	// 位置設定
+	SetPosition(DESTPOSITION_SLIDEOUT);
+}
+
+//==========================================================================
+// 強化
+//==========================================================================
+void CSkillPoint::StateEnhance()
+{
+	// 見た目上の数値を常に更新
+	m_nVisualValue = m_nPoint;
+
+	// 位置設定
+	SetPosition(DESTPOSITION_SLIDEIN);
 }
 
 //==========================================================================
@@ -237,15 +341,30 @@ void CSkillPoint::SubPoint(int nValue)
 }
 
 //==========================================================================
+// スライドイン設定
+//==========================================================================
+void CSkillPoint::SetSlideIn()
+{
+	m_State = STATE_SLIDEIN;
+	m_fStateTime = 0.0f;
+	m_fSlideTime = 0.0f;
+}
+
+//==========================================================================
+// 状態設定
+//==========================================================================
+void CSkillPoint::SetState(STATE state)
+{
+	m_State = state;
+	m_fStateTime = 0.0f;
+}
+
+//==========================================================================
 // 描画処理
 //==========================================================================
 void CSkillPoint::Draw()
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-
 	// 描画処理
 	CObject2D::Draw();
-
 }
 

@@ -37,8 +37,8 @@
 #define MAX_ROT			(D3DX_PI * 0.49f)	// ÉJÉÅÉâå≈íËóp
 #define BACKFOLLOW_TIME	(20)				// îwñ ï‚ê≥Ç‹Ç≈ÇÃéûä‘
 #define TITLE_POSR_DEST	(MyLib::Vector3(0.0f, 0.0f, 0.0f))
-#define TITLE_LEN_DEST	(500.0f)
-#define TITLECAMERAROT_NONE		(MyLib::Vector3(0.0f, 0.0f, -D3DX_PI * 0.1f))
+#define TITLE_LEN_DEST	(1400.0f)
+#define TITLECAMERAROT_NONE		(MyLib::Vector3(0.0f, 0.0f, -0.2f))
 #define TITLECAMERAROT_ENEMY	(MyLib::Vector3(0.0f, -0.79f, -0.12f))
 #define TITLESTATE_CHANGE	(60 * 14)
 #define TITLESTATE_CHASE	(60 * 20)
@@ -1730,7 +1730,7 @@ void CStateCameraV_Enhance::LimitPos(CCamera* pCamera)
 	CListManager<CLimitArea> areaList = CLimitArea::GetListObj();
 	CLimitArea* pArea = nullptr;
 
-	float radius = 80.0f;
+	float radius = 50.0f;
 
 	while (areaList.ListLoop(&pArea))
 	{

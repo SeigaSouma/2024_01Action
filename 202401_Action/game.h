@@ -8,7 +8,6 @@
 #ifndef _GAME_H_
 #define _GAME_H_	// 二重インクルード防止
 
-#include "main.h"
 #include "scene.h"
 #include "gamemanager.h"
 
@@ -58,11 +57,11 @@ public:
 	CTimer *GetTimer() { return m_pTimer; }	// タイマー取得
 	CStage *GetStage();
 	CGameManager *GetGameManager();
-	void SetEnableClear(bool bClear) { m_clear = bClear; }	// クリアのフラグ
-	bool IsClearFrag() { return m_clear; } // クリアフラグの取得
-	CEnemyManager* GetEnemyManager();
-	CEnemyBase* GetEnemyBase();		// 敵の拠点
-	bool IsEdit() { return m_bEdit; }	// エディットの判定
+	void SetEnableClear(bool bClear) { m_clear = bClear; }		// クリアのフラグ
+	bool IsClearFrag() { return m_clear; }						// クリアフラグの取得
+	CEnemyManager* GetEnemyManager();							// 敵マネージャ
+	CEnemyBase* GetEnemyBase();									// 敵の拠点
+	bool IsEdit() { return m_bEdit; }							// エディットの判定
 	float GetRockOnDistance() { return m_fMaxRokOnDistance; }	// ロックオンの最大距離取得
 
 	// 静的関数
@@ -71,10 +70,14 @@ public:
 
 private:
 
+	//=============================
 	// メンバ関数
+	//=============================
 	void EditReset();
 
+	//=============================
 	// メンバ変数
+	//=============================
 	CScore *m_pScore;						// スコアのオブジェクト
 	CTimer *m_pTimer;						// タイマーのオブジェクト
 	CLimitArea *m_pLimitArea;				// エリア制限のオブジェクト

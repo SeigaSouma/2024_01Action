@@ -118,6 +118,12 @@
     <Filter Include="ヘッダー ファイル\dead">
       <UniqueIdentifier>{ca34581e-e635-42b5-b176-6275a90d3d95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\arena">
+      <UniqueIdentifier>{156757ad-d191-41f6-8bcb-6d2938f2e3b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\arena">
+      <UniqueIdentifier>{7d1360bf-7875-4638-999d-33c0218bfdde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -289,9 +295,6 @@
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
     <ClCompile Include="title.cpp">
-      <Filter>ソース ファイル\mode\title</Filter>
-    </ClCompile>
-    <ClCompile Include="title_screen.cpp">
       <Filter>ソース ファイル\mode\title</Filter>
     </ClCompile>
     <ClCompile Include="tutorial.cpp">
@@ -498,12 +501,6 @@
     <ClCompile Include="playercontrol.cpp">
       <Filter>ソース ファイル\player</Filter>
     </ClCompile>
-    <ClCompile Include="gallery.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="torch.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="rockon_marker.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -515,6 +512,15 @@
     </ClCompile>
     <ClCompile Include="skilltree_reset_impossible.cpp">
       <Filter>ソース ファイル\skilltree</Filter>
+    </ClCompile>
+    <ClCompile Include="controlassist.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery.cpp">
+      <Filter>ソース ファイル\arena</Filter>
+    </ClCompile>
+    <ClCompile Include="torch.cpp">
+      <Filter>ソース ファイル\arena</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -734,9 +740,6 @@
     <ClInclude Include="title.h">
       <Filter>ヘッダー ファイル\mode\title</Filter>
     </ClInclude>
-    <ClInclude Include="title_screen.h">
-      <Filter>ヘッダー ファイル\mode\title</Filter>
-    </ClInclude>
     <ClInclude Include="tutorial.h">
       <Filter>ヘッダー ファイル\mode\tutorial</Filter>
     </ClInclude>
@@ -905,12 +908,6 @@
     <ClInclude Include="playercontrol.h">
       <Filter>ヘッダー ファイル\player</Filter>
     </ClInclude>
-    <ClInclude Include="gallery.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="torch.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="rockon_marker.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -922,6 +919,15 @@
     </ClInclude>
     <ClInclude Include="skilltree_reset_impossible.h">
       <Filter>ヘッダー ファイル\skilltree</Filter>
+    </ClInclude>
+    <ClInclude Include="controlassist.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gallery.h">
+      <Filter>ヘッダー ファイル\arena</Filter>
+    </ClInclude>
+    <ClInclude Include="torch.h">
+      <Filter>ヘッダー ファイル\arena</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

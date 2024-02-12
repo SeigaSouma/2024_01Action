@@ -167,6 +167,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="collisionobject.cpp" />
+    <ClCompile Include="controlassist.cpp" />
     <ClCompile Include="damagepoint.cpp" />
     <ClCompile Include="deadmanager.cpp" />
     <ClCompile Include="deadscreen.cpp" />
@@ -285,7 +286,6 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
-    <ClCompile Include="title_screen.cpp" />
     <ClCompile Include="torch.cpp" />
     <ClCompile Include="transferBeacon.cpp" />
     <ClCompile Include="tutorial.cpp" />
@@ -306,6 +306,7 @@
     <ClInclude Include="collision.h" />
     <ClInclude Include="collisionobject.h" />
     <ClInclude Include="constans.h" />
+    <ClInclude Include="controlassist.h" />
     <ClInclude Include="damagepoint.h" />
     <ClInclude Include="deadmanager.h" />
     <ClInclude Include="deadscreen.h" />
@@ -422,7 +423,6 @@
     <ClInclude Include="texture.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
-    <ClInclude Include="title_screen.h" />
     <ClInclude Include="torch.h" />
     <ClInclude Include="transferBeacon.h" />
     <ClInclude Include="tutorial.h" />

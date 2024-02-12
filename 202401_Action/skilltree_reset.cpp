@@ -27,9 +27,12 @@ namespace
 	{
 		"data\\TEXTURE\\skilltree\\reset_select01.png",
 		"data\\TEXTURE\\skilltree\\reset_select02.png",
+		"data\\TEXTURE\\skilltree\\reset_select03.png",
+		"data\\TEXTURE\\skilltree\\reset_select04.png",
 	};
 	const float DISTANCE = 140.0f;
 }
+std::vector<int> CSkillTree_Reset::m_nTexIdx = {};		// テクスチャのインデックス番号
 
 //==========================================================================
 // コンストラクタ
@@ -85,6 +88,16 @@ HRESULT CSkillTree_Reset::Init()
 	// 種類の設定
 	SetType(TYPE_OBJECT2D);
 
+	if (m_nTexIdx.empty())
+	{
+		for (const auto& tex : SELECT_TEXTURE)
+		{
+			// テクスチャ読み込み
+			int nIdx = CTexture::GetInstance()->Regist(tex);
+			m_nTexIdx.push_back(nIdx);
+		}
+	}
+
 	// テクスチャの割り当て
 	int nIdx = CTexture::GetInstance()->Regist(TEXTURE);
 	BindTexture(nIdx);
@@ -97,9 +110,6 @@ HRESULT CSkillTree_Reset::Init()
 
 	// 位置設定
 	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
-
-	// 色設定
-	//SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 
 	// 選択肢生成
 	CreateSelect();
@@ -119,12 +129,11 @@ void CSkillTree_Reset::CreateSelect()
 		// 種類の設定
 		m_pSelectObj[i]->SetType(TYPE_OBJECT2D);
 
-		// テクスチャの割り当て
-		int nIdx = CTexture::GetInstance()->Regist(SELECT_TEXTURE[i]);
-		m_pSelectObj[i]->BindTexture(nIdx);
+		// テクスチャ割り当て
+		m_pSelectObj[i]->BindTexture(m_nTexIdx[i]);
 
 		// サイズ設定
-		D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nIdx);
+		D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(m_nTexIdx[i]);
 		size = UtilFunc::Transformation::AdjustSizeByHeight(size, 32.0f);
 		m_pSelectObj[i]->SetSize(size);
 		m_pSelectObj[i]->SetSizeOrigin(GetSize());
@@ -133,6 +142,9 @@ void CSkillTree_Reset::CreateSelect()
 		m_pSelectObj[i]->SetPosition(MyLib::Vector3((SCREEN_WIDTH * 0.5f) - DISTANCE + (DISTANCE * i) * 2.0f, 410.0f, 0.0f));
 	}
 
+	int selectIdx = static_cast<int>(SELECT_CANCEL);
+	m_pSelectObj[selectIdx]->BindTexture(m_nTexIdx[selectIdx] + 2);
+
 }
 
 //==========================================================================
@@ -140,6 +152,9 @@ void CSkillTree_Reset::CreateSelect()
 //==========================================================================
 void CSkillTree_Reset::Uninit()
 {
+	// インデックス番号リセット
+	m_nTexIdx.clear();
+
 	for (int i = 0; i < SELECT_MAX; i++)
 	{
 		if (m_pSelectObj[i] == nullptr)
@@ -194,11 +209,13 @@ void CSkillTree_Reset::Update()
 		if (m_nSelect == i)
 		{
 			col = UtilFunc::Transformation::HSVtoRGB(0.0f, 0.0f, 0.7f + fabsf(sinf(D3DX_PI * (m_fFlashTime / 1.0f)) * 0.3f));
+			m_pSelectObj[i]->BindTexture(m_nTexIdx[i] + 2);
 		}
 		else
 		{
 			// 黒っぽくする
-			col = D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f);
+			col = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
+			m_pSelectObj[i]->BindTexture(m_nTexIdx[i]);
 		}
 		m_pSelectObj[i]->SetColor(col);
 	}
