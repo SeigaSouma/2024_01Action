@@ -46,7 +46,10 @@ public:
 		MOTION_ATK3,		// 攻撃(派生2)
 		MOTION_JUMP,		// ジャンプ
 		MOTION_FALL,		// 落下中
+		MOTION_DMG,			// ダメージ
 		MOTION_KNOCKBACK,	// ノックバック
+		MOTION_KNOCKBACK_PASSIVE,	// ノックバック受け身
+		MOTION_DOWN,		// ダウン
 		MOTION_DEAD,		// 死亡
 		MOTION_RESPAWN,		// 復活
 		MOTION_PRAYER,		// 祈り
@@ -67,6 +70,7 @@ public:
 		STATE_INVINCIBLE,	// 無敵
 		STATE_DMG,			// ダメージ
 		STATE_KNOCKBACK,	// ノックバック
+		STATE_DOWN,			// ダウン
 		STATE_DEAD,			// 死
 		STATE_DEADWAIT,		// 死亡待機
 		STATE_FADEOUT,		// フェードアウト
@@ -100,7 +104,7 @@ public:
 
 	MyLib::HitResult_Character Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
 	MyLib::HitResult_Character Hit(const int nValue, CEnemy* pEnemy, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);	// ヒット処理
-	MyLib::HitResult_Character ProcessHit(const int nValue);
+	MyLib::HitResult_Character ProcessHit(const int nValue, const MyLib::Vector3& hitpos);
 
 	STATE GetState();		// 状態取得
 	void SetState(STATE state, int nCntState = 0);	// 状態設定
@@ -153,6 +157,9 @@ public:
 	void SetGuardSubValue(float value) { m_fGuardStaminaSubValue = value; }	// ガード時の消費スタミナ設定
 	float GetGuardSubValue() { return m_fGuardStaminaSubValue; }	// ガード時の消費スタミナ取得
 
+	// ダウン
+	void DownSetting(const MyLib::Vector3& hitpos);
+
 	// ヒット系
 	void DeadSetting(MyLib::HitResult_Character* result);
 
@@ -192,6 +199,7 @@ private:
 	void StateNone();		// なし
 	void StateInvincible();	// 無敵
 	void StateDamage();		// ダメージ
+	void StateDown();		// ダウン
 	void StateKnockBack();	// ノックバック
 	void StateDead();		// 死亡
 	void StateDeadWait();	// 死亡待機

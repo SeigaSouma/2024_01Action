@@ -200,8 +200,8 @@ class CAbillityGuard : public CEnhance
 	// ƒƒ“ƒoŠÖ”
 	//=============================
 	// ’iŠK•Ê
-	void SubNeedStamina01() { m_pPlayer->SetGuardSubValue(30.0f); }
-	void SubNeedStamina02() { m_pPlayer->SetGuardSubValue(15.0f); }
+	void SubNeedStamina01() { m_pPlayer->SetGuardSubValue(45.0f); }
+	void SubNeedStamina02() { m_pPlayer->SetGuardSubValue(30.0f); }
 	void KnockbackMitigation01() { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level1()); }
 	void KnockbackMitigation02() { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level2()); }
 

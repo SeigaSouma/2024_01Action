@@ -258,6 +258,7 @@ void CSkillTree_Obj::ReStartUp()
 
 	// エフェクト全て停止
 	CMyEffekseer::GetInstance()->StopAll();
+	CMyEffekseer::GetInstance()->StopAll();
 
 	// ループエフェクト再生
 	MyLib::Vector3 pos = POSITION;

@@ -243,6 +243,13 @@ void CMyEffekseer::StopAll()
 {
 	// ‘S‚Ä’âŽ~
 	efkManager->StopAllEffects();
+	efkManager->StopAllEffects();
+
+	for (int i = 0; i < static_cast<int>(m_EffectObj.size()); i++)
+	{
+		Effekseer::Handle loacalhandle = m_EffectObj[i].handle;
+		efkManager->StopEffect(loacalhandle);
+	}
 
 	for (int i = 0; i < static_cast<int>(m_EffectObj.size()); i++)
 	{

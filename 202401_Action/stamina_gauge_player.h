@@ -13,10 +13,22 @@
 //==========================================================================
 // クラス定義
 //==========================================================================
-// プレイヤーのスタミナゲージクラス定義
+// プレイヤーのスタミナゲージクラス
 class CStaminaGauge_Player : public CObject
 {
 public:
+
+	//=============================
+	// 列挙型定義
+	//=============================
+	// 状態
+	enum STATE
+	{
+		STATE_NORMAL = 0,	// 通常
+		STATE_SUB,			// 減算
+		STATE_QUICKHEAL,	// 急速回復
+		STATE_MAX
+	};
 
 	CStaminaGauge_Player(int nPriority = 7);
 	~CStaminaGauge_Player();
@@ -39,6 +51,9 @@ public:
 	void SetValue(float value);	// 値設定
 	float GetValue();		// 値取得
 
+	void SetState(STATE state) { m_state = state; }
+	STATE GetState() { return m_state; }
+
 	static CStaminaGauge_Player* Create(MyLib::Vector3 pos, int maxvalue);
 private:
 
@@ -54,14 +69,6 @@ private:
 		VTXTYPE_MAX
 	};
 
-	// 頂点列挙
-	enum STATE
-	{
-		STATE_NORMAL = 0,	// 通常
-		STATE_SUB,			// 減算
-		STATE_MAX
-	};
-
 	//=============================
 	// 関数リスト
 	//=============================
@@ -74,6 +81,7 @@ private:
 	// 状態系
 	void StateNormal();	// 通常状態
 	void StateSub();	// 減算状態
+	void StateQuickHealing();	// 急速回復状態
 
 	// その他
 	void ChangeColor();		// 色変更

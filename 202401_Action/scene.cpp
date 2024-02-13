@@ -13,6 +13,7 @@
 #include "elevation.h"
 #include "player.h"
 #include "camera.h"
+#include "MyEffekseer.h"
 
 // 遷移先
 #include "game.h"
@@ -107,6 +108,9 @@ CScene *CScene::Create(CScene::MODE mode)
 HRESULT CScene::Init()
 {
 	HRESULT hr;
+
+	// エフェクト全て停止
+	CMyEffekseer::GetInstance()->StopAll();
 
 	//**********************************
 	// Xファイル

@@ -691,7 +691,7 @@ void CEnemy::NormalHitResponse()
 	GetMotion()->Set(MOTION_DMG);
 
 	// ヒットストップ
-	CManager::GetInstance()->SetEnableHitStop(5);
+	//CManager::GetInstance()->SetEnableHitStop(5);
 
 	// 振動
 	CManager::GetInstance()->GetCamera()->SetShake(10, 15.0f, 0.0f);
@@ -1865,13 +1865,6 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 				// 向き設定
 				pPlayer->SetRotation(MyLib::Vector3(PlayerRot.x, fRot, PlayerRot.z));
 				pPlayer->SetRotDest(fRot);
-				fRot = pPlayer->GetRotation().y;
-
-				// 吹き飛ばし
-				pPlayer->SetMove(MyLib::Vector3(
-					sinf(fRot) * 4.0f,
-					12.0f,
-					cosf(fRot) * 4.0f));
 			}
 		}
 

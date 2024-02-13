@@ -18,7 +18,7 @@ namespace
 	const float DEFAULT_AUTOHEAL = 0.15f;	// デフォルトの自動回復
 	const float DEFAULT_WIDTH = 120.0f;		// デフォルトの幅
 	const float DEFAULT_HEIGHT = 15.0f;		// デフォルトの高さ
-	const float TIME_STATESUB = static_cast<float>(20) / static_cast<float>(mylib_const::DEFAULT_FPS);		// 減算状態の時間
+	const float TIME_STATESUB = static_cast<float>(50) / static_cast<float>(mylib_const::DEFAULT_FPS);		// 減算状態の時間
 	const char* TEXTURE[] =		// テクスチャのファイル
 	{
 		"",
@@ -34,6 +34,7 @@ CStaminaGauge_Player::STATE_FUNC CStaminaGauge_Player::m_StateFunc[] =
 {
 	&CStaminaGauge_Player::StateNormal,	// 通常
 	&CStaminaGauge_Player::StateSub,	// 減算
+	&CStaminaGauge_Player::StateQuickHealing,	// 急速回復
 };
 
 //==========================================================================
@@ -215,6 +216,23 @@ void CStaminaGauge_Player::StateSub()
 }
 
 //==========================================================================
+// 急速回復状態
+//==========================================================================
+void CStaminaGauge_Player::StateQuickHealing()
+{
+	// カウンターリセット
+	m_fStateTime = 0.0f;
+
+	// 自動回復
+	AddValue(m_fAutoHeal * 8.0f);
+
+	if (m_fMaxStaminaValue == m_fStaminaValue)
+	{
+		m_state = STATE_NORMAL;
+	}
+}
+
+//==========================================================================
 // 色更新
 //==========================================================================
 void CStaminaGauge_Player::ChangeColor()
@@ -318,42 +336,6 @@ void CStaminaGauge_Player::SetValue(float value)
 //==========================================================================
 void CStaminaGauge_Player::UpgradeMaxValue(int addvalue)
 {
-#if 0
-	// 最大値
-	float oldMaxvalue = m_fMaxStaminaValue;
-	m_fMaxStaminaValue += addvalue;
-	float nowlen = DEFAULT_WIDTH * (m_fMaxStaminaValue / m_fOriginStaminaValue);
-
-	for (const auto& gauge : m_pObj2DGauge)
-	{
-		// 最大値
-		gauge->SetMaxValue(static_cast<int>(m_fMaxStaminaValue));
-
-		// 最大の長さ
-		gauge->SetMaxWidth(nowlen);
-
-		// ゲージリセット
-		D3DXVECTOR2 size = gauge->GetSize();
-		size.x = nowlen;
-		gauge->SetSize(size);
-
-		gauge->SetValue(static_cast<int>(m_fMaxStaminaValue));
-	}
-
-	// 元の長さとの差分
-	float difflen = nowlen - DEFAULT_WIDTH;
-
-	// 位置設定
-	MyLib::Vector3 newpos = GetOriginPosition();
-	newpos.x += difflen;
-	SetPosition(newpos);
-
-	for (const auto& gauge : m_pObj2DGauge)
-	{
-		gauge->SetPosition(newpos);
-	}
-#else
-
 	// スタミナの最大値上昇
 	m_fMaxStaminaValue = m_fOriginStaminaValue + addvalue;
 
@@ -361,8 +343,6 @@ void CStaminaGauge_Player::UpgradeMaxValue(int addvalue)
 	{
 		SetPosition(gauge->UpgradeMaxValue(addvalue));
 	}
-	
-#endif
 }
 
 //==========================================================================

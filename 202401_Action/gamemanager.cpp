@@ -255,6 +255,7 @@ void CGameManager::SceneTransition()
 
 		// エフェクト全て停止
 		CMyEffekseer::GetInstance()->StopAll();
+		CMyEffekseer::GetInstance()->StopAll();
 
 		// フォグリセット
 		MyFog::ToggleFogFrag(false);
@@ -363,11 +364,11 @@ void CGameManager::SceneEnhance()
 		pPlayer->GetSkillPoint()->SetState(CSkillPoint::STATE_ENHANCE);
 	}
 
-	// 転移ビーコン生成
-	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_GAMEMAIN);
-
 	// エフェクト全て停止
 	CMyEffekseer::GetInstance()->StopAll();
+
+	// 転移ビーコン生成
+	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_GAMEMAIN);
 
 	// スキルツリーオブジェクト生成
 	CSkillTree_Obj::Create();
