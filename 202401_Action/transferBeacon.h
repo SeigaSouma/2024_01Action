@@ -37,8 +37,11 @@ public:
 	virtual void Update() override;
 	virtual void Draw() override;
 
+	// ‚»‚Ì‘¼
+	void SetEffect();
+
 	// Ã“IŠÖ”
-	static CTransferBeacon *Create(eTransType transtype, const MyLib::Vector3& pos = MyLib::Vector3(0.0f, 150.0f, 0.0f));
+	static CTransferBeacon *Create(eTransType transtype, const MyLib::Vector3& pos = MyLib::Vector3(0.0f, 155.0f, 0.0f));
 	static CListManager<CTransferBeacon> GetListObj() { return m_List; }	// ƒŠƒXƒgæ“¾
 
 private:

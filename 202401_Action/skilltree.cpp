@@ -22,6 +22,7 @@
 #include "camera.h"
 #include "player.h"
 #include "game.h"
+#include "transferBeacon.h"
 
 //==========================================================================
 // 定数定義
@@ -306,6 +307,15 @@ void CSkillTree::StateNone()
 
 		// 再起動処理
 		CSkillTree_Obj::GetInstance()->ReStartUp();
+
+		// 転移ビーコンのエフェクト設定
+		CListManager<CTransferBeacon> beaconList = CTransferBeacon::GetListObj();
+		CTransferBeacon* pBeacon = nullptr;
+		while (beaconList.ListLoop(&pBeacon))
+		{
+			pBeacon->SetEffect();
+		}
+
 	}
 }
 

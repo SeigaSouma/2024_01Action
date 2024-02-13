@@ -78,6 +78,7 @@ CTransferBeacon *CTransferBeacon::Create(eTransType transtype, const MyLib::Vect
 
 		// 位置割り当て
 		pBag->SetPosition(pos);
+		pBag->SetOriginPosition(pos);
 
 		// 初期化処理
 		pBag->Init();
@@ -103,6 +104,16 @@ HRESULT CTransferBeacon::Init()
 	{
 		return E_FAIL;
 	}
+
+	// 生成位置
+	MyLib::Vector3 spawnpos = GetOriginPosition();
+	spawnpos.y -= 150.0f;
+
+	// 転移
+	CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL_TRANSFER,
+		spawnpos,
+		0.0f, 0.0f, 100.0f, false);
 
 	return S_OK;
 }
@@ -258,6 +269,21 @@ void CTransferBeacon::StateTransfer()
 	SetRotation(rot);
 }
 
+//==========================================================================
+// エフェクト設定
+//==========================================================================
+void CTransferBeacon::SetEffect()
+{
+	// 生成位置
+	MyLib::Vector3 spawnpos = GetOriginPosition();
+	spawnpos.y -= 150.0f;
+
+	// 転移
+	CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL_TRANSFER,
+		spawnpos,
+		0.0f, 0.0f, 100.0f, false);
+}
 
 //==========================================================================
 // 描画処理

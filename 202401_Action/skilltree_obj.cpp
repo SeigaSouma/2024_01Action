@@ -18,6 +18,7 @@
 #include "instantfade.h"
 #include "3D_effect.h"
 #include "MyEffekseer.h"
+#include "transferBeacon.h"
 
 //==========================================================================
 // ’è”’è‹`

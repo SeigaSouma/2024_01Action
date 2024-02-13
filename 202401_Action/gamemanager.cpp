@@ -194,13 +194,7 @@ void CGameManager::GameClearSettings()
 	CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
 
 	// 転移ビーコン生成
-	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE);
-
-	// 転移
-	CMyEffekseer::GetInstance()->SetEffect(
-		CMyEffekseer::EFKLABEL_TRANSFER,
-		MyLib::Vector3(0.0f, 50.0f, 0.0f),
-		0.0f, 0.0f, 100.0f, false);
+	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE, MyLib::Vector3(0.0f, 200.0f, 0.0f));
 
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
@@ -374,12 +368,6 @@ void CGameManager::SceneEnhance()
 
 	// エフェクト全て停止
 	CMyEffekseer::GetInstance()->StopAll();
-
-	// 転移
-	CMyEffekseer::GetInstance()->SetEffect(
-		CMyEffekseer::EFKLABEL_TRANSFER,
-		MyLib::Vector3(0.0f, 5.0f, 0.0f),
-		0.0f, 0.0f, 100.0f, false);
 
 	// スキルツリーオブジェクト生成
 	CSkillTree_Obj::Create();

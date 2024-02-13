@@ -69,28 +69,18 @@ CSkillPoint::~CSkillPoint()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CSkillPoint *CSkillPoint::Create()
+CSkillPoint* CSkillPoint::Create()
 {
-	// 生成用のオブジェクト
-	CSkillPoint *pTitleScreen = NULL;
+	// メモリの確保
+	CSkillPoint* pTitleScreen = DEBUG_NEW CSkillPoint;
 
-	if (pTitleScreen == NULL)
-	{// NULLだったら
-
-		// メモリの確保
-		pTitleScreen = DEBUG_NEW CSkillPoint;
-
-		if (pTitleScreen != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pTitleScreen->Init();
-		}
-
-		return pTitleScreen;
+	if (pTitleScreen != nullptr)
+	{
+		// 初期化処理
+		pTitleScreen->Init();
 	}
 
-	return NULL;
+	return pTitleScreen;
 }
 
 //==========================================================================
@@ -131,10 +121,10 @@ HRESULT CSkillPoint::Init()
 void CSkillPoint::Uninit()
 {
 	// 数字のオブジェクトの終了処理
-	if (m_apNumber != NULL)
+	if (m_apNumber != nullptr)
 	{
 		m_apNumber->Uninit();
-		m_apNumber = NULL;
+		m_apNumber = nullptr;
 	}
 
 	// 終了処理
@@ -147,10 +137,10 @@ void CSkillPoint::Uninit()
 void CSkillPoint::Kill()
 {
 	// 数字のオブジェクト削除
-	if (m_apNumber != NULL)
+	if (m_apNumber != nullptr)
 	{
 		m_apNumber->Release();
-		m_apNumber = NULL;
+		m_apNumber = nullptr;
 	}
 
 	// 終了処理
@@ -162,18 +152,7 @@ void CSkillPoint::Kill()
 //==========================================================================
 void CSkillPoint::Update()
 {
-	// キーボード情報取得
-	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
-	{
-		m_State = STATE_SLIDEIN;
-	}
-	if (pInputKeyboard->GetTrigger(DIK_RIGHT) == true)
-	{
-		m_State = STATE_SLIDEOUT;
-	}
-
+	
 	// 状態更新
 	(this->*(m_StateFunc[m_State]))();
 
