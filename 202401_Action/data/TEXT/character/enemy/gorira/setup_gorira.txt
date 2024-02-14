@@ -42,6 +42,12 @@ MODEL_FILENAME = data/MODEL/enemy/gorira/Lfoot.x		# [17]左足
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
+
+	CENTERSET
+		PARTS = 2		# 中心にするパーツ
+		OFFSET = 0.00 83.00 0.00		# オフセット位置
+	END_CENTERSET
+	
 	VELOCITY = 4.0					# 移動量
 	JUMP = 8.65						# ジャンプ量
 	RADIUS = 300.0					# 半径

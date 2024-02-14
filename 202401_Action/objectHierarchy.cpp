@@ -9,6 +9,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "model.h"
+#include "3D_effect.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -23,14 +24,17 @@ CObjectHierarchy::CObjectHierarchy(int nPriority) : CObject(nPriority)
 {
 	// 値のクリア
 	D3DXMatrixIdentity(&m_mtxWorld);			// ワールドマトリックス
-	m_posOrigin = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 最初の位置
+	m_posOrigin = 0.0f;			// 最初の位置
+	m_posCenter = 0.0f;			// 中心位置
 	m_fRadius = 0.0f;			// 半径
 	m_nNumModel = 0;			// モデルの数
 	m_nIdxFile = 0;				// ファイルのインデックス番号
+	m_nCenterPartsIdx = 0;		// 中心にするパーツのインデックス
+	m_CenterOffset = 0.0f;		// 中心のオフセット
 
 	for (int nCntModel = 0; nCntModel < mylib_const::MAX_MODEL; nCntModel++)
 	{
-		m_apModel[nCntModel] = NULL;	// モデル(パーツ)のポインタ
+		m_apModel[nCntModel] = nullptr;	// モデル(パーツ)のポインタ
 	}
 }
 
@@ -45,32 +49,23 @@ CObjectHierarchy::~CObjectHierarchy()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObjectHierarchy *CObjectHierarchy::Create(const std::string pTextFile)
+CObjectHierarchy* CObjectHierarchy::Create(const std::string pTextFile)
 {
-	// 生成用のオブジェクト
-	CObjectHierarchy *pObjChara = NULL;
+	// メモリの確保
+	CObjectHierarchy* pObjChara = DEBUG_NEW CObjectHierarchy;
 
-	if (pObjChara == NULL)
-	{// NULLだったら
+	if (pObjChara != nullptr)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pObjChara = DEBUG_NEW CObjectHierarchy;
-
-		if (pObjChara != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			HRESULT hr = pObjChara->SetCharacter(pTextFile);
-			if (FAILED(hr))
-			{// 失敗していたら
-				return NULL;
-			}
+		// 初期化処理
+		HRESULT hr = pObjChara->SetCharacter(pTextFile);
+		if (FAILED(hr))
+		{// 失敗していたら
+			return nullptr;
 		}
-
-		return pObjChara;
 	}
 
-	return NULL;
+	return pObjChara;
 }
 
 //==========================================================================
@@ -109,6 +104,13 @@ HRESULT CObjectHierarchy::SetCharacter(const std::string pTextFile)
 //==========================================================================
 void CObjectHierarchy::BindObjectData(int nCntData)
 {
+
+	// 中心にするパーツのインデックス
+	m_nCenterPartsIdx = m_aLoadData[nCntData].nCenterIdx;
+
+	// 中心のオフセット
+	m_CenterOffset = m_aLoadData[nCntData].centerOffSet;
+
 	// モデル数設定
 	m_nNumModel = m_aLoadData[nCntData].nNumModel;
 
@@ -130,13 +132,12 @@ void CObjectHierarchy::BindObjectData(int nCntData)
 			m_aLoadData[nCntData].LoadData[nCntParts].pos,
 			m_aLoadData[nCntData].LoadData[nCntParts].rot);
 
-		if (m_apModel[nCntParts] == NULL)
-		{// NULLだったら
-
+		if (m_apModel[nCntParts] == nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nCntParts]->Uninit();
 			delete m_apModel[nCntParts];
-			m_apModel[nCntParts] = NULL;
+			m_apModel[nCntParts] = nullptr;
 		}
 
 		// 親モデルの設定
@@ -147,7 +148,7 @@ void CObjectHierarchy::BindObjectData(int nCntData)
 		}
 		else
 		{// 自分が親の時
-			m_apModel[nCntParts]->SetParent(NULL);
+			m_apModel[nCntParts]->SetParent(nullptr);
 		}
 
 		// 初期配置の判定
@@ -174,13 +175,12 @@ void CObjectHierarchy::Uninit()
 {
 	for (int nCntModel = 0; nCntModel < mylib_const::MAX_MODEL; nCntModel++)
 	{
-		if (m_apModel[nCntModel] != NULL)
-		{// NULLじゃなかったら
-
+		if (m_apModel[nCntModel] != nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nCntModel]->Uninit();
 			delete m_apModel[nCntModel];
-			m_apModel[nCntModel] = NULL;
+			m_apModel[nCntModel] = nullptr;
 		}
 	}
 
@@ -193,7 +193,29 @@ void CObjectHierarchy::Uninit()
 //==========================================================================
 void CObjectHierarchy::Update()
 {
+	// 判定するパーツ取得
+	CModel* pModel = m_apModel[m_nCenterPartsIdx];
+	if (pModel == nullptr)
+	{
+		return;
+	}
 
+	// 判定するパーツのマトリックス取得
+	D3DXMATRIX mtxTrans;
+	D3DXMATRIX mtxWepon = pModel->GetWorldMtx();
+
+	// 位置を反映する
+	D3DXMatrixTranslation(&mtxTrans, m_CenterOffset.x, m_CenterOffset.y, m_CenterOffset.z);
+	D3DXMatrixMultiply(&mtxWepon, &mtxTrans, &mtxWepon);
+	m_posCenter = UtilFunc::Transformation::WorldMtxChangeToPosition(mtxWepon);
+
+	for (int i = 0; i < 5; i++)
+	{
+		CEffect3D* p = CEffect3D::Create(m_posCenter,
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXCOLOR(0.4f, 1.0f, 0.6f, 1.0f), 5.0f, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+		p->SetDisableZSort();
+	}
 }
 
 //==========================================================================
@@ -209,19 +231,18 @@ void CObjectHierarchy::ChangeObject(int nDeleteParts, int nNewParts)
 
 	int nNumAll = pObjChar->GetNumModel();
 
-	if (m_apModel[nDeleteParts] != NULL)
-	{// NULLじゃなかったら
-
+	if (m_apModel[nDeleteParts] != nullptr)
+	{
 		// モデルの終了処理
 		m_apModel[nDeleteParts]->Uninit();
 		delete m_apModel[nDeleteParts];
-		m_apModel[nDeleteParts] = NULL;
+		m_apModel[nDeleteParts] = nullptr;
 	}
 
 	// 新しいパーツを読み込む
-	if (nNewParts >= 0 && m_apModel[nNewParts] == NULL)
+	if (nNewParts >= 0 && m_apModel[nNewParts] == nullptr)
 	{
-		if (m_apModel[nNewParts] == NULL)
+		if (m_apModel[nNewParts] == nullptr)
 		{
 			// モデル作成
 			m_apModel[nNewParts] = CModel::Create(
@@ -230,13 +251,12 @@ void CObjectHierarchy::ChangeObject(int nDeleteParts, int nNewParts)
 				LoadData.LoadData[nNewParts].rot);
 		}
 
-		if (m_apModel[nNewParts] == NULL)
-		{// NULLだったら
-
+		if (m_apModel[nNewParts] == nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nNewParts]->Uninit();
 			delete m_apModel[nNewParts];
-			m_apModel[nNewParts] = NULL;
+			m_apModel[nNewParts] = nullptr;
 		}
 	}
 
@@ -244,8 +264,8 @@ void CObjectHierarchy::ChangeObject(int nDeleteParts, int nNewParts)
 	for (int nCntParts = 0; nCntParts < LoadData.nNumModel; nCntParts++)
 	{// パーツ分繰り返し
 
-		if (m_apModel[nCntParts] == NULL)
-		{// NULLだったら
+		if (m_apModel[nCntParts] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -257,7 +277,7 @@ void CObjectHierarchy::ChangeObject(int nDeleteParts, int nNewParts)
 		}
 		else
 		{// 自分が親の時
-			m_apModel[nCntParts]->SetParent(NULL);
+			m_apModel[nCntParts]->SetParent(nullptr);
 		}
 	}
 }
@@ -274,16 +294,16 @@ void CObjectHierarchy::ChangeObject(int nSwitchType)
 	for (int nCntParts = 0; nCntParts < LoadData.nNumModel; nCntParts++)
 	{// パーツ分繰り返し
 
-		if (m_apModel[nCntParts] != NULL)
+		if (m_apModel[nCntParts] != nullptr)
 		{
 			// モデルの終了処理
 			m_apModel[nCntParts]->Uninit();
 			delete m_apModel[nCntParts];
-			m_apModel[nCntParts] = NULL;
+			m_apModel[nCntParts] = nullptr;
 		}
 
 		// モデル作成
-		if (m_apModel[nCntParts] == NULL)
+		if (m_apModel[nCntParts] == nullptr)
 		{
 			m_apModel[nCntParts] = CModel::Create(
 				LoadData.LoadData[LoadData.LoadData[nCntParts].nType].pModelFile.c_str(),
@@ -299,7 +319,7 @@ void CObjectHierarchy::ChangeObject(int nSwitchType)
 		}
 		else
 		{// 自分が親の時
-			m_apModel[nCntParts]->SetParent(NULL);
+			m_apModel[nCntParts]->SetParent(nullptr);
 		}
 
 		if (LoadData.LoadData[nCntParts].nStart != 1)
@@ -321,13 +341,12 @@ void CObjectHierarchy::ChangeObject(int nSwitchType)
 		// 削除するインデックス番号
 		int nDeleteIdx = LoadData.LoadData[nCntParts].nIDSwitchModel;
 
-		if (nDeleteIdx >= 0 && m_apModel[nDeleteIdx] != NULL)
-		{// NULLじゃなかったら
-
+		if (nDeleteIdx >= 0 && m_apModel[nDeleteIdx] != nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nDeleteIdx]->Uninit();
 			delete m_apModel[nDeleteIdx];
-			m_apModel[nDeleteIdx] = NULL;
+			m_apModel[nDeleteIdx] = nullptr;
 		}
 
 		// 生成するインデックス番号
@@ -339,7 +358,7 @@ void CObjectHierarchy::ChangeObject(int nSwitchType)
 		}
 
 		// モデル作成
-		if (m_apModel[nNewIdx] == NULL)
+		if (m_apModel[nNewIdx] == nullptr)
 		{
 			m_apModel[nNewIdx] = CModel::Create(
 				LoadData.LoadData[LoadData.LoadData[nCntParts].nType].pModelFile.c_str(),
@@ -355,7 +374,7 @@ void CObjectHierarchy::ChangeObject(int nSwitchType)
 		}
 		else
 		{// 自分が親の時
-			m_apModel[nNewIdx]->SetParent(NULL);
+			m_apModel[nNewIdx]->SetParent(nullptr);
 		}
 	}
 
@@ -370,9 +389,9 @@ void CObjectHierarchy::SetObject(int nNewParts)
 	Load LoadData = GetLoadData(m_nIdxFile);
 
 	// 新しいパーツを読み込む
-	if (nNewParts >= 0 && m_apModel[nNewParts] == NULL)
+	if (nNewParts >= 0 && m_apModel[nNewParts] == nullptr)
 	{
-		if (m_apModel[nNewParts] == NULL)
+		if (m_apModel[nNewParts] == nullptr)
 		{
 			// モデル作成
 			m_apModel[nNewParts] = CModel::Create(
@@ -381,13 +400,12 @@ void CObjectHierarchy::SetObject(int nNewParts)
 				LoadData.LoadData[nNewParts].rot);
 		}
 
-		if (m_apModel[nNewParts] == NULL)
-		{// NULLだったら
-
+		if (m_apModel[nNewParts] == nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nNewParts]->Uninit();
 			delete m_apModel[nNewParts];
-			m_apModel[nNewParts] = NULL;
+			m_apModel[nNewParts] = nullptr;
 		}
 	}
 
@@ -395,8 +413,8 @@ void CObjectHierarchy::SetObject(int nNewParts)
 	for (int nCntParts = 0; nCntParts < LoadData.nNumModel; nCntParts++)
 	{// パーツ分繰り返し
 
-		if (m_apModel[nCntParts] == NULL)
-		{// NULLだったら
+		if (m_apModel[nCntParts] == nullptr)
+		{
 			continue;
 		}
 
@@ -408,7 +426,7 @@ void CObjectHierarchy::SetObject(int nNewParts)
 		}
 		else
 		{// 自分が親の時
-			m_apModel[nCntParts]->SetParent(NULL);
+			m_apModel[nCntParts]->SetParent(nullptr);
 		}
 	}
 }
@@ -433,13 +451,12 @@ void CObjectHierarchy::DeleteObject(int nSwitchType)
 		// 削除するインデックス番号
 		int nDeleteIdx = LoadData.LoadData[nCntParts].nIDSwitchModel;
 
-		if (nDeleteIdx >= 0 && m_apModel[nDeleteIdx] != NULL)
-		{// NULLじゃなかったら
-
+		if (nDeleteIdx >= 0 && m_apModel[nDeleteIdx] != nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nDeleteIdx]->Uninit();
 			delete m_apModel[nDeleteIdx];
-			m_apModel[nDeleteIdx] = NULL;
+			m_apModel[nDeleteIdx] = nullptr;
 		}
 	}
 }
@@ -484,9 +501,8 @@ void CObjectHierarchy::Draw()
 	// モデルの描画
 	for (int nCntModel = 0; nCntModel < mylib_const::MAX_MODEL; nCntModel++)
 	{
-		if (m_apModel[nCntModel] != NULL)
-		{// NULLじゃなかったら
-
+		if (m_apModel[nCntModel] != nullptr)
+		{
 			// パーツごとの描画
 			m_apModel[nCntModel]->Draw();
 		}
@@ -504,9 +520,8 @@ void CObjectHierarchy::Draw(D3DXCOLOR col)
 	// モデルの描画
 	for (int nCntModel = 0; nCntModel < mylib_const::MAX_MODEL; nCntModel++)
 	{
-		if (m_apModel[nCntModel] != NULL)
-		{// NULLじゃなかったら
-
+		if (m_apModel[nCntModel] != nullptr)
+		{
 			// パーツごとの描画
 			m_apModel[nCntModel]->Draw(col);
 		}
@@ -525,9 +540,8 @@ void CObjectHierarchy::Draw(float fAlpha)
 	// モデルの描画
 	for (int nCntModel = 0; nCntModel < mylib_const::MAX_MODEL; nCntModel++)
 	{
-		if (m_apModel[nCntModel] != NULL)
-		{// NULLじゃなかったら
-
+		if (m_apModel[nCntModel] != nullptr)
+		{
 			// パーツごとの描画
 			m_apModel[nCntModel]->Draw(fAlpha);
 		}
@@ -539,12 +553,12 @@ void CObjectHierarchy::Draw(float fAlpha)
 //==========================================================================
 HRESULT CObjectHierarchy::ReadText(const std::string pTextFile)
 {
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen(pTextFile.c_str(), "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -631,13 +645,42 @@ HRESULT CObjectHierarchy::ReadText(const std::string pTextFile)
 //==========================================================================
 void CObjectHierarchy::LoadObjectData(FILE *pFile, const char* pComment)
 {
-	char hoge[MAX_COMMENT];	// コメント
+	char hoge[MAX_COMMENT] = {};	// コメント
 	if (strcmp(pComment, "RADIUS") == 0)
 	{// RADIUSで半径
 
 		fscanf(pFile, "%s", &hoge[0]);	// =の分
 		fscanf(pFile, "%f", &m_aLoadData[m_nNumLoad].fRadius);	// 半径
 		m_fRadius = m_aLoadData[m_nNumLoad].fRadius;
+	}
+
+	if (strcmp(pComment, "CENTERSET") == 0)
+	{// CENTERSETで中心位置読み込み
+
+		while (strcmp(hoge, "END_CENTERSET") != 0)
+		{// END_CENTERSETが来るまで繰り返す
+
+			fscanf(pFile, "%s", &hoge[0]);	//確認する
+
+			if (strcmp(hoge, "PARTS") == 0)
+			{// PARTSが来たらパーツ番号読み込み
+
+				fscanf(pFile, "%s", &hoge[0]);	// =の分
+				fscanf(pFile, "%d", &m_aLoadData[m_nNumLoad].nCenterIdx);		// モデル種類の列挙
+
+				m_nCenterPartsIdx = m_aLoadData[m_nNumLoad].nCenterIdx;		// 中心にするパーツのインデックス
+			}
+
+			if (strcmp(hoge, "OFFSET") == 0)
+			{// OFFSETが来たら位置読み込み
+
+				fscanf(pFile, "%s", &hoge[0]);		// =の分
+				fscanf(pFile, "%f", &m_aLoadData[m_nNumLoad].centerOffSet.x);	// X座標
+				fscanf(pFile, "%f", &m_aLoadData[m_nNumLoad].centerOffSet.y);	// Y座標
+				fscanf(pFile, "%f", &m_aLoadData[m_nNumLoad].centerOffSet.z);	// Z座標
+				m_CenterOffset = m_aLoadData[m_nNumLoad].centerOffSet;			// 中心のオフセット
+			}
+		}
 	}
 }
 
@@ -721,7 +764,7 @@ void CObjectHierarchy::LoadPartsData(FILE* pFile, const char* pComment, int *pCn
 		}// END_PARTSSETのかっこ
 
 		// モデルの生成
-		if (m_apModel[nCntSetParts] == NULL)
+		if (m_apModel[nCntSetParts] == nullptr)
 		{
 			m_apModel[nCntSetParts] = CModel::Create(
 				m_aLoadData[m_nNumLoad].LoadData[m_aLoadData[m_nNumLoad].LoadData[nCntSetParts].nType].pModelFile.c_str(),
@@ -729,13 +772,12 @@ void CObjectHierarchy::LoadPartsData(FILE* pFile, const char* pComment, int *pCn
 				m_aLoadData[m_nNumLoad].LoadData[nCntSetParts].rot);
 		}
 
-		if (m_apModel[nCntSetParts] == NULL)
-		{// NULLだったら
-
+		if (m_apModel[nCntSetParts] == nullptr)
+		{
 			// モデルの終了処理
 			m_apModel[nCntSetParts]->Uninit();
 			delete m_apModel[nCntSetParts];
-			m_apModel[nCntSetParts] = NULL;
+			m_apModel[nCntSetParts] = nullptr;
 		}
 
 		// 親モデルの設定
@@ -745,7 +787,7 @@ void CObjectHierarchy::LoadPartsData(FILE* pFile, const char* pComment, int *pCn
 		}
 		else
 		{
-			m_apModel[nCntSetParts]->SetParent(NULL);
+			m_apModel[nCntSetParts]->SetParent(nullptr);
 		}
 
 		if (m_aLoadData[m_nNumLoad].LoadData[nCntSetParts].nStart != 1)
@@ -778,11 +820,7 @@ D3DXMATRIX CObjectHierarchy::GetmtxWorld() const
 //==========================================================================
 MyLib::Vector3 CObjectHierarchy::GetCenterPosition() const
 {
-	if (m_apModel[0] == NULL)
-	{
-		return mylib_const::DEFAULT_VECTOR3;
-	}
-	return GetPosition() + m_apModel[0]->GetPosition();
+	return m_posCenter;
 }
 
 //==========================================================================

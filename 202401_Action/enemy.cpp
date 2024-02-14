@@ -461,6 +461,9 @@ void CEnemy::Update()
 	if (m_bRockOnAccepting)
 	{
 		MyLib::Vector3 rockonpos = GetPosition();
+		MyLib::Vector3 centerpos = GetCenterPosition();
+		rockonpos.x = centerpos.x;
+		rockonpos.z = centerpos.z;
 		rockonpos.y += GetHeight() * 0.5f;
 		CManager::GetInstance()->GetCamera()->SetRockOn(rockonpos, true);
 		CManager::GetInstance()->GetCamera()->SetRockOnDistance(m_fRockOnDistance);
@@ -1796,6 +1799,7 @@ void CEnemy::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 //==========================================================================
 void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
+	//return;
 	// ÉÇÅ[ÉVÉáÉìéÊìæ
 	CMotion* pMotion = GetMotion();
 	if (pMotion == nullptr)

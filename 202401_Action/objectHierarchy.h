@@ -36,6 +36,8 @@ public:
 	struct Load
 	{
 		std::string sTextFile;	// テキストファイル名
+		int nCenterIdx;				// 中心にするパーツインデックス
+		MyLib::Vector3 centerOffSet;	// 中心位置のオフセット
 		int nNumModel;			// モデル数
 		float fVelocity;		// 移動速度
 		float fRadius;			// 半径
@@ -107,6 +109,10 @@ private:
 	// メンバ変数
 	D3DXMATRIX	m_mtxWorld;		// ワールドマトリックス
 	MyLib::Vector3 m_posOrigin;	// 最初の位置
+	MyLib::Vector3 m_posCenter;	// 中心位置
+
+	int m_nCenterPartsIdx;			// 中心にするパーツのインデックス
+	MyLib::Vector3 m_CenterOffset;	// 中心のオフセット
 	float m_fRadius;			// 半径
 	int m_nNumModel;			// モデルの数
 	int m_nIdxFile;				// ファイルのインデックス番号

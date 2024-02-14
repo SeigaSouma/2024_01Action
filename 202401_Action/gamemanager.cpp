@@ -100,8 +100,7 @@ HRESULT CGameManager::Init()
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 
 #if _DEBUG
-	m_nNowStage = 2;			// 現在のステージ
-	m_bEndNormalStage = true;
+	m_nNowStage = 0;			// 現在のステージ
 #else
 	m_nNowStage = 0;			// 現在のステージ
 #endif

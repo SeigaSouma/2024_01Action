@@ -527,6 +527,8 @@ void CPlayer::Update()
 	// 位置の制限
 	LimitPos();
 
+	GetCenterPosition();
+
 #if 1
 	// デバッグ表示
 	CManager::GetInstance()->GetDebugProc()->Print(
@@ -1464,16 +1466,27 @@ void CPlayer::LimitPos()
 {
 	MyLib::Vector3 pos = GetPosition();
 
-	float fLength = sqrtf(pos.x * pos.x + pos.z * pos.z);
+	// エリア制限情報取得
+	CListManager<CLimitArea> limitareaList = CLimitArea::GetListObj();
+	CLimitArea* pLimitArea = nullptr;
 
-	if (fLength > mylib_const::RADIUS_STAGE)
-	{// 補正
-		D3DXVec3Normalize(&pos, &pos);
+	while (limitareaList.ListLoop(&pLimitArea))
+	{
+		CLimitArea::sLimitEreaInfo info = pLimitArea->GetLimitEreaInfo();
 
-		pos *= mylib_const::RADIUS_STAGE;
-
-		SetPosition(pos);
+		// 大人の壁を適用
+		if (pos.x + GetRadius() >= info.fMaxX) { pos.x = info.fMaxX - GetRadius(); }
+		if (pos.x - GetRadius() <= info.fMinX) { pos.x = info.fMinX + GetRadius(); }
+		if (pos.z + GetRadius() >= info.fMaxZ) { pos.z = info.fMaxZ - GetRadius(); }
+		if (pos.z - GetRadius() <= info.fMinZ) { pos.z = info.fMinZ + GetRadius(); }
 	}
+
+	// 円の押し戻し
+	if (pos.LengthXZ() > mylib_const::RADIUS_STAGE)
+	{// 補正
+		pos = pos.Normal() * mylib_const::RADIUS_STAGE;
+	}
+	SetPosition(pos);
 }
 
 //==========================================================================
@@ -1584,21 +1597,6 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 		}
 	}
 
-	// エリア制限情報取得
-	CListManager<CLimitArea> limitareaList = CLimitArea::GetListObj();
-	CLimitArea* pLimitArea = nullptr;
-
-	while (limitareaList.ListLoop(&pLimitArea))
-	{
-		CLimitArea::sLimitEreaInfo info = pLimitArea->GetLimitEreaInfo();
-
-		// 大人の壁を適用
-		if (pos.x + GetRadius() >= info.fMaxX) { pos.x = info.fMaxX - GetRadius(); }
-		if (pos.x - GetRadius() <= info.fMinX) { pos.x = info.fMinX + GetRadius(); }
-		if (pos.z + GetRadius() >= info.fMaxZ) { pos.z = info.fMaxZ - GetRadius(); }
-		if (pos.z - GetRadius() <= info.fMinZ) { pos.z = info.fMinZ + GetRadius(); }
-	}
-
 	// リストループ
 	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
 	CEnemy* pEnemy = nullptr;
@@ -1608,7 +1606,7 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 
 	while (enemyList.ListLoop(&pEnemy))
 	{
-		enemypos = pEnemy->GetPosition();
+		enemypos = pEnemy->GetCenterPosition();
 		enemyradius = pEnemy->GetRadius();
 		enemyradius *= 0.5f;
 

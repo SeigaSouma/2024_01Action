@@ -140,6 +140,9 @@ void CObjectChara::Uninit()
 //==========================================================================
 void CObjectChara::Update()
 {
+	// オブジェクトヒエラルキーの更新
+	CObjectHierarchy::Update();
+
 	// モーション更新
 	if (m_pMotion != nullptr)
 	{

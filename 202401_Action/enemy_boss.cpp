@@ -62,11 +62,11 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_pATKState = nullptr;		// 今の行動ポインタ
 	m_pNextATKState = nullptr;	// 次の行動ポインタ
 
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
+	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
 	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
+	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
 	m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());			// 下B
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
+	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
 }
 
 //==========================================================================
