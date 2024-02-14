@@ -20,47 +20,24 @@ MOTIONSET
 	# çUåÇèÓïÒ
 	#===================
 	ATTACKINFO
-		COLLISIONPARTS = 0
-		ATTACKRANGE = 431.00
-		OFFSET = 0.00 -39.50 0.00
-		ATTACKCOUNT = 71 115
+		COLLISIONPARTS = 14
+		ATTACKRANGE = 300.00
+		OFFSET = 57.50 0.00 0.00
+		ATTACKCOUNT = 92 155
 		INPACTCOUNT = 0
 		DAMAGE = 10
 		ATTACKTYPE = 1	# çUåÇÇÃéÌóﬁ[0ÅFí èÌ / 1ÅFã≠çUåÇ]
 	END_ATTACKINFO
 
 	ATTACKINFO
-		COLLISIONPARTS = 2
-		ATTACKRANGE = 309.00
-		OFFSET = 0.00 124.50 0.00
-		ATTACKCOUNT = 71 115
-		INPACTCOUNT = 68
+		COLLISIONPARTS = 0
+		ATTACKRANGE = 0.00
+		OFFSET = 0.00 0.00 0.00
+		ATTACKCOUNT = 0 0
+		INPACTCOUNT = 86
 		DAMAGE = 10
 		ATTACKTYPE = 1	# çUåÇÇÃéÌóﬁ[0ÅFí èÌ / 1ÅFã≠çUåÇ]
 	END_ATTACKINFO
-
-	ATTACKINFO
-		COLLISIONPARTS = 10
-		ATTACKRANGE = 213.00
-		OFFSET = 0.00 -90.00 0.00
-		ATTACKCOUNT = 71 115
-		INPACTCOUNT = -1
-		DAMAGE = 10
-		ATTACKTYPE = 1	# çUåÇÇÃéÌóﬁ[0ÅFí èÌ / 1ÅFã≠çUåÇ]
-	END_ATTACKINFO
-
-	ATTACKINFO
-		COLLISIONPARTS = 6
-		ATTACKRANGE = 213.00
-		OFFSET = 0.00 -90.00 0.00
-		ATTACKCOUNT = 71 115
-		INPACTCOUNT = -1
-		DAMAGE = 10
-		ATTACKTYPE = 1	# çUåÇÇÃéÌóﬁ[0ÅFí èÌ / 1ÅFã≠çUåÇ]
-	END_ATTACKINFO
-	
-	
-	
 
 	KEYSET			# --- << KEY : 0 / 20 >> ---
 		FRAME = 10
@@ -175,7 +152,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 1 / 20 >> ---
-		FRAME = 8
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = 0.16 0.00 0.00
 			POS = 0.00 84.75 0.00
@@ -287,7 +264,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 2 / 20 >> ---
-		FRAME = 9
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = 0.32 0.00 0.00
 			POS = 0.00 281.25 0.00
@@ -399,7 +376,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 3 / 20 >> ---
-		FRAME = 8
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = 1.70 0.00 0.00
 			POS = 0.00 466.75 0.00
@@ -511,7 +488,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 4 / 20 >> ---
-		FRAME = 8
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = 2.52 0.00 0.00
 			POS = 0.00 466.75 0.00
@@ -623,7 +600,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 5 / 20 >> ---
-		FRAME = 7
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = -0.71 0.00 0.00
 			POS = 0.00 2.75 0.00
@@ -735,7 +712,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 6 / 20 >> ---
-		FRAME = 8
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = -1.12 0.00 0.00
 			POS = 0.00 -70.25 0.00
@@ -847,7 +824,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 7 / 20 >> ---
-		FRAME = 15
+		FRAME = 20
 		PARTS	# ----- [ 0 ] -----
 			ROT = -1.12 0.00 0.00
 			POS = 0.00 -70.25 0.00
@@ -959,7 +936,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << KEY : 8 / 20 >> ---
-		FRAME = 7
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = 0.04 0.00 0.00
 			POS = 0.00 -55.75 -47.50
@@ -1186,7 +1163,7 @@ MOTIONSET
 		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			ROT = 3.75 1.57 1.57
-			POS = 0.00 112.25 -736.50
+			POS = 0.00 56.25 -736.50
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1209,7 +1186,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = -0.22 0.00 -0.33
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1233,7 +1210,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = -0.51 0.00 0.31
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1298,7 +1275,7 @@ MOTIONSET
 		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			ROT = 5.67 1.57 1.57
-			POS = 0.00 108.75 -938.50
+			POS = 0.00 56.25 -938.50
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1321,7 +1298,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = 0.28 0.00 -0.65
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1345,7 +1322,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = 0.06 0.00 0.62
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1410,7 +1387,7 @@ MOTIONSET
 		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			ROT = 1.58 1.57 1.57
-			POS = 0.00 102.25 -1137.50
+			POS = 0.00 56.25 -1137.50
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1433,7 +1410,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = -0.06 0.00 -0.65
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1457,7 +1434,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = 0.06 0.00 0.62
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1522,7 +1499,7 @@ MOTIONSET
 		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			ROT = 3.75 1.57 1.57
-			POS = 0.00 97.25 -1326.50
+			POS = 0.00 56.25 -1326.50
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1545,7 +1522,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = -0.07 0.00 -0.62
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1569,7 +1546,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = 0.00 0.00 0.65
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1634,7 +1611,7 @@ MOTIONSET
 		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			ROT = 5.67 1.57 1.57
-			POS = 0.00 91.75 -1535.00
+			POS = 0.00 56.25 -1535.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1657,7 +1634,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = 0.09 0.00 -0.68
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1681,7 +1658,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = 0.00 0.00 0.62
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1746,7 +1723,7 @@ MOTIONSET
 		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			ROT = 1.58 1.57 1.57
-			POS = 0.00 82.25 -1752.50
+			POS = 0.00 56.25 -1752.50
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1769,7 +1746,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = 0.06 0.00 -0.65
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1793,7 +1770,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = -0.07 0.00 0.62
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1858,7 +1835,7 @@ MOTIONSET
 		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			ROT = 3.75 1.57 1.57
-			POS = 0.00 74.25 -1972.00
+			POS = 0.00 56.25 -1972.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
 
@@ -1881,7 +1858,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 4 ] -----
-			ROT = -0.04 0.00 -0.61
+			ROT = -1.23 0.00 -0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS
@@ -1905,7 +1882,7 @@ MOTIONSET
 		END_PARTS
 
 		PARTS	# ----- [ 8 ] -----
-			ROT = 0.00 0.00 0.65
+			ROT = -1.26 0.00 0.27
 			POS = 0.00 0.00 0.00
 			SCALE = 1.00 1.00 1.00
 		END_PARTS

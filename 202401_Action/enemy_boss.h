@@ -38,6 +38,7 @@ public:
 		MOTION_ROLLING,			// ローリング
 		MOTION_DOWN,			// ダウンモーション
 		MOTION_BACKSTEP,		// バックステップ
+		MOTION_BACKSTEP_SMALL,	// 小バックステップ
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
 	};
@@ -59,9 +60,9 @@ public:
 	void ChangeATKState(CBossState* state);
 	void ChangeNextATKState(CBossState* state) { m_pNextATKState = state; }
 
-
 	void ActChase();		// 追い掛け
 	void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
+	bool SmallStep();	// 小ステップ
 
 	void PerformAttack();		// 攻撃実行処理
 	void DrawingRandomAction();	// 攻撃ランダム抽選
@@ -116,15 +117,18 @@ private:
 class CBossState
 {
 public:
-	CBossState() : m_bCreateFirstTime(false) {}
+	CBossState() : m_bCreateFirstTime(false), m_bBeforeAttackAction(false) {}
 
 	virtual void Action(CEnemyBoss* boss) = 0;	// 行動
 	virtual void Attack(CEnemyBoss* boss) = 0;	// 攻撃処理
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) = 0;	// モーションインデックス切り替え
+	virtual void BeforeAttack(CEnemyBoss* boss) { m_bBeforeAttackAction = true; }	// 攻撃前処理
+
 	bool IsCreateFirstTime() { return m_bCreateFirstTime; }	// 初回生成のフラグ
 
 protected:
 	bool m_bCreateFirstTime;	// 初回生成のフラグ
+	bool m_bBeforeAttackAction;	// 攻撃前行動フラグ
 };
 
 // ステップ
@@ -134,7 +138,7 @@ public:
 
 	CBossStep() {}
 	
-	virtual void Action(CEnemyBoss* boss) override;	// 行動
+	virtual void Action(CEnemyBoss* boss) override;		// 行動
 	virtual void Attack(CEnemyBoss* boss) override {}	// 攻撃処理
 
 	// モーションインデックス切り替え
@@ -144,13 +148,28 @@ public:
 	}
 };
 
+// 小ステップ
+class CBossStep_Small : public CBossStep
+{
+public:
+
+	CBossStep_Small() {}
+
+	virtual void Action(CEnemyBoss* boss) override;		// 行動
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
+	{
+		boss->SetMotion(CEnemyBoss::MOTION_BACKSTEP_SMALL);
+	}
+};
 
 // 攻撃
 class CBossAttack : public CBossState
 {
 public:
 
-	CBossAttack() : m_nIdxMotion(0), m_bWillDirectlyTrans(true) 
+	CBossAttack() : m_nIdxMotion(0), m_bWillDirectlyTrans(true)
 	{
 		m_bCreateFirstTime = true;
 	}
@@ -158,14 +177,20 @@ public:
 	virtual void Action(CEnemyBoss* boss) override = 0;	// 行動
 	virtual void Attack(CEnemyBoss* boss) override;	// 攻撃処理
 
+
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
 	{
 		// 派生クラスでインデックス設定されてる前提
 		boss->SetMotion(m_nIdxMotion);
+		m_bBeforeAttackAction = false;	// 攻撃前行動フラグ
 	}
 
-	virtual void BeforeTransitionProcess(CEnemyBoss* boss) {}	// 遷移前処理
+	virtual void BeforeTransitionProcess(CEnemyBoss* boss) 
+	{
+		boss->RotationTarget();
+		boss->ActChase();
+	}	// 遷移前処理
 
 	bool IsDirectlyTrans() { return m_bWillDirectlyTrans; }	// 直接遷移フラグ取得
 
@@ -199,6 +224,14 @@ public:
 
 
 
+namespace UtilFunc 
+{
+	namespace Transformation
+	{
+		int Random(int nMinNum, int nMaxNum);
+	}
+}
+
 //=============================
 // 近接群
 //=============================
@@ -206,7 +239,8 @@ public:
 class CBossSideSwipeCombo : public CBossProximity
 {
 public:
-	CBossSideSwipeCombo() {}
+	CBossSideSwipeCombo() { m_bWillDirectlyTrans = true; }
+	virtual void BeforeAttack(CEnemyBoss* boss) override;	// 攻撃前処理
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
@@ -214,6 +248,13 @@ public:
 		m_nIdxMotion = CEnemyBoss::MOTION_SIDESWIPE;
 		CBossAttack::ChangeMotionIdx(boss);
 		m_bWillDirectlyTrans = true;
+
+		// 攻撃前行動フラグ
+		m_bBeforeAttackAction = true;
+		if (UtilFunc::Transformation::Random(0, 2) == 0)
+		{
+			m_bBeforeAttackAction = false;
+		}
 	}
 };
 
@@ -221,7 +262,9 @@ public:
 class CBossOverHead : public CBossProximity
 {
 public:
-	CBossOverHead() {}
+	CBossOverHead() { m_bWillDirectlyTrans = true; }
+
+	//virtual void BeforeAttack(CEnemyBoss* boss) override;	// 攻撃前処理
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
@@ -230,6 +273,13 @@ public:
 		CBossAttack::ChangeMotionIdx(boss);
 		m_bWillDirectlyTrans = true;
 	}
+
+	//// 遷移前処理
+	//virtual void BeforeTransitionProcess(CEnemyBoss* boss) override
+	//{
+	//	// 挟む行動を設定
+	//	boss->ChangeATKState(DEBUG_NEW CBossStep_Small());
+	//}
 };
 
 
@@ -237,7 +287,7 @@ public:
 class CBossHandSlap : public CBossProximity
 {
 public:
-	CBossHandSlap() {}
+	CBossHandSlap() { m_bWillDirectlyTrans = true; }
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override
@@ -252,7 +302,7 @@ public:
 class CBossRolling : public CBossProximity
 {
 public:
-	CBossRolling() {}
+	CBossRolling() { m_bWillDirectlyTrans = false; }
 
 	// 行動
 	virtual void Action(CEnemyBoss* boss) override
@@ -284,7 +334,7 @@ public:
 class CBossLaunchBallast : public CBossRemote
 {
 public:
-	CBossLaunchBallast() {}
+	CBossLaunchBallast() { m_bWillDirectlyTrans = true; }
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemyBoss* boss) override

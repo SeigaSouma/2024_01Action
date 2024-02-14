@@ -62,11 +62,11 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_pATKState = nullptr;		// 今の行動ポインタ
 	m_pNextATKState = nullptr;	// 次の行動ポインタ
 
-	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
 	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
-	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
-	m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());
-	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());	// ローリング
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
+	m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());			// 下B
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
 }
 
 //==========================================================================
@@ -96,8 +96,21 @@ HRESULT CEnemyBoss::Init()
 
 	// 攻撃抽選
 	//DrawingRandomAction();
+	// 
+	// 行動可能判定
+	//m_bActionable = true;
+
 
 	ChangeATKState(m_pAtkPattern[0]);
+
+	m_bCatchUp = false;
+	m_bInSight = false;
+
+	// モーションインデックス切り替え
+	m_pATKState->ChangeMotionIdx(this);
+
+	// 自動ロックオン
+	m_bRockOnAccepting = true;
 	return S_OK;
 }
 
@@ -359,6 +372,9 @@ void CEnemyBoss::ActWait()
 //==========================================================================
 void CEnemyBoss::ActChase()
 {
+	// やられモーション
+	GetMotion()->Set(MOTION_WALK);
+
 	// 移動フラグを立てる
 	m_sMotionFrag.bMove = true;
 
@@ -409,6 +425,40 @@ void CEnemyBoss::RotationTarget(float range)
 
 	// 視界判定
 	m_bInSight = UtilFunc::Collision::CollisionViewRange3D(GetPosition(), m_TargetPosition, rot.y, range);
+}
+
+//==========================================================================
+// 小ステップ
+//==========================================================================
+bool CEnemyBoss::SmallStep()
+{
+	bool bEnd = false;
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return bEnd;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == CEnemyBoss::MOTION_BACKSTEP_SMALL && pMotion->IsFinish() == true)
+	{// ステップ終了
+
+		// 待機モーション設定
+		pMotion->Set(CEnemyBoss::MOTION_DEF);
+
+		// 終了フラグ
+		bEnd = true;
+		return bEnd;
+	}
+
+	if (nType != CEnemyBoss::MOTION_BACKSTEP_SMALL)
+	{
+		// モーション設定
+		pMotion->Set(CEnemyBoss::MOTION_BACKSTEP_SMALL);
+	}
+	return bEnd;
 }
 
 //==========================================================================
@@ -476,17 +526,25 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		break;
 
 	case MOTION_LAUNCHBALLAST:
-
+	{
 		if (weponpos.y <= 0.0f)
 		{
 			weponpos.y = 0.0f;
 		}
+
+		MyLib::Vector3 spawnpos = pos;
+		MyLib::Vector3 spawnrot;
+		spawnpos.x = sinf(D3DX_PI + rot.y) * 600.0f;
+		spawnpos.z = cosf(D3DX_PI + rot.y) * 600.0f;
+
+		spawnrot.y = weponpos.AngleXZ(spawnpos);
 
 		CBulletObstacle::Create(weponpos, rot, D3DXVECTOR2(40.0f, 15.0f), 150.0f);
 		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
 
 		// 振動
 		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+	}
 		break;
 
 	case MOTION_HANDSLAP:
@@ -618,6 +676,38 @@ void CBossStep::Action(CEnemyBoss* boss)
 }
 
 //==========================================================================
+// 小ステップの行動
+//==========================================================================
+void CBossStep_Small::Action(CEnemyBoss* boss)
+{
+	// モーション取得
+	CMotion* pMotion = boss->GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == CEnemyBoss::MOTION_BACKSTEP_SMALL && pMotion->IsFinish() == true)
+	{// ステップ終了
+
+		// 次の行動設定
+		boss->ChangeNextAction();
+
+		// 待機モーション設定
+		pMotion->Set(CEnemyBoss::MOTION_DEF);
+		return;
+	}
+
+	if (nType != CEnemyBoss::MOTION_BACKSTEP_SMALL)
+	{
+		// モーション設定
+		pMotion->Set(CEnemyBoss::MOTION_BACKSTEP_SMALL);
+	}
+}
+
+
+//==========================================================================
 // 攻撃処理
 //==========================================================================
 void CBossAttack::Attack(CEnemyBoss* boss)
@@ -654,7 +744,6 @@ void CBossAttack::Attack(CEnemyBoss* boss)
 		// モーション設定
 		pMotion->Set(m_nIdxMotion);
 	}
-
 }
 
 
@@ -687,8 +776,17 @@ void CBossProximity::Action(CEnemyBoss* boss)
 		return;
 	}
 
+	// 攻撃前行動
+	if (!m_bBeforeAttackAction)
+	{
+		BeforeAttack(boss);
+	}
+
 	// 攻撃処理
-	Attack(boss);
+	if (m_bBeforeAttackAction)
+	{
+		Attack(boss);
+	}
 }
 
 //==========================================================================
@@ -699,6 +797,8 @@ void CBossRemote::Action(CEnemyBoss* boss)
 	bool bAct = true;	// 行動できるかのフラグ
 
 	// 視界内判定
+	// ターゲットの方を向く
+	boss->RotationTarget(45.0f);
 	if (!boss->IsInSight())
 	{
 		// ターゲットの方を向く
@@ -712,4 +812,19 @@ void CBossRemote::Action(CEnemyBoss* boss)
 	}
 	// 攻撃処理
 	Attack(boss);
+}
+
+//==========================================================================
+// 攻撃前処理
+//==========================================================================
+void CBossSideSwipeCombo::BeforeAttack(CEnemyBoss* boss)
+{
+	/*if (UtilFunc::Transformation::Random(0, 3) == 0)
+	{
+		m_bBeforeAttackAction = true;
+		return;
+	}*/
+
+	// 攻撃前行動フラグ終了
+	m_bBeforeAttackAction = boss->SmallStep();
 }

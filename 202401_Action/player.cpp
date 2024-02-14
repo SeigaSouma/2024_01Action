@@ -1120,6 +1120,11 @@ void CPlayer::MotionBySetState()
 	case MOTION_GUARD:
 	case MOTION_GUARD_DMG:
 		m_sMotionFrag.bGuard = true;	// ƒK[ƒhON
+
+		if (m_pStaminaGauge->GetState() == CStaminaGauge_Player::STATE_NORMAL)
+		{
+			m_pStaminaGauge->SetValue(m_pStaminaGauge->GetValue() - m_pStaminaGauge->GetAutoHealValue());
+		}
 		break;
 
 	default:

@@ -100,7 +100,8 @@ HRESULT CGameManager::Init()
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 
 #if _DEBUG
-	m_nNowStage = 0;			// 現在のステージ
+	m_nNowStage = 2;			// 現在のステージ
+	m_bEndNormalStage = true;
 #else
 	m_nNowStage = 0;			// 現在のステージ
 #endif
@@ -499,7 +500,7 @@ void CGameManager::SetBoss()
 	while (playerList.ListLoop(&pPlayer))
 	{
 		// 位置設定
-		pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -2000.0f));
+		pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -1000.0f));
 	}
 
 	// カメラの情報取得
@@ -539,7 +540,7 @@ void CGameManager::SetEnemy()
 	while (playerList.ListLoop(&pPlayer))
 	{
 		// 位置設定
-		pPlayer->SetPosition(MyLib::Vector3(-500.0f + i * 250.0f, 0.0f, 0.0f));
+		pPlayer->SetPosition(0.0f);
 		i++;
 	}
 

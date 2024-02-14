@@ -1833,55 +1833,46 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	// リストループ
 	while (playerList.ListLoop(&pPlayer))
 	{
-		// プレイヤーの向き
-		MyLib::Vector3 PlayerPos = pPlayer->GetPosition();
-
-		// 判定サイズ取得
-		float fRadius = pPlayer->GetRadius();
-
-		if (UtilFunc::Collision::SphereRange(weponpos, PlayerPos, pATKInfo->fRangeSize, fRadius).ishit)
-		{// 球の判定
-
-			MyLib::HitResult_Character result = pPlayer->Hit(pATKInfo->nDamage, this, pATKInfo->AtkType);
-
-			if (result.ishit)
-			{
-				pATKInfo->bEndAtk = true;
-			}
-
-			if (result.isdamage)
-			{// 当たってたら
-
-				// プレイヤーの向き
-				MyLib::Vector3 PlayerRot = pPlayer->GetRotation();
-
-				// ターゲットと敵との向き
-				float fRot = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
-
-				// 向きを正面にする
-				fRot = D3DX_PI + fRot;
-				UtilFunc::Transformation::RotNormalize(fRot);
-
-				// 向き設定
-				pPlayer->SetRotation(MyLib::Vector3(PlayerRot.x, fRot, PlayerRot.z));
-				pPlayer->SetRotDest(fRot);
-			}
-		}
-
-		//============================
-		// 袋と判定
-		//============================
-		// バッグのリスト取得
-		CListManager<CSantaBag> BagList = CSantaBag::GetListObj();
-		CSantaBag* pBag = nullptr;
-
-		// リストループ
-		while (BagList.ListLoop(&pBag))
+		// コライダーの数繰り返し
+		std::vector<SphereCollider> colliders = pPlayer->GetSphereColliders();
+		for (const auto& collider : colliders)
 		{
-			// 当たり判定
-			if (UtilFunc::Collision::CircleRange3D(weponpos, pBag->GetPosition(), pATKInfo->fRangeSize, 80.0f))
-			{
-				pBag->Hit();
+			CEffect3D::Create(
+				collider.center, 0.0f, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f), collider.radius, 3, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+
+			MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, collider.center, pATKInfo->fRangeSize, collider.radius);
+			if (hitresult.ishit)
+			{// 球の判定
+
+				MyLib::HitResult_Character result = pPlayer->Hit(pATKInfo->nDamage, this, pATKInfo->AtkType);
+
+				if (result.ishit || result.isdeath)
+				{
+					pATKInfo->bEndAtk = true;
+				}
+
+				if (result.isdamage)
+				{// 当たってたら
+
+					// プレイヤーの向き
+					MyLib::Vector3 PlayerRot = pPlayer->GetRotation();
+
+					// プレイヤーの位置
+					MyLib::Vector3 PlayerPos = pPlayer->GetPosition();
+
+					// ターゲットと敵との向き
+					float fRot = atan2f((pos.x - PlayerPos.x), (pos.z - PlayerPos.z));
+
+					// 向きを正面にする
+					fRot = D3DX_PI + fRot;
+					UtilFunc::Transformation::RotNormalize(fRot);
+
+					// 向き設定
+					pPlayer->SetRotation(MyLib::Vector3(PlayerRot.x, fRot, PlayerRot.z));
+					pPlayer->SetRotDest(fRot);
+					break;
+				}
+				break;
 			}
 		}
 	}

@@ -49,9 +49,10 @@ public:
 	void AddValue(float value);	// 値加算
 	void SubValue(float value);	// 値減算
 	void SetValue(float value);	// 値設定
-	float GetValue();		// 値取得
+	float GetValue();			// 値取得
+	float GetAutoHealValue() { return m_fAutoHeal; }	// 自然回復量取得
 
-	void SetState(STATE state) { m_state = state; }
+	void SetState(STATE state);
 	STATE GetState() { return m_state; }
 
 	static CStaminaGauge_Player* Create(MyLib::Vector3 pos, int maxvalue);

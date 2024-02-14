@@ -166,6 +166,7 @@ protected:
 	bool m_bActionable;						// 行動可能か
 	float m_fDownTime;						// ダウンカウンター
 	float m_fRockOnDistance;				// ロックオンの距離
+	bool m_bRockOnAccepting;				// ロックオン受付
 	MyLib::Vector3 m_posOrigin;				// 最初の位置
 	MyLib::Vector3 m_posKnokBack;			// ノックバックの位置
 	SMotionFrag m_sMotionFrag;				// モーションのフラグ
@@ -206,7 +207,6 @@ private:
 	int m_nTexIdx;				// テクスチャのインデックス番号
 	int m_nNumChild;			// 子の数
 	bool m_bAddScore;			// スコア加算するかの判定
-	bool m_bRockOnAccepting;	// ロックオン受付
 	int m_nBallastEmission;		// 瓦礫の発生カウンター
 	CEnemy *m_pChild[mylib_const::MAX_ENEMY];	// 子のポインタ
 	CShadow *m_pShadow;			// 影の情報

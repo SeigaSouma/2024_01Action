@@ -18,6 +18,7 @@ namespace
 	const float DEFAULT_AUTOHEAL = 0.15f;	// デフォルトの自動回復
 	const float DEFAULT_WIDTH = 120.0f;		// デフォルトの幅
 	const float DEFAULT_HEIGHT = 15.0f;		// デフォルトの高さ
+	const float TIME_QUICKHEAL = 2.6f;		// 急速回復の時間
 	const float TIME_STATESUB = static_cast<float>(50) / static_cast<float>(mylib_const::DEFAULT_FPS);		// 減算状態の時間
 	const char* TEXTURE[] =		// テクスチャのファイル
 	{
@@ -221,10 +222,13 @@ void CStaminaGauge_Player::StateSub()
 void CStaminaGauge_Player::StateQuickHealing()
 {
 	// カウンターリセット
-	m_fStateTime = 0.0f;
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+	UtilFunc::Transformation::ValueNormalize(m_fStateTime, TIME_QUICKHEAL, 0.0f);
 
-	// 自動回復
-	AddValue(m_fAutoHeal * 8.0f);
+	SetValue((m_fStateTime / TIME_QUICKHEAL) * m_fMaxStaminaValue);
+
+	//// 自動回復
+	//AddValue(m_fAutoHeal * 8.0f);
 
 	if (m_fMaxStaminaValue == m_fStaminaValue)
 	{
@@ -370,4 +374,13 @@ void CStaminaGauge_Player::CorrectionValue()
 float CStaminaGauge_Player::GetValue()
 {
 	return m_fStaminaValue;
+}
+
+//==========================================================================
+// 状態設定
+//==========================================================================
+void CStaminaGauge_Player::SetState(STATE state)
+{ 
+	m_fStateTime = 0.0f;
+	m_state = state;
 }

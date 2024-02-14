@@ -211,7 +211,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/gorira/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 10
+NUM_MOTION = 11
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -225,6 +225,7 @@ MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_launchballast.txt		# [
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_rolling.txt		# [6]ローリング
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_down.txt			# [7]ダウン
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_backstep.txt			# [8]バックステップ
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_backstep_small.txt			# [8]バックステップ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_fadeout.txt			# [9]フェードアウト
 
 
