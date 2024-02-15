@@ -69,6 +69,37 @@ private:
 	static std::vector<CREATE_FUNC> m_CreateFunc;
 };
 
+
+//==========================================================================
+// 攻撃強化
+//==========================================================================
+class CAbillityAttack : public CEnhance
+{
+	virtual void BindAbillity() override	// 能力を付与する関数
+	{
+		// 状態別処理
+		(this->*(m_StageFunc[m_nStage]))();
+	}
+
+	//=============================
+	// ステージ関数リスト
+	//=============================
+	typedef void(CAbillityAttack::* STAGE_FUNC)();
+	static STAGE_FUNC m_StageFunc[];
+
+	//=============================
+	// メンバ関数
+	//=============================
+	// 段階別
+	void AddPower01() { m_pPlayer->SetAttackMultiply(1.15f); }
+	void ShorterChargeTime01() { m_pPlayer->SetGuardSubValue(30.0f); }
+	void ShorterChargeTime02() { m_pPlayer->SetGuardSubValue(30.0f); }
+	void NotFlinch() { m_pPlayer->SetToggleFlinch(false); }
+	void AddPower02() { m_pPlayer->SetAttackMultiply(1.3f); }
+	void AddPower03() { m_pPlayer->SetAttackMultiply(1.5f); }
+
+};
+
 //==========================================================================
 // スタミナ強化
 //==========================================================================
@@ -95,6 +126,10 @@ class CAbillityStamina : public CEnhance
 	void Add02() { m_pPlayer->UpgradeMaxStamina(40); }
 	void AutoHeal02() { m_pPlayer->UpgradeAutoHealStamina(1.75f); }
 	void Add03() { m_pPlayer->UpgradeMaxStamina(60); }
+	void CounterHeal01() { m_pPlayer->SetCounterHealValue(10.0f); }
+	void CounterHeal02() { m_pPlayer->SetCounterHealValue(20.0f); }
+	void SubGuard01() { m_pPlayer->SetGuardSubValue(45.0f); }
+	void SubGuard02() { m_pPlayer->SetGuardSubValue(30.0f); }
 
 };
 
@@ -121,6 +156,9 @@ class CAbillityLife : public CEnhance
 	// 段階別
 	void Add01() { m_pPlayer->UpgradeLife(20); }
 	void Add02() { m_pPlayer->UpgradeLife(40); }
+	void Reapawn01() { m_pPlayer->SetRespawnHeal(0.4f); }
+	void Reapawn02() { m_pPlayer->SetRespawnHeal(0.5f); }
+	void Reapawn03() { m_pPlayer->SetRespawnHeal(0.8f); }
 
 };
 
@@ -150,6 +188,10 @@ class CAbillityCounter : public CEnhance
 	void SubNeedStamina02() { m_pPlayer->SetCounterSubValue(20.0f); }
 	void HealStamina02() { m_pPlayer->SetCounterHealValue(20.0f); }
 	void SubNeedStamina03() { m_pPlayer->SetCounterSubValue(10.0f); }
+	void ExtensionFrame01() { m_pPlayer->SetCounterExtensionFrame(18); }
+	void ExtensionFrame02() { m_pPlayer->SetCounterExtensionFrame(22); }
+	void LongerDown01() { m_pPlayer->SetAddDownTime(3.0f); }
+	void LongerDown02() { m_pPlayer->SetAddDownTime(4.0f); }
 
 };
 
@@ -174,7 +216,7 @@ class CAbillityRespawn : public CEnhance
 	// メンバ関数
 	//=============================
 	// 段階別
-	void AddRespawnPercent() {}
+	void AddRespawnPercent() { m_pPlayer->AddRespawnPercent(5); }
 
 };
 
@@ -204,6 +246,9 @@ class CAbillityGuard : public CEnhance
 	void SubNeedStamina02() { m_pPlayer->SetGuardSubValue(30.0f); }
 	void KnockbackMitigation01() { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level1()); }
 	void KnockbackMitigation02() { m_pPlayer->ChangeGuardGrade(DEBUG_NEW CPlayerGuard_Level2()); }
+	void DamageMitigation01() { m_pPlayer->SetGuardMitigation(1.15f); }
+	void DamageMitigation02() { m_pPlayer->SetGuardMitigation(1.3f); }
+	void DamageMitigation03() { m_pPlayer->SetGuardMitigation(1.5f); }
 
 };
 
@@ -256,7 +301,7 @@ class CUnlockCombo : public CUnlock
 	// メンバ関数
 	//=============================
 	// 段階別
-	void State01() {}
+	void State01() { m_pPlayer->ChangeAtkControl(DEBUG_NEW CPlayerControlAttack_Level1()); }
 
 };
 

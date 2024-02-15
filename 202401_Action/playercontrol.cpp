@@ -11,6 +11,47 @@
 #include "camera.h"
 
 //==========================================================================
+// 攻撃可能フラグ取得
+//==========================================================================
+bool CPlayerControlAttack::IsAttack(CPlayer* player)
+{
+	// インプット情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	// 現在の種類取得
+	CMotion* pMotion = player->GetMotion();
+
+	if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
+		!player->IsJump() &&
+		!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, player->GetMyPlayerIdx()) &&
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, player->GetMyPlayerIdx()))
+	{
+		return true;
+	}
+	return false;
+}
+
+//==========================================================================
+// 攻撃可能フラグ取得
+//==========================================================================
+bool CPlayerControlAttack_Level1::IsAttack(CPlayer* player)
+{
+	int combostage = player->GetComboStage();
+	if (CPlayerControlAttack::IsAttack(player) &&
+		combostage < 3)
+	{
+		return true;
+	}
+	else if (CPlayerControlAttack::IsAttack(player) &&
+		combostage >= 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+//==========================================================================
 // 通常攻撃
 //==========================================================================
 void CPlayerControlAttack::Attack(CPlayer* player)
@@ -30,19 +71,25 @@ void CPlayerControlAttack::Attack(CPlayer* player)
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 	MyLib::Vector3 Camerarot = pCamera->GetRotation();
 
-	// 攻撃
-	if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
-		!player->IsJump() &&
-		!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, player->GetMyPlayerIdx()) &&
-		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, player->GetMyPlayerIdx()))
+	//if (!player->IsAttacking())
 	{
+		m_bAttackReserved = false;
+	}
+
+	// 攻撃
+	if (IsAttack(player))
+	{
+		int combostage = player->GetComboStage();
+		if (combostage == 0 || player->IsAttacking())
+		{
+			m_bAttackReserved = true;
+		}
 
 		if (pInputGamepad->IsTipStick())
 		{// 左スティックが倒れてる場合
 			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
 		}
 
-		int combostage = player->GetComboStage();
 		if (player->IsReadyDashAtk() && combostage == 0)
 		{// ダッシュ中の初撃は2からスタート
 			combostage++;
@@ -65,6 +112,88 @@ void CPlayerControlAttack::Attack(CPlayer* player)
 	// 目標の向き設定
 	player->SetRotDest(fRotDest);
 }
+
+//==========================================================================
+// 通常攻撃
+//==========================================================================
+void CPlayerControlAttack_Level1::Attack(CPlayer* player)
+{
+	// 現在の種類取得
+	CMotion* pMotion = player->GetMotion();
+
+	// インプット情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	// カメラの向き取得
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+	MyLib::Vector3 Camerarot = pCamera->GetRotation();
+
+	// 通常攻撃
+	if (!m_bChargePossible)
+	{
+		m_bChargePossible = false;
+		CPlayerControlAttack::Attack(player);
+	}
+	else
+	{
+		m_bAttackReserved = false;
+
+		// 通常攻撃をした場合はリセット攻撃
+		if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
+			!player->IsJump() &&
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, player->GetMyPlayerIdx()))
+		{
+
+			CPlayerControlAttack::Attack(player);
+			// コンボ段階分考慮
+			pMotion->Set(CPlayer::MOTION_ATK);
+
+			// 段階別リセット処理
+			StageByReset(player);
+			player->SetComboStage(0);
+
+			m_bChargePossible = false;
+			return;
+		}
+
+	}
+
+	if (!player->IsAttacking())
+	{
+		m_bChargePossible = false;
+		m_bAttackReserved = false;
+	}
+
+
+	// 目標の向き取得
+	float fRotDest = player->GetRotDest();
+
+	// 攻撃
+	if (m_bChargePossible &&
+		(pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
+		!player->IsJump() &&
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_Y, player->GetMyPlayerIdx()))
+	{
+		if (pInputGamepad->IsTipStick())
+		{// 左スティックが倒れてる場合
+			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
+		}
+		
+		// コンボ段階分考慮
+		int nSetType = CPlayer::MOTION_ATK4;
+		pMotion->Set(CPlayer::MOTION_ATK4);
+
+		// 段階別リセット処理
+		StageByReset(player);
+		m_bChargePossible = false;
+	}
+
+	// 目標の向き設定
+	player->SetRotDest(fRotDest);
+}
+
+
 
 //==========================================================================
 // 防御

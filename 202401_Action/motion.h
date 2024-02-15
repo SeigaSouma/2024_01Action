@@ -14,7 +14,7 @@
 class CModel;
 class CObjectChara;
 
-#define MAX_MOTION	(24)	//モーションの最大数
+#define MAX_MOTION	(28)	//モーションの最大数
 #define MAX_KEY		(24)	//キーの最大数
 #define MAX_PARTS	(32)	//パーツの最大数
 

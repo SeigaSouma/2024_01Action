@@ -30,6 +30,20 @@ std::vector<CEnhance::CREATE_FUNC> CEnhance::m_CreateFunc =
 	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityCounter(); },
 	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityRespawn(); },
 	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityGuard(); },
+	[](CSkillTree_Icon::sSkillIcon iconinfo) { return DEBUG_NEW CAbillityAttack(); },
+};
+
+//=============================
+// 攻撃のステージ
+//=============================
+CAbillityAttack::STAGE_FUNC CAbillityAttack::m_StageFunc[] =
+{
+	&CAbillityAttack::AddPower01,
+	&CAbillityAttack::ShorterChargeTime01,
+	&CAbillityAttack::ShorterChargeTime02,
+	&CAbillityAttack::NotFlinch,
+	&CAbillityAttack::AddPower02,
+	&CAbillityAttack::AddPower03,
 };
 
 //=============================
@@ -42,6 +56,10 @@ CAbillityStamina::STAGE_FUNC CAbillityStamina::m_StageFunc[] =
 	&CAbillityStamina::Add02,
 	&CAbillityStamina::AutoHeal02,
 	&CAbillityStamina::Add03,
+	&CAbillityStamina::CounterHeal01,
+	&CAbillityStamina::CounterHeal02,
+	&CAbillityStamina::SubGuard01,
+	&CAbillityStamina::SubGuard02,
 };
 
 //=============================
@@ -51,6 +69,9 @@ CAbillityLife::STAGE_FUNC CAbillityLife::m_StageFunc[] =
 {
 	&CAbillityLife::Add01,
 	&CAbillityLife::Add02,
+	&CAbillityLife::Reapawn01,
+	&CAbillityLife::Reapawn02,
+	&CAbillityLife::Reapawn03,
 };
 
 //=============================
@@ -63,6 +84,10 @@ CAbillityCounter::STAGE_FUNC CAbillityCounter::m_StageFunc[] =
 	&CAbillityCounter::SubNeedStamina02,
 	&CAbillityCounter::HealStamina02,
 	&CAbillityCounter::SubNeedStamina03,
+	&CAbillityCounter::ExtensionFrame01,
+	&CAbillityCounter::ExtensionFrame02,
+	&CAbillityCounter::LongerDown01,
+	&CAbillityCounter::LongerDown02,
 };
 
 //=============================
@@ -81,7 +106,9 @@ CAbillityGuard::STAGE_FUNC CAbillityGuard::m_StageFunc[] =
 	&CAbillityGuard::SubNeedStamina01,
 	&CAbillityGuard::SubNeedStamina02,
 	&CAbillityGuard::KnockbackMitigation01,
-	&CAbillityGuard::KnockbackMitigation02,
+	&CAbillityGuard::DamageMitigation01,
+	&CAbillityGuard::DamageMitigation02,
+	&CAbillityGuard::DamageMitigation03,
 };
 
 

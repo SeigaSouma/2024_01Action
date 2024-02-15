@@ -105,7 +105,7 @@ HRESULT CGameManager::Init()
 	m_nNowStage = 0;			// 現在のステージ
 #endif
 
-	m_SceneType = SCENE_MAIN;	// シーンの種類
+	m_SceneType = SCENE_TRANSITION;	// シーンの種類
 
 	return S_OK;
 }
@@ -229,7 +229,7 @@ void CGameManager::SceneTransition()
 	// 遷移なしフェードの状態取得
 	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
 
-	if (fadestate == CInstantFade::STATE_FADECOMPLETION)
+	if (fadestate == CInstantFade::STATE_FADECOMPLETION || m_nNowStage == 0)
 	{// 完了した瞬間
 
 		// カメラ取得
@@ -274,16 +274,18 @@ void CGameManager::SceneTransition()
 		CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
 		pSkillPoint->SetState(CSkillPoint::STATE_WAIT);
 
+		// 操作補助生成
+		CControlAssist* pAssist = CControlAssist::Create();
+		pAssist->ResetText();
+		pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
+		pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
+		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
+		pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
+		pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
 
 		if (!m_bEndNormalStage)
 		{// 通常ステージが終わっていなかったら
 			SetEnemy();
-
-			// 操作補助生成
-			CControlAssist* pAssist = CControlAssist::Create();
-			pAssist->ResetText();
-			pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
-			pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
 		}
 		else
 		{// ボスステージ

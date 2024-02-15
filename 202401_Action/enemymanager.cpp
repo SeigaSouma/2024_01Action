@@ -103,7 +103,7 @@ HRESULT CEnemyManager::Init()
 
 	// 遷移状態に変更
 	//CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
-
+#if 0
 	// 敵拠点データ取得
 	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
 
@@ -123,10 +123,10 @@ HRESULT CEnemyManager::Init()
 		// 敵の配置
 		SetEnemy(sEnemyBaseInfo.pos, sEnemyBaseInfo.rot, sEnemyBaseInfo.nPattern);
 	}
-
+#endif
 
 	// 変更中じゃなくする
-	//SetEnableChangeStage(false);
+	SetEnableChangeStage(true);
 
 	return S_OK;
 }

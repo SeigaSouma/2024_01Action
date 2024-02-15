@@ -201,7 +201,7 @@ COLLIDER_FILENAME = data/TEXT/character/player/tyuuni/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 23
+NUM_MOTION = 25
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -213,6 +213,7 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_avoid.txt		# [3]回避
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack.txt		# [4]攻撃
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack2.txt		# [5]攻撃2
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack3.txt		# [5]攻撃3
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack4.txt		# [5]攻撃4
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_jump.txt			# [6]ジャンプ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_fall.txt			# [7]落下中
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dmg.txt	# [8]ダメージ
@@ -229,6 +230,7 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_wait.txt		# [
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_turn.txt		# [11]反撃受け流し
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_counter_attack.txt	# [12]反撃
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dashattack.txt		# [14]ダッシュ攻撃
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_attack4_Finish.txt		# [5]攻撃4
 
 
 END_SCRIPT		# この行は絶対消さないこと！

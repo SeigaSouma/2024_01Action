@@ -76,6 +76,8 @@ public:
 
 	void SetState(STATE state);		// 状態設定
 	STATE GetState() { return m_state; }
+	void SetStateTime(float time) { m_fStateTime = time; }	// 状態時間設定
+	void SetDownTime(float time) { m_fDownTime = time; }	// ダウン時間設定
 	virtual bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);
 	virtual void NormalHitResponse();	// ヒット時の反応
 	virtual void CounterHitResponse();	// ヒット時の反応

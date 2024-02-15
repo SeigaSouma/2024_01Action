@@ -24,6 +24,22 @@
                         {
                             "stage": 0,
                             "stageName": "AddStamina03"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "CounterHeal01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "CounterHeal02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "SubGuard01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "SubGuard02"
                         }
                     ],
                     "typeName": "Stamina"
@@ -37,6 +53,18 @@
                         {
                             "stage": 0,
                             "stageName": "AddLife02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ReaspawnLife01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ReaspawnLife02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ReaspawnLife03"
                         }
                     ],
                     "typeName": "Life"
@@ -62,6 +90,22 @@
                         {
                             "stage": 0,
                             "stageName": "SubNeedStamina03"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ExtensionFrame01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ExtensionFrame02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "LongerDownTime01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "LongerDownTime02"
                         }
                     ],
                     "typeName": "Counter"
@@ -92,9 +136,50 @@
                         {
                             "stage": 0,
                             "stageName": "KnockbackMitigation02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "DamageMitigation01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "DamageMitigation02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "DamageMitigation03"
                         }
                     ],
                     "typeName": "Guard"
+                },
+                {
+                    "skillstage": [
+                        {
+                            "stage": 0,
+                            "stageName": "AddValue01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ShoterChargeTime01"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "ShoterChargeTime02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "NotFlinch"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "AddValue02"
+                        },
+                        {
+                            "stage": 0,
+                            "stageName": "AddValue03"
+                        }
+                    ],
+                    "typeName": "Attack"
                 }
             ]
         },

@@ -23,18 +23,22 @@ public:
 	//=============================
 	enum CONTROLTYPE
 	{
-		CONTROLTYPE_ROCKON = 0,	// ロックオン
-		CONTROLTYPE_COUNTER,	// 刹舞
+		CONTROLTYPE_ROCKON = 0,		// ロックオン
+		CONTROLTYPE_CHANGETARGET,	// ターゲット切替
+		CONTROLTYPE_ATTACK_NORMAL,	// 通常攻撃
+		CONTROLTYPE_ATTACK_CHARGE,	// チャージ攻撃
+		CONTROLTYPE_COUNTER,		// 刹舞
+		CONTROLTYPE_AVOID,			// 回避
 		CONTROLTYPE_MAX
 	};
 
-	CControlAssist(int nPriority = 8);
+	CControlAssist(int nPriority = 10);
 	~CControlAssist();
 
 	//  オーバーライド関数
 	HRESULT Init() override;
 	void Uninit() override;
-	void Update() override {}
+	void Update() override;
 	void Draw() override {}
 
 	void SetText(CONTROLTYPE text);	// テキスト設定

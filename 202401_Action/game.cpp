@@ -184,22 +184,22 @@ HRESULT CGame::Init()
 	// ƒNƒŠƒA‚Ì”»’è
 	SetEnableClear(true);
 
-	// ŠÏOİ’è
-	CGallery::SetGallery();
+	//// ŠÏOİ’è
+	//CGallery::SetGallery();
 
-	// ¼–¾İ’è
-	CTorch::SetTorch();
+	//// ¼–¾İ’è
+	//CTorch::SetTorch();
 
-	CMyEffekseer::GetInstance()->SetEffect(
-		CMyEffekseer::EFKLABEL_BGFIRE,
-		MyLib::Vector3(0.0f, 0.0f, 0.0f),
-		0.0f, 0.0f, 100.0f, false);
+	//CMyEffekseer::GetInstance()->SetEffect(
+	//	CMyEffekseer::EFKLABEL_BGFIRE,
+	//	MyLib::Vector3(0.0f, 0.0f, 0.0f),
+	//	0.0f, 0.0f, 100.0f, false);
 
 
-	// ‘€ì•â•¶¬
-	CControlAssist* pAssist = CControlAssist::Create();
-	pAssist->ResetText();
-	pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
+	//// ‘€ì•â•¶¬
+	//CControlAssist* pAssist = CControlAssist::Create();
+	//pAssist->ResetText();
+	//pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
 
 	// ¬Œ÷
 	return S_OK;

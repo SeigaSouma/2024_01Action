@@ -44,6 +44,8 @@
 
 #include "playercontrol.h"
 
+struct sPlayerStatus;
+
 //==========================================================================
 // 定数定義
 //==========================================================================
@@ -59,12 +61,21 @@ namespace
 	const float MULTIPLIY_DASH = 1.875f;		// ダッシュの倍率
 	const float TIME_DASHATTACK = 0.3f;			// ダッシュ攻撃に必要な時間
 	const int DEFAULT_STAMINA = 200;			// スタミナのデフォルト値
-	const float SUBVALUE_DASH = 0.3f;			// ダッシュの減算量
+	const float SUBVALUE_DASH = 0.1f;			// ダッシュの減算量
 	const float SUBVALUE_AVOID = 30.0f;			// 回避の減算量
-	const float SUBVALUE_COUNTER = 40.0f;		// カウンターの減算量
-	const float SUBVALUE_GUARD = 60.0f;			// ガードの減算量
-	const int DEFAULT_RESPAWN_PERCENT = 20;		// 復活確率のデフォルト値
-	const float MULTIPLY_GUARD = 0.4f;			// カードの軽減
+
+	// ステータス
+	const float DEFAULT_RESPAWNHEAL = 0.3f;				// リスポーン時の回復割合
+	const float DEFAULT_SUBVALUE_GUARD = 60.0f;			// ガードのスタミナ減算量
+	const float DEFAULT_SUBVALUE_COUNTER = 40.0f;		// カウンターのスタミナ減算量
+	const float DEFAULT_COUNTERHEAL = 0.0f;				// カウンターのスタミナ回復量
+	const float DEFAULT_MULTIPLY_ATTACK = 1.0f;			// 攻撃倍率
+	const float DEFAULT_CHARGETIME = 1.0f;				// チャージ時間
+	const int DEFAULT_FRAME_EXTENSION_COUNTER = 16;	// カウンター猶予フレーム
+	const float  DEFAULT_MULTIPLY_GUARD = 0.4f;			// カードの軽減
+	const float DEFAULT_TIME_ADDDOWN = 2.5f;			// ダウン時間付与
+	const bool DEFAULT_IS_CHARGEFLINCH = true;			// チャージ時怯みフラグ
+	const int DEFAULT_RESPAWN_PERCENT = 20;				// 復活確率
 }
 
 //==========================================================================
@@ -84,6 +95,7 @@ CPlayer::STATE_FUNC CPlayer::m_StateFunc[] =
 	&CPlayer::StateCounter,		// カウンター中
 	&CPlayer::StateAvoid,		// 回避
 	&CPlayer::StatePrayer,		// 祈り
+	&CPlayer::StateCharge,		// チャージ
 };
 
 //==========================================================================
@@ -123,12 +135,11 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_bCounterAccepting = false;					// カウンター受付中
 	m_bDash = false;								// ダッシュ判定
 	m_fDashTime = 0.0f;								// ダッシュ時間
+	m_fChargeTime = 0.0f;							// チャージ時間
 	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 
-	m_fGuardStaminaSubValue = 0.0f;					// ガード時のスタミナ減少量
-	m_fCounterStaminaSubValue = 0.0f;				// カウンター時のスタミナ減少量
-	m_fCounterStaminaHealValue = 0.0f;				// カウンター時のスタミナ回復量
+	m_PlayerStatus = sPlayerStatus();				// プレイヤーステータス
 
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = nullptr;								// 影の情報
@@ -195,9 +206,9 @@ HRESULT CPlayer::Init()
 	m_nCntState = 0;		// 状態遷移カウンター
 	m_bLandOld = true;		// 前回の着地状態
 	m_nRespawnPercent = DEFAULT_RESPAWN_PERCENT;	// リスポーン確率
-	m_fGuardStaminaSubValue = SUBVALUE_GUARD;		// ガード時のスタミナ減少量
-	m_fCounterStaminaSubValue = SUBVALUE_COUNTER;	// カウンター時のスタミナ減少量
-	m_fCounterStaminaHealValue = 0.0f;				// カウンター時のスタミナ回復量
+
+	// 強化リセット
+	ResetEnhance();
 
 	// キャラ作成
 	HRESULT hr = SetCharacter(CHARAFILE);
@@ -224,10 +235,10 @@ HRESULT CPlayer::Init()
 	// スタミナゲージ生成
 	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
 
-	// 操作関数
-	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack);	// 攻撃操作
-	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence);	// 防御操作
-	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid);	// 回避操作
+	//// 操作関数
+	//ChangeAtkControl(DEBUG_NEW CPlayerControlAttack);	// 攻撃操作
+	//ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence);	// 防御操作
+	//ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid);	// 回避操作
 
 	// ガード
 	ChangeGuardGrade(DEBUG_NEW CPlayerGuard);
@@ -589,6 +600,16 @@ void CPlayer::Controll()
 	if (CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できるとき
 
+		// 操作関数
+		if (m_state != STATE_KNOCKBACK)
+		{
+			m_pControlAtk->Attack(this);		// 攻撃操作
+			m_pControlDefence->Defence(this);	// 防御操作
+			m_pControlAvoid->Avoid(this);		// 回避操作
+		}
+		nMotionType = pMotion->GetType();
+		fRotDest = GetRotDest();
+
 		// ダッシュ判定
 		if (pInputGamepad->GetPress(CInputGamepad::BUTTON_LB, m_nMyPlayerIdx) &&
 			pInputGamepad->IsTipStick())
@@ -607,7 +628,8 @@ void CPlayer::Controll()
 		}
 
 		if ((pMotion->IsGetMove(nMotionType) == 1 || pMotion->IsGetCancelable()) &&
-			!m_sMotionFrag.bATK &&
+			!m_pControlAtk->IsReserve() &&
+			//!m_sMotionFrag.bATK &&
 			m_state != STATE_KNOCKBACK &&
 			m_state != STATE_DEAD &&
 			m_state != STATE_FADEOUT)
@@ -714,11 +736,21 @@ void CPlayer::Controll()
 			{// キャンセル可能 && 移動中
 
 				pMotion->ToggleFinish(true);
+
+				// 移動モーション
+				if (m_bDash)
+				{
+					pMotion->Set(MOTION_DASH);
+				}
+				else
+				{
+					pMotion->Set(MOTION_WALK);
+				}
 			}
 
 			if (m_bJump == false &&
 				(pInputKeyboard->GetTrigger(DIK_SPACE) == true ||
-				pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, m_nMyPlayerIdx)) &&
+					pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, m_nMyPlayerIdx)) &&
 				!m_bTouchBeacon)
 			{// ジャンプ
 
@@ -782,14 +814,6 @@ void CPlayer::Controll()
 		// 角度の正規化
 		UtilFunc::Transformation::RotNormalize(fRotDest);
 		SetRotDest(fRotDest);
-
-		// 操作関数
-		if (m_state != STATE_KNOCKBACK)
-		{
-			m_pControlAtk->Attack(this);		// 攻撃操作
-			m_pControlDefence->Defence(this);	// 防御操作
-			m_pControlAvoid->Avoid(this);		// 回避操作
-		}
 	}
 
 	// 移動量加算
@@ -1028,6 +1052,7 @@ void CPlayer::MotionSet()
 	if (m_state == STATE_DEAD ||
 		m_state == STATE_DEADWAIT ||
 		m_state == STATE_DOWN ||
+		m_state == STATE_CHARGE ||
 		m_state == STATE_KNOCKBACK ||
 		m_state == STATE_PRAYER)
 	{
@@ -1099,6 +1124,7 @@ void CPlayer::MotionBySetState()
 
 		// ダッシュ時間加算
 		m_fDashTime += CManager::GetInstance()->GetDeltaTime();
+		m_pStaminaGauge->SubValue(SUBVALUE_DASH);
 		break;
 
 	default:
@@ -1140,6 +1166,8 @@ void CPlayer::MotionBySetState()
 	case MOTION_ATK:
 	case MOTION_ATK2:
 	case MOTION_ATK3:
+	case MOTION_ATK4:
+	case MOTION_ATK4_FINISH:
 	case MOTION_DASHATK:
 		m_bAttacking = true;
 		break;
@@ -1154,6 +1182,26 @@ void CPlayer::MotionBySetState()
 		m_bAttacking = false;	// 攻撃中判定
 		m_sMotionFrag.bATK = false;
 		m_nComboStage = 0;		// コンボの段階
+		break;
+	}
+
+
+	// インプット情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	// チャージ移行
+	switch (nType)
+	{
+	case MOTION_ATK4:
+		if (pInputGamepad->GetPress(CInputGamepad::BUTTON_Y, m_nMyPlayerIdx))
+		{
+			m_state = STATE_CHARGE;
+		}
+		break;
+
+	default:
+		m_fChargeTime = 0.0f;
 		break;
 	}
 
@@ -1349,7 +1397,13 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 			CManager::GetInstance()->GetCamera()->SetLenDest(200.0f, 3, 4.0f, 0.3f);
 
 			// 敵へダウン状態
-			CEnemy::GetListObj().GetData(m_nIdxRockOn)->Hit(10, CGameManager::ATTACK_COUNTER);
+			CEnemy* pEnemy = CEnemy::GetListObj().GetData(m_nIdxRockOn);
+
+			if (pEnemy != nullptr)
+			{
+				pEnemy->Hit(static_cast<int>(10.0f * m_PlayerStatus.attackMultiply), CGameManager::ATTACK_COUNTER);
+				pEnemy->SetDownTime(m_PlayerStatus.addDownTime);
+			}
 		}
 		break;
 
@@ -1428,7 +1482,8 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 			if (hitresult.ishit)
 			{// 球の判定
 
-				if (pEnemy->Hit(pATKInfo->nDamage) == true)
+				int damage = static_cast<int>(static_cast<float>(pATKInfo->nDamage) * m_PlayerStatus.attackMultiply);
+				if (pEnemy->Hit(damage) == true)
 				{// 当たってたら
 
 					// 位置
@@ -1451,7 +1506,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 					// ダメージ表記
 					enemypos.y += pEnemy->GetHeight() * 0.5f;
 					enemypos += UtilFunc::Transformation::GetRandomPositionSphere(enemypos, collider.radius * 0.5f);
-					CDamagePoint::Create(hitresult.hitpos, pATKInfo->nDamage);
+					CDamagePoint::Create(hitresult.hitpos, damage);
 					break;
 				}
 			}
@@ -1673,7 +1728,7 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 		}
 
 		// カウンターで回復
-		m_pStaminaGauge->AddValue(m_fCounterStaminaHealValue);
+		m_pStaminaGauge->AddValue(m_PlayerStatus.counterStaminaHealValue);
 
 		hitresult.ishit = true;
 		return hitresult;
@@ -1743,7 +1798,7 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 		}
 
 		// カウンターで回復
-		m_pStaminaGauge->AddValue(m_fCounterStaminaHealValue);
+		m_pStaminaGauge->AddValue(m_PlayerStatus.counterStaminaHealValue);
 
 		hitresult.ishit = true;
 		return hitresult;
@@ -1772,7 +1827,7 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 		// 体力設定
 		int nLife = GetLife();
 		int damage = nValue;
-		nLife -= static_cast<int>(static_cast<float>(nValue) * MULTIPLY_GUARD);
+		nLife -= static_cast<int>(static_cast<float>(nValue) * m_PlayerStatus.damageMitigation);
 		SetLife(nLife);
 
 		if (nLife <= 0)
@@ -2461,6 +2516,50 @@ void CPlayer::StatePrayer()
 }
 
 //==========================================================================
+// チャージ
+//==========================================================================
+void CPlayer::StateCharge()
+{
+	// インプット情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	if (!m_bAttacking)
+	{
+		m_state = STATE_NONE;
+		m_nComboStage = 0;
+	}
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		m_nComboStage = 0;
+		return;
+	}
+	int nType = pMotion->GetType();
+
+	// チャージ時間加算
+	if (nType == MOTION_ATK4 && pMotion->IsFinish())
+	{
+		m_fChargeTime += CManager::GetInstance()->GetDeltaTime();
+	}
+
+	// チャージを離してる
+	if (!pInputGamepad->GetPress(CInputGamepad::BUTTON_Y, m_nMyPlayerIdx) &&
+		nType == MOTION_ATK4 && pMotion->IsFinish())
+	{
+		pMotion->Set(MOTION_ATK4_FINISH);
+	}
+
+	if (nType == MOTION_ATK4_FINISH && pMotion->IsFinish())
+	{
+		m_state = STATE_NONE;
+		m_nComboStage = 0;
+	}
+}
+
+//==========================================================================
 // 描画処理
 //==========================================================================
 void CPlayer::Draw()
@@ -2524,10 +2623,15 @@ void CPlayer::ResetEnhance()
 	}
 
 	// 操作関連
-	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack());
+	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack_Level1());
 	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence());
 	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid());
 	ChangeGuardGrade(DEBUG_NEW CPlayerGuard());
+
+	m_PlayerStatus = sPlayerStatus(
+		DEFAULT_RESPAWNHEAL, DEFAULT_SUBVALUE_GUARD, DEFAULT_SUBVALUE_COUNTER,
+		DEFAULT_COUNTERHEAL, DEFAULT_MULTIPLY_ATTACK, DEFAULT_CHARGETIME,
+		DEFAULT_FRAME_EXTENSION_COUNTER, DEFAULT_MULTIPLY_GUARD, DEFAULT_TIME_ADDDOWN, DEFAULT_IS_CHARGEFLINCH);
 }
 
 //==========================================================================
@@ -2575,7 +2679,7 @@ void CPlayer::RespawnSetting()
 	m_nRespawnPercent -= 30;
 	UtilFunc::Transformation::ValueNormalize(m_nRespawnPercent, 100, 0);
 
-	SetLife(GetLifeOrigin());
+	SetLife(static_cast<int>(static_cast<float>(GetLifeOrigin()) * m_PlayerStatus.respawnHeal));
 }
 
 //==========================================================================
@@ -2584,6 +2688,15 @@ void CPlayer::RespawnSetting()
 void CPlayer::SetRespawnPercent(int value)
 {
 	m_nRespawnPercent = value;
+	UtilFunc::Transformation::ValueNormalize(m_nRespawnPercent, 100, 0);
+}
+
+//==========================================================================
+// リスポーン確率加算
+//==========================================================================
+void CPlayer::AddRespawnPercent(int value)
+{
+	m_nRespawnPercent += value;
 	UtilFunc::Transformation::ValueNormalize(m_nRespawnPercent, 100, 0);
 }
 

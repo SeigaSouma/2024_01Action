@@ -15,11 +15,15 @@ namespace
 {
 	const char* TEXTURE[] =
 	{ 
-		"data\\TEXTURE\\control\\rockon.png",	// ロックオン
-		"data\\TEXTURE\\control\\counter.png",	// 刹舞
+		"data\\TEXTURE\\control\\rockon.png",			// ロックオン
+		"data\\TEXTURE\\control\\rockon_change.png",	// ターゲット切替
+		"data\\TEXTURE\\control\\attack.png",			// 通常攻撃
+		"data\\TEXTURE\\control\\attack_charge.png",	// チャージ攻撃
+		"data\\TEXTURE\\control\\counter.png",			// 刹舞
+		"data\\TEXTURE\\control\\avoid.png",			// 回避
 	};
-	const float WIDTH = 280.0f;	// 幅
-	const MyLib::Vector3 CREATE_POSITION = MyLib::Vector3(WIDTH - 5.0f, 200.0f, 0.0f);	// 生成位置
+	const float WIDTH = 150.0f;	// 幅
+	const MyLib::Vector3 CREATE_POSITION = MyLib::Vector3(SCREEN_WIDTH - WIDTH - 5.0f, 100.0f, 0.0f);	// 生成位置
 }
 CControlAssist* CControlAssist::m_pThisPtr= nullptr;		// 自身のポインタ
 
@@ -121,6 +125,28 @@ void CControlAssist::Uninit()
 
 	// 終了処理
 	Release();
+}
+
+//==========================================================================
+// 更新処理
+//==========================================================================
+void CControlAssist::Update()
+{
+	MyLib::Vector3 setpos = CREATE_POSITION;
+	for (int i = 0; i < CONTROLTYPE_MAX; i++)
+	{
+		if (m_pText[i] == nullptr ||
+			!m_pText[i]->IsDisp())
+		{
+			continue;
+		}
+		float height = m_pText[i]->GetSize().y * 2.0f;
+		setpos.y += height;
+
+		m_pText[i]->SetPosition(setpos);
+
+		m_pText[i]->Update();
+	}
 }
 
 //==========================================================================

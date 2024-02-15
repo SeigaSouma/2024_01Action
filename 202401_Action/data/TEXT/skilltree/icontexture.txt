@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 18
+NUM_TEXTURE = 35
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
@@ -20,6 +20,23 @@ TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_stamina.png	# [2]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_stamina.png	# [2]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_stamina.png	# [2]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_stamina.png	# [2]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/icon_power.png	# [1]

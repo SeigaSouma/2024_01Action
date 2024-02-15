@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 18
+NUM_TEXTURE = 35
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
@@ -24,6 +24,23 @@ TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_knockbackMitigation01.png	# 
 TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_knockbackMitigation02.png	# [15]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_addcombo.png	# [16]
 TEXTURE_FILENAME = data/TEXTURE/skilltree/skilltree_setsubu.png	# [17]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/damageMitigation_01.png	# [18]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/damageMitigation_02.png	# [19]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/damageMitigation_03.png	# [20]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/extensionFrame_01.png	# [21]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/extensionFrame_02.png	# [22]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/longerdownframe_01.png	# [23]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/longerdownframe_02.png	# [24]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/notfrinch.png	# [25]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/respawn.png	# [26]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/respawnlife_01.png	# [27]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/respawnlife_02.png	# [28]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/respawnlife_03.png	# [29]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/shotercharge_01.png	# [30]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/shotercharge_02.png	# [31]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/attackpower_01.png	# [32]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/attackpower_02.png	# [33]
+TEXTURE_FILENAME = data/TEXTURE/skilltree/attackpower_03.png	# [34]
 
 
 END_SCRIPT		# この行は絶対消さないこと！

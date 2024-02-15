@@ -20,9 +20,16 @@
 class CPlayerControlAttack
 {
 public:
+
+	CPlayerControlAttack() : m_bAttackReserved(false) {}
+
 	virtual void Attack(CPlayer* player);	// 通常攻撃
+	bool IsReserve() { return m_bAttackReserved; }
 
 protected:
+
+	virtual bool IsAttack(CPlayer* player);	// 攻撃可能フラグ取得
+
 	virtual void StageByReset(CPlayer* player)	// 段階毎のリセット処理
 	{
 		// 段階取得
@@ -36,11 +43,19 @@ protected:
 		}
 		player->SetComboStage(combostage);
 	}
+
+	bool m_bAttackReserved;	// 攻撃の予約判定
 };
 
 class CPlayerControlAttack_Level1 : public CPlayerControlAttack
 {
-protected:
+public:
+
+	CPlayerControlAttack_Level1() : m_bChargePossible(false) {}
+
+	virtual bool IsAttack(CPlayer* player) override;	// 攻撃可能フラグ取得
+
+	virtual void Attack(CPlayer* player) override;	// 通常攻撃
 
 	// 段階毎のリセット処理
 	virtual void StageByReset(CPlayer* player) override
@@ -50,12 +65,24 @@ protected:
 
 		// コンボの段階加算
 		combostage++;
-		//if (combostage > CPlayer::MOTION_ATK4 - CPlayer::MOTION_ATK)
+		if (combostage >= 3)
+		{
+			m_bChargePossible = true;
+		}
+		else
+		{
+			m_bChargePossible = false;
+		}
+
+		if (combostage > CPlayer::MOTION_ATK4 - CPlayer::MOTION_ATK)
 		{
 			combostage = 0;
 		}
 		player->SetComboStage(combostage);
 	}
+
+private:
+	bool m_bChargePossible;	// チャージ可能フラグ
 };
 
 

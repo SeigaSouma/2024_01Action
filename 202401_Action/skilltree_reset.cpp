@@ -307,6 +307,18 @@ void CSkillTree_Reset::UpdateSelect()
 			{
 				// ポイント消費
 				pPlayer->GetSkillPoint()->SubPoint();
+				int backPoint = 0;
+
+				// アイコン情報取得
+				std::vector<CSkillTree_Icon::sSkillIcon> iconInfo = CSkillTree::GetInstance()->GetIconInfo();
+				for (const auto& info : iconInfo)
+				{
+					if (info.mastering == CSkillTree_Icon::MASTERING_DONE)
+					{
+						backPoint += info.needpoint;
+					}
+				}
+				pPlayer->GetSkillPoint()->SetPoint(backPoint);
 
 				// 強化リセット
 				pPlayer->ResetEnhance();

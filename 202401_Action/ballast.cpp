@@ -195,6 +195,8 @@ void CBallast::Update()
 	// Š¢âI‚ÌˆÚ“®ƒJƒEƒ“ƒg‰ÁŽZ
 	m_nCntParabola++;
 
+	m_nLife--;
+
 	for (int nCntBallast = 0; nCntBallast < m_nNumAll; nCntBallast++)
 	{
 		if (m_pObjX[nCntBallast] == NULL)
