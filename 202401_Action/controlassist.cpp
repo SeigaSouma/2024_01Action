@@ -147,6 +147,8 @@ void CControlAssist::Update()
 
 		m_pText[i]->Update();
 	}
+
+	//ResetText();
 }
 
 //==========================================================================
@@ -162,11 +164,11 @@ void CControlAssist::SetText(CONTROLTYPE text)
 
 	// •`‰æON
 	m_pText[type]->SetEnableDisp(true);
-	m_pText[type]->SetPosition(CREATE_POSITION);
+	//m_pText[type]->SetPosition(CREATE_POSITION);
 
-	// ˆÊ’uİ’è
-	float height = m_pText[type]->GetSize().y * 2.0f;
-	m_pText[type]->AddPosition(MyLib::Vector3(0.0f, m_nNumDisp * height, 0.0f));
+	//// ˆÊ’uİ’è
+	//float height = m_pText[type]->GetSize().y * 2.0f;
+	//m_pText[type]->AddPosition(MyLib::Vector3(0.0f, m_nNumDisp * height, 0.0f));
 
 	// •`‰æ”‰ÁZ
 	m_nNumDisp++;

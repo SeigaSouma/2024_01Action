@@ -17,6 +17,7 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\rockon\\rockon_marker2.png";	// テクスチャのファイル
+	const char* POINT_TEXTURE = "data\\TEXTURE\\rockon\\rockon_point.png";	// テクスチャのファイル
 	const float DIV_ANGLE = (D3DX_PI * 2.0f) * 0.25f;	// 1分割あたりの向き
 	const float ORIGIN_DISTANCE = 35.0f;
 	const float TIME_SCALE = 5.0f;	// 拡縮の時間
@@ -25,7 +26,7 @@ namespace
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CRockOnMarker::CRockOnMarker(int nPriority) : CObject(nPriority)
+CRockOnMarker::CRockOnMarker(int nPriority) : CObjectBillboard(nPriority)
 {
 	// 値のクリア
 	memset(m_RockOnInfo, NULL, sizeof(m_RockOnInfo));
@@ -65,6 +66,11 @@ CRockOnMarker* CRockOnMarker::Create(const MyLib::Vector3& pos)
 //==========================================================================
 HRESULT CRockOnMarker::Init()
 {
+	// ビルボードの初期化
+	CObjectBillboard::Init();
+	int pointTex = CTexture::GetInstance()->Regist(POINT_TEXTURE);
+	BindTexture(pointTex);
+	SetSize(D3DXVECTOR2(30.0f, 30.0f));
 
 	// 種類の設定
 	SetType(TYPE_HPGAUGE);
@@ -128,8 +134,7 @@ void CRockOnMarker::Uninit()
 		m_RockOnInfo[nCntGauge].pBillboard = nullptr;
 	}
 
-	// 情報削除
-	Release();
+	CObjectBillboard::Uninit();
 }
 
 //==========================================================================
@@ -147,8 +152,7 @@ void CRockOnMarker::Kill()
 		}
 	}
 
-	// 情報削除
-	Release();
+	CObjectBillboard::Uninit();
 }
 
 //==========================================================================
@@ -182,6 +186,7 @@ void CRockOnMarker::Update()
 		info.pBillboard->Update();
 	}
 
+	CObjectBillboard::Update();
 }
 
 //==========================================================================
@@ -203,6 +208,9 @@ void CRockOnMarker::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
+
+	// ビルボードの描画
+	CObjectBillboard::Draw();
 
 	// 描画処理
 	for (const auto& info : m_RockOnInfo)

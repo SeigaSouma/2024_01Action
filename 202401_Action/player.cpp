@@ -70,12 +70,13 @@ namespace
 	const float DEFAULT_SUBVALUE_COUNTER = 40.0f;		// カウンターのスタミナ減算量
 	const float DEFAULT_COUNTERHEAL = 0.0f;				// カウンターのスタミナ回復量
 	const float DEFAULT_MULTIPLY_ATTACK = 1.0f;			// 攻撃倍率
-	const float DEFAULT_CHARGETIME = 1.0f;				// チャージ時間
+	const float DEFAULT_CHARGETIME = 0.9f;				// チャージ時間
 	const int DEFAULT_FRAME_EXTENSION_COUNTER = 16;	// カウンター猶予フレーム
 	const float  DEFAULT_MULTIPLY_GUARD = 0.4f;			// カードの軽減
 	const float DEFAULT_TIME_ADDDOWN = 2.5f;			// ダウン時間付与
 	const bool DEFAULT_IS_CHARGEFLINCH = true;			// チャージ時怯みフラグ
 	const int DEFAULT_RESPAWN_PERCENT = 20;				// 復活確率
+	const float MULTIPLY_CHARGEATK = 2.0f;				// チャージ攻撃の倍率
 }
 
 //==========================================================================
@@ -136,6 +137,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_bDash = false;								// ダッシュ判定
 	m_fDashTime = 0.0f;								// ダッシュ時間
 	m_fChargeTime = 0.0f;							// チャージ時間
+	m_bChargeCompletion = false;					// チャージ完了フラグ
 	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 
@@ -540,7 +542,7 @@ void CPlayer::Update()
 
 	GetCenterPosition();
 
-#if 1
+#if _DEBUG
 	// デバッグ表示
 	CManager::GetInstance()->GetDebugProc()->Print(
 		"------------------[プレイヤーの操作]------------------\n"
@@ -548,9 +550,11 @@ void CPlayer::Update()
 		"向き：【X：%f, Y：%f, Z：%f】 【Z / C】\n"
 		"移動量：【X：%f, Y：%f, Z：%f】\n"
 		"体力：【%d】\n"
+		"状態：【%d】\n"
 		"コンボステージ：【%d】\n"
 		"ダッシュ時間：【%f】\n"
-		, pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife(), m_nComboStage, m_fDashTime);
+		, pos.x, pos.y, pos.z, rot.x, rot.y, rot.y, move.x, move.y, move.z, GetLife(), m_state, m_nComboStage, m_fDashTime);
+
 #endif
 
 }
@@ -1179,12 +1183,35 @@ void CPlayer::MotionBySetState()
 		break;
 
 	default:
+		// チャージ完了フラグ
+		m_bChargeCompletion = false;
+
 		m_bAttacking = false;	// 攻撃中判定
 		m_sMotionFrag.bATK = false;
 		m_nComboStage = 0;		// コンボの段階
 		break;
 	}
 
+
+	switch (nType)
+	{
+	case MOTION_COUNTER_ACCEPT:
+
+		if (pMotion->GetAllCount() <= m_PlayerStatus.counterExtensionFrame)
+		{
+			m_bCounterAccepting = true;	// カウンター受付中
+		}
+		else
+		{
+			m_bCounterAccepting = false;	// カウンター受付中
+
+		}
+		break;
+
+	default:
+		m_bCounterAccepting = false;	// カウンター受付中
+		break;
+	}
 
 	// インプット情報取得
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
@@ -1483,6 +1510,13 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 			{// 球の判定
 
 				int damage = static_cast<int>(static_cast<float>(pATKInfo->nDamage) * m_PlayerStatus.attackMultiply);
+
+				if (pMotion->GetType() == MOTION_ATK4_FINISH &&
+					m_bChargeCompletion)
+				{
+					damage *= MULTIPLY_CHARGEATK;
+				}
+
 				if (pEnemy->Hit(damage) == true)
 				{// 当たってたら
 
@@ -2524,12 +2558,6 @@ void CPlayer::StateCharge()
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-	if (!m_bAttacking)
-	{
-		m_state = STATE_NONE;
-		m_nComboStage = 0;
-	}
-
 	// モーション取得
 	CMotion* pMotion = GetMotion();
 	if (pMotion == nullptr)
@@ -2539,10 +2567,67 @@ void CPlayer::StateCharge()
 	}
 	int nType = pMotion->GetType();
 
+	if (!m_bAttacking ||
+		(nType != MOTION_ATK4 &&
+		nType != MOTION_ATK4_FINISH))
+	{
+		m_state = STATE_NONE;
+		m_nComboStage = 0;
+		m_fChargeTime = 0.0f;
+		m_bChargeCompletion = false;
+	}
+
+
+	// 状態カウンターループ
+	m_nCntState = (m_nCntState + 1) % 4;
+
 	// チャージ時間加算
-	if (nType == MOTION_ATK4 && pMotion->IsFinish())
+	if (nType == MOTION_ATK4)
 	{
 		m_fChargeTime += CManager::GetInstance()->GetDeltaTime();
+	}
+
+	if (m_fChargeTime < m_PlayerStatus.chargeTime)
+	{
+		m_bChargeCompletion = false;
+	}
+
+	if (m_fChargeTime >= m_PlayerStatus.chargeTime &&
+		!m_bChargeCompletion)
+	{// チャージ完了！
+
+		// チャージ完了フラグ
+		m_bChargeCompletion = true;
+
+		// 情報取得
+		CMotion::Info aInfo = pMotion->GetInfo(pMotion->GetType());
+
+		for (int nCntAttack = 0; nCntAttack < aInfo.nNumAttackInfo; nCntAttack++)
+		{
+			if (aInfo.AttackInfo[nCntAttack] == nullptr)
+			{
+				continue;
+			}
+
+			// 攻撃情報取得
+			CMotion::AttackInfo* AttackInfo = aInfo.AttackInfo[nCntAttack];
+			MyLib::Vector3 pos = pMotion->GetAttackPosition(GetModel(), *AttackInfo);
+
+			// チャージ完了
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_CHARGEFINISH,
+				pos,
+				0.0f, 0.0f, 40.0f);
+		}
+	}
+
+	// 塵
+	if (nType == MOTION_ATK4 && m_bChargeCompletion && m_nCntState == 0)
+	{
+		CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_CHARGE,
+			GetPosition(),
+			0.0f, 0.0f, 80.0f);
 	}
 
 	// チャージを離してる
@@ -2550,12 +2635,18 @@ void CPlayer::StateCharge()
 		nType == MOTION_ATK4 && pMotion->IsFinish())
 	{
 		pMotion->Set(MOTION_ATK4_FINISH);
+		m_fChargeTime = 0.0f;
+		m_nComboStage = 0;
+		m_bChargeCompletion = false;
+		m_state = STATE_NONE;
 	}
 
 	if (nType == MOTION_ATK4_FINISH && pMotion->IsFinish())
 	{
 		m_state = STATE_NONE;
 		m_nComboStage = 0;
+		m_fChargeTime = 0.0f;
+		m_bChargeCompletion = false;
 	}
 }
 
@@ -2623,7 +2714,7 @@ void CPlayer::ResetEnhance()
 	}
 
 	// 操作関連
-	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack_Level1());
+	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack());
 	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence());
 	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid());
 	ChangeGuardGrade(DEBUG_NEW CPlayerGuard());

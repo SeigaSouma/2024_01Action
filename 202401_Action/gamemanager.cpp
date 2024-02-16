@@ -135,6 +135,16 @@ void CGameManager::Update()
 	//	m_bEndNormalStage = true;
 	//}
 
+	// 操作補助生成
+	CControlAssist* pAssist = CControlAssist::Create();
+	//pAssist->ResetText();
+	pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
+	pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
+	pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
+	//pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
+	pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
+	//pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
+
 	// 操作状態
 	switch (m_SceneType)
 	{
@@ -280,8 +290,9 @@ void CGameManager::SceneTransition()
 		pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
-		pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
+		//pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
+		//pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
 
 		if (!m_bEndNormalStage)
 		{// 通常ステージが終わっていなかったら

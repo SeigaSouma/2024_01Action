@@ -24,10 +24,10 @@ public:
 	~CObjectBillboard();
 
 	// オーバーライドされた関数
-	HRESULT Init();
-	void Uninit();
-	void Update();
-	void Draw();
+	HRESULT Init() override;
+	void Uninit() override;
+	void Update() override;
+	void Draw() override;
 	virtual void SetVtx();
 	void BindTexture(int nIdx);
 	virtual void SetRotation(const MyLib::Vector3& rot) override;		// 向き設定

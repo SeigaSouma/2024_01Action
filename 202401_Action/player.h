@@ -207,6 +207,8 @@ public:
 	bool IsFlinch() { return m_PlayerStatus.bChargeFlinch; }						// 怯みフラグ取得
 	void SetAddDownTime(float time) { m_PlayerStatus.addDownTime = time; }			// ダウン付与時間設定
 	float GetAddDownTime() { return m_PlayerStatus.addDownTime; }					// ダウン付与時間取得
+	void SetChargeTime(float time) { m_PlayerStatus.chargeTime = time; }			// チャージ時間設定
+	float GetChargeTime() { return m_PlayerStatus.chargeTime; }						// チャージ時間取得
 
 
 	//=============================
@@ -292,6 +294,7 @@ private:
 	bool m_bDash;					// ダッシュ判定
 	float m_fDashTime;				// ダッシュ時間
 	float m_fChargeTime;			// チャージ時間
+	bool m_bChargeCompletion;		// チャージ完了フラグ
 	int m_nRespawnPercent;			// リスポーン確率
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
 

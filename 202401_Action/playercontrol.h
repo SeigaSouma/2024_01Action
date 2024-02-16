@@ -53,8 +53,6 @@ public:
 
 	CPlayerControlAttack_Level1() : m_bChargePossible(false) {}
 
-	virtual bool IsAttack(CPlayer* player) override;	// 攻撃可能フラグ取得
-
 	virtual void Attack(CPlayer* player) override;	// 通常攻撃
 
 	// 段階毎のリセット処理
@@ -74,7 +72,7 @@ public:
 			m_bChargePossible = false;
 		}
 
-		if (combostage > CPlayer::MOTION_ATK4 - CPlayer::MOTION_ATK)
+		if (combostage > 4)
 		{
 			combostage = 0;
 		}

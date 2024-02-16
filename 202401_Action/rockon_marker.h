@@ -14,7 +14,7 @@
 // クラス定義
 //==========================================================================
 // ロックオンマーカークラス
-class CRockOnMarker : public CObject
+class CRockOnMarker : public CObjectBillboard
 {
 public:
 

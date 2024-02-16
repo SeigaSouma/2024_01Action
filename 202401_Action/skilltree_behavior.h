@@ -92,8 +92,8 @@ class CAbillityAttack : public CEnhance
 	//=============================
 	// ’iŠK•Ê
 	void AddPower01() { m_pPlayer->SetAttackMultiply(1.15f); }
-	void ShorterChargeTime01() { m_pPlayer->SetGuardSubValue(30.0f); }
-	void ShorterChargeTime02() { m_pPlayer->SetGuardSubValue(30.0f); }
+	void ShorterChargeTime01() { m_pPlayer->SetChargeTime(0.7f); }
+	void ShorterChargeTime02() { m_pPlayer->SetChargeTime(0.3f); }
 	void NotFlinch() { m_pPlayer->SetToggleFlinch(false); }
 	void AddPower02() { m_pPlayer->SetAttackMultiply(1.3f); }
 	void AddPower03() { m_pPlayer->SetAttackMultiply(1.5f); }
@@ -188,8 +188,8 @@ class CAbillityCounter : public CEnhance
 	void SubNeedStamina02() { m_pPlayer->SetCounterSubValue(20.0f); }
 	void HealStamina02() { m_pPlayer->SetCounterHealValue(20.0f); }
 	void SubNeedStamina03() { m_pPlayer->SetCounterSubValue(10.0f); }
-	void ExtensionFrame01() { m_pPlayer->SetCounterExtensionFrame(18); }
-	void ExtensionFrame02() { m_pPlayer->SetCounterExtensionFrame(22); }
+	void ExtensionFrame01() { m_pPlayer->SetCounterExtensionFrame(19); }
+	void ExtensionFrame02() { m_pPlayer->SetCounterExtensionFrame(24); }
 	void LongerDown01() { m_pPlayer->SetAddDownTime(3.0f); }
 	void LongerDown02() { m_pPlayer->SetAddDownTime(4.0f); }
 
