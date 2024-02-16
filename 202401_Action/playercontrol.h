@@ -55,30 +55,6 @@ public:
 
 	virtual void Attack(CPlayer* player) override;	// 通常攻撃
 
-	// 段階毎のリセット処理
-	virtual void StageByReset(CPlayer* player) override
-	{
-		// 段階取得
-		int combostage = player->GetComboStage();
-
-		// コンボの段階加算
-		combostage++;
-		if (combostage >= 3)
-		{
-			m_bChargePossible = true;
-		}
-		else
-		{
-			m_bChargePossible = false;
-		}
-
-		if (combostage > 4)
-		{
-			combostage = 0;
-		}
-		player->SetComboStage(combostage);
-	}
-
 private:
 	bool m_bChargePossible;	// チャージ可能フラグ
 };

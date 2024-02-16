@@ -136,14 +136,17 @@ void CGameManager::Update()
 	//}
 
 	// ‘€ì•â•¶¬
-	CControlAssist* pAssist = CControlAssist::Create();
-	//pAssist->ResetText();
-	pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
-	pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
-	pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
-	//pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
-	pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
-	//pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
+	CControlAssist* pAssist = CControlAssist::GetInstance();
+	if (pAssist != nullptr)
+	{
+		//pAssist->ResetText();
+		pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
+		//pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
+		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
+		//pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
+		pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
+		//pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
+	}
 
 	// ‘€ìó‘Ô
 	switch (m_SceneType)

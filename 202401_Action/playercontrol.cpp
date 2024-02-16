@@ -117,64 +117,29 @@ void CPlayerControlAttack_Level1::Attack(CPlayer* player)
 		CPlayerControlAttack::Attack(player);
 	}
 
+	// 操作補助
+	CControlAssist* pAssist = CControlAssist::GetInstance();
+	pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
 
 	// 目標の向き取得
 	float fRotDest = player->GetRotDest();
 
-	if (m_bChargePossible)
+	if (IsAttack(player) &&
+		pInputGamepad->GetPress(CInputGamepad::BUTTON_Y, player->GetMyPlayerIdx()))
 	{
-		// 攻撃
-		if (IsAttack(player) &&
-			!pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, player->GetMyPlayerIdx()) &&
-			pInputGamepad->GetTrigger(CInputGamepad::BUTTON_X, player->GetMyPlayerIdx()))
-		{
-			player->SetComboStage(0);
-			int combostage = player->GetComboStage();
-			if (combostage == 0 || player->IsAttacking())
-			{
-				m_bAttackReserved = true;
-			}
-
-			if (pInputGamepad->IsTipStick())
-			{// 左スティックが倒れてる場合
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
-			}
-
-			if (player->IsReadyDashAtk() && combostage == 0)
-			{// ダッシュ中の初撃は2からスタート
-				combostage++;
-				player->SetComboStage(combostage);
-
-				pMotion->Set(CPlayer::MOTION_DASHATK, true);
-			}
-			else
-			{
-				// コンボ段階分考慮
-				int nSetType = CPlayer::MOTION_ATK + combostage;
-				pMotion->Set(nSetType, true);
-			}
-			player->SetComboStage(combostage);
-
-			// 段階別リセット処理
-			StageByReset(player);
+		if (pInputGamepad->IsTipStick())
+		{// 左スティックが倒れてる場合
+			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
 		}
 
-		if (IsAttack(player) &&
-			pInputGamepad->GetPress(CInputGamepad::BUTTON_Y, player->GetMyPlayerIdx()))
-		{
-			if (pInputGamepad->IsTipStick())
-			{// 左スティックが倒れてる場合
-				fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
-			}
+		// コンボ段階分考慮
+		int nSetType = CPlayer::MOTION_ATK4;
+		pMotion->Set(CPlayer::MOTION_ATK4);
 
-			// コンボ段階分考慮
-			int nSetType = CPlayer::MOTION_ATK4;
-			pMotion->Set(CPlayer::MOTION_ATK4);
-
-			// 段階別リセット処理
-			StageByReset(player);
-			m_bChargePossible = false;
-		}
+		// 段階別リセット処理
+		player->SetComboStage(0);
+		//StageByReset(player);
+		m_bChargePossible = false;
 	}
 
 	// 目標の向き設定
@@ -251,6 +216,13 @@ void CPlayerControlDefence_Level1::Defence(CPlayer* player)
 
 	// モーションフラグ取得
 	CPlayer::SMotionFrag motionFrag = player->GetMotionFrag();
+
+	if (pMotion->GetType() == CPlayer::MOTION_GUARD)
+	{
+		// 操作補助
+		CControlAssist* pAssist = CControlAssist::GetInstance();
+		pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
+	}
 
 	// ガード中に攻撃でカウンター
 	if (pMotion->GetType() == CPlayer::MOTION_GUARD &&

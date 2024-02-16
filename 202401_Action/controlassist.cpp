@@ -80,7 +80,7 @@ HRESULT CControlAssist::Init()
 
 	for (int i = 0; i < CONTROLTYPE_MAX; i++)
 	{
-		m_pText[i] = CObject2D::Create(GetPriority());
+		m_pText[i] = CObject2D::Create(10);
 		if (m_pText[i] == nullptr)
 		{
 			continue;
@@ -132,23 +132,8 @@ void CControlAssist::Uninit()
 //==========================================================================
 void CControlAssist::Update()
 {
-	MyLib::Vector3 setpos = CREATE_POSITION;
-	for (int i = 0; i < CONTROLTYPE_MAX; i++)
-	{
-		if (m_pText[i] == nullptr ||
-			!m_pText[i]->IsDisp())
-		{
-			continue;
-		}
-		float height = m_pText[i]->GetSize().y * 2.0f;
-		setpos.y += height;
 
-		m_pText[i]->SetPosition(setpos);
-
-		m_pText[i]->Update();
-	}
-
-	//ResetText();
+	ResetText();
 }
 
 //==========================================================================
@@ -164,11 +149,23 @@ void CControlAssist::SetText(CONTROLTYPE text)
 
 	// ï`âÊON
 	m_pText[type]->SetEnableDisp(true);
-	//m_pText[type]->SetPosition(CREATE_POSITION);
 
-	//// à íuê›íË
-	//float height = m_pText[type]->GetSize().y * 2.0f;
-	//m_pText[type]->AddPosition(MyLib::Vector3(0.0f, m_nNumDisp * height, 0.0f));
+
+	MyLib::Vector3 setpos = CREATE_POSITION;
+	for (int i = 0; i < CONTROLTYPE_MAX; i++)
+	{
+		if (m_pText[i] == nullptr ||
+			!m_pText[i]->IsDisp())
+		{
+			continue;
+		}
+			float height = m_pText[i]->GetSize().y * 2.0f;
+			setpos.y += height;
+
+			m_pText[i]->SetPosition(setpos);
+
+		m_pText[i]->Update();
+	}
 
 	// ï`âÊêîâ¡éZ
 	m_nNumDisp++;

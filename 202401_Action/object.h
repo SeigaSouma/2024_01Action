@@ -101,7 +101,7 @@ public:
 	float ScreenZ() const;
 	static bool ZSort(const CObject *obj1, const CObject *obj2);	// Zソートの比較関数
 	int GetPriority() { return m_nPriority; }	// 優先順位取得
-	void SetEnableDisp(bool bDisp) { m_bDisp = bDisp; }		// 描画設定
+	void SetEnableDisp(bool bDisp);		// 描画設定
 	bool IsDisp() { return m_bDisp; }					// 描画状況取得
 	void SetEnableHitstopMove() { m_bHitstopMove = true; }	// ヒットストップ中に動くフラグ有効
 

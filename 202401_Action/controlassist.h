@@ -32,7 +32,7 @@ public:
 		CONTROLTYPE_MAX
 	};
 
-	CControlAssist(int nPriority = 10);
+	CControlAssist(int nPriority = 0);
 	~CControlAssist();
 
 	//  オーバーライド関数

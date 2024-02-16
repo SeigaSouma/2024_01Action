@@ -370,6 +370,12 @@ bool CObject::ZSort(const CObject *obj1, const CObject *obj2)
 	return bSort;
 }
 
+// 描画設定
+void CObject::SetEnableDisp(bool bDisp)
+{
+	m_bDisp = bDisp;
+}
+
 //==========================================================================
 // エフェクト設定
 //==========================================================================
