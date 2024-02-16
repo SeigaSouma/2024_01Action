@@ -20,6 +20,7 @@
 #include "3D_effect.h"
 #include "calculation.h"
 #include "limitarea.h"
+#include "pause.h"
 
 //==========================================================================
 // マクロ定義
@@ -240,23 +241,13 @@ void CCamera::Update()
 	}
 
 	if (pInputKeyboard->GetTrigger(DIK_F5) == true)
-	{// F7が押された,追従切り替え
-		//m_posR = MyLib::Vector3(0.0f, 100.0f, 0.0f);				// 注視点(見たい場所)
-		//m_posV = MyLib::Vector3(0.0f, 200.0f, m_posR.z + -500.0f);	// 視点(カメラの位置)
-		//m_posVDest = m_posV;									// 目標の視点
-		//m_posRDest = m_posR;									// 目標の注視点
-		//m_vecU = MyLib::Vector3(0.0f, 1.0f, 0.0f);					// 上方向ベクトル
+	{
 		m_move = MyLib::Vector3(0.0f, 0.0f, 0.0f);					// 移動量
 		m_rot = MyLib::Vector3(m_rot.x, 0.0f, m_rot.z);					// 向き
 		m_rotVDest = m_rot;										// 目標の視点の向き
 		m_fOriginDistance = 0.0f;					// 元の距離
 		m_fDestDistance = START_CAMERALEN;
 		m_fDistance = m_fDestDistance;
-		//m_fDistance = START_CAMERALEN;							// 距離
-		//m_state = CAMERASTATE_NONE;								// 状態
-
-		//// 視点の代入処理
-		//SetCameraV();
 	}
 	//#endif
 

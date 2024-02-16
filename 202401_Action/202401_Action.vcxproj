@@ -244,6 +244,7 @@
     <ClCompile Include="object_circlegauge2D.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="pause.cpp" />
+    <ClCompile Include="pickupguide.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playercontrol.cpp" />
     <ClCompile Include="precompile.cpp">
@@ -384,6 +385,7 @@
     <ClInclude Include="object_circlegauge2D.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="pause.h" />
+    <ClInclude Include="pickupguide.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playercontrol.h" />
     <ClInclude Include="precompile.h" />

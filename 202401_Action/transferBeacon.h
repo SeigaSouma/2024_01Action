@@ -11,6 +11,8 @@
 #include "objectX.h"
 #include "listmanager.h"
 
+class CPickupGuide;
+
 //==========================================================================
 // クラス定義
 //==========================================================================
@@ -38,7 +40,8 @@ public:
 	virtual void Draw() override;
 
 	// その他
-	void SetEffect();
+	void SetEffect();	// エフェクト設定
+	void Kill();		// 削除
 
 	// 静的関数
 	static CTransferBeacon *Create(eTransType transtype, const MyLib::Vector3& pos = MyLib::Vector3(0.0f, 155.0f, 0.0f));
@@ -76,9 +79,10 @@ private:
 	// メンバ変数
 	//=============================
 	int m_nCntEffect;
-	float m_fStateTime;	// 状態カウンター
-	STATE m_state;		// 状態
-	eTransType m_TransType;	// 転移種類
+	float m_fStateTime;				// 状態カウンター
+	STATE m_state;					// 状態
+	eTransType m_TransType;			// 転移種類
+	CPickupGuide* m_pPickupGuide;	// ピックアップガイドのポインタ
 	static CListManager<CTransferBeacon> m_List;	// リスト
 
 };

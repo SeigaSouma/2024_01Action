@@ -11,6 +11,8 @@
 #include "objectX.h"
 #include "listmanager.h"
 
+class CPickupGuide;
+
 //==========================================================================
 // クラス定義
 //==========================================================================
@@ -70,6 +72,7 @@ private:
 	float m_fStateTime;	// 状態カウンター
 	STATE m_state;		// 状態
 	Effekseer::Handle* m_pWeaponHandle;		// エフェクトハンドルのポインタ
+	CPickupGuide* m_pPickupGuide;			// ピックアップガイドのポインタ
 	static CSkillTree_Obj* m_pThisPtr;		// 自身のポインタ
 };
 

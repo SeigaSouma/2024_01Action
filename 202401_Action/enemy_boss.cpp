@@ -110,7 +110,7 @@ HRESULT CEnemyBoss::Init()
 	m_pATKState->ChangeMotionIdx(this);
 
 	// ©“®ƒƒbƒNƒIƒ“
-	m_bRockOnAccepting = true;
+	//m_bRockOnAccepting = true;
 	return S_OK;
 }
 

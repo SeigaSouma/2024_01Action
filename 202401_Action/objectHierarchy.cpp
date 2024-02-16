@@ -208,14 +208,6 @@ void CObjectHierarchy::Update()
 	D3DXMatrixTranslation(&mtxTrans, m_CenterOffset.x, m_CenterOffset.y, m_CenterOffset.z);
 	D3DXMatrixMultiply(&mtxWepon, &mtxTrans, &mtxWepon);
 	m_posCenter = UtilFunc::Transformation::WorldMtxChangeToPosition(mtxWepon);
-
-	for (int i = 0; i < 5; i++)
-	{
-		CEffect3D* p = CEffect3D::Create(m_posCenter,
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-			D3DXCOLOR(0.4f, 1.0f, 0.6f, 1.0f), 5.0f, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
-		p->SetDisableZSort();
-	}
 }
 
 //==========================================================================

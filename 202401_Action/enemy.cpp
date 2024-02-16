@@ -1841,9 +1841,6 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 		std::vector<SphereCollider> colliders = pPlayer->GetSphereColliders();
 		for (const auto& collider : colliders)
 		{
-			CEffect3D::Create(
-				collider.center, 0.0f, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f), collider.radius, 3, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
-
 			MyLib::HitResult hitresult = UtilFunc::Collision::SphereRange(weponpos, collider.center, pATKInfo->fRangeSize, collider.radius);
 			if (hitresult.ishit)
 			{// ‹…‚Ì”»’è

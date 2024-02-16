@@ -2637,7 +2637,6 @@ void CPlayer::StateCharge()
 		pMotion->Set(MOTION_ATK4_FINISH);
 		m_fChargeTime = 0.0f;
 		m_nComboStage = 0;
-		m_bChargeCompletion = false;
 		m_state = STATE_NONE;
 	}
 

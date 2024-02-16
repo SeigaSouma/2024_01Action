@@ -137,15 +137,9 @@ void CGameManager::Update()
 
 	// 操作補助生成
 	CControlAssist* pAssist = CControlAssist::GetInstance();
-	if (pAssist != nullptr)
+	if (pAssist)
 	{
-		//pAssist->ResetText();
-		pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
-		//pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
-		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
-		//pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
-		pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
-		//pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
+		pAssist->SetDefaultText();
 	}
 
 	// 操作状態
@@ -456,7 +450,7 @@ void CGameManager::SceneReaspawn()
 	CSkillTree::GetInstance()->SetMastering(m_PrevSkillIconMastering);
 
 	// 前回のポイント+お情けポイント0設定
-	pPlayer->GetSkillPoint()->SetPoint(m_nPrevPoint + 1);
+	pPlayer->GetSkillPoint()->SetPoint(m_nPrevPoint + 2);
 
 	// 現在のステージ
 	m_nNowStage--;

@@ -42,7 +42,8 @@ namespace
 	//const CScene::MODE STARTMODE = CScene::MODE_TITLE;
 	const CScene::MODE STARTMODE = CScene::MODE_GAME;
 #else
-	const CScene::MODE STARTMODE = CScene::MODE_GAME;
+	//const CScene::MODE STARTMODE = CScene::MODE_GAME;
+	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
 #endif
 }
 
@@ -877,11 +878,11 @@ void CManager::Update()
 			{
 				return;
 			}
-#if _DEBUG
+//#if _DEBUG
 
 			// ƒJƒƒ‰‚ÌXVˆ—
 			m_pCamera->Update();
-#endif
+//#endif
 
 			return;
 		}

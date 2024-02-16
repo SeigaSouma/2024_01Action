@@ -23,10 +23,12 @@ public:
 	//=============================
 	enum CONTROLTYPE
 	{
-		CONTROLTYPE_ROCKON = 0,		// ロックオン
+		CONTROLTYPE_DASH = 0,			// ダッシュ
+		CONTROLTYPE_ROCKON,		// ロックオン
 		CONTROLTYPE_CHANGETARGET,	// ターゲット切替
 		CONTROLTYPE_ATTACK_NORMAL,	// 通常攻撃
 		CONTROLTYPE_ATTACK_CHARGE,	// チャージ攻撃
+		CONTROLTYPE_GUARD,			// ガード
 		CONTROLTYPE_COUNTER,		// 刹舞
 		CONTROLTYPE_AVOID,			// 回避
 		CONTROLTYPE_MAX
@@ -41,6 +43,7 @@ public:
 	void Update() override;
 	void Draw() override {}
 
+	void SetDefaultText();			// デフォルトテキスト設定
 	void SetText(CONTROLTYPE text);	// テキスト設定
 	void ResetText();	// テキストリセット
 

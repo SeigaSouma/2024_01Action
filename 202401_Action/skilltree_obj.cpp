@@ -19,6 +19,7 @@
 #include "3D_effect.h"
 #include "MyEffekseer.h"
 #include "transferBeacon.h"
+#include "pickupguide.h"
 
 //==========================================================================
 // 定数定義
@@ -27,7 +28,7 @@ namespace
 {
 	const char* BAGMODEL = "data\\MODEL\\enhance\\stoneplane.x";
 	const MyLib::Vector3 POSITION = MyLib::Vector3(0.0f, 0.0f, 1100.0f);	// 半径
-	const float RADIUS = 80.0f;	// 半径
+	const float RADIUS = 100.0f;	// 半径
 	const float TIME_STARTUP = 1.0f;		// 起動時間
 }
 CSkillTree_Obj* CSkillTree_Obj::m_pThisPtr = nullptr;		// 自身のポインタ
@@ -50,6 +51,7 @@ CSkillTree_Obj::CSkillTree_Obj(int nPriority) : CObjectX(nPriority)
 	m_fStateTime = 0.0f;	// 状態カウンター
 	m_state = STATE_NONE;	// 状態
 	m_pWeaponHandle = nullptr;		// エフェクトハンドルのポインタ
+	m_pPickupGuide = nullptr;		// ピックアップガイドのポインタ
 }
 
 //==========================================================================
@@ -111,18 +113,21 @@ HRESULT CSkillTree_Obj::Init()
 	pos.y += 250.0f;
 	pos.z += 50.0f;
 
-
-	//CMyEffekseer::GetInstance()->SetEffect(
-		//	&m_pWeaponHandle,
-		//	"data/Effekseer/debugline_green.efkefc",
-		//	weponpos, rot, 0.0f, 40.0f, true);
-
 	// ループエフェクト再生
 	CMyEffekseer::GetInstance()->SetEffect(
 		&m_pWeaponHandle,
 		CMyEffekseer::EFKLABEL_STONEBASE_LIGHT,
 		pos,
 		0.0f, 0.0f, 100.0f, false);
+
+	// ピックアップガイド生成
+	if (!m_pPickupGuide)
+	{
+		pos = POSITION;
+		pos.y += 150.0f;
+		pos.z += 50.0f;
+		m_pPickupGuide = CPickupGuide::Create(pos, CPickupGuide::TYPE_SKILLTREE_BEGIN);
+	}
 	return S_OK;
 }
 
@@ -173,6 +178,12 @@ void CSkillTree_Obj::CollisionPlayer()
 {
 	if (!CGame::GetInstance()->GetGameManager()->IsControll())
 	{// 行動できないとき
+
+		// ピックアップガイドの状態設定
+		if (m_pPickupGuide)
+		{
+			m_pPickupGuide->SetState(CPickupGuide::STATE_FADEOUT);
+		}
 		return;
 	}
 
@@ -183,6 +194,7 @@ void CSkillTree_Obj::CollisionPlayer()
 	MyLib::Vector3 pos = GetPosition();
 
 	bool bHit = false;
+	CPickupGuide::STATE guideState = CPickupGuide::STATE_FADEOUT;
 
 	// リストループ
 	while (playerList.ListLoop(&pPlayer))
@@ -192,6 +204,7 @@ void CSkillTree_Obj::CollisionPlayer()
 		{
 			bHit = true;
 			pPlayer->SetEnableTouchBeacon(true);
+			guideState = CPickupGuide::STATE_FADEIN;
 			break;
 		}
 	}
@@ -212,6 +225,12 @@ void CSkillTree_Obj::CollisionPlayer()
 			CCamera* pCamera = CManager::GetInstance()->GetCamera();
 			pCamera->SetControlState(DEBUG_NEW CCameraControlState_BeforePrayer(CManager::GetInstance()->GetCamera()));
 		}
+	}
+
+	// ピックアップガイドの状態設定
+	if (m_pPickupGuide)
+	{
+		m_pPickupGuide->SetState(guideState);
 	}
 }
 

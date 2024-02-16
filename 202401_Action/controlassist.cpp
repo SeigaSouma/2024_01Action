@@ -15,10 +15,12 @@ namespace
 {
 	const char* TEXTURE[] =
 	{ 
+		"data\\TEXTURE\\control\\dash.png",				// ダッシュ
 		"data\\TEXTURE\\control\\rockon.png",			// ロックオン
 		"data\\TEXTURE\\control\\rockon_change.png",	// ターゲット切替
 		"data\\TEXTURE\\control\\attack.png",			// 通常攻撃
 		"data\\TEXTURE\\control\\attack_charge.png",	// チャージ攻撃
+		"data\\TEXTURE\\control\\guard.png",			// ガード
 		"data\\TEXTURE\\control\\counter.png",			// 刹舞
 		"data\\TEXTURE\\control\\avoid.png",			// 回避
 	};
@@ -159,16 +161,29 @@ void CControlAssist::SetText(CONTROLTYPE text)
 		{
 			continue;
 		}
-			float height = m_pText[i]->GetSize().y * 2.0f;
-			setpos.y += height;
+		float height = m_pText[i]->GetSize().y * 2.0f;
+		setpos.y += height;
 
-			m_pText[i]->SetPosition(setpos);
+		m_pText[i]->SetPosition(setpos);
 
 		m_pText[i]->Update();
 	}
 
 	// 描画数加算
 	m_nNumDisp++;
+}
+
+//==========================================================================
+// デフォルトテキスト設定
+//==========================================================================
+void CControlAssist::SetDefaultText()
+{
+	SetText(CONTROLTYPE_ROCKON);
+	SetText(CONTROLTYPE_CHANGETARGET);
+	SetText(CONTROLTYPE_DASH);
+	SetText(CONTROLTYPE_ATTACK_NORMAL);
+	SetText(CONTROLTYPE_GUARD);
+	SetText(CONTROLTYPE_AVOID);
 }
 
 //==========================================================================

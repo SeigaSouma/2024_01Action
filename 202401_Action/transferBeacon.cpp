@@ -17,6 +17,7 @@
 #include "input.h"
 #include "3D_effect.h"
 #include "MyEffekseer.h"
+#include "pickupguide.h"
 
 //==========================================================================
 // 定数定義
@@ -52,6 +53,7 @@ CTransferBeacon::CTransferBeacon(int nPriority) : CObjectX(nPriority)
 	m_fStateTime = 0.0f;	// 状態カウンター
 	m_state = STATE_NONE;	// 状態
 	m_TransType = TRANSTYPE_ENHANCE;	// 転移種類
+	m_pPickupGuide = nullptr;	// ピックアップガイドのポインタ
 }
 
 //==========================================================================
@@ -115,6 +117,12 @@ HRESULT CTransferBeacon::Init()
 		spawnpos,
 		0.0f, 0.0f, 100.0f, false);
 
+	// ピックアップガイド生成
+	if (!m_pPickupGuide)
+	{
+		m_pPickupGuide = CPickupGuide::Create(GetOriginPosition(), CPickupGuide::TYPE_TRANSFER);
+	}
+
 	return S_OK;
 }
 
@@ -123,6 +131,28 @@ HRESULT CTransferBeacon::Init()
 //==========================================================================
 void CTransferBeacon::Uninit()
 {
+	// ピックアップガイド
+	m_pPickupGuide = nullptr;
+
+	// リストから削除
+	m_List.Delete(this);
+
+	// 終了処理
+	CObjectX::Uninit();
+}
+
+//==========================================================================
+// 削除
+//==========================================================================
+void CTransferBeacon::Kill()
+{
+	// ピックアップガイド
+	if (m_pPickupGuide)
+	{
+		m_pPickupGuide->Uninit();
+		m_pPickupGuide = nullptr;
+	}
+
 	// リストから削除
 	m_List.Delete(this);
 
@@ -173,7 +203,7 @@ void CTransferBeacon::Update()
 	// 遷移なしフェード取得
 	if (CManager::GetInstance()->GetInstantFade()->GetState() == CInstantFade::STATE_FADECOMPLETION)
 	{
-		Uninit();
+		Kill();
 	}
 }
 
@@ -199,6 +229,7 @@ void CTransferBeacon::CollisionPlayer()
 	MyLib::Vector3 pos = GetPosition();
 
 	bool bHit = false;
+	CPickupGuide::STATE guideState = CPickupGuide::STATE_FADEOUT;
 
 	// リストループ
 	while (playerList.ListLoop(&pPlayer))
@@ -208,6 +239,7 @@ void CTransferBeacon::CollisionPlayer()
 		{
 			bHit = true;
 			pPlayer->SetEnableTouchBeacon(true);
+			guideState = CPickupGuide::STATE_FADEIN;
 			break;
 		}
 	}
@@ -217,7 +249,7 @@ void CTransferBeacon::CollisionPlayer()
 		// ゲームパッド情報取得
 		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 		CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) ||
+		if (pInputGamepad->GetTriggerRT(0) ||
 			pInputKeyboard->GetTrigger(DIK_RETURN))
 		{
 			// 遷移なしフェード追加
@@ -243,6 +275,12 @@ void CTransferBeacon::CollisionPlayer()
 				pPlayer->SetEnableTouchBeacon(false);
 			}
 		}
+	}
+
+	// ピックアップガイドの状態設定
+	if (m_pPickupGuide)
+	{
+		m_pPickupGuide->SetState(guideState);
 	}
 }
 
