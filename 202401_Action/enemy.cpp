@@ -8,11 +8,8 @@
 #include "manager.h"
 #include "renderer.h"
 #include "game.h"
-#include "tutorial.h"
-#include "texture.h"
 #include "input.h"
 #include "calculation.h"
-#include "explosion.h"
 #include "particle.h"
 #include "motion.h"
 #include "model.h"
@@ -25,14 +22,10 @@
 #include "shadow.h"
 #include "sound.h"
 #include "impactwave.h"
-#include "score.h"
-#include "bullet.h"
 #include "stage.h"
 #include "objectX.h"
-#include "collisionobject.h"
 #include "limitarea.h"
-#include "santabag.h"
-
+#include "debugproc.h"
 #include "rockon_marker.h"
 
 // 子クラス
@@ -41,7 +34,7 @@
 #include "enemy_orafu.h"
 
 //==========================================================================
-// 無名名前空間
+// 定数定義
 //==========================================================================
 namespace
 {
@@ -54,10 +47,18 @@ namespace
 }
 
 //==========================================================================
+// 関数ポインタ
+//==========================================================================
+CEnemy::ACT_FUNC CEnemy::m_ActFuncList[] =
+{
+	&CEnemy::ActDefault,			// 通常行動
+	&CEnemy::ActWait,				// 待機行動
+};
+
+//==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
 CListManager<CEnemy> CEnemy::m_List = {};	// リスト
-
 
 //==========================================================================
 // コンストラクタ
@@ -65,10 +66,7 @@ CListManager<CEnemy> CEnemy::m_List = {};	// リスト
 CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 {
 	// 値のクリア
-	m_posOrigin = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 最初の位置
-	memset(&m_sFormationInfo, NULL, sizeof(m_sFormationInfo));	// 隊列の情報
 	m_posKnokBack = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// ノックバックの位置
-	m_rotOrigin = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 最初の向き
 	m_type = TYPE_BOSS;	// 種類
 	m_state = STATE_NONE;	// 状態
 	m_Oldstate = m_state;	// 前回の状態
@@ -76,25 +74,26 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_TargetPosition = mylib_const::DEFAULT_VECTOR3;	// 目標の位置
 	m_pWeaponHandle = 0;		// エフェクトの武器ハンドル
 
+	m_Action = ACTION_DEF;		// 行動
+	m_fActTime = 0.0f;		// 行動カウンター
 	m_fStateTime = 0.0f;	// 状態遷移カウンター
-	m_nTexIdx = 0;			// テクスチャのインデックス番号
-	m_nNumChild = 0;		// この数
+	m_nNumChild = 0;		// 子の数
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
-	m_fActCounter = 0.0f;		// 移動カウンター
 	m_bActionable = false;		// 行動可能か
 	m_fDownTime = 0.0f;			// ダウンカウンター
 	m_fRockOnDistance = 0.0f;	// ロックオンの距離
-	m_bAddScore = false;		// スコア加算するかの判定
 	m_bRockOnAccepting = false;	// ロックオン受付
-	m_nBallastEmission = 0;	// 瓦礫の発生カウンター
-	m_sMotionFrag.bJump = false;		// ジャンプ中かどうか
-	m_sMotionFrag.bKnockback = false;	// ノックバック中かどうか
-	m_sMotionFrag.bMove = false;		// 移動中かどうか
-	m_sMotionFrag.bATK = false;			// 攻撃中かどうか
+
+	m_pATKState = nullptr;		// 今の行動ポインタ
+	m_pNextATKState = nullptr;	// 次の行動ポインタ
+	m_bCatchUp = false;						// 追い着き判定
+	m_bInSight = false;						// 視界内判定
+	m_sMotionFrag = SMotionFrag();		// モーションのフラグ
 	m_pParent = nullptr;					// 親のポインタ
 	m_pHPGauge = nullptr;					// HPゲージの情報
 	m_pShadow = nullptr;
 	m_pRockOnMarker = nullptr;		// ロックオンマーカー
+
 
 	memset(&m_pChild[0], NULL, sizeof(m_pChild));	// 子のポインタ
 }
@@ -144,11 +143,9 @@ CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
 			// 種類
 			pEnemy->m_type = type;
 
-			// 最初の位置設定
-			pEnemy->m_posOrigin = pos;
-
 			// 位置設定
 			pEnemy->SetPosition(pos);
+			pEnemy->SetOriginPosition(pos);
 
 			// テキスト読み込み
 			HRESULT hr = pEnemy->RoadText(pFileName);
@@ -176,8 +173,7 @@ HRESULT CEnemy::Init()
 	m_state = STATE_NONE;	// 状態
 	m_Oldstate = STATE_PLAYERCHASE;
 	m_fStateTime = 0.0f;			// 状態遷移カウンター
-	m_posKnokBack = m_posOrigin;	// ノックバックの位置
-	m_bAddScore = true;	// スコア加算するかの判定
+	m_posKnokBack = GetOriginPosition();	// ノックバックの位置
 	m_fRockOnDistance = 0.0f;	// ロックオンの距離
 
 	// 種類の設定
@@ -344,14 +340,84 @@ void CEnemy::Kill()
 	// ロックオン受付してたら
 	if (m_bRockOnAccepting)
 	{
-		/*CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
-		if (pPlayer != nullptr)
-		{
-			pPlayer->SwitchRockOnTarget();
-		}*/
 		CManager::GetInstance()->GetCamera()->SetRockOn(GetPosition(), false);
 	}
 
+}
+
+
+//==========================================================================
+// 攻撃状態切り替え
+//==========================================================================
+void CEnemy::ChangeATKState(CEnemyState* state)
+{
+	if (m_pATKState != nullptr &&
+		!m_pATKState->IsCreateFirstTime())
+	{
+		delete m_pATKState;
+	}
+	m_pATKState = state;
+}
+
+//==========================================================================
+// 攻撃処理
+//==========================================================================
+void CEnemy::PerformAttack()
+{
+	if (m_pATKState == nullptr)
+	{
+		return;
+	}
+
+	if (m_bActionable)
+	{
+		m_pATKState->Action(this);
+	}
+}
+
+//==========================================================================
+// 攻撃状態切り替え
+//==========================================================================
+void CEnemy::DrawingRandomAction()
+{
+	// ランダムにアクションパターンを選択して実行
+	if (!m_pAtkPattern.empty())
+	{
+		int randomIndex = rand() % m_pAtkPattern.size();
+
+		if (!m_pAtkPattern[randomIndex]->IsDirectlyTrans())
+		{// 何か挟んで行動する場合
+
+			// 次の行動設定
+			ChangeNextATKState(m_pAtkPattern[randomIndex]);
+
+			// 遷移前処理
+			m_pAtkPattern[randomIndex]->BeforeTransitionProcess(this);
+		}
+		else
+		{
+			ChangeATKState(m_pAtkPattern[randomIndex]);
+			m_bCatchUp = false;
+			m_bInSight = false;
+
+			// モーションインデックス切り替え
+			m_pATKState->ChangeMotionIdx(this);
+		}
+	}
+}
+
+//==========================================================================
+// 次の攻撃へ切り替え
+//==========================================================================
+void CEnemy::ChangeNextAction()
+{
+	// 保存していた次の行動を設定
+	ChangeATKState(m_pNextATKState);
+	m_bCatchUp = false;
+	m_bInSight = false;
+
+	// モーションインデックス切り替え
+	m_pATKState->ChangeMotionIdx(this);
 }
 
 //==========================================================================
@@ -382,6 +448,19 @@ void CEnemy::Update()
 	// 過去の位置設定
 	SetOldPosition(GetPosition());
 
+
+	// プレイヤー情報
+	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
+	if (pPlayer == nullptr)
+	{
+		return;
+	}
+	m_TargetPosition = pPlayer->GetPosition();
+
+
+	// 行動別処理
+	(this->*(m_ActFuncList[m_Action]))();
+
 	// 当たり判定
 	Collision();
 
@@ -402,19 +481,6 @@ void CEnemy::Update()
 	{// 死亡フラグが立っていたら
 		return;
 	}
-
-	if (m_state != STATE_SPAWN &&
-		m_state != STATE_SPAWNWAIT)
-	{
-		// 行動の設定
-		ActionSet();
-	}
-
-	// 行動更新
-	UpdateAction();
-
-	// 種類別処理
-	UpdateByType();
 
 	// HPゲージの位置更新
 	if (m_pHPGauge != nullptr)
@@ -442,16 +508,6 @@ void CEnemy::Update()
 		Kill();
 		Uninit();
 		return;
-	}
-
-	// バッグのリスト取得
-	CListManager<CSantaBag> BagList = CSantaBag::GetListObj();
-	CSantaBag* pBag = nullptr;
-
-	// リストループ
-	while (BagList.ListLoop(&pBag))
-	{
-		m_TargetPosition = pBag->GetPosition();
 	}
 
 	// 大人の壁
@@ -641,11 +697,6 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 			// 爆発再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_ENEMYEXPLOSION);
 
-			/*MyLib::Vector3 move = GetMove();
-			move.x = UtilFunc::Transformation::Random(-5, 5) + 20.0f;
-			move.y = UtilFunc::Transformation::Random(0, 5) + 15.0f;
-			move.z = UtilFunc::Transformation::Random(-5, 5) + 20.0f;
-			SetMove(move);*/
 			return true;
 		}
 
@@ -737,32 +788,74 @@ void CEnemy::CounterHitResponse()
 }
 
 //==========================================================================
-// 種類別更新処理
+// 通常行動
 //==========================================================================
-void CEnemy::UpdateByType()
+void CEnemy::ActDefault()
 {
-
+	// 攻撃実行処理
+	PerformAttack();
 }
 
 //==========================================================================
-// 行動更新
+// 待機行動
 //==========================================================================
-void CEnemy::UpdateAction()
+void CEnemy::ActWait()
 {
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
 
+	// 待機モーション設定
+	pMotion->Set(MOTION_DEF);
+
+	// ターゲットの方を向く
+	RotationTarget();
+
+	// 行動カウンター加算
+	m_fActTime += CManager::GetInstance()->GetDeltaTime();
+}
+
+//==========================================================================
+// 追い掛け
+//==========================================================================
+void CEnemy::ActChase(float moveMultiply, float catchLen)
+{
+	// 移動モーション
+	GetMotion()->Set(MOTION_WALK);
+
+	// 移動フラグを立てる
+	m_sMotionFrag.bMove = true;
+
+	// 情報取得
+	MyLib::Vector3 move = GetMove();
+	MyLib::Vector3 rot = GetRotation();
+	float fMove = GetVelocity();
+
+	// 移動量設定
+	move.x += sinf(D3DX_PI + rot.y) * fMove * moveMultiply;
+	move.z += cosf(D3DX_PI + rot.y) * fMove * moveMultiply;
+
+	// 移動量設定
+	SetMove(move);
+
+	// 追い着き判定
+	m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, catchLen, 0.0f);
 }
 
 //==========================================================================
 // ターゲットの方を向く
 //==========================================================================
-void CEnemy::RotationTarget()
+void CEnemy::RotationTarget(float range)
 {
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 	MyLib::Vector3 rot = GetRotation();
 
 	// 目標の角度を求める
-	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
+	float fRotDest = pos.AngleXZ(m_TargetPosition);
 
 	// 目標との差分
 	float fRotDiff = fRotDest - rot.y;
@@ -779,64 +872,10 @@ void CEnemy::RotationTarget()
 
 	// 目標の向き設定
 	SetRotDest(fRotDest);
-}
 
-//==========================================================================
-// プレイヤーとの距離を判定
-//==========================================================================
-bool CEnemy::CalcLenPlayer(float fLen)
-{
-	// プレイヤー情報
-	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-	if (pPlayer == nullptr)
-	{
-		return false;
-	}
 
-	return UtilFunc::Collision::CircleRange3D(GetPosition(), pPlayer->GetPosition(), fLen, pPlayer->GetRadius());
-}
-
-//==========================================================================
-// 移動方向を向く処理
-//==========================================================================
-void CEnemy::MoveRotation()
-{
-	// 必要な値を取得
-	MyLib::Vector3 rot = GetRotation();
-	MyLib::Vector3 move = GetMove();
-
-	// 方向を算出
-	float fRot = atan2f(-move.x, -move.z);
-
-	// 角度の正規化
-	UtilFunc::Transformation::RotNormalize(fRot);
-
-	// 角度の補正をする
-	rot.y += (fRot - rot.y) * 0.025f;
-
-	// 向き設定
-	SetRotation(rot);
-}
-
-//==========================================================================
-// 移動
-//==========================================================================
-void CEnemy::Move()
-{
-	// 移動フラグを立てる
-	m_sMotionFrag.bMove = true;
-
-	// 移動速度取得
-	float fMove = GetVelocity();
-
-	// 移動量を適用
-	MyLib::Vector3 move = GetMove();
-	move.x = sinf(m_fActCounter) * fMove;
-	move.z = cosf(m_fActCounter) * fMove;
-	SetMove(move);
-
-	// 方向転換
-	MoveRotation();
+	// 視界判定
+	m_bInSight = UtilFunc::Collision::CollisionViewRange3D(GetPosition(), m_TargetPosition, rot.y, range);
 }
 
 //==========================================================================
@@ -844,19 +883,15 @@ void CEnemy::Move()
 //==========================================================================
 void CEnemy::UpdateState()
 {
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 pos11 = MyLib::Vector3(GetObjectChara()->GetModel()[0]->GetWorldMtx()._41, GetObjectChara()->GetModel()[0]->GetWorldMtx()._42, GetObjectChara()->GetModel()[0]->GetWorldMtx()._43);
-
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
-
 	// 色設定
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_mMatcol.a);
 
 	// ダウンカウンター減算
 	m_fDownTime -= CManager::GetInstance()->GetDeltaTime();
-	UtilFunc::Transformation::ValueNormalize(m_fDownTime, TIME_DOWN, 0.0f);
+	if (m_fDownTime <= 0.0f)
+	{
+		m_fDownTime = 0.0f;
+	}
 
 	switch (m_state)
 	{
@@ -884,18 +919,6 @@ void CEnemy::UpdateState()
 		FadeOut();
 		break;
 
-	case STATE_PLAYERCHASE:
-		PlayerChase();
-		break;
-
-	case STATE_PARENTCHASE:
-		ParentChase();
-		break;
-
-	case STATE_ATTACK:
-		StateAttack();
-		break;
-
 	case STATE_WAIT:
 		StateWait();
 		break;
@@ -910,14 +933,6 @@ void CEnemy::UpdateState()
 		// 描画する
 		SetEnableDisp(true);
 	}
-}
-
-//==========================================================================
-// 種類別状態更新処理
-//==========================================================================
-void CEnemy::UpdateStateByType()
-{
-	return;
 }
 
 //==========================================================================
@@ -1140,417 +1155,11 @@ void CEnemy::FadeOut()
 	if (m_fStateTime >= nAllFrame)
 	{// 遷移カウンターがモーションを超えたら
 
-		// スコア加算の判定オフ
-		m_bAddScore = false;
-
 		// 敵の終了処理
 		Kill();
 		Uninit();
 		return;
 	}
-}
-
-//==========================================================================
-// プレイヤー追従
-//==========================================================================
-void CEnemy::PlayerChase()
-{
-	// 行動可能判定
-	m_bActionable = true;
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の向き取得
-	float fRotDest = GetRotDest();
-
-	// 移動量取得
-	float fMove = GetVelocity();
-
-	// 現在と目標の差分
-	float fRotDiff = 0.0f;
-
-	// 距離の判定
-	bool bLen = false;
-
-	// プレイヤー情報
-	CPlayer *pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-
-	// オブジェクト情報
-	CObject *pObj = nullptr;
-
-
-	// 状態遷移カウンター減算
-	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
-
-	if (m_fStateTime <= 0)
-	{// 遷移カウンターが0になったら
-		m_fStateTime = 0;
-	}
-
-	if (pPlayer != nullptr)
-	{// nullptrじゃないとき
-
-		// 親の位置取得
-		MyLib::Vector3 posPlayer = pPlayer->GetPosition();
-		CObject *pMyObj = GetObject();
-
-		// 目標の角度を求める
-		fRotDest = atan2f((pos.x - posPlayer.x), (pos.z - posPlayer.z));
-
-		// 目標との差分
-		fRotDiff = fRotDest - rot.y;
-
-		//角度の正規化
-		UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-		//角度の補正をする
-		rot.y += fRotDiff * 0.025f;
-
-		// 角度の正規化
-		UtilFunc::Transformation::RotNormalize(rot.y);
-
-		// 向き設定
-		SetRotation(rot);
-
-		// 攻撃状態移行処理
-		ChangeToAttackState();
-
-		// 向いてる方向にダッシュ
-		if (bLen == false)
-		{// 距離が保たれていたら
-
-			// 追い掛け移動処理
-			ChaseMove(fMove);
-		}
-
-		if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), 200.0f, PLAYER_SERCH) == false)
-		{// プレイヤーが視界から消えたら
-			m_state = STATE_NONE;
-		}
-	}
-
-	// 位置設定
-	SetPosition(pos);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
-}
-
-//==========================================================================
-// 親追従
-//==========================================================================
-void CEnemy::ParentChase()
-{
-	// 行動可能判定
-	m_bActionable = true;
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
-
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の向き取得
-	float fRotDest = GetRotDest();
-
-	// 移動量取得
-	float fMove = GetVelocity();
-
-	// 現在と目標の差分
-	float fRotDiff = 0.0f;
-
-	// 距離の判定
-	bool bLen = false;
-
-	// かなり離れてるかの判定
-	bool bLongDistance = true;
-
-	// オブジェクト情報
-	CObject *pObj = nullptr;
-
-
-	// 状態遷移カウンター減算
-	//m_fStateTime++;
-
-	if (m_fStateTime <= 0)
-	{// 遷移カウンターが0になったら
-		m_fStateTime = 0;
-	}
-
-	if (m_pParent != nullptr)
-	{// 親がいる場合
-
-		// 親の移動量取得
-		MyLib::Vector3 moveParent = m_pParent->GetMove();
-
-		// 親の位置取得
-		MyLib::Vector3 posParent = m_pParent->GetPosition();
-
-		// 親の向き取得
-		MyLib::Vector3 rotParent = m_pParent->GetRotation();
-
-		// 目標の位置
-		MyLib::Vector3 posDest;
-		posDest = posParent;
-
-		// 目標の角度を求める
-		fRotDest = atan2f((pos.x - posDest.x), (pos.z - posDest.z));
-
-		// 目標との差分
-		fRotDiff = fRotDest - rot.y;
-
-		//角度の正規化
-		UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-		//角度の補正をする
-		rot.y += fRotDiff * 0.025f;
-
-		// 角度の正規化
-		UtilFunc::Transformation::RotNormalize(rot.y);
-
-		// 向き設定
-		SetRotation(rot);
-
-		if (UtilFunc::Collision::CircleRange3D(pos, posDest, 25.0f, CHACE_DISTABCE) == true)
-			{// 一定距離間に親が入ったら
-				bLen = true;	// 長さ判定
-			}
-
-			// 向いてる方向にダッシュ
-			if (bLen == false)
-			{// 距離が保たれていたら
-
-				// 追い掛け移動処理
-				ChaseMove(fMove * 1.4f);
-			}
-
-	}
-	else
-	{// 自分自身が親の時
-
-		float fRotDiff = 0.0f;	// 現在と目標の差分
-
-		// 状態遷移カウンター更新
-		m_fStateTime = static_cast<float>((static_cast<int>(m_fStateTime) + 1) % 120);
-
-		// 目標の角度を求める
-		int stateTime = static_cast<int>(m_fStateTime);
-		if (stateTime == 0)
-		{
-			fRotDest = UtilFunc::Transformation::Random(-31, 31) * 0.1f;
-		}
-
-		// 目標との差分
-		fRotDiff = fRotDest - rot.y;
-
-		//角度の正規化
-		UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-		//角度の補正をする
-		rot.y += fRotDiff * 0.025f;
-
-		// 角度の正規化
-		UtilFunc::Transformation::RotNormalize(rot.y);
-
-		// 向き設定
-		SetRotation(rot);
-
-		// 追い掛け移動処理
-		ChaseMove(fMove);
-
-#if _DEBUG
-		// 色設定
-		m_mMatcol = D3DXCOLOR(1.0f, 0.5f, 1.0f, 1.0f);
-#endif
-	}
-
-	// プレイヤー追従の判定
-	TriggerChasePlayer();
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
-}
-
-//==========================================================================
-// 攻撃処理
-//==========================================================================
-void CEnemy::StateAttack()
-{
-	// 行動可能判定
-	m_bActionable = true;
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
-
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の向き取得
-	float fRotDest = GetRotDest();
-
-	// 移動量取得
-	float fMove = GetVelocity();
-
-	// 現在と目標の差分
-	float fRotDiff = 0.0f;
-
-	// 距離の判定
-	bool bLen = false;
-
-	// オブジェクト情報
-	CObject *pObj = nullptr;
-
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
-	{
-		return;
-	}
-	int nType = pMotion->GetType();
-
-	if (m_pParent != nullptr)
-	{// 親がいる場合
-
-		// 親も追い掛け状態にする
-		if (m_pParent->m_state != STATE_ATTACK)
-		{
-			if (m_pParent->m_state != STATE_DMG && m_pParent->m_state != STATE_DEAD)
-			{
-				m_pParent->m_state = STATE_PLAYERCHASE;
-				m_pParent->m_fStateTime = 60;
-			}
-
-			for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
-			{// 子の数分回す
-				if (m_pParent->m_pChild[nCntEnemy] == nullptr)
-				{
-					continue;
-				}
-
-				if (m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-				{
-					continue;
-				}
-
-				m_pParent->m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-				m_pParent->m_pChild[nCntEnemy]->m_fStateTime = 60;
-			}
-		}
-	}
-	else
-	{// 自分が親な場合
-
-		for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
-		{// 子の数分回す
-
-			if (m_pChild[nCntEnemy] == nullptr)
-			{// nullptrだったら
-				continue;
-			}
-
-			if (m_pChild[nCntEnemy]->m_state != STATE_ATTACK)
-			{// 攻撃状態の時
-
-				if (m_pChild[nCntEnemy]->m_state != STATE_DMG && m_pChild[nCntEnemy]->m_state != STATE_DEAD)
-				{
-					m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-					m_pChild[nCntEnemy]->m_fStateTime = 60;
-				}
-			}
-		}
-	}
-
-	// プレイヤー取得
-	CListManager<CPlayer> playerList = CPlayer::GetListObj();
-	CPlayer* pPlayer = nullptr;
-
-	// リストループ
-	while (playerList.ListLoop(&pPlayer))
-	{
-		if (nType == 0 && pPlayer != nullptr)
-		{// ニュートラルに戻れば
-
-			if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), 400.0f, PLAYER_SERCH) == false)
-			{// プレイヤーと離れすぎていたら
-
-				// 間隔をあける状態にする
-				m_state = STATE_NONE;
-				break;
-			}
-			else
-			{// まだ追える時
-
-				m_state = STATE_PLAYERCHASE;
-
-				if (m_pParent != nullptr)
-				{// 親がいる場合
-
-					// 親も追い掛け状態にする
-					if (m_pParent->m_state != STATE_DMG && m_pParent->m_state != STATE_DEAD)
-					{
-						m_pParent->m_state = STATE_PLAYERCHASE;
-					}
-
-					for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
-					{// 子の数分回す
-
-						if (m_pParent->m_pChild[nCntEnemy] == nullptr)
-						{
-							continue;
-						}
-
-						if (m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-						{
-							continue;
-						}
-
-						m_pParent->m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-					}
-				}
-				else
-				{// 自分が親な場合
-
-					for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
-					{// 子の数分回す
-
-						if (m_pChild[nCntEnemy] == nullptr)
-						{
-							continue;
-						}
-
-						if (m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-						{
-							continue;
-						}
-
-						m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-					}
-				}
-			}
-		}
-	}
-
-	// 位置設定
-	SetPosition(pos);
-
-	// 移動量設定
-	SetMove(move);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
 }
 
 //==========================================================================
@@ -1572,14 +1181,14 @@ void CEnemy::StateDown()
 	// 行動可能判定
 	m_bActionable = false;
 
-	// 色設定
-	m_mMatcol = D3DXCOLOR(1.0f, 0.5f, 0.1f, 1.0f);
-
 	if (m_fDownTime <= 0.0f)
 	{
 		m_state = STATE_NONE;
 		// 行動可能判定
 		m_bActionable = true;
+
+		// 行動抽選
+		DrawingRandomAction();
 		return;
 	}
 
@@ -1596,141 +1205,6 @@ void CEnemy::StateDown()
 		// ダウンモーション設定
 		pMotion->Set(MOTION_DOWN);
 	}
-}
-
-//==========================================================================
-// プレイヤー追従ONにするトリガー
-//==========================================================================
-void CEnemy::TriggerChasePlayer()
-{
-
-
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// プレイヤー取得
-	CListManager<CPlayer> playerList = CPlayer::GetListObj();
-	CPlayer* pPlayer = nullptr;
-
-	// リストループ
-	int i = 0;
-	while (playerList.ListLoop(&pPlayer))
-	{
-		float fRadius = PLAYER_SERCH;
-
-		if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), 200.0f, fRadius) == true)
-		{// プレイヤーが範囲に入れば
-			m_state = STATE_PLAYERCHASE;
-
-			if (m_pParent != nullptr)
-			{// 親がいる場合
-
-				// 親も追い掛け状態にする
-				if (m_pParent->m_state != STATE_DMG && m_pParent->m_state != STATE_DEAD)
-				{
-					m_pParent->m_state = STATE_PLAYERCHASE;
-				}
-
-				for (int nCntEnemy = 0; nCntEnemy < m_pParent->m_nNumChild; nCntEnemy++)
-				{// 子の数分回す
-
-					if (m_pParent->m_pChild[nCntEnemy] == nullptr)
-					{
-						continue;
-					}
-
-					if (m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pParent->m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-					{
-						continue;
-					}
-
-					// 自分の親の子もプレイヤー追い掛け状態
-					m_pParent->m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-				}
-			}
-			else
-			{// 自分が親な場合
-
-				for (int nCntEnemy = 0; nCntEnemy < m_nNumChild; nCntEnemy++)
-				{// 子の数分回す
-
-					if (m_pChild[nCntEnemy] == nullptr)
-					{
-						continue;
-					}
-
-					if (m_pChild[nCntEnemy]->m_state == STATE_DMG || m_pChild[nCntEnemy]->m_state == STATE_DEAD)
-					{
-						continue;
-					}
-
-					m_pChild[nCntEnemy]->m_state = STATE_PLAYERCHASE;
-				}
-			}
-
-			// 追い掛けるプレイヤーの番号設定
-			m_nTargetPlayerIndex = i;
-			break;
-		}
-
-		i++;	// インデックス加算
-	}
-
-}
-
-//==========================================================================
-// 攻撃状態移行処理
-//==========================================================================
-void CEnemy::ChangeToAttackState()
-{
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// プレイヤー取得
-	CListManager<CPlayer> playerList = CPlayer::GetListObj();
-	CPlayer* pPlayer = nullptr;
-
-	// リストループ
-	int i = 0;
-	while (playerList.ListLoop(&pPlayer))
-	{
-		// 親の位置取得
-		MyLib::Vector3 posPlayer = pPlayer->GetPosition();
-
-		if (UtilFunc::Collision::CircleRange3D(pos, posPlayer, 400.0f, pPlayer->GetRadius()) == true && m_sMotionFrag.bJump == false)
-		{// 一定距離間にプレイヤーが入ったら
-
-			// 攻撃状態にする
-			m_state = STATE_ATTACK;
-			m_sMotionFrag.bATK = true;
-
-			// 追い掛けるプレイヤーの番号設定
-			m_nTargetPlayerIndex = i;
-			break;
-		}
-
-		i++;
-	}
-}
-
-//==========================================================================
-// 追い掛け移動
-//==========================================================================
-void CEnemy::ChaseMove(float fMove)
-{
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
-
-	// 移動量加算
-	move.x += sinf(D3DX_PI + rot.y) * fMove;
-	move.z += cosf(D3DX_PI + rot.y) * fMove;
-
-	// 移動量設定
-	SetMove(move);
 }
 
 //==========================================================================
@@ -1902,30 +1376,6 @@ void CEnemy::Draw()
 }
 
 //==========================================================================
-// 元の向き
-//==========================================================================
-void CEnemy::SetOriginRotation(MyLib::Vector3 rot)
-{
-	m_rotOrigin = rot;
-}
-
-//==========================================================================
-// スポーン地点設定
-//==========================================================================
-void CEnemy::SetSpawnPosition(MyLib::Vector3 pos)
-{
-	m_posOrigin = pos;
-}
-
-//==========================================================================
-// スポーン地点取得
-//==========================================================================
-MyLib::Vector3 CEnemy::GetSpawnPosition()
-{
-	return m_posOrigin;
-}
-
-//==========================================================================
 // 状態設定
 //==========================================================================
 void CEnemy::SetState(STATE state)
@@ -1940,4 +1390,145 @@ CEnemy *CEnemy::GetEnemy()
 {
 	// 自分自身のポインタを取得
 	return this;
+}
+
+
+
+//==========================================================================
+// ステップの行動
+//==========================================================================
+void CEnemyBeforeAction::Action(CEnemy* boss)
+{
+	// モーション取得
+	CMotion* pMotion = boss->GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == m_nIdxMotion && pMotion->IsFinish() == true)
+	{// ステップ終了
+
+		// 次の行動設定
+		boss->ChangeNextAction();
+
+		// 待機モーション設定
+		pMotion->Set(CEnemy::MOTION_DEF);
+		return;
+	}
+
+	if (nType != m_nIdxMotion)
+	{
+		// モーション設定
+		pMotion->Set(m_nIdxMotion);
+	}
+}
+
+
+//==========================================================================
+// 攻撃処理
+//==========================================================================
+void CEnemyAttack::Attack(CEnemy* boss)
+{
+	// 攻撃が始まるまで向き合わせ
+	if (boss->GetMotion()->IsBeforeInAttack())
+	{
+		// ターゲットの方を向く
+		boss->RotationTarget();
+	}
+
+	// モーション取得
+	CMotion* pMotion = boss->GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == m_nIdxMotion && pMotion->IsFinish() == true)
+	{// 攻撃が終わってたら
+
+		// 次の行動抽選
+		boss->DrawingRandomAction();
+
+		// 待機モーション設定
+		pMotion->Set(CEnemy::MOTION_DEF);
+
+		return;
+	}
+
+	if (nType != m_nIdxMotion)
+	{
+		// モーション設定
+		pMotion->Set(m_nIdxMotion);
+	}
+}
+
+
+//==========================================================================
+// 近接攻撃の行動
+//==========================================================================
+void CEnemyProximity::Action(CEnemy* boss)
+{
+	bool bAct = true;	// 行動できるかのフラグ
+
+	// 視界内判定
+	if (!boss->IsCatchUp() ||
+		!boss->IsInSight())
+	{
+		// ターゲットの方を向く
+		boss->RotationTarget();
+		bAct = false;
+	}
+
+	// 範囲外時追従
+	if (!boss->IsCatchUp())
+	{
+		// 追い掛け
+		boss->ActChase(1.0f, m_fAttackLength);
+		bAct = false;
+	}
+
+	if (!bAct)
+	{
+		return;
+	}
+
+	// 攻撃前行動
+	if (!m_bBeforeAttackAction)
+	{
+		BeforeAttack(boss);
+	}
+
+	// 攻撃処理
+	if (m_bBeforeAttackAction)
+	{
+		Attack(boss);
+	}
+}
+
+//==========================================================================
+// 遠距離攻撃の行動
+//==========================================================================
+void CEnemyRemote::Action(CEnemy* boss)
+{
+	bool bAct = true;	// 行動できるかのフラグ
+
+	// 視界内判定
+	// ターゲットの方を向く
+	boss->RotationTarget(45.0f);
+	if (!boss->IsInSight())
+	{
+		// ターゲットの方を向く
+		boss->RotationTarget(45.0f);
+		bAct = false;
+	}
+
+	if (!bAct)
+	{
+		return;
+	}
+	// 攻撃処理
+	Attack(boss);
 }

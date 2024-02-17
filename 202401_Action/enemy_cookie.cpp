@@ -21,23 +21,11 @@ namespace
 }
 
 //==========================================================================
-// 関数ポインタ
-//==========================================================================
-CEnemyCookie::ACT_FUNC CEnemyCookie::m_ActFuncList[] =
-{
-	&CEnemyCookie::ActChase,			// 追い掛け
-	&CEnemyCookie::ActAttackProximity,	// 近接
-	&CEnemyCookie::ActWait,				// 待機
-};
-
-//==========================================================================
 // コンストラクタ
 //==========================================================================
 CEnemyCookie::CEnemyCookie(int nPriority) : CEnemy(nPriority)
 {
-	m_Action = ACTION_CHASE;	// 行動
-	m_fActTime = 0.0f;			// 行動カウンター
-	m_bCatchUp = false;			// 追い着き判定
+	
 }
 
 //==========================================================================
@@ -57,8 +45,16 @@ HRESULT CEnemyCookie::Init()
 	CEnemy::Init();
 
 	// 行動
-	m_Action = ACTION_PROXIMITY;
+	m_Action = ACTION_DEF;
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyNormalAttack());	// 通常攻撃
 
+	ChangeATKState(m_pAtkPattern[0]);
+
+	m_bCatchUp = false;
+	m_bInSight = false;
+
+	// モーションインデックス切り替え
+	m_pATKState->ChangeMotionIdx(this);
 	return S_OK;
 }
 
@@ -93,170 +89,6 @@ void CEnemyCookie::Update()
 
 	// 更新処理
 	CEnemy::Update();
-}
-
-//==========================================================================
-// 行動設定
-//==========================================================================
-void CEnemyCookie::ActionSet()
-{
-
-}
-
-//==========================================================================
-// 行動更新
-//==========================================================================
-void CEnemyCookie::UpdateAction()
-{
-	if (!m_bActionable)
-	{
-		return;
-	}
-
-	// 状態別処理
-	(this->*(m_ActFuncList[m_Action]))();
-}
-
-//==========================================================================
-// 待機
-//==========================================================================
-void CEnemyCookie::ActWait()
-{
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
-	{
-		return;
-	}
-
-	// 待機モーション設定
-	pMotion->Set(MOTION_DEF);
-
-	// ターゲットの方を向く
-	RotationTarget();
-
-	// 行動カウンター加算
-	m_fActTime += CManager::GetInstance()->GetDeltaTime();
-
-	if (TIME_WAIT <= m_fActTime)
-	{// 待機時間超えたら
-
-		// 近接攻撃
-		m_fActTime = 0.0f;
-		m_Action = ACTION_PROXIMITY;
-
-		// 追い着き判定
-		m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
-	}
-}
-
-
-//==========================================================================
-// 追い掛け
-//==========================================================================
-void CEnemyCookie::ActChase()
-{
-	// 移動フラグを立てる
-	m_sMotionFrag.bMove = true;
-
-	// ターゲットの方を向く
-	RotationTarget();
-
-	// 行動別移動処理
-	ChaseNormal();
-}
-
-//==========================================================================
-// 歩き追い掛け
-//==========================================================================
-void CEnemyCookie::ChaseNormal()
-{
-	// 情報取得
-	MyLib::Vector3 move = GetMove();
-	MyLib::Vector3 rot = GetRotation();
-	float fMove = GetVelocity();
-
-	// 移動量設定
-	move.x = sinf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
-	move.z = cosf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
-
-	// 移動量設定
-	SetMove(move);
-}
-
-//==========================================================================
-// 近接攻撃
-//==========================================================================
-void CEnemyCookie::ActAttackProximity()
-{
-	if (m_bCatchUp == false)
-	{// 追い着いてない時
-
-		// ターゲットの方を向く
-		RotationTarget();
-
-		// 移動フラグを立てる
-		m_sMotionFrag.bMove = true;
-
-		// 行動する為の行動別移動処理
-		ChaseNormal();
-
-		// 行動別移動処理
-		float fLength = 0.0f;
-		fLength = LENGTH_PUNCH;
-
-		// 追い着き判定
-		m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, fLength, 0.0f);
-	}
-	else
-	{// 攻撃の長さ内
-
-		// 攻撃フラグを立てる
-		m_sMotionFrag.bATK = true;
-
-		// ターゲットの方を向く
-		RotationTarget();
-
-		// 行動別移動処理
-		AttackPunch();
-	}
-}
-
-//==========================================================================
-// パンチ攻撃
-//==========================================================================
-void CEnemyCookie::AttackPunch()
-{
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
-	{
-		return;
-	}
-
-	int nType = pMotion->GetType();
-	if (nType == MOTION_PUNCH && pMotion->IsFinish() == true)
-	{// パンチ攻撃が終わってたら
-
-		// 待機行動
-		m_Action = ACTION_WAIT;
-
-		// 待機モーション設定
-		pMotion->Set(MOTION_DEF);
-
-		// 追い着いてない判定
-		m_bCatchUp = false;
-		return;
-	}
-
-	if (nType != MOTION_PUNCH)
-	{
-		// パンチモーション設定
-		pMotion->Set(MOTION_PUNCH);
-	}
-
-	// 攻撃フラグを立てる
-	m_sMotionFrag.bATK = true;
 }
 
 //==========================================================================
@@ -316,35 +148,6 @@ void CEnemyCookie::MotionSet()
 		//	pMotion->Set(MOTION_DEF);
 		//}
 	}
-}
-
-//==========================================================================
-// ターゲットの方を向く
-//==========================================================================
-void CEnemyCookie::RotationTarget()
-{
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の角度を求める
-	float fRotDest = atan2f((pos.x - m_TargetPosition.x), (pos.z - m_TargetPosition.z));
-
-	// 目標との差分
-	float fRotDiff = fRotDest - rot.y;
-
-	//角度の正規化
-	UtilFunc::Transformation::RotNormalize(fRotDiff);
-
-	//角度の補正をする
-	rot.y += fRotDiff * 0.1f;
-	UtilFunc::Transformation::RotNormalize(rot.y);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
 }
 
 //==========================================================================

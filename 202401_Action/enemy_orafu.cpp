@@ -24,23 +24,11 @@ namespace
 }
 
 //==========================================================================
-// 関数ポインタ
-//==========================================================================
-CEnemyOrafu::ACT_FUNC CEnemyOrafu::m_ActFuncList[] =
-{
-	&CEnemyOrafu::ActChase,			// 追い掛け
-	&CEnemyOrafu::ActAttackProximity,	// 近接
-	&CEnemyOrafu::ActWait,				// 待機
-};
-
-//==========================================================================
 // コンストラクタ
 //==========================================================================
 CEnemyOrafu::CEnemyOrafu(int nPriority) : CEnemy(nPriority)
 {
-	m_Action = ACTION_CHASE;	// 行動
-	m_fActTime = 0.0f;			// 行動カウンター
-	m_bCatchUp = false;			// 追い着き判定
+
 }
 
 //==========================================================================
@@ -60,8 +48,16 @@ HRESULT CEnemyOrafu::Init()
 	CEnemy::Init();
 
 	// 行動
-	m_Action = ACTION_PROXIMITY;
+	m_Action = ACTION_DEF;
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyNormalAttack());	// 通常攻撃
 
+	ChangeATKState(m_pAtkPattern[0]);
+
+	m_bCatchUp = false;
+	m_bInSight = false;
+
+	// モーションインデックス切り替え
+	m_pATKState->ChangeMotionIdx(this);
 	return S_OK;
 }
 
@@ -96,202 +92,6 @@ void CEnemyOrafu::Update()
 
 	// 更新処理
 	CEnemy::Update();
-}
-
-//==========================================================================
-// 行動設定
-//==========================================================================
-void CEnemyOrafu::ActionSet()
-{
-
-}
-
-//==========================================================================
-// 行動更新
-//==========================================================================
-void CEnemyOrafu::UpdateAction()
-{
-	if (!m_bActionable)
-	{
-		return;
-	}
-
-	// 状態別処理
-	(this->*(m_ActFuncList[m_Action]))();
-}
-
-//==========================================================================
-// 待機
-//==========================================================================
-void CEnemyOrafu::ActWait()
-{
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
-	{
-		return;
-	}
-
-	// 待機モーション設定
-	pMotion->Set(MOTION_DEF);
-
-	// ターゲットの方を向く
-	RotationTarget();
-
-	// 行動カウンター加算
-	m_fActTime += CManager::GetInstance()->GetDeltaTime();
-
-	if (TIME_WAIT <= m_fActTime)
-	{// 待機時間超えたら
-
-		// 近接攻撃
-		m_fActTime = 0.0f;
-		m_Action = ACTION_PROXIMITY;
-
-		// プレイヤー情報
-		CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-		if (pPlayer != nullptr)
-		{
-			m_TargetPosition = pPlayer->GetPosition();
-		}
-
-		// 追い着き判定
-		m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, LENGTH_PUNCH, 0.0f);
-	}
-}
-
-
-//==========================================================================
-// 追い掛け
-//==========================================================================
-void CEnemyOrafu::ActChase()
-{
-	// 移動フラグを立てる
-	m_sMotionFrag.bMove = true;
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// プレイヤー情報
-	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-	if (pPlayer == nullptr)
-	{
-		return;
-	}
-	m_TargetPosition = pPlayer->GetPosition();
-
-	// 円の判定
-	if (UtilFunc::Collision::CircleRange3D(GetPosition(), pPlayer->GetPosition(), LENGTH_PLAYERCHASE, 0.0f))
-	{
-
-	}
-
-	// ターゲットの方を向く
-	RotationTarget();
-
-	// 行動別移動処理
-	ChaseNormal();
-}
-
-//==========================================================================
-// 歩き追い掛け
-//==========================================================================
-void CEnemyOrafu::ChaseNormal()
-{
-	// 情報取得
-	MyLib::Vector3 move = GetMove();
-	MyLib::Vector3 rot = GetRotation();
-	float fMove = GetVelocity();
-
-	// 移動量設定
-	move.x = sinf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
-	move.z = cosf(D3DX_PI + rot.y) * fMove * VELOCITY_WALK;
-
-	// 移動量設定
-	SetMove(move);
-}
-
-//==========================================================================
-// 近接攻撃
-//==========================================================================
-void CEnemyOrafu::ActAttackProximity()
-{
-	if (m_bCatchUp == false)
-	{// 追い着いてない時
-
-		// 位置取得
-		MyLib::Vector3 pos = GetPosition();
-
-		// プレイヤー情報
-		CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-		if (pPlayer == nullptr)
-		{
-			return;
-		}
-		m_TargetPosition = pPlayer->GetPosition();
-
-		// ターゲットの方を向く
-		RotationTarget();
-
-		// 移動フラグを立てる
-		m_sMotionFrag.bMove = true;
-
-		// 行動する為の行動別移動処理
-		ChaseNormal();
-
-		// 行動別移動処理
-		float fLength = 0.0f;
-		fLength = LENGTH_PUNCH;
-
-		// 追い着き判定
-		m_bCatchUp = UtilFunc::Collision::CircleRange3D(GetPosition(), m_TargetPosition, fLength, 0.0f);
-	}
-	else
-	{// 攻撃の長さ内
-
-		// 攻撃フラグを立てる
-		m_sMotionFrag.bATK = true;
-
-		// 行動別移動処理
-		AttackPunch();
-	}
-}
-
-//==========================================================================
-// パンチ攻撃
-//==========================================================================
-void CEnemyOrafu::AttackPunch()
-{
-	// モーション取得
-	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
-	{
-		return;
-	}
-
-	int nType = pMotion->GetType();
-	if (nType == MOTION_PUNCH && pMotion->IsFinish() == true)
-	{// パンチ攻撃が終わってたら
-
-		// 待機行動
-		m_Action = ACTION_WAIT;
-
-		// 待機モーション設定
-		pMotion->Set(MOTION_DEF);
-
-		// 追い着いてない判定
-		m_bCatchUp = false;
-		return;
-	}
-
-	if (nType != MOTION_PUNCH)
-	{
-		// パンチモーション設定
-		pMotion->Set(MOTION_PUNCH);
-	}
-
-	// 攻撃フラグを立てる
-	m_sMotionFrag.bATK = true;
 }
 
 //==========================================================================
@@ -345,11 +145,6 @@ void CEnemyOrafu::MotionSet()
 			// 行動別設定処理
 			pMotion->Set(MOTION_PUNCH);
 		}
-		//else
-		//{
-		//	// ニュートラルモーション
-		//	pMotion->Set(MOTION_DEF);
-		//}
 	}
 }
 

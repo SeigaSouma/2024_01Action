@@ -23,8 +23,8 @@ public:
 	//=============================
 	enum CONTROLTYPE
 	{
-		CONTROLTYPE_DASH = 0,			// ダッシュ
-		CONTROLTYPE_ROCKON,		// ロックオン
+		CONTROLTYPE_DASH = 0,		// ダッシュ
+		CONTROLTYPE_ROCKON,			// ロックオン
 		CONTROLTYPE_CHANGETARGET,	// ターゲット切替
 		CONTROLTYPE_ATTACK_NORMAL,	// 通常攻撃
 		CONTROLTYPE_ATTACK_CHARGE,	// チャージ攻撃

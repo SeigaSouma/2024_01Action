@@ -22,6 +22,9 @@ class CEffect3D;
 class CEnemyFixedMoveManager;
 class CRockOnMarker;
 
+class CEnemyState;
+class CEnemyAttack;
+
 //==========================================================================
 // クラス定義
 //==========================================================================
@@ -58,11 +61,23 @@ public:
 	// 行動列挙
 	enum ACTION
 	{
-		ACTION_DEF = 0,	// 待機行動
-		ACTION_ATTACK,	// 攻撃行動
-		ACTION_SEARCH,	// 索敵行動
+		ACTION_DEF = 0,	// 通常行動
+		ACTION_WAIT,	// 待機行動
 		ACTION_MAX
 	};
+
+	enum MOTION
+	{
+		MOTION_DEF = 0,		// ニュートラルモーション
+		MOTION_WALK,		// 移動モーション
+		MOTION_ATK,			// 攻撃
+		MOTION_DMG,			// ダメージ
+		MOTION_DOWN,		// ダウン
+		MOTION_KNOCKBACK,	// やられモーション
+		MOTION_FADEOUT,		// フェードアウト
+		MOTION_MAX
+	};
+
 
 	CEnemy(int nPriority = mylib_const::ENEMY_PRIORITY);
 	virtual ~CEnemy();
@@ -74,6 +89,8 @@ public:
 	virtual void Update() override;
 	virtual void Draw() override;
 
+	virtual void Kill();	// 削除
+
 	void SetState(STATE state);		// 状態設定
 	STATE GetState() { return m_state; }
 	void SetStateTime(float time) { m_fStateTime = time; }	// 状態時間設定
@@ -82,24 +99,32 @@ public:
 	virtual void NormalHitResponse();	// ヒット時の反応
 	virtual void CounterHitResponse();	// ヒット時の反応
 
-	void SetSpawnPosition(MyLib::Vector3 pos);	// スポーン地点設定
-	MyLib::Vector3 GetSpawnPosition();	// スポーン地点取得
+	// ロックオン関連
 	void SetTargetPosition(MyLib::Vector3 pos) { m_TargetPosition = pos; }	// 目標の位置設定
 	void SetEnableRockOn(bool bSet) { m_bRockOnAccepting = bSet; }
 	bool IsRockOnAccept() { return m_bRockOnAccepting; }
 
+	// 攻撃状態切り替え
+	void ChangeATKState(CEnemyState* state);
+	void ChangeNextATKState(CEnemyState* state) { m_pNextATKState = state; }
+	CEnemyState* GetATKState() { return m_pATKState; }
+	CEnemyState* GetNextATKState() { return m_pNextATKState; }
 
-	// エフェクシア
-	Effekseer::Handle GetEfkHandle() { return m_pWeaponHandle; }
-	void SetEfkHandle(Effekseer::Handle handle) { m_pWeaponHandle = handle; }
+	void PerformAttack();		// 攻撃実行処理
+	void DrawingRandomAction();	// 攻撃ランダム抽選
+	void ChangeNextAction();	// 次の攻撃へ切り替え
+
+	virtual void ActChase(float moveMultiply, float catchLen);	// 追い掛け
+	virtual void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
+
+	bool IsCatchUp() { return m_bCatchUp; }	// 追い着き判定
+	bool IsInSight() { return m_bInSight; }	// 視界内判定
 
 	// モーション
 	void SetMotion(int motionIdx);	// モーションの設定
 
 	HRESULT RoadText(const char *pFileName);
-	virtual void Kill();	// 削除
 	void SetParent(CEnemy *pParent);		// 親のポインタ設定
-	void SetOriginRotation(MyLib::Vector3 rot);	// 元の向き
 	CEnemy *GetEnemy();
 	TYPE GetType() { return m_type; }	// 種類取得
 	static CListManager<CEnemy> GetListObj() { return m_List; }	// リスト取得
@@ -107,14 +132,9 @@ public:
 
 protected:
 
-	// 拠点位置の種類
-	enum eBaseType
-	{
-		BASETYPE_MAP = 0,	// マップに沿っている
-		BASETYPE_ORIGIN,	// 出現位置
-		BASETYPE_MAX
-	};
-
+	//=============================
+	// 構造体定義
+	//=============================
 	// モーションの判定
 	struct SMotionFrag
 	{
@@ -123,27 +143,19 @@ protected:
 		bool bKnockback;	// ノックバック中かどうか
 		bool bMove;			// 移動中かどうか
 		bool bCharge;		// チャージ中かどうか
+		SMotionFrag() : bJump(false), bATK(false), bKnockback(false), bMove(false), bCharge(false) {}
 	};
 
-	// 隊列の構造体定義
-	struct SFormationInfo
-	{
-		MyLib::Vector3 pos;	// 隊列の位置
-		float fAngle;		// 向き
-		float fLength;		// 長さ
-	};
-
+	//=============================
+	// メンバ関数
+	//=============================
 	virtual void ProcessLanding();	// 着地時処理
 	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
 	virtual void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
-	virtual void ChaseMove(float fMove);	// 追い掛け移動
-	virtual void RotationTarget();		// ターゲットの方を向く
-	virtual bool CalcLenPlayer(float fLen); // プレイヤーとの距離判定
-	virtual void MoveRotation();		// 移動方向を向く
-	virtual void Move();				// 移動
 
-	virtual void UpdateAction();		// 行動更新
-	virtual void ActionSet() = 0;		// 行動の設定
+	// 行動更新系
+	virtual void ActDefault();		// 通常行動
+	virtual void ActWait();		// 待機行動
 
 	// 状態更新系
 	virtual void StateNone();			// 何もない状態
@@ -152,24 +164,26 @@ protected:
 	virtual void Damage();				// ダメージ
 	virtual void Dead();				// 死亡
 	virtual void FadeOut();				// フェードアウト
-	virtual void PlayerChase();			// プレイヤー追従
-	virtual void ParentChase();			// 親追従
-	virtual void StateAttack();			// 攻撃処理
-	virtual void TriggerChasePlayer();	// プレイヤー追従ONにするトリガー
-	virtual void ChangeToAttackState();	// 攻撃状態移行処理
 	virtual void StateWait();			// 待機処理
 	virtual void StateDown();			// ダウン状態
+
+
+	//=============================
+	// メンバ変数
+	//=============================
+	ACTION m_Action;		// 行動
+	float m_fActTime;		// 行動カウンター
 
 	STATE m_state;							// 状態
 	STATE m_Oldstate;						// 前回の状態
 	float m_fStateTime;						// 状態カウンター
 	int m_nTargetPlayerIndex;				// 追い掛けるプレイヤーのインデックス番号
-	float m_fActCounter;					// 移動カウンター
 	bool m_bActionable;						// 行動可能か
 	float m_fDownTime;						// ダウンカウンター
 	float m_fRockOnDistance;				// ロックオンの距離
 	bool m_bRockOnAccepting;				// ロックオン受付
-	MyLib::Vector3 m_posOrigin;				// 最初の位置
+	bool m_bCatchUp;						// 追い着き判定
+	bool m_bInSight;						// 視界内判定
 	MyLib::Vector3 m_posKnokBack;			// ノックバックの位置
 	SMotionFrag m_sMotionFrag;				// モーションのフラグ
 	CHP_Gauge *m_pHPGauge;					// HPゲージの情報
@@ -177,23 +191,21 @@ protected:
 	D3DXCOLOR m_mMatcol;					// マテリアルの色
 	MyLib::Vector3 m_TargetPosition;		// 目標の位置
 	Effekseer::Handle m_pWeaponHandle;		// エフェクトの武器ハンドル
-private:
 
-	enum MOTION
-	{
-		MOTION_DEF = 0,		// ニュートラルモーション
-		MOTION_WALK,		// 移動モーション
-		MOTION_ATK,			// 攻撃
-		MOTION_DMG,			// ダメージ
-		MOTION_DOWN,		// ダウン
-		MOTION_KNOCKBACK,	// やられモーション
-		MOTION_FADEOUT,		// 土帰還
-		MOTION_MAX
-	};
+	CEnemyState* m_pATKState;		// 今の行動ポインタ
+	CEnemyState* m_pNextATKState;	// 次の行動ポインタ
+	std::vector<CEnemyAttack*> m_pAtkPattern;	// 攻撃の種類
+
+private:
 	
+	//=============================
+	// 関数リスト
+	//=============================
+	typedef void(CEnemy::* ACT_FUNC)();
+	static ACT_FUNC m_ActFuncList[];	// 行動関数リスト
+
+
 	void UpdateState();					// 状態更新処理
-	virtual void UpdateStateByType();	// 種類別状態更新処理
-	virtual void UpdateByType();		// 種類別更新処理
 	void Collision();					// 当たり判定
 	virtual void MotionSet() = 0;		// モーションの設定
 	void RegistrChild(CEnemy *pChild);
@@ -204,17 +216,194 @@ private:
 	// メンバ変数
 	//=============================
 	TYPE m_type;			// 種類
-	SFormationInfo m_sFormationInfo;	// 隊列の情報
-	MyLib::Vector3 m_rotOrigin;	// 最初の向き
-	int m_nTexIdx;				// テクスチャのインデックス番号
 	int m_nNumChild;			// 子の数
-	bool m_bAddScore;			// スコア加算するかの判定
-	int m_nBallastEmission;		// 瓦礫の発生カウンター
 	CEnemy *m_pChild[mylib_const::MAX_ENEMY];	// 子のポインタ
 	CShadow *m_pShadow;			// 影の情報
 	CRockOnMarker* m_pRockOnMarker;		// ロックオンマーカー
 	static CListManager<CEnemy> m_List;	// リスト
 };
+
+
+
+//=============================
+// エネミーステート
+//=============================
+class CEnemyState
+{
+public:
+	CEnemyState() : m_nIdxMotion(0), m_bCreateFirstTime(false), m_bBeforeAttackAction(false) {}
+
+	virtual void Action(CEnemy* boss) = 0;	// 行動
+	virtual void Attack(CEnemy* boss) = 0;	// 攻撃処理
+	virtual void ChangeMotionIdx(CEnemy* boss)
+	{
+		// 派生クラスでインデックス設定されてる前提
+		boss->SetMotion(m_nIdxMotion);
+		m_bBeforeAttackAction = false;	// 攻撃前行動フラグ
+	}
+
+
+	virtual void BeforeAttack(CEnemy* boss) { m_bBeforeAttackAction = true; }	// 攻撃前処理
+
+	bool IsCreateFirstTime() { return m_bCreateFirstTime; }	// 初回生成のフラグ
+
+protected:
+	int m_nIdxMotion;			// モーション番号
+	bool m_bCreateFirstTime;	// 初回生成のフラグ
+	bool m_bBeforeAttackAction;	// 攻撃前行動フラグ
+};
+
+//=============================
+// 行動前アクション
+//=============================
+class CEnemyBeforeAction : public CEnemyState
+{
+public:
+
+	CEnemyBeforeAction() {}
+
+	virtual void Action(CEnemy* boss) override;		// 行動
+	virtual void Attack(CEnemy* boss) override {}	// 攻撃処理
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		CEnemyState::ChangeMotionIdx(boss);
+	}
+};
+
+
+//=============================
+// 攻撃クラス
+//=============================
+class CEnemyAttack : public CEnemyState
+{
+public:
+
+	CEnemyAttack() : m_bWillDirectlyTrans(true)
+	{
+		m_bCreateFirstTime = true;
+	}
+
+	virtual void Action(CEnemy* boss) override = 0;	// 行動
+	virtual void Attack(CEnemy* boss) override;	// 攻撃処理
+
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		CEnemyState::ChangeMotionIdx(boss);
+	}
+
+	// 遷移前処理
+	virtual void BeforeTransitionProcess(CEnemy* boss)
+	{
+		boss->RotationTarget();
+		boss->ActChase(1.0f, 600.0f);
+	}	// 遷移前処理
+
+	bool IsDirectlyTrans() { return m_bWillDirectlyTrans; }	// 直接遷移フラグ取得
+
+
+protected:
+	bool m_bWillDirectlyTrans;	// 直接遷移フラグ
+};
+
+//=============================
+// 近接攻撃
+//=============================
+class CEnemyProximity : public CEnemyAttack
+{
+public:
+
+	CEnemyProximity() : m_fAttackLength(200.0f) {}
+	CEnemyProximity(float len) : m_fAttackLength(len) {}
+
+	virtual void Action(CEnemy* boss) override;	// 行動
+	virtual void ChangeMotionIdx(CEnemy* boss) override = 0;	// モーションインデックス切り替え
+
+protected:
+	float m_fAttackLength;	// 攻撃可能な間合い
+
+};
+
+//=============================
+// 遠距離攻撃
+//=============================
+class CEnemyRemote : public CEnemyAttack
+{
+public:
+	CEnemyRemote() {}
+
+	virtual void Action(CEnemy* boss) override;	// 行動
+	virtual void ChangeMotionIdx(CEnemy* boss) override = 0;	// モーションインデックス切り替え
+};
+
+
+
+namespace UtilFunc
+{
+	namespace Transformation
+	{
+		int Random(int nMinNum, int nMaxNum);
+	}
+}
+
+//=============================
+// 近接群
+//=============================
+// 通常攻撃
+class CEnemyNormalAttack : public CEnemyProximity
+{
+public:
+	CEnemyNormalAttack() { m_bWillDirectlyTrans = true; }
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemy::MOTION_ATK;
+		CEnemyAttack::ChangeMotionIdx(boss);
+
+		// 直接遷移する
+		m_bWillDirectlyTrans = true;
+	}
+};
+
+// 強攻撃
+class CEnemyStrongAttack : public CEnemyProximity
+{
+public:
+	CEnemyStrongAttack() { m_bWillDirectlyTrans = false; }
+
+	// 行動
+	virtual void Action(CEnemy* boss) override
+	{
+		Attack(boss);
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemy::MOTION_ATK;
+		CEnemyAttack::ChangeMotionIdx(boss);
+
+		// 直接遷移しない
+		m_bWillDirectlyTrans = false;
+	}
+
+	// 遷移前処理
+	virtual void BeforeTransitionProcess(CEnemy* boss) override
+	{
+		// 挟む行動を設定
+		boss->ChangeATKState(DEBUG_NEW CEnemyBeforeAction());
+		boss->GetATKState()->ChangeMotionIdx(boss);
+	}
+
+};
+
+//=============================
+// 遠距離群
+//=============================
 
 
 
