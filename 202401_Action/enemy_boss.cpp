@@ -58,11 +58,11 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_bInSight = false;			// 視界内判定
 	m_pBossHPGauge = nullptr;	// ボスのHPゲージ
 
-	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
-	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
 	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
-	m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());			// 下B
-	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());			// 下B
+	//m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
 }
 
 //==========================================================================
@@ -85,7 +85,8 @@ HRESULT CEnemyBoss::Init()
 	m_pBossHPGauge = CHP_GaugeBoss::Create(MyLib::Vector3(640.0f, 50.0f, 0.0f), GetLifeOrigin());	// ボスのHPゲージ
 	m_pBossHPGauge->SetLife(0);
 
-	m_fRockOnDistance = 700.0f;	// ロックオンの距離
+	// ロックオンの距離
+	m_fRockOnDistance = 700.0f;
 
 	// 黒フレーム捌ける
 	//CManager::GetInstance()->GetBlackFrame()->SetState(CBlackFrame::STATE_OUT);

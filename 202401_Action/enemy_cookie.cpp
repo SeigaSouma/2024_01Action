@@ -48,12 +48,15 @@ HRESULT CEnemyCookie::Init()
 	m_Action = ACTION_DEF;
 	m_pAtkPattern.push_back(DEBUG_NEW CEnemyNormalAttack());	// 通常攻撃
 
-	ChangeATKState(m_pAtkPattern[0]);
+	// ロックオンの距離
+	m_fRockOnDistance = 400.0f;
 
+	// 視界・追い着きフラグリセット
 	m_bCatchUp = false;
 	m_bInSight = false;
 
-	// モーションインデックス切り替え
+	// 攻撃切り替え
+	ChangeATKState(m_pAtkPattern[0]);
 	m_pATKState->ChangeMotionIdx(this);
 	return S_OK;
 }

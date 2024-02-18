@@ -2345,7 +2345,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "stonegoleme.png";
+    "data\\TEXTURE\\enemy\\stonegolem\\stonegoleme.png";
    }
   }
  }

@@ -35,9 +35,9 @@ public:
 	// 敵種類
 	enum TYPE
 	{
-		TYPE_BOSS = 0,	// ボス
-		TYPE_COOKIE,	// クッキー
-		TYPE_ORAFU,		// オラフ
+		TYPE_BOSS = 0,		// ボス
+		TYPE_STONEGOLEM,	// ストーンゴーレム
+		TYPE_GOBELIN,		// ゴブリン
 		TYPE_MAX
 	};
 
@@ -116,7 +116,9 @@ public:
 	virtual void ActChase(float moveMultiply, float catchLen);	// 追い掛け
 	virtual void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
 
+	void ToggleCatchUp(bool catchUp) { m_bCatchUp = catchUp; }	// 追い着き判定
 	bool IsCatchUp() { return m_bCatchUp; }	// 追い着き判定
+	void ToggleInSight(bool inSight) { m_bInSight = inSight; }	// 視界内判定
 	bool IsInSight() { return m_bInSight; }	// 視界内判定
 
 	// モーション
@@ -288,14 +290,27 @@ class CEnemyAttack : public CEnemyState
 {
 public:
 
-	CEnemyAttack() : m_bWillDirectlyTrans(true)
+	CEnemyAttack() : 
+		m_bWillDirectlyTrans(true), 
+		m_bSetAngleBeforeAttack(true), 
+		m_bSetAngleNotAttacking(false), 
+		m_bChainAttack(false), 
+		m_pChainAttackPtr(nullptr)
 	{
 		m_bCreateFirstTime = true;
 	}
 
-	virtual void Action(CEnemy* boss) override = 0;	// 行動
-	virtual void Attack(CEnemy* boss) override;	// 攻撃処理
+	~CEnemyAttack()
+	{
+		if (m_pChainAttackPtr != nullptr)
+		{
+			delete m_pChainAttackPtr;
+			m_pChainAttackPtr = nullptr;
+		}
+	}
 
+	virtual void Action(CEnemy* boss) override = 0;	// 行動
+	virtual void Attack(CEnemy* boss) override;		// 攻撃処理
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* boss) override
@@ -314,7 +329,34 @@ public:
 
 
 protected:
-	bool m_bWillDirectlyTrans;	// 直接遷移フラグ
+
+	// 連続攻撃設定
+	void SetChainAttack(CEnemyAttack* pAttack)
+	{
+		m_bChainAttack = true;
+		m_pChainAttackPtr = pAttack;
+	}
+
+	// 連続攻撃の行動へ切替
+	void ChangeChainAttack(CEnemy* boss)
+	{
+		if (m_pChainAttackPtr == nullptr)
+		{
+			return;
+		}
+		boss->ChangeATKState(m_pChainAttackPtr);
+		m_pChainAttackPtr->ChangeMotionIdx(boss);
+
+		// 視界内・追い着き判定
+		boss->ToggleCatchUp(true);
+		boss->ToggleInSight(true);
+	}
+
+	bool m_bWillDirectlyTrans;		// 直接遷移フラグ
+	bool m_bSetAngleBeforeAttack;	// 攻撃前向き合わせフラグ
+	bool m_bSetAngleNotAttacking;	// 攻撃判定外向き合わせフラグ
+	bool m_bChainAttack;			// 連続攻撃フラグ
+	CEnemyAttack* m_pChainAttackPtr;// 連続攻撃のポインタ
 };
 
 // 近接攻撃

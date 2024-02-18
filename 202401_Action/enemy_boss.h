@@ -200,7 +200,11 @@ namespace UtilFunc
 class CBossSideSwipeCombo : public CEnemyProximity
 {
 public:
-	CBossSideSwipeCombo() : CEnemyProximity(600.0f) { m_bWillDirectlyTrans = true; }
+	CBossSideSwipeCombo() : CEnemyProximity(600.0f) 
+	{ 
+		m_bWillDirectlyTrans = true; 
+		m_bSetAngleNotAttacking = true;	// 攻撃判定外向き合わせフラグ
+	}
 	virtual void BeforeAttack(CEnemy* enemy) override;	// 攻撃前処理
 
 	// モーションインデックス切り替え
@@ -231,7 +235,10 @@ public:
 class CBossOverHead : public CEnemyProximity
 {
 public:
-	CBossOverHead() : CEnemyProximity(600.0f) { m_bWillDirectlyTrans = true; }
+	CBossOverHead() : CEnemyProximity(600.0f) 
+	{ 
+		m_bWillDirectlyTrans = true;
+	}
 
 	//virtual void BeforeAttack(CEnemy* enemy) override;	// 攻撃前処理
 
@@ -249,7 +256,11 @@ public:
 class CBossHandSlap : public CEnemyProximity
 {
 public:
-	CBossHandSlap() : CEnemyProximity(600.0f) { m_bWillDirectlyTrans = true; }
+	CBossHandSlap() : CEnemyProximity(600.0f)
+	{
+		m_bWillDirectlyTrans = true;
+		m_bSetAngleNotAttacking = true;	// 攻撃判定外向き合わせフラグ
+	}
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* enemy) override

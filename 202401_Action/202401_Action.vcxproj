@@ -182,7 +182,7 @@
     <ClCompile Include="enemy_boss.cpp" />
     <ClCompile Include="enemy_cookie.cpp" />
     <ClCompile Include="enemy_gobelin.cpp" />
-    <ClCompile Include="enemy_orafu.cpp" />
+    <ClCompile Include="enemy_stonegolem.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fog.cpp" />
@@ -323,7 +323,7 @@
     <ClInclude Include="enemy_boss.h" />
     <ClInclude Include="enemy_cookie.h" />
     <ClInclude Include="enemy_gobelin.h" />
-    <ClInclude Include="enemy_orafu.h" />
+    <ClInclude Include="enemy_stonegolem.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="fog.h" />

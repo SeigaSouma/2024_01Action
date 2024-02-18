@@ -88,6 +88,8 @@ public:
 	bool IsGetCancelable() { return m_bCancelable; }	// キャンセルの判定取得
 	bool IsGetCombiable() { return m_bCombiable; }	// キャンセルの判定取得
 	bool IsBeforeInAttack() { return m_bBeforeInAction; }		// 攻撃前フラグ取得
+	bool IsAttacking() { return m_bAttaking; }					// 攻撃判定中フラグ取得
+	bool IsAllAfterAttack() { return m_bAllAfterAttack; }		// 全ての攻撃後フラグ取得
 	void SetSlowFactor(float fFactor);			// 遅延係数の設定
 
 	bool IsImpactFrame(AttackInfo attackInfo);	// 衝撃のフレームかどうか取得
@@ -149,6 +151,8 @@ private:
 	bool m_bCancelable;			// キャンセル可能か
 	bool m_bCombiable;			// コンボ可能か
 	bool m_bBeforeInAction;		// 攻撃前フラグ
+	bool m_bAttaking;			// 攻撃判定中フラグ
+	bool m_bAllAfterAttack;		// 全ての攻撃後フラグ
 
 	CObjectChara *m_pObjChara;	// オブジェクトキャラクターのポインタ
 	CModel **m_ppModel;			// モデルのポインタ

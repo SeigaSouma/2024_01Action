@@ -39,6 +39,9 @@ CMotion::CMotion()
 	m_bCancelable = false;	// キャンセル可能か
 	m_bCombiable = false;	// コンボ可能か
 	m_bBeforeInAction = false;		// 攻撃前フラグ
+	m_bAttaking = false;			// 攻撃判定中フラグ
+	m_bAllAfterAttack = false;		// 全ての攻撃後フラグ
+
 	m_pObjChara = nullptr;		// オブジェクトのポインタ
 	m_ppModel = nullptr;		// モデルのポインタ
 	m_nNumModel = 0;		// モデルの総数
@@ -271,6 +274,9 @@ void CMotion::ResetPose(int nType)
 //==========================================================================
 void CMotion::Update(float fBuff)
 {
+
+	// 攻撃判定中フラグリセット
+	m_bAttaking = false;
 
 	// 攻撃情報の総数取得
 	int nNumAttackInfo = m_pInfo[m_nType].nNumAttackInfo;
@@ -556,6 +562,47 @@ void CMotion::Update(float fBuff)
 	// フレームのカウントを加算
 	m_fCntFrame += 1.0f * fBuff;
 	m_fCntAllFrame += 1.0f * fBuff;
+	m_bAllAfterAttack = false;		// 全ての攻撃後フラグ
+
+	// 攻撃の最大フレーム
+	float maxFrame = -1.0f;
+
+	// 攻撃判定中フラグ設定
+	for (int nCntAttack = 0; nCntAttack < m_pInfo[m_nType].nNumAttackInfo; nCntAttack++)
+	{
+		AttackInfo* pAttack = m_pInfo[m_nType].AttackInfo[nCntAttack];
+		if (pAttack == nullptr)
+		{
+			continue;
+		}
+
+		if (pAttack->nMaxCnt == 0)
+		{
+			continue;
+		}
+
+		// 攻撃の最大フレーム
+		if (maxFrame < static_cast<float>(pAttack->nMaxCnt))
+		{
+			maxFrame = static_cast<float>(pAttack->nMaxCnt);
+		}
+
+		if (maxFrame < m_fCntAllFrame)
+		{
+			m_bAllAfterAttack = true;
+		}
+		else
+		{
+			m_bAllAfterAttack = false;
+		}
+
+		// 攻撃判定
+		if (m_fCntAllFrame >= static_cast<float>(pAttack->nMinCnt) && m_fCntAllFrame <= maxFrame)
+		{
+			m_bAttaking = true;
+		}
+	}
+
 
 	if (m_pInfo[m_nType].nCombolableFrame != -1 &&
 		m_pInfo[m_nType].nCombolableFrame <= m_fCntAllFrame)
@@ -670,6 +717,8 @@ void CMotion::Set(int nType, bool bBlend)
 	m_bCancelable = false;	// キャンセル可能か
 	m_bCombiable = false;	// コンボ可能か
 	m_bBeforeInAction = true;		// 攻撃前フラグ
+	m_bAttaking = false;			// 攻撃判定中フラグ
+	m_bAllAfterAttack = false;		// 全ての攻撃後フラグ
 
 	for (int nCntKey = 0; nCntKey < m_pInfo[m_nPatternKey].nNumKey; nCntKey++)
 	{

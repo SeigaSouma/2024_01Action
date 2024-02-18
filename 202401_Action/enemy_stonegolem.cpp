@@ -1,16 +1,14 @@
 //==========================================================================
 // 
-//  オラフ敵処理 [enemy_orafu.cpp]
+//  ストーンゴーレム敵処理 [enemy_stonegolem.cpp]
 //  Author : 相馬靜雅
 // 
 //==========================================================================
-#include "enemy_orafu.h"
+#include "enemy_stonegolem.h"
 #include "manager.h"
 #include "debugproc.h"
 #include "calculation.h"
 #include "particle.h"
-#include "santabag.h"
-#include "player.h"
 
 //==========================================================================
 // 定数定義
@@ -18,23 +16,22 @@
 namespace
 {
 	const float LENGTH_PUNCH = 110.0f;		// パンチの長さ
-	const float LENGTH_PLAYERCHASE = 600.0f;	// プレイヤー追いかける距離
 	const float VELOCITY_WALK = 1.0f;		// 歩き
-	const float TIME_WAIT = 2.0f;			// 待機
+	const float TIME_WAIT = 0.1f;			// 待機
 }
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CEnemyOrafu::CEnemyOrafu(int nPriority) : CEnemy(nPriority)
+CEnemyGolem::CEnemyGolem(int nPriority) : CEnemy(nPriority)
 {
-
+	
 }
 
 //==========================================================================
 // デストラクタ
 //==========================================================================
-CEnemyOrafu::~CEnemyOrafu()
+CEnemyGolem::~CEnemyGolem()
 {
 
 }
@@ -42,22 +39,25 @@ CEnemyOrafu::~CEnemyOrafu()
 //==========================================================================
 // 初期化処理
 //==========================================================================
-HRESULT CEnemyOrafu::Init()
+HRESULT CEnemyGolem::Init()
 {
 	//初期化処理
 	CEnemy::Init();
 
 	// 行動
 	m_Action = ACTION_DEF;
-	m_pAtkPattern.push_back(DEBUG_NEW CEnemyNormalAttack());	// 通常攻撃
-	m_pAtkPattern.push_back(DEBUG_NEW CEnemyStrongAttack());	// 通常攻撃
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemUPSwipe());	// 通常攻撃
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemSideSwipe());	// 通常攻撃
 
-	ChangeATKState(m_pAtkPattern[0]);
+	// ロックオンの距離
+	m_fRockOnDistance = 400.0f;
 
+	// 視界・追い着きフラグリセット
 	m_bCatchUp = false;
 	m_bInSight = false;
 
-	// モーションインデックス切り替え
+	// 攻撃切り替え
+	ChangeATKState(m_pAtkPattern[0]);
 	m_pATKState->ChangeMotionIdx(this);
 	return S_OK;
 }
@@ -65,7 +65,7 @@ HRESULT CEnemyOrafu::Init()
 //==========================================================================
 // 終了処理
 //==========================================================================
-void CEnemyOrafu::Uninit()
+void CEnemyGolem::Uninit()
 {
 	// 終了処理
 	CEnemy::Uninit();
@@ -74,7 +74,7 @@ void CEnemyOrafu::Uninit()
 //==========================================================================
 // 殺す
 //==========================================================================
-void CEnemyOrafu::Kill()
+void CEnemyGolem::Kill()
 {
 	// 死亡処理
 	CEnemy::Kill();
@@ -83,7 +83,7 @@ void CEnemyOrafu::Kill()
 //==========================================================================
 // 更新処理
 //==========================================================================
-void CEnemyOrafu::Update()
+void CEnemyGolem::Update()
 {
 	// 死亡の判定
 	if (IsDeath() == true)
@@ -98,7 +98,7 @@ void CEnemyOrafu::Update()
 //==========================================================================
 // 描画処理
 //==========================================================================
-void CEnemyOrafu::Draw()
+void CEnemyGolem::Draw()
 {
 	// 描画処理
 	CEnemy::Draw();
@@ -107,11 +107,11 @@ void CEnemyOrafu::Draw()
 //==========================================================================
 // モーションセット
 //==========================================================================
-void CEnemyOrafu::MotionSet()
+void CEnemyGolem::MotionSet()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
+	if (pMotion == NULL)
 	{
 		return;
 	}
@@ -137,26 +137,17 @@ void CEnemyOrafu::MotionSet()
 			// やられモーション
 			pMotion->Set(MOTION_KNOCKBACK);
 		}
-		else if (m_sMotionFrag.bATK == true)
-		{// 攻撃していたら
-
-			// 攻撃判定OFF
-			m_sMotionFrag.bATK = false;
-
-			// 行動別設定処理
-			pMotion->Set(MOTION_PUNCH);
-		}
 	}
 }
 
 //==========================================================================
 // 攻撃時処理
 //==========================================================================
-void CEnemyOrafu::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
+void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
+	if (pMotion == NULL)
 	{
 		return;
 	}
@@ -169,25 +160,19 @@ void CEnemyOrafu::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 	MyLib::Vector3 pos = GetPosition();
 	MyLib::Vector3 rot = GetRotation();
 
-	// モーション別処理
-	switch (nMotionType)
-	{
-	case MOTION_PUNCH:
-		break;
-	}
 }
 
 //==========================================================================
 // 攻撃判定中処理
 //==========================================================================
-void CEnemyOrafu::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
+void CEnemyGolem::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 {
 	// 基底の攻撃判定中処理
 	CEnemy::AttackInDicision(pATKInfo, nCntATK);
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == nullptr)
+	if (pMotion == NULL)
 	{
 		return;
 	}
@@ -196,10 +181,4 @@ void CEnemyOrafu::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	int nMotionType = pMotion->GetType();
 	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), *pATKInfo);
 
-	// モーション別処理
-	switch (nMotionType)
-	{
-	case MOTION_PUNCH:
-		break;
-	}
 }

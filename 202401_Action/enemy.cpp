@@ -30,8 +30,8 @@
 
 // 子クラス
 #include "enemy_boss.h"
-#include "enemy_cookie.h"
-#include "enemy_orafu.h"
+#include "enemy_gobelin.h"
+#include "enemy_stonegolem.h"
 
 //==========================================================================
 // 定数定義
@@ -92,7 +92,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 
 	m_Action = ACTION_DEF;		// 行動
 	m_fActTime = 0.0f;			// 行動カウンター
-	m_fStrongAttackTime = 0.0f;// 強攻撃のタイマー
+	m_fStrongAttackTime = 0.0f;	// 強攻撃のタイマー
 	m_fStateTime = 0.0f;		// 状態遷移カウンター
 	m_nNumChild = 0;			// 子の数
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
@@ -130,59 +130,53 @@ CEnemy::~CEnemy()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CEnemy *CEnemy::Create(const char *pFileName, MyLib::Vector3 pos, TYPE type)
+CEnemy* CEnemy::Create(const char* pFileName, MyLib::Vector3 pos, TYPE type)
 {
 	// 生成用のオブジェクト
-	CEnemy *pEnemy = nullptr;
+	CEnemy* pEnemy = nullptr;
 
-	if (pEnemy == nullptr)
-	{// nullptrだったら
+	// メモリの確保
+	switch (type)
+	{
+	case TYPE_BOSS:
+		pEnemy = DEBUG_NEW CEnemyBoss;
+		break;
 
-		// メモリの確保
-		switch (type)
-		{
-		case TYPE_BOSS:
-			pEnemy = DEBUG_NEW CEnemyBoss;
-			break;
+	case TYPE_STONEGOLEM:
+		pEnemy = DEBUG_NEW CEnemyGolem;
+		break;
 
-		case TYPE_COOKIE:
-			pEnemy = DEBUG_NEW CEnemyCookie;
-			break;
+	case TYPE_GOBELIN:
+		pEnemy = DEBUG_NEW CEnemyGobelin;
+		break;
 
-		case TYPE_ORAFU:
-			pEnemy = DEBUG_NEW CEnemyOrafu;
-			break;
-
-		default:
-			return nullptr;
-			break;
-		}
-
-		if (pEnemy != nullptr)
-		{// メモリの確保が出来ていたら
-
-			// 種類
-			pEnemy->m_type = type;
-
-			// 位置設定
-			pEnemy->SetPosition(pos);
-			pEnemy->SetOriginPosition(pos);
-
-			// テキスト読み込み
-			HRESULT hr = pEnemy->RoadText(pFileName);
-			if (FAILED(hr))
-			{// 失敗していたら
-				return nullptr;
-			}
-
-			// 初期化処理
-			pEnemy->Init();
-		}
-
-		return pEnemy;
+	default:
+		return nullptr;
+		break;
 	}
 
-	return nullptr;
+	if (pEnemy != nullptr)
+	{// メモリの確保が出来ていたら
+
+		// 種類
+		pEnemy->m_type = type;
+
+		// 位置設定
+		pEnemy->SetPosition(pos);
+		pEnemy->SetOriginPosition(pos);
+
+		// テキスト読み込み
+		HRESULT hr = pEnemy->RoadText(pFileName);
+		if (FAILED(hr))
+		{// 失敗していたら
+			return nullptr;
+		}
+
+		// 初期化処理
+		pEnemy->Init();
+	}
+
+	return pEnemy;
 }
 
 //==========================================================================
@@ -383,6 +377,9 @@ void CEnemy::ChangeATKState(CEnemyState* state)
 		delete m_pATKState;
 	}
 	m_pATKState = state;
+
+	m_bCatchUp = false;
+	m_bInSight = false;
 }
 
 //==========================================================================
@@ -1340,7 +1337,6 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
 	CPlayer* pPlayer = nullptr;
-	return;
 
 	// リストループ
 	while (playerList.ListLoop(&pPlayer))
@@ -1464,8 +1460,10 @@ void CEnemyBeforeAction::Action(CEnemy* boss)
 //==========================================================================
 void CEnemyAttack::Attack(CEnemy* boss)
 {
-	// 攻撃が始まるまで向き合わせ
-	if (boss->GetMotion()->IsBeforeInAttack())
+	// 判定毎の向き合わせ
+	if ((m_bSetAngleBeforeAttack && boss->GetMotion()->IsBeforeInAttack()) ||
+		(m_bSetAngleNotAttacking && !boss->GetMotion()->IsAttacking()) &&
+		!boss->GetMotion()->IsAllAfterAttack())
 	{
 		// ターゲットの方を向く
 		boss->RotationTarget();
@@ -1477,8 +1475,18 @@ void CEnemyAttack::Attack(CEnemy* boss)
 	{
 		return;
 	}
-
 	int nType = pMotion->GetType();
+
+	// 連続攻撃する場合
+	if (m_bChainAttack &&
+		nType == m_nIdxMotion &&
+		pMotion->IsGetCombiable())
+	{
+		// 連続攻撃へ遷移
+		ChangeChainAttack(boss);
+		return;
+	}
+
 	if (nType == m_nIdxMotion && pMotion->IsFinish() == true)
 	{// 攻撃が終わってたら
 

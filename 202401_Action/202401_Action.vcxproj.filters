@@ -225,9 +225,6 @@
     <ClCompile Include="enemy_cookie.cpp">
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="enemy_orafu.cpp">
-      <Filter>ソース ファイル\enemy</Filter>
-    </ClCompile>
     <ClCompile Include="enemybase.cpp">
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
@@ -528,6 +525,9 @@
     <ClCompile Include="enemy_gobelin.cpp">
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="enemy_stonegolem.cpp">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -633,9 +633,6 @@
       <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemy_cookie.h">
-      <Filter>ヘッダー ファイル\enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="enemy_orafu.h">
       <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemybase.h">
@@ -939,6 +936,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="enemy_gobelin.h">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_stonegolem.h">
       <Filter>ソース ファイル\enemy</Filter>
     </ClInclude>
   </ItemGroup>

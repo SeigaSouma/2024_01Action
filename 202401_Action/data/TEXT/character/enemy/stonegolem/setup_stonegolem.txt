@@ -39,10 +39,16 @@ MODEL_FILENAME = data/MODEL/enemy/stonegolem/Lfoot.x		# [14]左足
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
-	VELOCITY = 2.00		
+
+	CENTERSET
+		PARTS = 1		# 中心にするパーツ
+		OFFSET = 0.00 46.50 0.00		# オフセット位置
+	END_CENTERSET
+
+	VELOCITY = 1.00		# 移動量
 	JUMP = 0.00		
 	RADIUS = 100.00		
-	HEIGHT = 200.00		
+	HEIGHT = 400.00		
 	LIFE = 200		
 
 	PARTSSET
@@ -182,19 +188,20 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/stonegolem/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 8
+NUM_MOTION = 9
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_def.txt			# [0]デフォルト
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_walk.txt			# [1]歩き
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_attack.txt		# [2]攻撃
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_upswipe.txt		# [2]攻撃
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_strongattack.txt		# [2]強攻撃
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_dmg.txt			# [3]ダメージ
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_down.txt			# [3]ダウン
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_knockback.txt	# [4]ノックバック
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_fadeout.txt		# [5]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_sideswipe.txt		# [2]攻撃
 
 
 END_SCRIPT		# この行は絶対消さないこと！
