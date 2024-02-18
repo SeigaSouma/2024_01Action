@@ -1,0 +1,228 @@
+#==============================================================================
+#
+# 『階層モデル』スクリプトファイル [setup_gorira.txt]
+# Author : 相馬 靜雅
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#==============================================================================
+#
+# セットアップ情報
+#
+#==============================================================================
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 18
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/enemy/gorira/waist.x		# [0]腰
+MODEL_FILENAME = data/MODEL/enemy/gorira/bodyDW.x		# [1]体
+MODEL_FILENAME = data/MODEL/enemy/gorira/bodyUP.x		# [2]体
+MODEL_FILENAME = data/MODEL/enemy/gorira/head.x		# [3]頭
+MODEL_FILENAME = data/MODEL/enemy/gorira/Rshoulder.x	# [4]右肩
+MODEL_FILENAME = data/MODEL/enemy/gorira/RarmUP.x		# [5]右腕
+MODEL_FILENAME = data/MODEL/enemy/gorira/RarmDW.x		# [6]右手首
+MODEL_FILENAME = data/MODEL/enemy/gorira/Rhand.x		# [7]右手
+MODEL_FILENAME = data/MODEL/enemy/gorira/Lshoulder.x	# [8]左肩
+MODEL_FILENAME = data/MODEL/enemy/gorira/LarmUP.x		# [9]左腕
+MODEL_FILENAME = data/MODEL/enemy/gorira/LarmDW.x		# [10]左手首
+MODEL_FILENAME = data/MODEL/enemy/gorira/Lhand.x		# [11]左手
+MODEL_FILENAME = data/MODEL/enemy/gorira/RlegUP.x	# [12]右太もも
+MODEL_FILENAME = data/MODEL/enemy/gorira/RlegDW.x		# [13]右脛
+MODEL_FILENAME = data/MODEL/enemy/gorira/Rfoot.x		# [14]右足
+MODEL_FILENAME = data/MODEL/enemy/gorira/LlegUP.x	# [15]左太もも
+MODEL_FILENAME = data/MODEL/enemy/gorira/LlegDW.x		# [16]左脛
+MODEL_FILENAME = data/MODEL/enemy/gorira/Lfoot.x		# [17]左足
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	VELOCITY = 4.0					# 移動量
+	JUMP = 8.65						# ジャンプ量
+	RADIUS = 300.0					# 半径
+	HEIGHT = 80.0					# 高さ
+	LIFE = 40						# 体力
+	NUM_PARTS = 5					# パーツ数
+
+	PARTSSET
+		INDEX = 0
+		PARENT = -1
+		POS = 0.00 200.55 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 1
+		PARENT = 0
+		POS = 0.00 24.15 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 2
+		PARENT = 1
+		POS = 0.00 65.45 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 3
+		PARENT = 2
+		POS = 0.00 240.10 2.45
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 4
+		PARENT = 2
+		POS = -103.25 179.55 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 5
+		PARENT = 4
+		POS = -55.30 -26.60 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 6
+		PARENT = 5
+		POS = 0.00 -158.20 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 7
+		PARENT = 6
+		POS = 0.00 -172.20 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 8
+		PARENT = 2
+		POS = 103.25 179.55 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 9
+		PARENT = 8
+		POS = 55.30 -26.60 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 10
+		PARENT = 9
+		POS = 0.00 -158.20 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 11
+		PARENT = 10
+		POS = 0.00 -172.20 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 12
+		PARENT = 0
+		POS = -44.45 -1.05 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 13
+		PARENT = 12
+		POS = -7.35 -115.15 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 14
+		PARENT = 13
+		POS = 0.00 -61.60 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 15
+		PARENT = 0
+		POS = 44.45 -1.05 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 16
+		PARENT = 15
+		POS = 7.35 -115.15 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 17
+		PARENT = 16
+		POS = 0.00 -61.60 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+END_CHARACTERSET
+
+
+#==============================================================================
+#
+# コライダー情報
+#
+#==============================================================================
+COLLIDER_FILENAME = data/TEXT/character/enemy/gorira/sphere_collider.json
+
+
+#==============================================================================
+#
+# モーション情報
+#
+#==============================================================================
+#------------------------------------------------------------------------------
+# モーション数
+#------------------------------------------------------------------------------
+NUM_MOTION = 7
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_def.txt				# [0]デフォルト
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_walk.txt				# [1]歩き
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_overheadattack.txt	# [2]振り下ろし
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_sideswipe.txt			# [3]横なぎ
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_launchballast.txt		# [4]瓦礫飛ばし
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_knockback.txt			# [5]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_fadeout.txt			# [6]フェードアウト
+
+
+END_SCRIPT		# この行は絶対消さないこと！

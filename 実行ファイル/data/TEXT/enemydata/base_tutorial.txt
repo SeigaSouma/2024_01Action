@@ -1,0 +1,106 @@
+
+#==============================================================================
+# 敵拠点の配置
+#==============================================================================
+#--------------------------------[Stage0]-----------------------------
+STAGESET
+
+	BASESET
+		PATTERN = 1
+		POS = 5000.00 0.00 0.00
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 2
+		POS = 12000.00 0.00 0.00
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 4
+		POS = 1700.17 100.00 -250.17
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 4
+		POS = 1700.17 100.00 250.17
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 3
+		POS = 2600.63 100.00 350.09
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 3
+		POS = 2600.53 100.00 -350.75
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 7
+		POS = 3800.74 100.00 -500.65
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 6
+		POS = 3800.74 100.00 500.31
+		RUSH = 0
+	END_BASESET
+	
+	BASESET
+		PATTERN = 8
+		POS = 3800.74 100.00 0.00
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 4
+		POS = 6700.17 100.00 -250.17
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 4
+		POS = 6700.17 100.00 250.17
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 3
+		POS = 7600.63 100.00 350.09
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 3
+		POS = 7600.53 100.00 -350.75
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 7
+		POS = 8800.74 100.00 -500.65
+		RUSH = 0
+	END_BASESET
+
+	BASESET
+		PATTERN = 6
+		POS = 8800.74 100.00 500.31
+		RUSH = 0
+	END_BASESET
+	
+	BASESET
+		PATTERN = 8
+		POS = 8800.74 100.00 0.00
+		RUSH = 0
+	END_BASESET
+
+END_STAGESET
+
+END_SCRIPT		# この行は絶対消さないこと！

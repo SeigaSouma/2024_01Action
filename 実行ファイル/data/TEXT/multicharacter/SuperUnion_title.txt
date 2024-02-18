@@ -1,0 +1,62 @@
+#==============================================================================
+#
+# 『複数モデルキャラクター』スクリプトファイル [SuperUnion_title.txt]
+# Author : 相馬 靜雅
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# パーツ数
+#------------------------------------------------------------------------------
+NUM_PARTS = 4
+
+#------------------------------------------------------------------------------
+# モーションファイル名
+#------------------------------------------------------------------------------
+MOTION_FILENAME = data/TEXT/multicharacter/parts/union_super_title/motion_SUPER.txt	
+
+#------------------------------------------------------------------------------
+# セットアップファイル名
+#------------------------------------------------------------------------------
+SETUP_FILENAME = data/TEXT/multicharacter/parts/union_super_title/setup_body.txt		# [0]体モーションファイル
+SETUP_FILENAME = data/TEXT/multicharacter/parts/union_super_title/setup_leg.txt		# [1]脚モーションファイル
+SETUP_FILENAME = data/TEXT/multicharacter/parts/union_super_title/setup_RArm.txt		# [2]右腕モーションファイル
+SETUP_FILENAME = data/TEXT/multicharacter/parts/union_super_title/setup_LArm.txt		# [3]左腕モーションファイル
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+# 脚設定
+PARENTSET
+	FILENUMBER = 1			# 設定するキャラクターファイル番号読み込み
+	MODELINDEX = 0			# 設定するモデル番号
+	PARENT_FILENUMBER = 0	# 親にするキャラクターファイル番号読み込み
+	PARENT_MODELINDEX = 0	# 親にするキャラクターファイル番号読み込み
+END_PARENTSET
+
+# 脚設定
+PARENTSET
+	FILENUMBER = 1			# 設定するキャラクターファイル番号読み込み
+	MODELINDEX = 3			# 設定するモデル番号
+	PARENT_FILENUMBER = 0	# 親にするキャラクターファイル番号読み込み
+	PARENT_MODELINDEX = 0	# 親にするキャラクターファイル番号読み込み
+END_PARENTSET
+
+# 右腕設定
+PARENTSET
+	FILENUMBER = 2			# 設定するキャラクターファイル番号読み込み
+	MODELINDEX = 0			# 設定するモデル番号
+	PARENT_FILENUMBER = 0	# 親にするキャラクターファイル番号読み込み
+	PARENT_MODELINDEX = 1	# 親にするキャラクターファイル番号読み込み
+END_PARENTSET
+
+# 左腕設定
+PARENTSET
+	FILENUMBER = 3			# 設定するキャラクターファイル番号読み込み
+	MODELINDEX = 0			# 設定するモデル番号
+	PARENT_FILENUMBER = 0	# 親にするキャラクターファイル番号読み込み
+	PARENT_MODELINDEX = 1	# 親にするキャラクターファイル番号読み込み
+END_PARENTSET
+
+END_SCRIPT		# この行は絶対消さないこと！

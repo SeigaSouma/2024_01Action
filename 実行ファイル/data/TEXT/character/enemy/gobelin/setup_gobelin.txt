@@ -1,0 +1,208 @@
+#====================================================================================================
+#
+# 『階層モデル』スクリプトファイル [setup_gobelin.txt]
+# Author : 相馬 靜雅
+#
+#====================================================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#==============================================================================
+#
+# セットアップ情報
+#
+#==============================================================================
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 16
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/enemy/gobelin/waist.x		# [0]腰
+MODEL_FILENAME = data/MODEL/enemy/gobelin/body.x		# [1]体
+MODEL_FILENAME = data/MODEL/enemy/gobelin/head.x		# [2]頭
+MODEL_FILENAME = data/MODEL/enemy/gobelin/RarmUP.x		# [3]右腕
+MODEL_FILENAME = data/MODEL/enemy/gobelin/RarmDW.x		# [4]右手首
+MODEL_FILENAME = data/MODEL/enemy/gobelin/Rhand.x		# [5]右手
+MODEL_FILENAME = data/MODEL/enemy/gobelin/LarmUP.x		# [6]左腕
+MODEL_FILENAME = data/MODEL/enemy/gobelin/LarmDW.x		# [7]左手首
+MODEL_FILENAME = data/MODEL/enemy/gobelin/Lhand.x		# [8]左手
+MODEL_FILENAME = data/MODEL/enemy/gobelin/RlegUP.x		# [9]右太もも
+MODEL_FILENAME = data/MODEL/enemy/gobelin/RlegDW.x		# [10]右脛
+MODEL_FILENAME = data/MODEL/enemy/gobelin/Rfoot.x		# [11]右足
+MODEL_FILENAME = data/MODEL/enemy/gobelin/LlegUP.x		 [12]左太もも
+MODEL_FILENAME = data/MODEL/enemy/gobelin/LlegDW.x		# [13]左脛
+MODEL_FILENAME = data/MODEL/enemy/gobelin/Lfoot.x		# [14]左足
+MODEL_FILENAME = data/MODEL/enemy/gobelin/sword.x		# [14]左足
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	VELOCITY = 5.00		
+	JUMP = 0.00		
+	RADIUS = 100.00		
+	HEIGHT = 200.00		
+	LIFE = 30		
+
+	PARTSSET
+		INDEX = 0
+		PARENT = -1
+		POS = 0.00 65.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 1
+		PARENT = 0
+		POS = 0.00 3.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 2
+		PARENT = 1
+		POS = 0.00 56.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 3
+		PARENT = 1
+		POS = -17.00 53.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 4
+		PARENT = 3
+		POS = -25.00 0.50 2.50
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 5
+		PARENT = 4
+		POS = -30.25 -3.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 6
+		PARENT = 1
+		POS = 17.00 53.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 7
+		PARENT = 6
+		POS = 25.00 1.00 2.50
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 8
+		PARENT = 7
+		POS = 30.25 -3.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 9
+		PARENT = 0
+		POS = -10.00 -4.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 10
+		PARENT = 9
+		POS = 0.00 -28.00 3.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 11
+		PARENT = 10
+		POS = -1.00 -19.50 0.50
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 12
+		PARENT = 0
+		POS = 10.00 -4.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 13
+		PARENT = 12
+		POS = 0.00 -28.00 3.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 14
+		PARENT = 13
+		POS = 1.00 -19.50 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 15
+		PARENT = 5
+		POS = -10.50 0.00 0.00
+		ROT = -1.57 0.00 -1.57
+		START = 1
+	END_PARTSSET
+END_CHARACTERSET
+
+
+#==============================================================================
+#
+# コライダー情報
+#
+#==============================================================================
+COLLIDER_FILENAME = data/TEXT/character/enemy/gobelin/sphere_collider.json
+
+#==============================================================================
+#
+# モーション情報
+#
+#==============================================================================
+#------------------------------------------------------------------------------
+# モーション数
+#------------------------------------------------------------------------------
+NUM_MOTION = 7
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_def.txt			# [0]デフォルト
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_walk.txt		# [1]歩き
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_attack.txt		# [2]攻撃
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_dmg.txt		# [3]ダメージ
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_down.txt		# [3]ダウン
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_knockback.txt	# [4]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_fadeout.txt	# [5]フェードアウト
+
+
+END_SCRIPT		# この行は絶対消さないこと！

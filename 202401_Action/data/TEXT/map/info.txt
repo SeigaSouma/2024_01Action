@@ -23,7 +23,7 @@ TEXTURE_FILENAME = data/TEXTURE/FIELD/hiero.png		# [10]
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 38
+NUM_MODEL = 39
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -66,6 +66,7 @@ MODEL_FILENAME = data/MODEL/arena/taimatu_001.x		# [34]
 MODEL_FILENAME = data/MODEL/arena/taimatu_002.x		# [35]
 MODEL_FILENAME = data/MODEL/gallery/gallery_red_wait.x		# [36]
 MODEL_FILENAME = data/MODEL/enemy/gobelin/TModel.x		# [36]
+MODEL_FILENAME = data/MODEL/bodyDW.x		# [36]
 
 #==============================================================================
 # 空情報

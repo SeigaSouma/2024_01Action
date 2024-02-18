@@ -97,13 +97,17 @@ HRESULT CEnemyBoss::Init()
 	//m_bActionable = true;
 
 
-	ChangeATKState(m_pAtkPattern[0]);
-
+	// 視界・追い着きフラグリセット
 	m_bCatchUp = false;
 	m_bInSight = false;
 
-	// モーションインデックス切り替え
+	// 攻撃切り替え
+	ChangeATKState(m_pAtkPattern[0]);
 	m_pATKState->ChangeMotionIdx(this);
+
+	// スーパーアーマー
+	m_bActiveSuperArmor = true;
+
 	return S_OK;
 }
 

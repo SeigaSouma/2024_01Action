@@ -50,6 +50,7 @@ HRESULT CEnemyOrafu::Init()
 	// s“®
 	m_Action = ACTION_DEF;
 	m_pAtkPattern.push_back(DEBUG_NEW CEnemyNormalAttack());	// ’ÊíUŒ‚
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyStrongAttack());	// ’ÊíUŒ‚
 
 	ChangeATKState(m_pAtkPattern[0]);
 

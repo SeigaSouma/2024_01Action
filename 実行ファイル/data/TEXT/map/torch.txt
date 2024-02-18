@@ -1,0 +1,109 @@
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 2
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/arena/taimatu_001.x		# [0]
+MODEL_FILENAME = data/MODEL/arena/taimatu_002.x		# [1]
+
+#==============================================================================
+# モデルの配置
+#==============================================================================
+
+MODELSET
+	TYPE = 0
+	POS = 265.01 1140.00 2233.02
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -259.98 1140.00 2235.66
+	ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -256.82 1140.00 -2228.11
+	ROT = 0.00 -3.14 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 265.18 1140.00 -2227.28
+	ROT = 0.00 -3.14 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 1958.98 380.00 -1135.01
+	ROT = 0.00 2.09 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = 1952.84 380.00 1135.67
+	ROT = 0.00 1.05 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -1956.84 380.00 1127.71
+	ROT = 0.00 -1.05 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -1964.24 380.00 -1128.38
+	ROT = 0.00 -2.09 0.00
+END_MODELSET
+
+
+
+MODELSET
+	TYPE = 1
+	POS = 1157.21 80.00 -2014.00
+	ROT = 0.00 -0.09 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = 2316.55 80.00 -3.32
+	ROT = 0.00 -0.35 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = 1156.98 80.00 2004.25
+	ROT = 0.00 -0.61 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = -1156.67 80.00 1995.63
+	ROT = 0.00 -0.87 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = -2305.63 80.00 -3.60
+	ROT = 0.00 -1.13 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = -1158.92 80.00 -2010.13
+	ROT = 0.00 -1.40 0.00
+	SHADOW = 1
+END_MODELSET
+
+
+END_SCRIPT		# この行は絶対消さないこと！

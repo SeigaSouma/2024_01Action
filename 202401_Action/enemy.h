@@ -50,11 +50,9 @@ public:
 		STATE_DMG,			// ダメージ
 		STATE_DEAD,			// 死
 		STATE_FADEOUT,		// フェードアウト
-		STATE_PLAYERCHASE,	// プレイヤー追い掛け
-		STATE_PARENTCHASE,	// 親追い掛け
-		STATE_ATTACK,		// 攻撃
 		STATE_WAIT,			// 待機
 		STATE_DOWN,			// ダウン
+		STATE_STRONGATK,	// 強攻撃
 		STATE_MAX
 	};
 
@@ -68,13 +66,14 @@ public:
 
 	enum MOTION
 	{
-		MOTION_DEF = 0,		// ニュートラルモーション
-		MOTION_WALK,		// 移動モーション
-		MOTION_ATK,			// 攻撃
-		MOTION_DMG,			// ダメージ
-		MOTION_DOWN,		// ダウン
-		MOTION_KNOCKBACK,	// やられモーション
-		MOTION_FADEOUT,		// フェードアウト
+		MOTION_DEF = 0,			// ニュートラル
+		MOTION_WALK,			// 移動
+		MOTION_ATTACK_NORMAL,	// 通常攻撃
+		MOTION_ATTACK_STRONG,	// 強攻撃
+		MOTION_DMG,				// ダメージ
+		MOTION_DOWN,			// ダウン
+		MOTION_KNOCKBACK,		// やられ
+		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
 	};
 
@@ -149,36 +148,41 @@ protected:
 	//=============================
 	// メンバ関数
 	//=============================
-	virtual void ProcessLanding();	// 着地時処理
-	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
-	virtual void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
-
 	// 行動更新系
 	virtual void ActDefault();		// 通常行動
 	virtual void ActWait();		// 待機行動
 
 	// 状態更新系
 	virtual void StateNone();			// 何もない状態
-	virtual void SpawnWait();			// スポーン待機
-	virtual void Spawn();				// スポーン
-	virtual void Damage();				// ダメージ
-	virtual void Dead();				// 死亡
-	virtual void FadeOut();				// フェードアウト
+	virtual void StateSpawnWait();			// スポーン待機
+	virtual void StateSpawn();				// スポーン
+	virtual void StateDamage();				// ダメージ
+	virtual void StateDead();				// 死亡
+	virtual void StateFadeOut();				// フェードアウト
 	virtual void StateWait();			// 待機処理
 	virtual void StateDown();			// ダウン状態
+	virtual void StateStrongAtk();			// 強攻撃
 
+	// その他関数
+	virtual void ProcessLanding();	// 着地時処理
+	virtual void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;		// 攻撃時処理
+	virtual void AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK) override;	// 攻撃判定中処理
 
 	//=============================
 	// メンバ変数
 	//=============================
 	ACTION m_Action;		// 行動
 	float m_fActTime;		// 行動カウンター
+	float m_fStrongAttackTime;	// 強攻撃のタイマー
 
 	STATE m_state;							// 状態
 	STATE m_Oldstate;						// 前回の状態
 	float m_fStateTime;						// 状態カウンター
 	int m_nTargetPlayerIndex;				// 追い掛けるプレイヤーのインデックス番号
 	bool m_bActionable;						// 行動可能か
+	bool m_bDamageReceived;					// ダメージ受け付け判定
+	float m_fDamageReciveTime;				// ダメージ受付時間
+	bool m_bActiveSuperArmor;				// スーパーアーマー
 	float m_fDownTime;						// ダウンカウンター
 	float m_fRockOnDistance;				// ロックオンの距離
 	bool m_bRockOnAccepting;				// ロックオン受付
@@ -194,6 +198,7 @@ protected:
 
 	CEnemyState* m_pATKState;		// 今の行動ポインタ
 	CEnemyState* m_pNextATKState;	// 次の行動ポインタ
+	bool m_bStateChanging;			// 状態が切り替わった瞬間
 	std::vector<CEnemyAttack*> m_pAtkPattern;	// 攻撃の種類
 
 private:
@@ -204,9 +209,12 @@ private:
 	typedef void(CEnemy::* ACT_FUNC)();
 	static ACT_FUNC m_ActFuncList[];	// 行動関数リスト
 
+	typedef void(CEnemy::* STATE_FUNC)();
+	static STATE_FUNC m_StateFunc[];	// 状態関数リスト
 
 	void UpdateState();					// 状態更新処理
 	void Collision();					// 当たり判定
+	void UpdateDamageReciveTimer();		// ダメージ受付時間更新
 	virtual void MotionSet() = 0;		// モーションの設定
 	void RegistrChild(CEnemy *pChild);
 	void ResetChild(CEnemy *pChild);
@@ -309,9 +317,7 @@ protected:
 	bool m_bWillDirectlyTrans;	// 直接遷移フラグ
 };
 
-//=============================
 // 近接攻撃
-//=============================
 class CEnemyProximity : public CEnemyAttack
 {
 public:
@@ -327,9 +333,7 @@ protected:
 
 };
 
-//=============================
 // 遠距離攻撃
-//=============================
 class CEnemyRemote : public CEnemyAttack
 {
 public:
@@ -339,15 +343,6 @@ public:
 	virtual void ChangeMotionIdx(CEnemy* boss) override = 0;	// モーションインデックス切り替え
 };
 
-
-
-namespace UtilFunc
-{
-	namespace Transformation
-	{
-		int Random(int nMinNum, int nMaxNum);
-	}
-}
 
 //=============================
 // 近接群
@@ -361,7 +356,7 @@ public:
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* boss) override
 	{
-		m_nIdxMotion = CEnemy::MOTION_ATK;
+		m_nIdxMotion = CEnemy::MOTION_ATTACK_NORMAL;
 		CEnemyAttack::ChangeMotionIdx(boss);
 
 		// 直接遷移する
@@ -373,22 +368,19 @@ public:
 class CEnemyStrongAttack : public CEnemyProximity
 {
 public:
-	CEnemyStrongAttack() { m_bWillDirectlyTrans = false; }
-
-	// 行動
-	virtual void Action(CEnemy* boss) override
-	{
-		Attack(boss);
-	}
+	CEnemyStrongAttack() { m_bWillDirectlyTrans = true; }
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* boss) override
 	{
-		m_nIdxMotion = CEnemy::MOTION_ATK;
+		m_nIdxMotion = CEnemy::MOTION_ATTACK_STRONG;
 		CEnemyAttack::ChangeMotionIdx(boss);
 
-		// 直接遷移しない
-		m_bWillDirectlyTrans = false;
+		//// 直接遷移しない
+		//m_bWillDirectlyTrans = false;
+
+		// 強攻撃状態に設定
+		boss->SetState(CEnemy::STATE_STRONGATK);
 	}
 
 	// 遷移前処理

@@ -46,9 +46,25 @@ namespace
 
 }
 
+
 //==========================================================================
 // 関数ポインタ
 //==========================================================================
+// 状態関数
+CEnemy::STATE_FUNC CEnemy::m_StateFunc[] =
+{
+	&CEnemy::StateNone,		// なし
+	&CEnemy::StateSpawnWait,// スポーン待機
+	&CEnemy::StateSpawn,	// スポーン
+	&CEnemy::StateDamage,	// ダメージ
+	&CEnemy::StateDead,		// 死亡
+	&CEnemy::StateFadeOut,	// フェードアウト
+	&CEnemy::StateWait,		// 待機
+	&CEnemy::StateDown,		// ダウン
+	&CEnemy::StateStrongAtk,// 強攻撃
+};
+
+// 行動関数
 CEnemy::ACT_FUNC CEnemy::m_ActFuncList[] =
 {
 	&CEnemy::ActDefault,			// 通常行動
@@ -75,15 +91,20 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_pWeaponHandle = 0;		// エフェクトの武器ハンドル
 
 	m_Action = ACTION_DEF;		// 行動
-	m_fActTime = 0.0f;		// 行動カウンター
-	m_fStateTime = 0.0f;	// 状態遷移カウンター
-	m_nNumChild = 0;		// 子の数
+	m_fActTime = 0.0f;			// 行動カウンター
+	m_fStrongAttackTime = 0.0f;// 強攻撃のタイマー
+	m_fStateTime = 0.0f;		// 状態遷移カウンター
+	m_nNumChild = 0;			// 子の数
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
+	m_bDamageReceived = false;				// ダメージ受け付け判定
+	m_fDamageReciveTime = 0.0f;				// ダメージ受付時間
+	m_bActiveSuperArmor = false;			// スーパーアーマー
 	m_bActionable = false;		// 行動可能か
 	m_fDownTime = 0.0f;			// ダウンカウンター
 	m_fRockOnDistance = 0.0f;	// ロックオンの距離
 	m_bRockOnAccepting = false;	// ロックオン受付
 
+	m_bStateChanging = false;	// 状態が切り替わった瞬間
 	m_pATKState = nullptr;		// 今の行動ポインタ
 	m_pNextATKState = nullptr;	// 次の行動ポインタ
 	m_bCatchUp = false;						// 追い着き判定
@@ -171,10 +192,11 @@ HRESULT CEnemy::Init()
 {
 	// 各種変数の初期化
 	m_state = STATE_NONE;	// 状態
-	m_Oldstate = STATE_PLAYERCHASE;
+	m_Oldstate = STATE_NONE;
 	m_fStateTime = 0.0f;			// 状態遷移カウンター
 	m_posKnokBack = GetOriginPosition();	// ノックバックの位置
 	m_fRockOnDistance = 0.0f;	// ロックオンの距離
+	m_bDamageReceived = true;	// ダメージ受付フラグ
 
 	// 種類の設定
 	SetType(TYPE_ENEMY);
@@ -351,6 +373,10 @@ void CEnemy::Kill()
 //==========================================================================
 void CEnemy::ChangeATKState(CEnemyState* state)
 {
+
+	// 状態が切り替わった瞬間フラグ
+	m_bStateChanging = true;
+
 	if (m_pATKState != nullptr &&
 		!m_pATKState->IsCreateFirstTime())
 	{
@@ -383,6 +409,11 @@ void CEnemy::DrawingRandomAction()
 	// ランダムにアクションパターンを選択して実行
 	if (!m_pAtkPattern.empty())
 	{
+		if (m_state == STATE_STRONGATK)
+		{
+			m_state = STATE_NONE;
+		}
+
 		int randomIndex = rand() % m_pAtkPattern.size();
 
 		if (!m_pAtkPattern[randomIndex]->IsDirectlyTrans())
@@ -430,6 +461,9 @@ void CEnemy::Update()
 	{// 死亡フラグが立っていたら
 		return;
 	}
+
+	// 状態が切り替わった瞬間フラグ
+	m_bStateChanging = false;
 
 	// エディット中は抜ける
 	if (CGame::GetInstance()->GetElevation()->IsEdit())
@@ -652,11 +686,14 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 	// 体力取得
 	int nLife = GetLife();
 
-	if (m_state != STATE_DMG && m_state != STATE_DEAD && m_state != STATE_SPAWN && m_state != STATE_FADEOUT)
-	{// なにもない状態の時
+	if (m_bDamageReceived)
+	{// ダメージ受付中のみ
 
 		// 当たった
 		bHit = true;
+
+		// ダメージ受付フラグリセット
+		m_bDamageReceived = false;
 
 		// 体力減らす
 		nLife -= nValue;
@@ -703,6 +740,9 @@ bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
 		// 過去の状態保存
 		m_Oldstate = m_state;
 
+		// ダメージ時間設定
+		m_fDamageReciveTime = TIME_DMG;
+
 		switch (atkType)
 		{
 		case CGameManager::ATTACK_NORMAL:
@@ -736,13 +776,17 @@ void CEnemy::NormalHitResponse()
 	}
 
 	// ダメージ状態にする
-	m_state = STATE_DMG;
+	if (m_state != STATE_DOWN &&
+		m_state != STATE_STRONGATK)
+	{
+		m_state = STATE_DMG;
+
+		// やられモーション
+		GetMotion()->Set(MOTION_DMG);
+	}
 
 	// 遷移カウンター設定
 	m_fStateTime = TIME_DMG;
-
-	// やられモーション
-	GetMotion()->Set(MOTION_DMG);
 
 	// ヒットストップ
 	//CManager::GetInstance()->SetEnableHitStop(5);
@@ -785,6 +829,21 @@ void CEnemy::CounterHitResponse()
 
 	// ノックバックの位置更新
 	m_posKnokBack = GetPosition();
+}
+
+//==========================================================================
+// ダメージ受付時間更新
+//==========================================================================
+void CEnemy::UpdateDamageReciveTimer()
+{
+	// ダメージ受け付け時間減算
+	m_fDamageReciveTime -= CManager::GetInstance()->GetDeltaTime();
+	if (m_fDamageReciveTime <= 0.0f)
+	{
+		// ダメージ受け付け判定
+		m_bDamageReceived = true;
+		m_fDamageReciveTime = 0.0f;
+	}
 }
 
 //==========================================================================
@@ -886,6 +945,9 @@ void CEnemy::UpdateState()
 	// 色設定
 	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_mMatcol.a);
 
+	// ダメージ受付時間更新
+	UpdateDamageReciveTimer();
+
 	// ダウンカウンター減算
 	m_fDownTime -= CManager::GetInstance()->GetDeltaTime();
 	if (m_fDownTime <= 0.0f)
@@ -893,40 +955,8 @@ void CEnemy::UpdateState()
 		m_fDownTime = 0.0f;
 	}
 
-	switch (m_state)
-	{
-	case STATE_NONE:
-		StateNone();
-		break;
-
-	case STATE_SPAWNWAIT:	// スポーン待機
-		SpawnWait();
-		break;
-
-	case STATE_SPAWN:
-		Spawn();
-		break;
-
-	case STATE_DMG:
-		Damage();
-		break;
-
-	case STATE_DEAD:
-		Dead();
-		break;
-
-	case STATE_FADEOUT:
-		FadeOut();
-		break;
-
-	case STATE_WAIT:
-		StateWait();
-		break;
-
-	case STATE_DOWN:
-		StateDown();
-		break;
-	}
+	// 状態更新
+	(this->*(m_StateFunc[m_state]))();
 
 	if (m_state != STATE_SPAWNWAIT && IsDisp() == false)
 	{
@@ -958,10 +988,13 @@ void CEnemy::StateNone()
 //==========================================================================
 // スポーン待機
 //==========================================================================
-void CEnemy::SpawnWait()
+void CEnemy::StateSpawnWait()
 {
 	// 行動可能判定
 	m_bActionable = false;
+
+	// ダメージを受け付けない
+	m_bDamageReceived = false;
 
 	// 状態カウンターリセット
 	m_fStateTime = 0.0f;
@@ -973,7 +1006,7 @@ void CEnemy::SpawnWait()
 //==========================================================================
 // 出現
 //==========================================================================
-void CEnemy::Spawn()
+void CEnemy::StateSpawn()
 {
 	// 行動可能判定
 	m_bActionable = false;
@@ -983,31 +1016,16 @@ void CEnemy::Spawn()
 //==========================================================================
 // ダメージ
 //==========================================================================
-void CEnemy::Damage()
+void CEnemy::StateDamage()
 {
-	// 行動可能判定
-	m_bActionable = false;
+	if (!m_bActiveSuperArmor)
+	{
+		// 行動可能判定
+		m_bActionable = false;
+	}
 
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
-
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の向き取得
-	float fRotDest = GetRotDest();
-
-	// 移動量取得
-	float fMove = GetVelocity();
-
-	// 現在と目標の差分
-	float fRotDiff = 0.0f;
-
-	// 距離の判定
-	bool bLen = false;
+	// ダメージを受け付けない
+	m_bDamageReceived = false;
 
 #if _DEBUG
 	// 色設定
@@ -1023,26 +1041,30 @@ void CEnemy::Damage()
 		m_state = m_Oldstate;
 	}
 
-	// 位置設定
-	SetPosition(pos);
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
 
-	// 移動量設定
-	SetMove(move);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
+	if (!m_bActiveSuperArmor)
+	{
+		// ダメージモーション設定
+		pMotion->Set(MOTION_DMG);
+	}
 }
 
 //==========================================================================
 // 死亡
 //==========================================================================
-void CEnemy::Dead()
+void CEnemy::StateDead()
 {
 	// 行動可能判定
 	m_bActionable = false;
+
+	// ダメージを受け付けない
+	m_bDamageReceived = false;
 
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -1087,7 +1109,6 @@ void CEnemy::Dead()
 
 		// 敵の終了処理
 		m_state = STATE_FADEOUT;
-		//Uninit();
 		return;
 	}
 
@@ -1108,10 +1129,13 @@ void CEnemy::Dead()
 //==========================================================================
 // フェードアウト
 //==========================================================================
-void CEnemy::FadeOut()
+void CEnemy::StateFadeOut()
 {
 	// 行動可能判定
 	m_bActionable = false;
+
+	// ダメージを受け付けない
+	m_bDamageReceived = false;
 
 	// 移動量取得
 	float fMove = GetVelocity();
@@ -1205,6 +1229,15 @@ void CEnemy::StateDown()
 		// ダウンモーション設定
 		pMotion->Set(MOTION_DOWN);
 	}
+}
+
+//==========================================================================
+// 強攻撃
+//==========================================================================
+void CEnemy::StateStrongAtk()
+{
+	// 行動可能判定
+	m_bActionable = true;
 }
 
 //==========================================================================
@@ -1307,6 +1340,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
 	CPlayer* pPlayer = nullptr;
+	return;
 
 	// リストループ
 	while (playerList.ListLoop(&pPlayer))
@@ -1345,7 +1379,6 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 					// 向き設定
 					pPlayer->SetRotation(MyLib::Vector3(PlayerRot.x, fRot, PlayerRot.z));
 					pPlayer->SetRotDest(fRot);
-					break;
 				}
 				break;
 			}
