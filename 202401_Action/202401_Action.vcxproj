@@ -162,7 +162,6 @@
     <ClCompile Include="beam.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="blackframe.cpp" />
-    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bullet_obstacle.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -180,7 +179,6 @@
     <ClCompile Include="enemybase.cpp" />
     <ClCompile Include="enemymanager.cpp" />
     <ClCompile Include="enemy_boss.cpp" />
-    <ClCompile Include="enemy_cookie.cpp" />
     <ClCompile Include="enemy_gobelin.cpp" />
     <ClCompile Include="enemy_stonegolem.cpp" />
     <ClCompile Include="explosion.cpp" />
@@ -301,7 +299,6 @@
     <ClInclude Include="beam.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="blackframe.h" />
-    <ClInclude Include="bullet.h" />
     <ClInclude Include="bullet_obstacle.h" />
     <ClInclude Include="calculation.h" />
     <ClInclude Include="camera.h" />
@@ -321,7 +318,6 @@
     <ClInclude Include="enemybase.h" />
     <ClInclude Include="enemymanager.h" />
     <ClInclude Include="enemy_boss.h" />
-    <ClInclude Include="enemy_cookie.h" />
     <ClInclude Include="enemy_gobelin.h" />
     <ClInclude Include="enemy_stonegolem.h" />
     <ClInclude Include="explosion.h" />

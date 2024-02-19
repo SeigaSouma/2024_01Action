@@ -131,6 +131,7 @@ void CRockOnMarker::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
+		m_RockOnInfo[nCntGauge].pBillboard->Uninit();
 		m_RockOnInfo[nCntGauge].pBillboard = nullptr;
 	}
 

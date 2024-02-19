@@ -52,6 +52,7 @@ CGameManager::CGameManager()
 	m_bEndRush = false;			// ラッシュが終了したか
 	m_bControll = false;		// 操作できるか
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
+	m_bGameStart = false;		// ゲーム開始時のフラグ
 	m_nNowStage = 0;			// 現在のステージ
 	m_nNumStage = 0;			// ステージの総数
 	m_nPrevPoint = 0;			// 前回のポイント
@@ -236,8 +237,12 @@ void CGameManager::SceneTransition()
 	// 遷移なしフェードの状態取得
 	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
 
-	if (fadestate == CInstantFade::STATE_FADECOMPLETION || m_nNowStage == 0)
+	if (fadestate == CInstantFade::STATE_FADECOMPLETION || 
+		!m_bGameStart)
 	{// 完了した瞬間
+
+		// ゲーム開始時のフラグ
+		m_bGameStart = true;
 
 		// カメラ取得
 		CCamera* pCamera = CManager::GetInstance()->GetCamera();
@@ -454,9 +459,9 @@ void CGameManager::SceneReaspawn()
 
 	// 現在のステージ
 	m_nNowStage--;
-	if (m_nNowStage <= 0)
+	if (m_nNowStage <= -1)
 	{
-		m_nNowStage = 0;
+		m_nNowStage = -1;
 	}
 
 	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() <= m_nNowStage)

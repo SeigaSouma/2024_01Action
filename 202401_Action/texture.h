@@ -55,13 +55,14 @@ private:
 	// メンバ関数
 	//=============================
 	HRESULT LoadTex(std::string file);
-	void SearchAllImages(const std::wstring& folderPath, std::vector<std::string>& imageNames);
+	void SearchAllImages(const std::wstring& folderPath);
 
 	//=============================
 	// メンバ変数
 	//=============================
-	std::vector<STexture> m_TexInfo;	// テクスチャの情報
-	static CTexture* m_pTexture;		// 自身のポインタ
+	std::vector<STexture> m_TexInfo;		// テクスチャの情報
+	std::vector<std::string> m_ImageNames;	// 読み込み用文字列
+	static CTexture* m_pTexture;			// 自身のポインタ
 };
 
 

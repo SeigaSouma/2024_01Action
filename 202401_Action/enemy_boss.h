@@ -184,15 +184,6 @@ public:
 //};
 
 
-
-namespace UtilFunc 
-{
-	namespace Transformation
-	{
-		int Random(int nMinNum, int nMaxNum);
-	}
-}
-
 //=============================
 // �ߐڌQ
 //=============================

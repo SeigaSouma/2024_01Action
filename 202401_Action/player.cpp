@@ -1428,7 +1428,7 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 			if (pEnemy != nullptr)
 			{
-				pEnemy->Hit(static_cast<int>(10.0f * m_PlayerStatus.attackMultiply), CGameManager::ATTACK_COUNTER);
+				pEnemy->Hit(static_cast<int>(10.0f * m_PlayerStatus.attackMultiply), GetPosition(), CGameManager::ATTACK_COUNTER);
 				pEnemy->SetDownTime(m_PlayerStatus.addDownTime);
 			}
 		}
@@ -1514,17 +1514,17 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 				if (pMotion->GetType() == MOTION_ATK4_FINISH &&
 					m_bChargeCompletion)
 				{
-					damage *= MULTIPLY_CHARGEATK;
+					damage = static_cast<int>(static_cast<float>(damage) * MULTIPLY_CHARGEATK);
 				}
 
-				if (pEnemy->Hit(damage) == true)
+				if (pEnemy->Hit(damage, GetPosition()) == true)
 				{// “–‚½‚Á‚Ä‚½‚ç
 
 					// ˆÊ’u
 					MyLib::Vector3 pos = GetPosition();
 					MyLib::Vector3 enemypos = pEnemy->GetPosition();
 
-					if (pEnemy->GetType() != CEnemy::TYPE_BOSS)
+					if (!pEnemy->IsActiveSuperArmor())
 					{
 						// ƒ^[ƒQƒbƒg‚Æ“G‚Æ‚ÌŒü‚«
 						float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
@@ -1803,6 +1803,9 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 
 			// Žó‚¯—¬‚µ‚ÌÝ’è
 			m_pEndCounterSetting = DEBUG_NEW CEndTurn;
+
+			// “G‚É‹¯‚ÝŠ„‚è“–‚Ä
+			pEnemy->GetATKState()->ChangeFlinchAction(pEnemy);
 		}
 		else
 		{

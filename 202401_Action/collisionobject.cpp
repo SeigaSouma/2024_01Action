@@ -225,7 +225,7 @@ void CCollisionObject::CollisionEnemy()
 		if (UtilFunc::Collision::SphereRange(pos, TargetPos, m_fRadius, fTargetRadius).ishit)
 		{// ‹…‚Ì”»’è
 
-			if (pEnemy->Hit(m_nDamage) == true)
+			if (pEnemy->Hit(m_nDamage, pos) == true)
 			{// “–‚½‚Á‚Ä‚½‚ç
 
 			}

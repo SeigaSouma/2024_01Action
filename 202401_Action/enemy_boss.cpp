@@ -7,7 +7,6 @@
 #include "enemy_boss.h"
 #include "manager.h"
 #include "debugproc.h"
-#include "calculation.h"
 #include "blackframe.h"
 #include "beam.h"
 #include "particle.h"
@@ -58,11 +57,11 @@ CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
 	m_bInSight = false;			// 視界内判定
 	m_pBossHPGauge = nullptr;	// ボスのHPゲージ
 
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
+	m_pAtkPattern.push_back(DEBUG_NEW CBossSideSwipeCombo());	// 横なぎコンボ
+	m_pAtkPattern.push_back(DEBUG_NEW CBossOverHead());			// 振り下ろし
 	m_pAtkPattern.push_back(DEBUG_NEW CBossLaunchBallast());	// 瓦礫飛ばし
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());			// 下B
-	//m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
+	m_pAtkPattern.push_back(DEBUG_NEW CBossHandSlap());			// 下B
+	m_pAtkPattern.push_back(DEBUG_NEW CBossRolling());			// ローリング
 }
 
 //==========================================================================
@@ -450,74 +449,6 @@ void CEnemyBoss::StateDown()
 		pMotion->Set(MOTION_DOWN);
 	}
 }
-
-//
-////==========================================================================
-//// 近接攻撃の行動
-////==========================================================================
-//void CBossProximity::Action(CEnemy* enemy)
-//{
-//	bool bAct = true;	// 行動できるかのフラグ
-//
-//	// 視界内判定
-//	if (!enemy->IsCatchUp() ||
-//		!enemy->IsInSight())
-//	{
-//		// ターゲットの方を向く
-//		enemy->RotationTarget();
-//		bAct = false;
-//	}
-//
-//	// 範囲外時追従
-//	if (!enemy->IsCatchUp())
-//	{
-//		// 追い掛け
-//		enemy->ActChase(1.0f, LENGTH_PUNCH);
-//		bAct = false;
-//	}
-//
-//	if (!bAct)
-//	{
-//		return;
-//	}
-//
-//	// 攻撃前行動
-//	if (!m_bBeforeAttackAction)
-//	{
-//		BeforeAttack(enemy);
-//	}
-//
-//	// 攻撃処理
-//	if (m_bBeforeAttackAction)
-//	{
-//		Attack(enemy);
-//	}
-//}
-//
-////==========================================================================
-//// 遠距離攻撃の行動
-////==========================================================================
-//void CBossRemote::Action(CEnemy* enemy)
-//{
-//	bool bAct = true;	// 行動できるかのフラグ
-//
-//	// 視界内判定
-//	// ターゲットの方を向く
-//	enemy->RotationTarget(45.0f);
-//	if (!enemy->IsInSight())
-//	{
-//		// ターゲットの方を向く
-//		enemy->RotationTarget(45.0f);
-//		bAct = false;
-//	}
-//
-//	if (!bAct)
-//	{
-//		return;
-//	}
-//	// 攻撃処理
-//	Attack(enemy);
-//}
 
 //==========================================================================
 // 攻撃前処理

@@ -261,10 +261,9 @@ void CObject::DrawAll()
 
 		if (nCntPriority == 3)
 		{
-
 			// エフェクシアの更新兼描画
 			CMyEffekseer* pEffekseer = CMyEffekseer::GetInstance();
-			if (pEffekseer != NULL)
+			if (pEffekseer != nullptr)
 			{
 				pEffekseer->Update();
 			}

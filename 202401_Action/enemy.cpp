@@ -9,7 +9,6 @@
 #include "renderer.h"
 #include "game.h"
 #include "input.h"
-#include "calculation.h"
 #include "particle.h"
 #include "motion.h"
 #include "model.h"
@@ -367,7 +366,6 @@ void CEnemy::Kill()
 //==========================================================================
 void CEnemy::ChangeATKState(CEnemyState* state)
 {
-
 	// 状態が切り替わった瞬間フラグ
 	m_bStateChanging = true;
 
@@ -672,7 +670,7 @@ void CEnemy::ProcessLanding()
 //==========================================================================
 // ヒット処理
 //==========================================================================
-bool CEnemy::Hit(const int nValue, CGameManager::AttackType atkType)
+bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::AttackType atkType)
 {
 	bool bHit = false;
 
@@ -779,7 +777,10 @@ void CEnemy::NormalHitResponse()
 		m_state = STATE_DMG;
 
 		// やられモーション
-		GetMotion()->Set(MOTION_DMG);
+		if (!m_bActiveSuperArmor)
+		{
+			GetMotion()->Set(MOTION_DMG);
+		}
 	}
 
 	// 遷移カウンター設定
@@ -1034,6 +1035,13 @@ void CEnemy::StateDamage()
 
 	if (m_fStateTime <= 0.0f)
 	{
+		// 次の行動抽選
+		if (!m_bActiveSuperArmor)
+		{
+			ChangeATKState(m_pATKState);
+			m_pATKState->ChangeMotionIdx(this);
+		}
+
 		// 過去の状態にする
 		m_state = m_Oldstate;
 	}
@@ -1422,9 +1430,20 @@ CEnemy *CEnemy::GetEnemy()
 }
 
 
+//==========================================================================
+// 状態のデストラクタ
+//==========================================================================
+CEnemyState::~CEnemyState()
+{
+	if (m_pFlinchAction != nullptr)
+	{
+		delete m_pFlinchAction;
+		m_pFlinchAction = nullptr;
+	}
+}
 
 //==========================================================================
-// ステップの行動
+// 行動前行動
 //==========================================================================
 void CEnemyBeforeAction::Action(CEnemy* boss)
 {
@@ -1451,6 +1470,65 @@ void CEnemyBeforeAction::Action(CEnemy* boss)
 	{
 		// モーション設定
 		pMotion->Set(m_nIdxMotion);
+	}
+}
+
+
+//==========================================================================
+// 怯み行動設定
+//==========================================================================
+void CEnemyState::SetFlinchAction(CEnemyFlinch* pFlinch)
+{
+	
+
+	m_bFinchAction = true;
+	m_pFlinchAction = pFlinch;
+}
+
+//==========================================================================
+// 怯みへ切り替え
+//==========================================================================
+void CEnemyState::ChangeFlinchAction(CEnemy* boss)
+{
+	if (m_pFlinchAction == nullptr)
+	{
+		return;
+	}
+	boss->ChangeATKState(m_pFlinchAction);
+	boss->GetATKState()->ChangeMotionIdx(boss);
+}
+
+//==========================================================================
+// 怯み行動
+//==========================================================================
+void CEnemyFlinch::Action(CEnemy* boss)
+{
+	// モーション取得
+	CMotion* pMotion = boss->GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == m_nIdxMotion && pMotion->IsFinish() == true)
+	{// ステップ終了
+
+		// 次の行動抽選
+		boss->DrawingRandomAction();
+
+		// 待機モーション設定
+		pMotion->Set(CEnemy::MOTION_DEF);
+		return;
+	}
+
+	if (nType != m_nIdxMotion)
+	{
+		// 次の行動抽選
+		boss->DrawingRandomAction();
+
+		// モーション設定
+		//pMotion->Set(m_nIdxMotion);
 	}
 }
 

@@ -82,6 +82,7 @@ private:
 	bool m_bEndRush;		// ラッシュが終了したか
 	bool m_bControll;		// 操作できるか
 	bool m_bEndNormalStage;	// 通常ステージが終了したか
+	bool m_bGameStart;		// ゲーム開始時のフラグ
 	int m_nNowStage;		// 現在のステージ
 	int m_nNumStage;		// ステージの総数
 	int m_nPrevPoint;		// 前回のポイント

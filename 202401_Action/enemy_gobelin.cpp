@@ -6,7 +6,6 @@
 //==========================================================================
 #include "enemy_gobelin.h"
 #include "manager.h"
-#include "calculation.h"
 #include "particle.h"
 #include "player.h"
 
@@ -47,7 +46,7 @@ HRESULT CEnemyGobelin::Init()
 
 	// 行動
 	m_Action = ACTION_DEF;
-	m_pAtkPattern.push_back(DEBUG_NEW CEnemyNormalAttack());	// 通常攻撃
+	m_pAtkPattern.push_back(DEBUG_NEW CAttack_GobelinNormalAttack());	// 通常攻撃
 	m_pAtkPattern.push_back(DEBUG_NEW CEnemyStrongAttack());	// 通常攻撃
 
 	// 視界・追い着きフラグリセット
@@ -69,6 +68,12 @@ HRESULT CEnemyGobelin::Init()
 //==========================================================================
 void CEnemyGobelin::Uninit()
 {
+	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	{
+		delete m_pAtkPattern[i];
+		m_pAtkPattern[i] = nullptr;
+	}
+
 	// 終了処理
 	CEnemy::Uninit();
 }
@@ -78,6 +83,12 @@ void CEnemyGobelin::Uninit()
 //==========================================================================
 void CEnemyGobelin::Kill()
 {
+	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	{
+		delete m_pAtkPattern[i];
+		m_pAtkPattern[i] = nullptr;
+	}
+
 	// 死亡処理
 	CEnemy::Kill();
 }
@@ -200,6 +211,12 @@ void CEnemyGobelin::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 	switch (nMotionType)
 	{
 	case MOTION_ATTACK_NORMAL:
+		break;
+
+	case MOTION_ATTACK_STRONG:
+		m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
+			GetCenterPosition(), 0.0f, 0.0f, 20.0f);
 		break;
 	}
 }

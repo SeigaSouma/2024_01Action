@@ -7,7 +7,6 @@
 #include "enemy_stonegolem.h"
 #include "manager.h"
 #include "debugproc.h"
-#include "calculation.h"
 #include "particle.h"
 
 //==========================================================================
@@ -46,8 +45,8 @@ HRESULT CEnemyGolem::Init()
 
 	// 行動
 	m_Action = ACTION_DEF;
-	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemUPSwipe());	// 通常攻撃
-	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemSideSwipe());	// 通常攻撃
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemUPSwipe());	// 1段目
+	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemSideSwipe());	// 2段目
 
 	// ロックオンの距離
 	m_fRockOnDistance = 400.0f;
@@ -59,6 +58,9 @@ HRESULT CEnemyGolem::Init()
 	// 攻撃切り替え
 	ChangeATKState(m_pAtkPattern[0]);
 	m_pATKState->ChangeMotionIdx(this);
+
+	// スーパーアーマー
+	m_bActiveSuperArmor = true;
 	return S_OK;
 }
 
@@ -67,6 +69,12 @@ HRESULT CEnemyGolem::Init()
 //==========================================================================
 void CEnemyGolem::Uninit()
 {
+	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	{
+		delete m_pAtkPattern[i];
+		m_pAtkPattern[i] = nullptr;
+	}
+
 	// 終了処理
 	CEnemy::Uninit();
 }
@@ -76,6 +84,12 @@ void CEnemyGolem::Uninit()
 //==========================================================================
 void CEnemyGolem::Kill()
 {
+	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	{
+		delete m_pAtkPattern[i];
+		m_pAtkPattern[i] = nullptr;
+	}
+
 	// 死亡処理
 	CEnemy::Kill();
 }
@@ -159,6 +173,15 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 	// 情報取得
 	MyLib::Vector3 pos = GetPosition();
 	MyLib::Vector3 rot = GetRotation();
+
+	switch (nMotionType)
+	{
+	case MOTION_ATTACK_STRONG:
+		break;
+
+	default:
+		break;
+	}
 
 }
 

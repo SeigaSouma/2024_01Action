@@ -191,7 +191,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/gobelin/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 8
+NUM_MOTION = 9
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -204,6 +204,7 @@ MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_dmg.txt			# [3]ダメー
 MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_down.txt			# [3]ダウン
 MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_knockback.txt	# [4]ノックバック
 MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_fadeout.txt		# [5]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_flinch_attack.txt		# [2]攻撃の怯み
 
 
 END_SCRIPT		# この行は絶対消さないこと！

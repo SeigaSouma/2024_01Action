@@ -138,9 +138,6 @@
     <ClCompile Include="blackframe.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="bullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -220,9 +217,6 @@
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
     <ClCompile Include="enemy_boss.cpp">
-      <Filter>ソース ファイル\enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="enemy_cookie.cpp">
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
     <ClCompile Include="enemybase.cpp">
@@ -542,9 +536,6 @@
     <ClInclude Include="blackframe.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="bullet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="calculation.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -630,9 +621,6 @@
       <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemy_boss.h">
-      <Filter>ヘッダー ファイル\enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="enemy_cookie.h">
       <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemybase.h">
@@ -936,10 +924,10 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="enemy_gobelin.h">
-      <Filter>ソース ファイル\enemy</Filter>
+      <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemy_stonegolem.h">
-      <Filter>ソース ファイル\enemy</Filter>
+      <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

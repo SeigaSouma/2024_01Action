@@ -14,6 +14,7 @@
 #include "resultmanager.h"
 #include "listmanager.h"
 #include "myeffekseer.h"
+#include "calculation.h"
 
 // 前方宣言
 class CHP_Gauge;
@@ -94,7 +95,7 @@ public:
 	STATE GetState() { return m_state; }
 	void SetStateTime(float time) { m_fStateTime = time; }	// 状態時間設定
 	void SetDownTime(float time) { m_fDownTime = time; }	// ダウン時間設定
-	virtual bool Hit(const int nValue, CGameManager::AttackType atkType = CGameManager::ATTACK_NORMAL);
+	virtual bool Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::AttackType atkType = CGameManager::AttackType::ATTACK_NORMAL);
 	virtual void NormalHitResponse();	// ヒット時の反応
 	virtual void CounterHitResponse();	// ヒット時の反応
 
@@ -117,9 +118,10 @@ public:
 	virtual void RotationTarget(float range = 90.0f);	// ターゲットの方を向く
 
 	void ToggleCatchUp(bool catchUp) { m_bCatchUp = catchUp; }	// 追い着き判定
-	bool IsCatchUp() { return m_bCatchUp; }	// 追い着き判定
+	bool IsCatchUp() { return m_bCatchUp; }						// 追い着き判定
 	void ToggleInSight(bool inSight) { m_bInSight = inSight; }	// 視界内判定
-	bool IsInSight() { return m_bInSight; }	// 視界内判定
+	bool IsInSight() { return m_bInSight; }						// 視界内判定
+	bool IsActiveSuperArmor() { return m_bActiveSuperArmor; }	// スーパーアーマーの有効フラグ取得
 
 	// モーション
 	void SetMotion(int motionIdx);	// モーションの設定
@@ -152,18 +154,18 @@ protected:
 	//=============================
 	// 行動更新系
 	virtual void ActDefault();		// 通常行動
-	virtual void ActWait();		// 待機行動
+	virtual void ActWait();			// 待機行動
 
 	// 状態更新系
-	virtual void StateNone();			// 何もない状態
-	virtual void StateSpawnWait();			// スポーン待機
-	virtual void StateSpawn();				// スポーン
-	virtual void StateDamage();				// ダメージ
-	virtual void StateDead();				// 死亡
-	virtual void StateFadeOut();				// フェードアウト
-	virtual void StateWait();			// 待機処理
-	virtual void StateDown();			// ダウン状態
-	virtual void StateStrongAtk();			// 強攻撃
+	virtual void StateNone();		// 何もない状態
+	virtual void StateSpawnWait();	// スポーン待機
+	virtual void StateSpawn();		// スポーン
+	virtual void StateDamage();		// ダメージ
+	virtual void StateDead();		// 死亡
+	virtual void StateFadeOut();	// フェードアウト
+	virtual void StateWait();		// 待機処理
+	virtual void StateDown();		// ダウン状態
+	virtual void StateStrongAtk();	// 強攻撃
 
 	// その他関数
 	virtual void ProcessLanding();	// 着地時処理
@@ -173,8 +175,8 @@ protected:
 	//=============================
 	// メンバ変数
 	//=============================
-	ACTION m_Action;		// 行動
-	float m_fActTime;		// 行動カウンター
+	ACTION m_Action;			// 行動
+	float m_fActTime;			// 行動カウンター
 	float m_fStrongAttackTime;	// 強攻撃のタイマー
 
 	STATE m_state;							// 状態
@@ -234,6 +236,7 @@ private:
 };
 
 
+class CEnemyFlinch;	// 怯みポインタ
 
 //=============================
 // エネミーステート
@@ -241,7 +244,14 @@ private:
 class CEnemyState
 {
 public:
-	CEnemyState() : m_nIdxMotion(0), m_bCreateFirstTime(false), m_bBeforeAttackAction(false) {}
+	CEnemyState() : 
+		m_nIdxMotion(0), 
+		m_bCreateFirstTime(false), 
+		m_bBeforeAttackAction(false),
+		m_bFinchAction(false),
+		m_pFlinchAction(nullptr) {}
+
+	~CEnemyState();
 
 	virtual void Action(CEnemy* boss) = 0;	// 行動
 	virtual void Attack(CEnemy* boss) = 0;	// 攻撃処理
@@ -252,16 +262,25 @@ public:
 		m_bBeforeAttackAction = false;	// 攻撃前行動フラグ
 	}
 
-
 	virtual void BeforeAttack(CEnemy* boss) { m_bBeforeAttackAction = true; }	// 攻撃前処理
 
 	bool IsCreateFirstTime() { return m_bCreateFirstTime; }	// 初回生成のフラグ
+	bool IsFlinchAction() { return m_bFinchAction; }	// 怯み行動フラグ
+
+	// 怯み行動設定
+	void SetFlinchAction(CEnemyFlinch* pFlinch);
+
+	// 怯みへ切り替え
+	void ChangeFlinchAction(CEnemy* boss);
 
 protected:
-	int m_nIdxMotion;			// モーション番号
-	bool m_bCreateFirstTime;	// 初回生成のフラグ
-	bool m_bBeforeAttackAction;	// 攻撃前行動フラグ
+	int m_nIdxMotion;				// モーション番号
+	bool m_bCreateFirstTime;		// 初回生成のフラグ
+	bool m_bBeforeAttackAction;		// 攻撃前行動フラグ
+	bool m_bFinchAction;			// 怯み行動フラグ
+	CEnemyFlinch* m_pFlinchAction;	// 怯み行動のポインタ
 };
+
 
 //=============================
 // 行動前アクション
@@ -271,6 +290,25 @@ class CEnemyBeforeAction : public CEnemyState
 public:
 
 	CEnemyBeforeAction() {}
+
+	virtual void Action(CEnemy* boss) override;		// 行動
+	virtual void Attack(CEnemy* boss) override {}	// 攻撃処理
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		CEnemyState::ChangeMotionIdx(boss);
+	}
+};
+
+
+//=============================
+// 怯み
+//=============================
+class CEnemyFlinch : public CEnemyState
+{
+public:
+	CEnemyFlinch() {}
 
 	virtual void Action(CEnemy* boss) override;		// 行動
 	virtual void Attack(CEnemy* boss) override {}	// 攻撃処理
@@ -326,7 +364,7 @@ public:
 	}	// 遷移前処理
 
 	bool IsDirectlyTrans() { return m_bWillDirectlyTrans; }	// 直接遷移フラグ取得
-
+	bool IsFlinchAction() { return m_bFinchAction; }		// 怯み行動フラグ
 
 protected:
 

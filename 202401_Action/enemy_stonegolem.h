@@ -32,7 +32,11 @@ public:
 		MOTION_DOWN,			// ダウン
 		MOTION_KNOCKBACK,		// やられ
 		MOTION_FADEOUT,			// フェードアウト
-		MOTION_ATTACK_NORMAL2,	// 通常攻撃2
+		MOTION_ATTACK_SIDESWIPE,	// 横薙ぎ
+		MOTION_ATTACK_SIDESWIPE2,	// 横薙ぎ2
+		MOTION_ATTACK_UPSWIPE2,		// 縦薙ぎ2
+		MOTION_ATTACK_FLINCH_UPSWIPE,	// 通常攻撃
+		MOTION_ATTACK_FLINCH_SIDESWIPE,	// 通常攻撃
 		MOTION_MAX
 	};
 
@@ -70,7 +74,75 @@ private:
 
 
 
-// 横薙ぎ攻撃
+
+// 縦薙ぎ(4段目)
+class CEnemyGolemUpSwipe2 : public CEnemyProximity
+{
+public:
+	CEnemyGolemUpSwipe2() : CEnemyProximity(350.0f)
+	{
+		m_bWillDirectlyTrans = true;
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGolem::MOTION_ATTACK_UPSWIPE2;
+		CEnemyAttack::ChangeMotionIdx(boss);
+
+		// 直接遷移する
+		m_bWillDirectlyTrans = true;
+	}
+};
+
+
+// 3段目の怯み
+class CFlinch_GolemSideSwipe : public CEnemyFlinch
+{
+public:
+	CFlinch_GolemSideSwipe()
+	{
+		m_bCreateFirstTime = true;
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGolem::MOTION::MOTION_ATTACK_FLINCH_SIDESWIPE;
+		CEnemyFlinch::ChangeMotionIdx(boss);
+	}
+};
+
+// 横薙ぎ(3段目)
+class CEnemyGolemSideSwipe2 : public CEnemyProximity
+{
+public:
+	CEnemyGolemSideSwipe2() : CEnemyProximity(350.0f)
+	{
+		m_bWillDirectlyTrans = true;
+
+		// 怯む攻撃に設定
+		SetFlinchAction(DEBUG_NEW CFlinch_GolemSideSwipe());
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGolem::MOTION_ATTACK_SIDESWIPE2;
+		CEnemyAttack::ChangeMotionIdx(boss);
+
+		// 直接遷移する
+		m_bWillDirectlyTrans = true;
+
+		if (UtilFunc::Transformation::Random(0, 1) == 0)
+		{
+			// 連続攻撃設定
+			SetChainAttack(DEBUG_NEW CEnemyGolemUpSwipe2());
+		}
+	}
+};
+
+// 横薙ぎ攻撃(2段目)
 class CEnemyGolemSideSwipe : public CEnemyProximity
 {
 public:
@@ -82,22 +154,49 @@ public:
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* boss) override
 	{
-		m_nIdxMotion = CEnemyGolem::MOTION_ATTACK_NORMAL2;
+		m_nIdxMotion = CEnemyGolem::MOTION_ATTACK_SIDESWIPE;
 		CEnemyAttack::ChangeMotionIdx(boss);
 
 		// 直接遷移する
 		m_bWillDirectlyTrans = true;
+
+		if (UtilFunc::Transformation::Random(0, 1) == 0)
+		{
+			// 連続攻撃設定
+			SetChainAttack(DEBUG_NEW CEnemyGolemSideSwipe2());
+		}
 	}
 };
 
 
-// 振り上げ攻撃
+
+// 1段目の怯み
+class CFlinch_GolemUPSwipe : public CEnemyFlinch
+{
+public:
+	CFlinch_GolemUPSwipe()
+	{
+		m_bCreateFirstTime = true;
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGolem::MOTION::MOTION_ATTACK_FLINCH_UPSWIPE;
+		CEnemyFlinch::ChangeMotionIdx(boss);
+	}
+};
+
+// 振り上げ攻撃(1段目)
 class CEnemyGolemUPSwipe : public CEnemyProximity
 {
 public:
 	CEnemyGolemUPSwipe() : CEnemyProximity(350.0f)
 	{
 		m_bWillDirectlyTrans = true;
+
+		// 怯む攻撃に設定
+		SetFlinchAction(DEBUG_NEW CFlinch_GolemUPSwipe());
 	}
 
 	// モーションインデックス切り替え

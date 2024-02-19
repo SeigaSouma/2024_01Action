@@ -47,7 +47,7 @@ CHARACTERSET
 
 	VELOCITY = 1.00		# 移動量
 	JUMP = 0.00		
-	RADIUS = 100.00		
+	RADIUS = 150.00		
 	HEIGHT = 400.00		
 	LIFE = 200		
 
@@ -188,7 +188,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/stonegolem/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 9
+NUM_MOTION = 13
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -196,12 +196,15 @@ NUM_MOTION = 9
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_def.txt			# [0]デフォルト
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_walk.txt			# [1]歩き
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_upswipe.txt		# [2]攻撃
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_strongattack.txt		# [2]強攻撃
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_dmg.txt			# [3]ダメージ
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_down.txt			# [3]ダウン
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_knockback.txt	# [4]ノックバック
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_fadeout.txt		# [5]フェードアウト
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_sideswipe.txt		# [2]攻撃
-
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_strongattack.txt	# [3]強攻撃
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_dmg.txt			# [4]ダメージ
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_down.txt			# [5]ダウン
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_knockback.txt		# [6]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_fadeout.txt		# [7]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_sideswipe.txt		# [8]横薙ぎ
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_sideswipe2.txt	# [9]横薙ぎ2
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_upswipe2.txt	# [9]横薙ぎ2
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_flinch_upswipe.txt	# [11]上薙ぎ怯み
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_flinch_sideswipe2.txt	# [12]横薙ぎ怯み
 
 END_SCRIPT		# この行は絶対消さないこと！

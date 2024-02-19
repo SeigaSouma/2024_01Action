@@ -29,8 +29,10 @@ public:
 		MOTION_ATTACK_NORMAL,	// 通常攻撃
 		MOTION_ATTACK_STRONG,	// 強攻撃
 		MOTION_DMG,				// ダメージ
+		MOTION_DOWN,				// ダウン
 		MOTION_KNOCKBACK,		// やられ
 		MOTION_FADEOUT,			// フェードアウト
+		MOTION_FLINCH_NORMALATK,			// フェードアウト
 		MOTION_MAX
 	};
 
@@ -60,6 +62,47 @@ private:
 
 };
 
+
+
+// 通常攻撃の怯み
+class CFlinch_GobelinNormalATK : public CEnemyFlinch
+{
+public:
+	CFlinch_GobelinNormalATK() 
+	{
+		m_bCreateFirstTime = true;
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGobelin::MOTION::MOTION_FLINCH_NORMALATK;
+		CEnemyFlinch::ChangeMotionIdx(boss);
+	}
+};
+
+// 通常攻撃
+class CAttack_GobelinNormalAttack : public CEnemyNormalAttack
+{
+public:
+	CAttack_GobelinNormalAttack() 
+	{ 
+		m_bWillDirectlyTrans = true;
+
+		// 怯む攻撃に設定
+		SetFlinchAction(DEBUG_NEW CFlinch_GobelinNormalATK());
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemy::MOTION_ATTACK_NORMAL;
+		CEnemyNormalAttack::ChangeMotionIdx(boss);
+
+		// 直接遷移する
+		m_bWillDirectlyTrans = true;
+	}
+};
 
 
 #endif

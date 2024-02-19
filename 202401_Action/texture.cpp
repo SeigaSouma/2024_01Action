@@ -32,6 +32,7 @@ CTexture* CTexture::m_pTexture = nullptr;	// 自身のポインタ
 CTexture::CTexture()
 {
 	m_TexInfo.clear();
+	m_ImageNames.clear();	// 読み込み用文字列
 }
 
 //==========================================================================
@@ -78,13 +79,17 @@ void CTexture::Init()
 HRESULT CTexture::LoadAll()
 {
 #if 0
+	// 読み込み用文字列
+	m_ImageNames.clear();
+
 	// 全検索
-	std::vector<std::string> imageNames;
-	SearchAllImages(MAINFOLODER, imageNames);
-	for (const auto& name : imageNames)
+	SearchAllImages(MAINFOLODER);
+	for (const auto& name : m_ImageNames)
 	{
 		Regist(name);
 	}
+
+	m_ImageNames.clear();
 #endif
 
 	// マップ用の読み込み
@@ -102,7 +107,7 @@ HRESULT CTexture::LoadAll()
 //==========================================================================
 // 全ての画像検索
 //==========================================================================
-void CTexture::SearchAllImages(const std::wstring& folderPath, std::vector<std::string>& imageNames) 
+void CTexture::SearchAllImages(const std::wstring& folderPath) 
 {
 	// ファイル検索用構造体
 	WIN32_FIND_DATAW findFileData;
@@ -122,14 +127,14 @@ void CTexture::SearchAllImages(const std::wstring& folderPath, std::vector<std::
 		{
 			// ファイルが見つかったらファイル名を保存
 			std::string fileName = UtilFunc::Transformation::WideToMultiByte((folderPath + L"\\" + findFileData.cFileName).c_str());
-			imageNames.push_back(fileName);
+			m_ImageNames.push_back(fileName);
 		}
 		else if (lstrcmpW(findFileData.cFileName, L".") != 0 && lstrcmpW(findFileData.cFileName, L"..") != 0) 
 		{// サブフォルダだった場合
 
 			// サブフォルダ名を加えて再検索
 			std::wstring subFolderPath = folderPath + L"\\" + findFileData.cFileName;
-			SearchAllImages(subFolderPath, imageNames);
+			SearchAllImages(subFolderPath);
 		}
 	} while (FindNextFileW(hFind, &findFileData) != 0);
 
