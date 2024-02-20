@@ -159,6 +159,8 @@
     <ClCompile Include="2D_effect.cpp" />
     <ClCompile Include="3D_effect.cpp" />
     <ClCompile Include="ballast.cpp" />
+    <ClCompile Include="battlestart.cpp" />
+    <ClCompile Include="battlestart_effect.cpp" />
     <ClCompile Include="beam.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="blackframe.cpp" />
@@ -296,6 +298,8 @@
     <ClInclude Include="2D_effect.h" />
     <ClInclude Include="3D_effect.h" />
     <ClInclude Include="ballast.h" />
+    <ClInclude Include="battlestart.h" />
+    <ClInclude Include="battlestart_effect.h" />
     <ClInclude Include="beam.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="blackframe.h" />

@@ -32,6 +32,7 @@
 #include "calculation.h"
 #include "fog.h"
 #include "controlassist.h"
+#include "battlestart.h"
 
 
 //==========================================================================
@@ -128,14 +129,7 @@ void CGameManager::Uninit()
 //==========================================================================
 void CGameManager::Update()
 {
-	//if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1 <= m_nNowStage)
-	//{// 総ステージ数を超えたら
-	//	m_nNowStage = CGame::GetInstance()->GetEnemyBase()->GetNumStage() - 1;
-
-	//	// 通常ステージが終了判定
-	//	m_bEndNormalStage = true;
-	//}
-
+	
 	// 操作補助生成
 	CControlAssist* pAssist = CControlAssist::GetInstance();
 	if (pAssist)
@@ -152,6 +146,10 @@ void CGameManager::Update()
 
 	case CGameManager::SCENE_MAINCLEAR:
 		m_bControll = true;
+		break;
+
+	case SceneType::SCENE_BATTLESTART:
+		m_bControll = false;
 		break;
 
 	case CGameManager::SCENE_ENHANCE:
@@ -305,6 +303,9 @@ void CGameManager::SceneTransition()
 			SetBoss();
 		}
 
+		// 戦闘開始に遷移
+		CBattleStart::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
+		SetType(SceneType::SCENE_BATTLESTART);
 	}
 }
 

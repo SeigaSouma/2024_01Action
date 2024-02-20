@@ -15,8 +15,8 @@ NUM_CHARACTER = 3
 # キャラクターファイル名
 #------------------------------------------------------------------
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/setup_gorira.txt			# [0]ボス
-MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/setup_stonegolem.txt		# [1]クッキー
-MOTION_FILENAME = data/TEXT/character/enemy/gobelin/setup_gobelin.txt		# [2]オラフ
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/setup_stonegolem.txt		# [1]ストーンゴーレム
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/setup_gobelin.txt		# [2]ゴブリン
 
 #===================================================================================================
 # 敵の情報
@@ -36,7 +36,7 @@ PATTERNSET
 END_PATTERNSET
 
 #------------------------------------------------------------------
-# [1] クッキー単騎
+# [1] ストーンゴーレム単騎
 #------------------------------------------------------------------
 PATTERNSET
 	ENEMYSET
@@ -48,13 +48,33 @@ PATTERNSET
 END_PATTERNSET
 
 #------------------------------------------------------------------
-# [2] オラフ単騎
+# [2] ゴブリン単騎
 #------------------------------------------------------------------
 PATTERNSET
 	ENEMYSET
 		TYPE = 2		# キャラの種類
 		INDEX = 0
 		POS = 0.00 0.00 0.00
+		STARTFRAME = 0		# 初期フレーム
+	END_ENEMYSET
+END_PATTERNSET
+
+
+#------------------------------------------------------------------
+# [3] ゴブリン単騎
+#------------------------------------------------------------------
+PATTERNSET
+	ENEMYSET
+		TYPE = 2		# キャラの種類
+		INDEX = 0
+		POS = -400.00 0.00 0.00
+		STARTFRAME = 0		# 初期フレーム
+	END_ENEMYSET
+	
+	ENEMYSET
+		TYPE = 2		# キャラの種類
+		INDEX = 0
+		POS = 400.00 0.00 0.00
 		STARTFRAME = 0		# 初期フレーム
 	END_ENEMYSET
 END_PATTERNSET

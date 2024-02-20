@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "particle.h"
+#include "camera.h"
 
 //==========================================================================
 // 定数定義
@@ -47,6 +48,7 @@ HRESULT CEnemyGolem::Init()
 	m_Action = ACTION_DEF;
 	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemUPSwipe());	// 1段目
 	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemSideSwipe());	// 2段目
+	m_pAtkPattern.push_back(DEBUG_NEW CGolemStrongAttack());	// 強攻撃
 
 	// ロックオンの距離
 	m_fRockOnDistance = 400.0f;
@@ -57,7 +59,6 @@ HRESULT CEnemyGolem::Init()
 
 	// 攻撃切り替え
 	ChangeATKState(m_pAtkPattern[0]);
-	m_pATKState->ChangeMotionIdx(this);
 
 	// スーパーアーマー
 	m_bActiveSuperArmor = true;
@@ -107,6 +108,17 @@ void CEnemyGolem::Update()
 
 	// 更新処理
 	CEnemy::Update();
+
+	// 死亡の判定
+	if (IsDeath() == true)
+	{// 死亡フラグが立っていたら
+		return;
+	}
+
+	if (GetMotion()->GetType() == MOTION::MOTION_ATTACK_STRONG)
+	{
+		CMyEffekseer::GetInstance()->SetPosition(m_pWeaponHandle, GetCenterPosition());
+	}
 }
 
 //==========================================================================
@@ -176,7 +188,19 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	switch (nMotionType)
 	{
+
 	case MOTION_ATTACK_STRONG:
+		if (nCntATK == 0)
+		{
+			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
+				GetCenterPosition(), 0.0f, 0.0f, 20.0f);
+		}
+		else
+		{
+			// 振動
+			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		}
 		break;
 
 	default:

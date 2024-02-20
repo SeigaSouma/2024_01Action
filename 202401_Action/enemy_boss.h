@@ -40,6 +40,8 @@ public:
 		MOTION_BACKSTEP,		// バックステップ
 		MOTION_BACKSTEP_SMALL,	// 小バックステップ
 		MOTION_FADEOUT,			// フェードアウト
+		MOTION_FLINCH_HANDSLAP,		// ハンドスラップ
+		MOTION_FLINCH_OVERHEAD,		// 振り下ろしの怯み
 		MOTION_MAX
 	};
 
@@ -126,62 +128,6 @@ public:
 		CEnemyBeforeAction::ChangeMotionIdx(enemy);
 	}
 };
-//
-//// 攻撃
-//class CBossAttack : public CEnemyState
-//{
-//public:
-//
-//	CBossAttack() : m_bWillDirectlyTrans(true)
-//	{
-//		m_bCreateFirstTime = true;
-//	}
-//
-//	virtual void Action(CEnemy* enemy) override = 0;	// 行動
-//	virtual void Attack(CEnemy* enemy) override;	// 攻撃処理
-//
-//
-//	// モーションインデックス切り替え
-//	virtual void ChangeMotionIdx(CEnemy* enemy) override
-//	{
-//		CEnemyState::ChangeMotionIdx(enemy);
-//	}
-//
-//	// 遷移前処理
-//	virtual void BeforeTransitionProcess(CEnemy* enemy) 
-//	{
-//		enemy->RotationTarget();
-//		enemy->ActChase(1.0f, 600.0f);
-//	}	// 遷移前処理
-//
-//	bool IsDirectlyTrans() { return m_bWillDirectlyTrans; }	// 直接遷移フラグ取得
-//
-//
-//protected:
-//	bool m_bWillDirectlyTrans;	// 直接遷移フラグ
-//};
-//
-//// 近接攻撃
-//class CBossProximity : public CEnemyAttack
-//{
-//public:
-//
-//	CBossProximity() {}
-//	
-//	virtual void Action(CEnemy* enemy) override;	// 行動
-//	virtual void ChangeMotionIdx(CEnemy* enemy) override = 0;	// モーションインデックス切り替え
-//
-//};
-//
-//// 遠距離攻撃
-//class CBossRemote : public CEnemyAttack
-//{
-//public:
-//	CBossRemote() {}
-//
-//	virtual void Action(CEnemy* enemy) override;	// 行動
-//	virtual void ChangeMotionIdx(CEnemy* enemy) override = 0;	// モーションインデックス切り替え
-//};
 
 
 //=============================
@@ -222,6 +168,24 @@ public:
 	}
 };
 
+
+// 振り下ろしの怯み
+class CFlinch_BossOverHead : public CEnemyFlinch
+{
+public:
+	CFlinch_BossOverHead()
+	{
+		m_bCreateFirstTime = true;
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION::MOTION_FLINCH_OVERHEAD;
+		CEnemyFlinch::ChangeMotionIdx(boss);
+	}
+};
+
 // 振り下ろし
 class CBossOverHead : public CEnemyProximity
 {
@@ -229,9 +193,10 @@ public:
 	CBossOverHead() : CEnemyProximity(600.0f) 
 	{ 
 		m_bWillDirectlyTrans = true;
-	}
 
-	//virtual void BeforeAttack(CEnemy* enemy) override;	// 攻撃前処理
+		// 怯む攻撃に設定
+		SetFlinchAction(DEBUG_NEW CFlinch_BossOverHead());
+	}
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* enemy) override
@@ -243,6 +208,23 @@ public:
 };
 
 
+// ハンドスラップの怯み
+class CFlinch_BossHandSlap : public CEnemyFlinch
+{
+public:
+	CFlinch_BossHandSlap()
+	{
+		m_bCreateFirstTime = true;
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION::MOTION_FLINCH_HANDSLAP;
+		CEnemyFlinch::ChangeMotionIdx(boss);
+	}
+};
+
 // ハンドスラップ
 class CBossHandSlap : public CEnemyProximity
 {
@@ -251,6 +233,9 @@ public:
 	{
 		m_bWillDirectlyTrans = true;
 		m_bSetAngleNotAttacking = true;	// 攻撃判定外向き合わせフラグ
+
+		// 怯む攻撃に設定
+		SetFlinchAction(DEBUG_NEW CFlinch_BossHandSlap());
 	}
 
 	// モーションインデックス切り替え

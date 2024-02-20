@@ -39,6 +39,8 @@ public:
 
 	virtual void SetColor(const D3DXCOLOR col);			// 色設定
 	virtual D3DXCOLOR GetColor() const;				// 色取得
+	virtual void SetAlpha(const float col);				// 不透明度設定
+	virtual float GetAlpha() const;						// 不透明度取得
 	virtual void SetSize(const D3DXVECTOR2 size);		// サイズの設定
 	virtual D3DXVECTOR2 GetSize() const;			// サイズの取得
 	virtual void SetSizeOrigin(const D3DXVECTOR2 size);	// 元のサイズの設定
@@ -47,8 +49,6 @@ public:
 	virtual D3DXVECTOR2 *GetTex();					// テクスチャ座標の取得
 	virtual MyLib::Vector3 *GetVtxPos();				// 頂点座標取得
 	virtual void SetVtxPos(MyLib::Vector3 *pos);			// 頂点座標取得
-	
-	template<class T>T *GetTemplate();
 
 	static CObject2D *Create();
 	static CObject2D *Create(int nPriority);

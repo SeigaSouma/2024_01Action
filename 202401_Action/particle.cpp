@@ -30,6 +30,7 @@ void EnemyFade();
 void OffSetting();
 void Fire_WallTorch();
 void Fire_StandTorch();
+void BattleStart();
 
 //==========================================================================
 // パーティクルの初期化処理
@@ -107,6 +108,10 @@ void my_particle::Create(const MyLib::Vector3& pos, TYPE nType)
 		Fire_StandTorch();
 		break;
 
+	case TYPE_BATTLESTART:
+		m_nLife = 30;
+		BattleStart();
+		break;
 	}
 }
 
@@ -494,5 +499,152 @@ void Fire_WallTorch()
 			25,
 			CEffect3D::MOVEEFFECT_ADD,
 			CEffect3D::TYPE_SMOKE);
+	}
+}
+
+//==========================================================================
+// 戦闘開始
+//==========================================================================
+void BattleStart()
+{
+	float m_fMove;
+	m_fMove = (float)(rand() % 30) / 10 + 2.0f;		// 移動量
+
+	for (int nCntCircle = 0; nCntCircle < 30; nCntCircle++)
+	{
+		float fRot = ((D3DX_PI * 2.0f) / (float)(15 % (nCntCircle + 1))) * nCntCircle;
+		fRot -= D3DX_PI;
+
+		for (int nCntUse = 0; nCntUse < 1; nCntUse++)
+		{
+			float fRandMove = (float)(UtilFunc::Transformation::Random(-15, 15) / 10.0f);		// バラバラ移動量
+
+			float fRotRand = (float)(UtilFunc::Transformation::Random(-10, 10) / 100.0f);		// バラバラ向き
+
+			// 移動量の設定
+			m_move.x = sinf(fRot + fRotRand) * (m_fMove + fRandMove);
+			m_move.z = 0.0f;
+			m_move.y = cosf(fRot + fRotRand) * (m_fMove + fRandMove);
+
+			m_col = D3DXCOLOR(0.9f, 0.5f, 0.1f, 1.0f);
+
+			m_fRadius = 80.0f;
+
+			if (rand() % 3 == 0)
+			{
+				m_fRadius *= 0.95f;
+			}
+			else if (rand() % 3 == 1)
+			{
+				m_fRadius *= 0.98f;
+			}
+			else if (rand() % 3 == 2)
+			{
+				m_fRadius *= 0.92f;
+			}
+
+			// エフェクトの設定
+			CEffect2D::Create(m_pos,
+				m_move,
+				m_col,
+				m_fRadius,
+				50,
+				CEffect2D::MOVEEFFECT_ADD, CEffect2D::TYPE_NORMAL);
+		}
+	}
+
+
+
+
+
+
+
+
+	float fMove;
+	fMove = (float)UtilFunc::Transformation::Random(20, 30) * 0.1f + 5.0f;		//移動量
+
+	float fff = (D3DX_PI * 2.0f) / 40;
+
+	for (int nCntCircle = 0; nCntCircle < 40; nCntCircle++)
+	{
+		float fRot = fff * nCntCircle;
+
+		for (int nCntUse = 0; nCntUse < 10; nCntUse++)
+		{
+			float fRandMove = (float)UtilFunc::Transformation::Random(-15, 15) / 10;		//バラバラ移動量
+
+			float fRotRand = (float)UtilFunc::Transformation::Random(-10, 10) / 100.0f;		//バラバラ向き
+
+			//移動量の設定
+			m_move.x = sinf(fRot + fRotRand) * (fMove + fRandMove);
+			m_move.z = 0.0f;
+			m_move.y = cosf(fRot + fRotRand) * (fMove + fRandMove);
+
+			m_col = D3DXCOLOR(0.9f, 0.5f, 0.1f, 1.0f);
+
+			m_fRadius = 15.0f;
+
+			if (rand() % 3 == 0)
+			{
+				m_fRadius *= 0.95f;
+			}
+			else if (rand() % 3 == 1)
+			{
+				m_fRadius *= 0.98f;
+			}
+			else if (rand() % 3 == 2)
+			{
+				m_fRadius *= 0.92f;
+			}
+
+			//エフェクトの設定
+			CEffect2D::Create(m_pos,
+				m_move,
+				m_col,
+				m_fRadius,
+				m_nLife,
+				CEffect2D::MOVEEFFECT_SUB, CEffect2D::TYPE_NORMAL);
+		}
+	}
+
+
+	for (int nCntUse = 0; nCntUse < 10; nCntUse++)
+	{
+		fMove = (float)(rand() % 50) * 0.1f;		//移動量
+
+		//移動量の設定
+		m_move.x = sinf((float)(UtilFunc::Transformation::Random(-314, 314)) / 100.0f) * fMove;
+		m_move.y = sinf((float)(UtilFunc::Transformation::Random(-314, 314)) / 100.0f) * fMove;
+		m_move.z = 0.0f;
+
+		//出現地点のブレ
+		m_pos.x += m_move.x * 0.1f;
+		m_pos.y += m_move.z * 0.1f;
+		m_pos.z = 0;
+
+		m_col = D3DXCOLOR(0.9f, 0.6f, 0.3f, 0.8f);
+
+		m_fRadius = 200.0f;
+
+		if (rand() % 3 == 0)
+		{
+			m_fRadius *= 0.95f;
+		}
+		else if (rand() % 3 == 1)
+		{
+			m_fRadius *= 0.98f;
+		}
+		else if (rand() % 3 == 2)
+		{
+			m_fRadius *= 0.92f;
+		}
+
+		//エフェクトの設定
+		CEffect2D::Create(m_pos,
+			m_move,
+			m_col,
+			m_fRadius,
+			m_nLife,
+			CEffect2D::MOVEEFFECT_ADD, CEffect2D::TYPE_JUJI);
 	}
 }

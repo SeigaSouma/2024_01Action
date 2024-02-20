@@ -55,7 +55,7 @@ HRESULT CEnemyGobelin::Init()
 
 	// UŒ‚Ø‚è‘Ö‚¦
 	ChangeATKState(m_pAtkPattern[0]);
-	m_pATKState->ChangeMotionIdx(this);
+	//m_pATKState->ChangeMotionIdx(this);
 
 	// ‹­UŒ‚ƒ^ƒCƒ}[
 	m_fStrongAttackTime = TIME_STRONGATK;
@@ -106,6 +106,17 @@ void CEnemyGobelin::Update()
 
 	// XVˆ—
 	CEnemy::Update();
+
+	// Ž€–S‚Ì”»’è
+	if (IsDeath() == true)
+	{// Ž€–Sƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç
+		return;
+	}
+
+	if (GetMotion()->GetType() == MOTION::MOTION_ATTACK_STRONG)
+	{
+		CMyEffekseer::GetInstance()->SetPosition(m_pWeaponHandle, GetCenterPosition());
+	}
 }
 
 //==========================================================================

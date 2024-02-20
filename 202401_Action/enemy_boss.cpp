@@ -103,7 +103,7 @@ HRESULT CEnemyBoss::Init()
 
 	// 攻撃切り替え
 	ChangeATKState(m_pAtkPattern[0]);
-	m_pATKState->ChangeMotionIdx(this);
+	//m_pATKState->ChangeMotionIdx(this);
 
 	// スーパーアーマー
 	m_bActiveSuperArmor = true;

@@ -161,6 +161,15 @@ namespace MyLib
 		}
 
 		/**
+		@brief	XYの向き
+		@return	向き
+		*/
+		inline float AngleXY(const Vector3& v)
+		{
+			return atan2f(x - v.x, y - v.y);
+		}
+
+		/**
 		@brief	ベクトルの距離
 		@return	2つのベクトルの距離
 		*/

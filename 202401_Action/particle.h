@@ -15,7 +15,7 @@
 namespace my_particle
 {
 	// 列挙型定義
-	typedef enum
+	enum TYPE
 	{
 		TYPE_NONE = 0,		// 煙のパーティクル
 		TYPE_SMOKE,			// 煙のパーティクル
@@ -26,8 +26,9 @@ namespace my_particle
 		TYPE_ENEMY_FADE,	// 敵のフェード
 		TYPE_FIRE_WALLTORCH,	// 壁松明の火
 		TYPE_FIRE_STANDTORCH,	// 壁松明の火
+		TYPE_BATTLESTART,		// 戦闘開始
 		TYPE_MAX
-	}TYPE;
+	};
 
 	void Create(const MyLib::Vector3& pos, my_particle::TYPE nType);
 }

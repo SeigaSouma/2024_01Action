@@ -515,7 +515,7 @@ void CEffect3D::Draw()
 	{
 		// Zテストを無効にする
 		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);	//常に描画する
+		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);	// 常に描画する
 	}
 
 	// αブレンディングを加算合成に設定

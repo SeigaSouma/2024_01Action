@@ -31,10 +31,11 @@ CObject::CObject(int nPriority)
 	}
 
 	// 値のクリア
-	m_pos = mylib_const::DEFAULT_VECTOR3;		// 位置
-	m_posOld = mylib_const::DEFAULT_VECTOR3;	// 前回の位置
-	m_rot = mylib_const::DEFAULT_VECTOR3;		// 向き
-	m_move = mylib_const::DEFAULT_VECTOR3;		// 移動量
+	m_pos = 0.0f;		// 位置
+	m_posOld = 0.0f;	// 前回の位置
+	m_rot = 0.0f;		// 向き
+	m_move = 0.0f;		// 移動量
+	m_rotOrigin = 0.0f;	// 元の向き
 
 	m_pPrev = NULL;	// 前のオブジェクトへのポインタ
 	m_pNext = NULL;	// 次のオブジェクトへのポインタ
@@ -550,25 +551,6 @@ void CObject::Death()
 	m_nNumPriorityAll[nPriority]--;
 }
 
-
-//==========================================================================
-// 嘆きのバーチャルヒット処理
-//==========================================================================
-bool CObject::Hit(const int nValue)
-{
-	// 死んでない
-	return false;
-}
-
-//==========================================================================
-// 嘆きのバーチャルヒット処理
-//==========================================================================
-bool CObject::Hit(const int nValue, MyLib::Vector3 move)
-{
-	// 死んでない
-	return false;
-}
-
 //==========================================================================
 // 頂点情報設定処理
 //==========================================================================
@@ -663,6 +645,22 @@ void CObject::SetRotation(const MyLib::Vector3& rot)
 MyLib::Vector3 CObject::GetRotation() const
 {
 	return m_rot;
+}
+
+//==========================================================================
+// 元の向き設定
+//==========================================================================
+void CObject::SetOriginRotation(const MyLib::Vector3& rot)
+{
+	m_rotOrigin = rot;
+}
+
+//==========================================================================
+// 元の向き取得
+//==========================================================================
+MyLib::Vector3 CObject::GetOriginRotation() const
+{
+	return m_rotOrigin;
 }
 
 //==========================================================================

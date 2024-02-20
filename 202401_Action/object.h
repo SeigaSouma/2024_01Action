@@ -92,8 +92,8 @@ public:
 	virtual MyLib::Vector3 GetMove() const;				// 移動量取得
 	virtual void SetRotation(const MyLib::Vector3& rot);		// 向き設定
 	virtual MyLib::Vector3 GetRotation() const;			// 向き取得
-	virtual bool Hit(const int nValue);						// 嘆きのバーチャルヒット処理
-	virtual bool Hit(const int nValue, MyLib::Vector3 move);
+	virtual void SetOriginRotation(const MyLib::Vector3& rot);	// 元の向き設定
+	virtual MyLib::Vector3 GetOriginRotation() const;		// 元の向き取得
 
 	// 変更処理
 	virtual void AddPosition(const MyLib::Vector3& pos);		// 位置設定
@@ -143,6 +143,7 @@ private:
 	MyLib::Vector3 m_posOld;		// 前回の位置
 	MyLib::Vector3 m_posOrigin;	// 元の位置
 	MyLib::Vector3 m_rot;			// 向き
+	MyLib::Vector3 m_rotOrigin;	// 元の向き
 	MyLib::Vector3 m_move;			// 移動量
 
 	int m_nPriority;		// 優先順位

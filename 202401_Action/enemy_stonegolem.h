@@ -146,7 +146,7 @@ public:
 class CEnemyGolemSideSwipe : public CEnemyProximity
 {
 public:
-	CEnemyGolemSideSwipe() : CEnemyProximity(350.0f)
+	CEnemyGolemSideSwipe() : CEnemyProximity(400.0f)
 	{ 
 		m_bWillDirectlyTrans = true;
 	}
@@ -191,7 +191,7 @@ public:
 class CEnemyGolemUPSwipe : public CEnemyProximity
 {
 public:
-	CEnemyGolemUPSwipe() : CEnemyProximity(350.0f)
+	CEnemyGolemUPSwipe() : CEnemyProximity(400.0f)
 	{
 		m_bWillDirectlyTrans = true;
 
@@ -213,5 +213,26 @@ public:
 	}
 };
 
+
+// 強攻撃
+class CGolemStrongAttack : public CEnemyStrongAttack
+{
+public:
+	CGolemStrongAttack() : CEnemyStrongAttack(400.0f)
+	{
+		m_bWillDirectlyTrans = true;
+		m_bSetAngleNotAttacking = true;	// 攻撃判定外向き合わせフラグ
+	}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGolem::MOTION::MOTION_ATTACK_STRONG;
+		CEnemyStrongAttack::ChangeMotionIdx(boss);
+
+		// 直接遷移する
+		m_bWillDirectlyTrans = true;
+	}
+};
 
 #endif

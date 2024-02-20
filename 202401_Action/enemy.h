@@ -449,15 +449,13 @@ class CEnemyStrongAttack : public CEnemyProximity
 {
 public:
 	CEnemyStrongAttack() { m_bWillDirectlyTrans = true; }
+	CEnemyStrongAttack(float len) : CEnemyProximity(len) {}
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* boss) override
 	{
 		m_nIdxMotion = CEnemy::MOTION_ATTACK_STRONG;
 		CEnemyAttack::ChangeMotionIdx(boss);
-
-		//// 直接遷移しない
-		//m_bWillDirectlyTrans = false;
 
 		// 強攻撃状態に設定
 		boss->SetState(CEnemy::STATE_STRONGATK);

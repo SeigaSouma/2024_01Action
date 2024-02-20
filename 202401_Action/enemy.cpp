@@ -200,6 +200,13 @@ HRESULT CEnemy::Init()
 	// リストに追加
 	m_List.Regist(this);
 
+	// デフォルト設定
+	CMotion* pMotion = GetMotion();
+	if (pMotion != nullptr)
+	{
+		pMotion->Set(MOTION_DEF);
+	}
+
 	return S_OK;
 }
 
@@ -466,17 +473,8 @@ void CEnemy::Update()
 		return;
 	}
 
-	if (!CGame::GetInstance()->GetGameManager()->IsControll())
-	{// 行動できるとき
-		return;
-	}
-
 	// 親の処理
 	CObjectChara::Update();
-
-	// 過去の位置設定
-	SetOldPosition(GetPosition());
-
 
 	// プレイヤー情報
 	CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
@@ -486,6 +484,15 @@ void CEnemy::Update()
 	}
 	m_TargetPosition = pPlayer->GetPosition();
 
+	if (!CGame::GetInstance()->GetGameManager()->IsControll())
+	{// 行動できるとき
+
+		RotationTarget();
+		return;
+	}
+
+	// 過去の位置設定
+	SetOldPosition(GetPosition());
 
 	// 行動別処理
 	(this->*(m_ActFuncList[m_Action]))();
