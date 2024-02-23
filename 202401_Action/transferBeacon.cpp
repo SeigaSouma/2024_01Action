@@ -252,19 +252,30 @@ void CTransferBeacon::CollisionPlayer()
 		if (pInputGamepad->GetTriggerRT(0) ||
 			pInputKeyboard->GetTrigger(DIK_RETURN))
 		{
-			// 遷移なしフェード追加
-			CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
-
 			switch (m_TransType)
 			{
 			case CTransferBeacon::TRANSTYPE_ENHANCE:
 				// 強化状態に変更
 				CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_ENHANCE);
+
+				// 遷移なしフェード追加
+				CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
 				break;
 
 			case CTransferBeacon::TRANSTYPE_GAMEMAIN:
 				// 遷移状態に変更
 				CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
+
+				// 遷移なしフェード追加
+				CManager::GetInstance()->GetInstantFade()->SetFade(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 40);
+				break;
+
+			case CTransferBeacon::eTransType::TRANSTYPE_RESULT:
+				// 遷移状態に変更
+				CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_RESULT);
+
+				// フェード追加
+				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE::MODE_TITLE);
 				break;
 			}
 

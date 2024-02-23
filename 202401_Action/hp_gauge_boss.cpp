@@ -23,7 +23,7 @@ namespace
 	const float TIME_DECREMENT = 2.0f;	// 減少完了までの時間
 	const float TIME_DAMAGE = 0.3f;		// ダメージ状態の時間
 	const float LENGTH_DAMAGE = 9.0f;		// ダメージ状態の長さ
-	const int NUM_SHAKE_DAMAGE = 4;		// ダメージの振動回数
+	const int NUM_SHAKE_DAMAGE = 5;		// ダメージの振動回数
 }
 
 //==========================================================================

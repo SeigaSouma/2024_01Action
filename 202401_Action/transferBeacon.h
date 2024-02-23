@@ -27,6 +27,7 @@ public:
 	{
 		TRANSTYPE_ENHANCE = 0,	// 強化に転移
 		TRANSTYPE_GAMEMAIN,		// ゲームメイン
+		TRANSTYPE_RESULT,		// リザルト
 		TRANSTYPE_MAX
 	};
 

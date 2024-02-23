@@ -200,7 +200,7 @@ void CEnemyBase::Update()
 #endif
 
 	// ステージの総数設定
-	CGame::GetInstance()->GetGameManager()->SetNumStage(m_nNumStage);
+	//CGame::GetInstance()->GetGameManager()->SetNumStage(m_nNumStage);
 
 }
 

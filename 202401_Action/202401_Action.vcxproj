@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="2D_effect.cpp" />
     <ClCompile Include="3D_effect.cpp" />
+    <ClCompile Include="afterrespawn_text.cpp" />
     <ClCompile Include="ballast.cpp" />
     <ClCompile Include="battlestart.cpp" />
     <ClCompile Include="battlestart_effect.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="gallery.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamemanager.cpp" />
+    <ClCompile Include="gamerating.cpp" />
     <ClCompile Include="hp_gauge.cpp" />
     <ClCompile Include="hp_gauge_boss.cpp" />
     <ClCompile Include="hp_gauge_player.cpp" />
@@ -284,6 +286,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="stagecleartext.cpp" />
+    <ClCompile Include="stagename.cpp" />
     <ClCompile Include="stamina_gauge_player.cpp" />
     <ClCompile Include="targetpoint.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -300,6 +303,7 @@
   <ItemGroup>
     <ClInclude Include="2D_effect.h" />
     <ClInclude Include="3D_effect.h" />
+    <ClInclude Include="afterrespawn_text.h" />
     <ClInclude Include="ballast.h" />
     <ClInclude Include="battlestart.h" />
     <ClInclude Include="battlestart_effect.h" />
@@ -334,6 +338,7 @@
     <ClInclude Include="gallery.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamemanager.h" />
+    <ClInclude Include="gamerating.h" />
     <ClInclude Include="hp_gauge.h" />
     <ClInclude Include="hp_gauge_boss.h" />
     <ClInclude Include="hp_gauge_player.h" />
@@ -426,6 +431,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="stage.h" />
     <ClInclude Include="stagecleartext.h" />
+    <ClInclude Include="stagename.h" />
     <ClInclude Include="stamina_gauge_player.h" />
     <ClInclude Include="targetpoint.h" />
     <ClInclude Include="texture.h" />

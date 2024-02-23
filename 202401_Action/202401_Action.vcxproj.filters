@@ -465,9 +465,6 @@
     <ClCompile Include="deadscreen.cpp">
       <Filter>ソース ファイル\dead</Filter>
     </ClCompile>
-    <ClCompile Include="targetpoint.cpp">
-      <Filter>ソース ファイル\mode\game</Filter>
-    </ClCompile>
     <ClCompile Include="deadmanager.cpp">
       <Filter>ソース ファイル\dead</Filter>
     </ClCompile>
@@ -542,6 +539,18 @@
     </ClCompile>
     <ClCompile Include="beforebattle.cpp">
       <Filter>ソース ファイル\battlestart</Filter>
+    </ClCompile>
+    <ClCompile Include="stagename.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="afterrespawn_text.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gamerating.cpp">
+      <Filter>ソース ファイル\mode\game</Filter>
+    </ClCompile>
+    <ClCompile Include="targetpoint.cpp">
+      <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -964,6 +973,15 @@
     </ClInclude>
     <ClInclude Include="beforebattle.h">
       <Filter>ヘッダー ファイル\battlestart</Filter>
+    </ClInclude>
+    <ClInclude Include="stagename.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="afterrespawn_text.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gamerating.h">
+      <Filter>ソース ファイル\mode\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

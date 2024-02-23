@@ -688,10 +688,9 @@ void CManager::Uninit()
 	if (m_pXLoad != nullptr)
 	{
 		// I—¹ˆ—
-		m_pXLoad->Unload();
+		m_pXLoad->Uninit();
 
 		// ƒƒ‚ƒŠ‚ÌŠJ•ú
-		delete m_pXLoad;
 		m_pXLoad = nullptr;
 	}
 

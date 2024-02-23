@@ -12,6 +12,7 @@
 #include "skilltree_icon.h"
 
 class CSkillTree_Ability;
+class CGameRating;
 
 //==========================================================================
 // クラス定義
@@ -34,6 +35,7 @@ public:
 		SCENE_TRANSITIONWAIT,	// 遷移待機
 		SCENE_TRANSITION,		// 転移
 		SCENE_REASPAWN,			// 復活
+		SCENE_RESULT,			// リザルト
 		SCENE_MAX
 	};
 
@@ -61,10 +63,12 @@ public:
 	bool IsEndNormalStage() { return m_bEndNormalStage; }	// 通常ステージのア終了判定
 	void AddNowStage();	// ステージの加算
 	int GetNowStage();	// 現在のステージ取得
-	void SetNumStage(int nStage) { m_nNumStage = nStage; }	// ステージの総数設定
-	int GetNumStage() { return m_nNumStage; }			// ステージの総数取得
+	void SetNumStage(int nStage);				// ステージの総数設定
+	int GetNumStage() { return m_nNumStage; }	// ステージの総数取得
 
 	void SetPrevEnhance();	// 前回の強化内容設定
+
+	CGameRating* GetGameRating();	// ゲーム評価取得
 
 	void GameClearSettings();	// ゲームクリア時の設定
 	static CGameManager *Create();	// 生成処理
@@ -90,6 +94,7 @@ private:
 	int m_nPrevPoint;		// 前回のポイント
 	std::vector<CSkillTree_Icon::eMastering> m_PrevSkillIconMastering;	// 前回のスキルアイコンの習得状況
 	std::vector<CSkillTree_Icon*> m_p_PrevSkillIcon;	// 前回のスキルアイコン
+	std::vector<CGameRating*> m_pGameRating;			// ゲーム評価
 };
 
 

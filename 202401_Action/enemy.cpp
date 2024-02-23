@@ -496,9 +496,13 @@ void CEnemy::Update()
 	m_TargetPosition = pPlayer->GetPosition();
 
 	if (!CGame::GetInstance()->GetGameManager()->IsControll())
-	{// 行動できるとき
+	{// 行動不能
 
-		RotationTarget();
+		if (m_state != STATE::STATE_DEAD &&
+			m_state != STATE::STATE_FADEOUT)
+		{
+			RotationTarget();
+		}
 		return;
 	}
 

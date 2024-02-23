@@ -31,8 +31,12 @@
 #include "limitarea.h"
 #include "calculation.h"
 #include "fog.h"
+#include "fade.h"
 #include "controlassist.h"
 #include "beforebattle.h"
+#include "stagename.h"
+#include "afterrespawn_text.h"
+#include "gamerating.h"
 
 
 //==========================================================================
@@ -60,6 +64,7 @@ CGameManager::CGameManager()
 	m_pSkilltreeAbillity = nullptr;	// スキルツリー能力のポインタ
 	m_PrevSkillIconMastering.clear();	// 前回のスキルアイコンの習得状況
 	m_p_PrevSkillIcon.clear();			// 前回のスキルアイコン
+	m_pGameRating.clear();				// ゲーム評価
 }
 
 //==========================================================================
@@ -109,6 +114,8 @@ HRESULT CGameManager::Init()
 
 	m_SceneType = SCENE_TRANSITION;	// シーンの種類
 
+	// ゲーム評価追加
+	m_pGameRating.clear();
 	return S_OK;
 }
 
@@ -121,6 +128,12 @@ void CGameManager::Uninit()
 	{
 		m_pSkilltreeAbillity->Uninit();
 		m_pSkilltreeAbillity = nullptr;
+	}
+
+	for (auto& rating : m_pGameRating)
+	{
+		rating->Uninit();
+		rating = nullptr;
 	}
 }
 
@@ -144,6 +157,7 @@ void CGameManager::Update()
 	{
 	case CGameManager::SCENE_MAIN:
 		m_bControll = true;
+		m_pGameRating[m_nNowStage]->AddClearTime(CManager::GetInstance()->GetDeltaTime());
 		break;
 
 	case CGameManager::SCENE_MAINCLEAR:
@@ -180,9 +194,13 @@ void CGameManager::Update()
 		SceneTransition();
 		break;
 
-	case SCENE_REASPAWN:			// 復活
+	case CGameManager::SCENE_REASPAWN:		// 復活
 		m_bControll = false;
 		SceneReaspawn();
+		break;
+
+	case SCENE_RESULT:
+		m_bControll = false;
 		break;
 
 	default:
@@ -206,7 +224,14 @@ void CGameManager::GameClearSettings()
 	CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
 
 	// 転移ビーコン生成
-	CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE, MyLib::Vector3(0.0f, 200.0f, 0.0f));
+	if (m_nNowStage + 1 < m_nNumStage)
+	{
+		CTransferBeacon::Create(CTransferBeacon::TRANSTYPE_ENHANCE, MyLib::Vector3(0.0f, 200.0f, 0.0f));
+	}
+	else
+	{
+		CTransferBeacon::Create(CTransferBeacon::eTransType::TRANSTYPE_RESULT, MyLib::Vector3(0.0f, 200.0f, 0.0f));
+	}
 
 	// プレイヤー取得
 	CListManager<CPlayer> playerList = CPlayer::GetListObj();
@@ -255,12 +280,6 @@ void CGameManager::SceneTransition()
 			pCamera->SetEnableFollow(true);
 		}
 
-		// 観衆設定
-		CGallery::SetGallery();
-
-		// 松明設定
-		CTorch::SetTorch();
-
 		// エリア制限情報取得
 		CListManager<CLimitArea> limitareaList = CLimitArea::GetListObj();
 		CLimitArea* pLimitArea = nullptr;
@@ -282,6 +301,12 @@ void CGameManager::SceneTransition()
 			MyLib::Vector3(0.0f, 0.0f, 0.0f),
 			0.0f, 0.0f, 100.0f, false);
 
+		// 観衆設定
+		CGallery::SetGallery();
+
+		// 松明設定
+		CTorch::SetTorch();
+
 		// プレイヤー取得
 		CListManager<CPlayer> playerList = CPlayer::GetListObj();
 		CPlayer* pPlayer = playerList.GetData(0);
@@ -298,14 +323,8 @@ void CGameManager::SceneTransition()
 		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
 
-		if (!m_bEndNormalStage)
-		{// 通常ステージが終わっていなかったら
-			SetEnemy();
-		}
-		else
-		{// ボスステージ
-			SetBoss();
-		}
+		// 敵配置
+		SetEnemy();
 
 		// 戦闘準備に遷移
 		CBeforeBattle::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
@@ -360,9 +379,15 @@ void CGameManager::SceneEnhance()
 		pAssist->ResetText();
 	}
 
-
 	// ステージ加算
 	AddNowStage();
+	if (m_bEndNormalStage)
+	{
+		//CManager::GetInstance()->GetFade()->SetFade(CScene::MODE::MODE_TITLE);
+		//CManager::GetInstance()->SetMode(CScene::MODE::MODE_TITLE);
+		return;
+	}
+
 
 	// 前回のポイント保存
 	m_nPrevPoint = CPlayer::GetListObj().GetData(0)->GetSkillPoint()->GetPoint();
@@ -392,6 +417,9 @@ void CGameManager::SceneEnhance()
 
 	// スキルツリーオブジェクト生成
 	CSkillTree_Obj::Create();
+
+	// ステージ名生成
+	CStageName::Create();
 
 	// スキルツリー能力生成
 	if (m_pSkilltreeAbillity != nullptr)
@@ -462,6 +490,11 @@ void CGameManager::SceneReaspawn()
 	// 前回のポイント+お情けポイント0設定
 	pPlayer->GetSkillPoint()->SetPoint(m_nPrevPoint + 2);
 
+	if (m_pGameRating[m_nNowStage] != nullptr)
+	{
+		m_pGameRating[m_nNowStage]->AddNumDead();
+	}
+
 	// 現在のステージ
 	m_nNowStage--;
 	if (m_nNowStage <= -1)
@@ -489,6 +522,10 @@ void CGameManager::SceneReaspawn()
 	// 強化シーンに切り替え
 	m_SceneType = SCENE_ENHANCE;
 
+	// 復活後テキスト生成
+	CAfterRespawn_Text* pAfterText = CAfterRespawn_Text::Create();
+	pAfterText->SetDefaultText();
+
 	// 強化シーン処理
 	SceneEnhance();
 }
@@ -498,6 +535,8 @@ void CGameManager::SceneReaspawn()
 //==========================================================================
 void CGameManager::SetBoss()
 {
+	// 今回は使用無し
+#if 0
 	// BGMストップ
 	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL_BGM_GAME);
 
@@ -538,6 +577,7 @@ void CGameManager::SetBoss()
 		// 敵の再配置
 		pEnemyManager->SetStageBoss();
 	}
+#endif
 }
 
 //==========================================================================
@@ -588,6 +628,21 @@ void CGameManager::SetEnemy()
 }
 
 //==========================================================================
+// ステージの総数設定
+//==========================================================================
+void CGameManager::SetNumStage(int nStage)
+{ 
+	m_nNumStage = nStage;
+	
+	// ゲーム評価追加
+	for (int i = 0; i < m_nNumStage; i++)
+	{
+		m_pGameRating.emplace_back();
+		m_pGameRating[i] = CGameRating::Create();
+	}
+}
+
+//==========================================================================
 // ステージの加算
 //==========================================================================
 void CGameManager::AddNowStage()
@@ -595,7 +650,7 @@ void CGameManager::AddNowStage()
 	// 加算
 	m_nNowStage++;
 
-	if (CGame::GetInstance()->GetEnemyBase()->GetNumStage() <= m_nNowStage)
+	if (m_nNumStage <= m_nNowStage)
 	{// 総ステージ数を超えたら
 
 		// 通常ステージが終了判定
@@ -635,4 +690,17 @@ void CGameManager::SetType(SceneType type)
 CGameManager::SceneType CGameManager::GetType()
 {
 	return m_SceneType;
+}
+
+//==========================================================================
+// ゲーム評価取得
+//==========================================================================
+CGameRating* CGameManager::GetGameRating()
+{
+	if (m_pGameRating.empty())
+	{
+		return nullptr;
+	}
+
+	return m_pGameRating[m_nNowStage];
 }
