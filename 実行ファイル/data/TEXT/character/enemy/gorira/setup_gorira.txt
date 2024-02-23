@@ -217,7 +217,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/gorira/sphere_collider.json
 #------------------------------------------------------------------------------
 # ƒ‚[ƒVƒ‡ƒ“”
 #------------------------------------------------------------------------------
-NUM_MOTION = 13
+NUM_MOTION = 15
 
 #------------------------------------------------------------------------------
 # ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹–¼
@@ -230,11 +230,13 @@ MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_handslap.txt		# [4]ƒnƒ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_launchballast.txt		# [5]Š¢âI”ò‚Î‚µ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_rolling.txt		# [6]ƒ[ƒŠƒ“ƒO
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_down.txt			# [7]ƒ_ƒEƒ“
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_returndown.txt			# [7]ƒ_ƒEƒ“•œ‹A
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_backstep.txt			# [8]ƒoƒbƒNƒXƒeƒbƒv
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_backstep_small.txt			# [9]ƒoƒbƒNƒXƒeƒbƒv
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_fadeout.txt			# [10]ƒtƒF[ƒhƒAƒEƒg
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_flinch_handslap.txt		# [11]ƒnƒ“ƒhƒXƒ‰ƒbƒv‹¯‚İ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_flinch_overheadattack.txt		# [12]U‚è‰º‚ë‚µ‹¯‚İ
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_knockback.txt		# [12]‚â‚ç‚ê
 
 
 END_SCRIPT		# ‚±‚Ìs‚Íâ‘ÎÁ‚³‚È‚¢‚±‚ÆI

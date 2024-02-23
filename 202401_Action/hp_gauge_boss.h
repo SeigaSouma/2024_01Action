@@ -40,6 +40,7 @@ private:
 	typedef enum
 	{
 		VTXTYPE_BASE = 0,	// 黒ゲージ
+		VTXTYPE_DIFFGAUGE,	// 差分ゲージ
 		VTXTYPE_GAUGE,		// ピンクゲージ
 		VTXTYPE_FRAM,		// 枠
 		VTXTYPE_MAX
@@ -56,6 +57,7 @@ private:
 
 	// メンバ関数
 	void GaugeDecrement(int nCntGauge);		// 減少処理
+	void AlwaysDecrement();					// 常に減少の処理
 
 	// メンバ変数
 	SHP_Gauge m_HPGauge[VTXTYPE_MAX];		// HPゲージの情報

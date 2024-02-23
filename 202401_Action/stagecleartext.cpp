@@ -5,8 +5,6 @@
 // 
 //=============================================================================
 #include "stagecleartext.h"
-#include "renderer.h"
-#include "texture.h"
 #include "manager.h"
 #include "sound.h"
 #include "calculation.h"
@@ -19,12 +17,9 @@ namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\battlewin\\text_win.png";
 	const float TIME_SCALNONE = 0.4f;			// なにもない
-	const float TIME_SCALEDOWN = 0.2f;			// 縮小時間
+	const float TIME_SCALEDOWN = 0.16f;			// 縮小時間
 	const float TIME_SCALENONE = 0.7f;			// 整わせる時間
 	const float TIME_FADEOUT = 0.4f;			// フェードアウト時間
-	const float SIZE_SCALEORIGIN = 0.3f;		// 元の大きさ
-	const float SIZE_SCALEUP = 0.6f;			// 拡大の大きさ
-	const float SIZE_SCALEDOWN = 0.25f;			// 縮小の大きさ
 }
 
 //==========================================================================
@@ -63,29 +58,20 @@ CStageClearText::~CStageClearText()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CStageClearText *CStageClearText::Create(const MyLib::Vector3 pos)
+CStageClearText* CStageClearText::Create(const MyLib::Vector3 pos)
 {
-	// 生成用のオブジェクト
-	CStageClearText *pEffect = NULL;
+	// メモリの確保
+	CStageClearText* pEffect = DEBUG_NEW CStageClearText;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect != NULL)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pEffect = DEBUG_NEW CStageClearText;
-
-		if (pEffect != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pEffect->Init();
-			pEffect->SetPosition(pos);
-		}
-
-		return pEffect;
+		// 初期化処理
+		pEffect->Init();
+		pEffect->SetPosition(pos);
 	}
 
-	return NULL;
+	return pEffect;
 }
 
 //==========================================================================
@@ -180,7 +166,7 @@ void CStageClearText::StateScaleDOWN()
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
 	D3DXVECTOR2 sizeOrigin = GetSizeOrigin();
-	D3DXVECTOR2 destSize = UtilFunc::Transformation::AdjustSizeByWidth(size, 200.0f);
+	D3DXVECTOR2 destSize = UtilFunc::Transformation::AdjustSizeByWidth(size, 240.0f);
 
 	// 状態遷移カウンター減算
 	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();
@@ -219,7 +205,7 @@ void CStageClearText::StateScaleNone()
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
 	D3DXVECTOR2 sizeOrigin = GetSizeOrigin();
-	D3DXVECTOR2 destSize = UtilFunc::Transformation::AdjustSizeByWidth(size, 240.0f);
+	D3DXVECTOR2 destSize = UtilFunc::Transformation::AdjustSizeByWidth(size, 260.0f);
 
 	// 状態遷移カウンター減算
 	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();

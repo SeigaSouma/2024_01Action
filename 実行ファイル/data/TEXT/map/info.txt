@@ -65,7 +65,7 @@ MODEL_FILENAME = data\\MODEL\\arena\\jouheki_kabe.x		# [33]
 MODEL_FILENAME = data\\MODEL\\arena\\taimatu_001.x		# [34]
 MODEL_FILENAME = data\\MODEL\\arena\\taimatu_002.x		# [35]
 MODEL_FILENAME = data\\MODEL\\gallery\\gallery_red_wait.x		# [36]
-MODEL_FILENAME = data\\MODEL\\enemy\\gobelin\\TModel.x		# [36]
+MODEL_FILENAME = data\\MODEL\\stage\\titilesword.x		# [36]
 
 #==============================================================================
 # ãÛèÓïÒ

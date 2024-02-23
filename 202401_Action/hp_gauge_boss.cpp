@@ -15,9 +15,10 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE[3] =	// テクスチャのファイル
+	const char* TEXTURE[] =	// テクスチャのファイル
 	{
 		"data\\TEXTURE\\bossgauge\\bossHP_base.png",
+		"data\\TEXTURE\\bossgauge\\bossHP_white.png",
 		"data\\TEXTURE\\bossgauge\\bossHP_gauge.png",
 		"data\\TEXTURE\\bossgauge\\bossHP_fram.png",
 	};
@@ -101,7 +102,7 @@ HRESULT CHP_GaugeBoss::Init()
 		// 生成処理
 		m_HPGauge[nCntGauge].pObj2D = CObject2D::Create(8);
 		if (m_HPGauge[nCntGauge].pObj2D == NULL)
-		{// NULLだったら
+		{
 			return E_FAIL;
 		}
 		m_HPGauge[nCntGauge].pObj2D->SetType(CObject::TYPE::TYPE_NONE);
@@ -111,14 +112,26 @@ HRESULT CHP_GaugeBoss::Init()
 
 		// テクスチャの割り当て
 		m_HPGauge[nCntGauge].pObj2D->BindTexture(nTexIdx);
+	}
 
-		// サイズ
-		D3DXVECTOR2 texsize = CTexture::GetInstance()->GetImageSize(nTexIdx);
-		m_HPGauge[nCntGauge].pObj2D->SetSize(texsize * 0.3f);
+
+	int nTexIdx = CTexture::GetInstance()->Regist(TEXTURE[0]);
+
+	// サイズ
+	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nTexIdx);
+	size = UtilFunc::Transformation::AdjustSizeByWidth(size, 350.0f);
+	m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].pObj2D->SetSize(size);
+
+	// サイズ
+	D3DXVECTOR2 maxsize = m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].pObj2D->GetSize();
+
+	for (auto& info : m_HPGauge)
+	{
+		info.pObj2D->SetSize(size);
 
 		// 各種変数の初期化
-		m_HPGauge[nCntGauge].fMaxWidth = m_HPGauge[nCntGauge].pObj2D->GetSize().x;		// 幅の最大値
-		m_HPGauge[nCntGauge].fMaxHeight = m_HPGauge[nCntGauge].pObj2D->GetSize().y;		// 高さの最大値
+		info.fMaxWidth = maxsize.x;		// 幅の最大値
+		info.fMaxHeight = maxsize.y;	// 高さの最大値
 	}
 
 	return S_OK;
@@ -173,18 +186,15 @@ void CHP_GaugeBoss::Update()
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
 
+	// 減少処理
+	GaugeDecrement(VTXTYPE_GAUGE);
+	AlwaysDecrement();
+
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		if (m_HPGauge[nCntGauge].pObj2D == NULL)
 		{
 			continue;
-		}
-
-		if (nCntGauge == VTXTYPE_GAUGE)
-		{// ゲージ部分だけ
-
-			// 減少処理
-			GaugeDecrement(nCntGauge);
 		}
 
 		// 位置設定
@@ -228,13 +238,36 @@ void CHP_GaugeBoss::GaugeDecrement(int nCntGauge)
 	D3DXVECTOR2 size = m_HPGauge[nCntGauge].pObj2D->GetSize();
 
 	// 差分で徐々に減らしていく
-	size.x += (m_HPGauge[nCntGauge].fWidthDest - size.x) * 0.15f;
+	size.x += (m_HPGauge[nCntGauge].fWidthDest - size.x) * 1.0f;
 
 	// サイズ設定
 	m_HPGauge[nCntGauge].pObj2D->SetSize(size);
 
 	// 頂点座標設定
 	SetVtx(nCntGauge);
+}
+
+//==========================================================================
+// 常に減少の処理
+//==========================================================================
+void CHP_GaugeBoss::AlwaysDecrement()
+{
+	SHP_Gauge* gauge = &m_HPGauge[VTXTYPE::VTXTYPE_DIFFGAUGE];
+
+	// サイズ取得
+	D3DXVECTOR2 size = gauge->pObj2D->GetSize();
+	size.x -= 0.08f;
+
+	if (size.x <= m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].fWidthDest)
+	{
+		size.x = m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].fWidthDest;
+	}
+
+	// サイズ設定
+	gauge->pObj2D->SetSize(size);
+
+	// 頂点座標設定
+	SetVtx(VTXTYPE::VTXTYPE_DIFFGAUGE);
 }
 
 //==========================================================================
