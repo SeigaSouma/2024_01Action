@@ -82,7 +82,6 @@ HRESULT CEnemyBoss::Init()
 
 	// HPの設定
 	m_pBossHPGauge = CHP_GaugeBoss::Create(MyLib::Vector3(640.0f, 50.0f, 0.0f), GetLifeOrigin());	// ボスのHPゲージ
-	m_pBossHPGauge->SetLife(0);
 
 	// ロックオンの距離
 	m_fRockOnDistance = 700.0f;
@@ -171,14 +170,6 @@ void CEnemyBoss::Update()
 	// HP更新
 	m_pBossHPGauge->SetLife(GetLife());
 
-	//// プレイヤー情報
-	//CPlayer* pPlayer = CPlayer::GetListObj().GetData(m_nTargetPlayerIndex);
-	//if (pPlayer == nullptr)
-	//{
-	//	return;
-	//}
-	//m_TargetPosition = pPlayer->GetPosition();
-
 	if (GetMotion()->GetType() == CEnemyBoss::MOTION_ROLLING)
 	{
 		MyLib::Vector3 pos = UtilFunc::Transformation::WorldMtxChangeToPosition(GetModel()[2]->GetWorldMtx());
@@ -198,6 +189,9 @@ void CEnemyBoss::Update()
 //==========================================================================
 void CEnemyBoss::NormalHitResponse()
 {
+	// ダメージ設定
+	m_pBossHPGauge->SetDamage(GetLife());
+
 	// ダメージ状態にする
 	m_state = STATE_DMG;
 
@@ -219,6 +213,9 @@ void CEnemyBoss::NormalHitResponse()
 //==========================================================================
 void CEnemyBoss::CounterHitResponse()
 {
+	// ダメージ設定
+	m_pBossHPGauge->SetDamage(GetLife());
+
 	// ダウン状態にする
 	m_state = STATE_DOWN;
 

@@ -5,13 +5,11 @@
 // 
 //=============================================================================
 #include "hp_gauge_boss.h"
-#include "texture.h"
 #include "manager.h"
-#include "renderer.h"
 #include "calculation.h"
 
 //==========================================================================
-// マクロ定義
+// 定数定義
 //==========================================================================
 namespace
 {
@@ -22,10 +20,20 @@ namespace
 		"data\\TEXTURE\\bossgauge\\bossHP_gauge.png",
 		"data\\TEXTURE\\bossgauge\\bossHP_fram.png",
 	};
+	const float TIME_DECREMENT = 2.0f;	// 減少完了までの時間
+	const float TIME_DAMAGE = 0.3f;		// ダメージ状態の時間
+	const float LENGTH_DAMAGE = 9.0f;		// ダメージ状態の長さ
+	const int NUM_SHAKE_DAMAGE = 4;		// ダメージの振動回数
 }
 
-#define WIDTH			(100.0f)	// 横幅
-#define HEIGHT			(25.0f)		// 縦幅
+//==========================================================================
+// 関数リスト
+//==========================================================================
+CHP_GaugeBoss::STATE_FUNC CHP_GaugeBoss::m_StateFuncList[] =
+{
+	&CHP_GaugeBoss::StateNone,		// 通常
+	&CHP_GaugeBoss::StateDamage,	// ダメージ
+};
 
 //==========================================================================
 // コンストラクタ
@@ -35,14 +43,17 @@ CHP_GaugeBoss::CHP_GaugeBoss(int nPriority) : CObject(nPriority)
 	// 値のクリア
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		m_HPGauge[nCntGauge].pObj2D = NULL;
+		m_HPGauge[nCntGauge].pObj2D = nullptr;
 		m_HPGauge[nCntGauge].fMaxWidth = 0.0f;		// 幅の最大値
 		m_HPGauge[nCntGauge].fMaxHeight = 0.0f;		// 高さの最大値
 		m_HPGauge[nCntGauge].fWidthDest = 0.0f;		// 幅の差分
 	}
 
-	m_nLife = 0;	// 体力
-	m_nMaxLife = 0;	// 最大体力
+	m_nLife = 0;					// 体力
+	m_nMaxLife = 0;					// 最大体力
+	m_fDecrementTimer = 0.0f;		// 減少タイマー
+	m_state = STATE::STATE_NONE;	// 状態
+	m_fStateTimer = 0.0f;			// 状態タイマー
 }
 
 //==========================================================================
@@ -56,34 +67,27 @@ CHP_GaugeBoss::~CHP_GaugeBoss()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CHP_GaugeBoss *CHP_GaugeBoss::Create(MyLib::Vector3 pos, int nMaxLife)
+CHP_GaugeBoss* CHP_GaugeBoss::Create(MyLib::Vector3 pos, int nMaxLife)
 {
-	// 生成用のオブジェクト
-	CHP_GaugeBoss *pHPGauge = NULL;
 
-	if (pHPGauge == NULL)
-	{// NULLだったら
+	// メモリの確保
+	CHP_GaugeBoss* pHPGauge = DEBUG_NEW CHP_GaugeBoss;
 
-		// メモリの確保
-		pHPGauge = DEBUG_NEW CHP_GaugeBoss;
+	if (pHPGauge != nullptr)
+	{// メモリの確保が出来ていたら
 
-		if (pHPGauge != NULL)
-		{// メモリの確保が出来ていたら
+		// 最大体力
+		pHPGauge->m_nMaxLife = nMaxLife;
 
-			// 最大体力
-			pHPGauge->m_nMaxLife = nMaxLife;
+		// 位置設定
+		pHPGauge->SetPosition(pos);
+		pHPGauge->SetOriginPosition(pos);
 
-			// 位置設定
-			pHPGauge->SetPosition(pos);
-
-			// 初期化処理
-			pHPGauge->Init();
-		}
-
-		return pHPGauge;
+		// 初期化処理
+		pHPGauge->Init();
 	}
 
-	return NULL;
+	return pHPGauge;
 }
 
 //==========================================================================
@@ -101,7 +105,7 @@ HRESULT CHP_GaugeBoss::Init()
 	{
 		// 生成処理
 		m_HPGauge[nCntGauge].pObj2D = CObject2D::Create(8);
-		if (m_HPGauge[nCntGauge].pObj2D == NULL)
+		if (m_HPGauge[nCntGauge].pObj2D == nullptr)
 		{
 			return E_FAIL;
 		}
@@ -144,12 +148,11 @@ void CHP_GaugeBoss::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObj2D != NULL)
-		{// NULLじゃなかったら
-
+		if (m_HPGauge[nCntGauge].pObj2D != nullptr)
+		{
 			// 終了処理
 			m_HPGauge[nCntGauge].pObj2D->Uninit();
-			m_HPGauge[nCntGauge].pObj2D = NULL;
+			m_HPGauge[nCntGauge].pObj2D = nullptr;
 		}
 	}
 
@@ -164,12 +167,11 @@ void CHP_GaugeBoss::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObj2D != NULL)
-		{// NULLじゃなかったら
-
+		if (m_HPGauge[nCntGauge].pObj2D != nullptr)
+		{
 			// 終了処理
 			m_HPGauge[nCntGauge].pObj2D->Uninit();
-			m_HPGauge[nCntGauge].pObj2D = NULL;
+			m_HPGauge[nCntGauge].pObj2D = nullptr;
 		}
 	}
 
@@ -183,16 +185,18 @@ void CHP_GaugeBoss::Kill()
 //==========================================================================
 void CHP_GaugeBoss::Update()
 {
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
+	// 状態別処理
+	(this->*(m_StateFuncList[m_state]))();
 
 	// 減少処理
 	GaugeDecrement(VTXTYPE_GAUGE);
 	AlwaysDecrement();
 
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObj2D == NULL)
+		if (m_HPGauge[nCntGauge].pObj2D == nullptr)
 		{
 			continue;
 		}
@@ -217,13 +221,20 @@ void CHP_GaugeBoss::SetLife(int nLife)
 	// 現在の体力設定
 	m_nLife = nLife;
 
+	float ratio = ((float)m_nLife / (float)m_nMaxLife);
+
+	if (ratio <= 0.3f &&
+		m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].pObj2D != nullptr)
+	{
+		m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].pObj2D->SetColor(D3DXCOLOR(1.0f, 0.1f, 0.1f, 1.0f));
+	}
+
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObj2D != NULL)
-		{// NULLじゃなかったら
-
+		if (m_HPGauge[nCntGauge].pObj2D != nullptr)
+		{
 			//目標の幅設定
-			m_HPGauge[nCntGauge].fWidthDest = m_HPGauge[nCntGauge].fMaxWidth * ((float)m_nLife / (float)m_nMaxLife);
+			m_HPGauge[nCntGauge].fWidthDest = m_HPGauge[nCntGauge].fMaxWidth * ratio;
 		}
 	}
 }
@@ -254,9 +265,12 @@ void CHP_GaugeBoss::AlwaysDecrement()
 {
 	SHP_Gauge* gauge = &m_HPGauge[VTXTYPE::VTXTYPE_DIFFGAUGE];
 
+	// 減少時間減算
+	m_fDecrementTimer -= CManager::GetInstance()->GetDeltaTime();
+
 	// サイズ取得
 	D3DXVECTOR2 size = gauge->pObj2D->GetSize();
-	size.x -= 0.08f;
+	size.x = UtilFunc::Correction::EasingLinear(m_fDecrementStart, m_fDecrementEnd, 0.0f, TIME_DECREMENT, TIME_DECREMENT - m_fDecrementTimer);
 
 	if (size.x <= m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].fWidthDest)
 	{
@@ -268,6 +282,55 @@ void CHP_GaugeBoss::AlwaysDecrement()
 
 	// 頂点座標設定
 	SetVtx(VTXTYPE::VTXTYPE_DIFFGAUGE);
+}
+
+//==========================================================================
+// ダメージ設定
+//==========================================================================
+void CHP_GaugeBoss::SetDamage(int nLife)
+{
+	m_nLife = nLife;
+
+	// タイマーリセット
+	m_fDecrementTimer = TIME_DECREMENT;
+
+	// 白の長さ設定
+	float ratio = ((float)m_nLife / (float)m_nMaxLife);
+	m_fDecrementStart = m_HPGauge[VTXTYPE::VTXTYPE_DIFFGAUGE].pObj2D->GetSize().x;
+	m_fDecrementEnd = m_HPGauge[VTXTYPE::VTXTYPE_GAUGE].fMaxWidth * ratio;
+
+	// ダメージ状態設定
+	m_state = STATE::STATE_DAMAGE;
+	m_fStateTimer = TIME_DAMAGE;
+}
+
+//==========================================================================
+// ダメージ
+//==========================================================================
+void CHP_GaugeBoss::StateDamage()
+{
+	// 状態時間減算
+	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();
+
+	if (m_fStateTimer <= 0.0f)
+	{
+		m_state = STATE_NONE;
+		m_fStateTimer = 0.0f;
+
+		// 位置設定
+		SetPosition(GetOriginPosition());
+		return;
+	}
+
+	float ratio = m_fStateTimer / TIME_DAMAGE;
+	float len = LENGTH_DAMAGE * ratio;
+	float phai = D3DX_PI * (ratio * NUM_SHAKE_DAMAGE);
+
+	MyLib::Vector3 pos = GetOriginPosition();
+	pos.x += sinf(D3DX_PI * 0.75f) * (sinf(phai) * len);
+	pos.y += cosf(D3DX_PI * 0.75f) * (sinf(phai) * len);
+	SetPosition(pos);
+
 }
 
 //==========================================================================

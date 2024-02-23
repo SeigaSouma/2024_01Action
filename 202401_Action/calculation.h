@@ -101,6 +101,25 @@ namespace UtilFunc	// 便利関数
 		}
 
 		/**
+		@brief	線形補正(等速, リニア)
+		@details https://mo-no.design/blog/wp-content/uploads/2023/02/linear.mp4
+		@param	start		[in]	初期値
+		@param	end			[in]	目標値
+		@param	startTime	[in]	開始時間
+		@param	endTime		[in]	終了時間
+		@param	currentTime	[in]	現在の時間
+		@return	補正されたfloat値
+		*/
+		inline float EasingLinear(float start, float end, float startTime, float endTime, float currentTime)
+		{
+			// 割合
+			float ratio = (currentTime - startTime) / (endTime - startTime);
+			UtilFunc::Transformation::ValueNormalize(ratio, 1.0f, 0.0f);
+
+			return EasingLinear(start, end, ratio);
+		}
+
+		/**
 		@brief	線形補正(徐々に加速, イーズイン)
 		@details https://mo-no.design/blog/wp-content/uploads/2023/02/easein_1.mp4
 		@param	start	[in]	初期値
@@ -113,6 +132,25 @@ namespace UtilFunc	// 便利関数
 			// 範囲外補正
 			UtilFunc::Transformation::ValueNormalize(time, 1.0f, 0.0f);
 			return start + (end - start) * time * time;
+		}
+
+		/**
+		@brief	線形補正(徐々に加速, イーズイン)
+		@details https://mo-no.design/blog/wp-content/uploads/2023/02/easein_1.mp4
+		@param	start		[in]	初期値
+		@param	end			[in]	目標値
+		@param	startTime	[in]	開始時間
+		@param	endTime		[in]	終了時間
+		@param	currentTime	[in]	現在の時間
+		@return	補正されたfloat値
+		*/
+		inline float EasingEaseIn(float start, float end, float startTime, float endTime, float currentTime)
+		{
+			// 割合
+			float ratio = (currentTime - startTime) / (endTime - startTime);
+			UtilFunc::Transformation::ValueNormalize(ratio, 1.0f, 0.0f);
+
+			return EasingEaseIn(start, end, ratio);
 		}
 
 		/**
@@ -130,6 +168,25 @@ namespace UtilFunc	// 便利関数
 			float fSquaredTime = time * time;
 
 			return start + (end - start) * (1.0f - (1.0f - fSquaredTime) * (1.0f - fSquaredTime));
+		}
+
+		/**
+		@brief	線形補正(徐々に減速, イーズアウト)
+		@details https://mo-no.design/blog/wp-content/uploads/2023/02/easeout_1.mp4
+		@param	start		[in]	初期値
+		@param	end			[in]	目標値
+		@param	startTime	[in]	開始時間
+		@param	endTime		[in]	終了時間
+		@param	currentTime	[in]	現在の時間
+		@return	補正されたfloat値
+		*/
+		inline float EasingEaseOut(float start, float end, float startTime, float endTime, float currentTime)
+		{
+			// 割合
+			float ratio = (currentTime - startTime) / (endTime - startTime);
+			UtilFunc::Transformation::ValueNormalize(ratio, 1.0f, 0.0f);
+
+			return EasingEaseOut(start, end, ratio);
 		}
 
 		/**
@@ -158,6 +215,25 @@ namespace UtilFunc	// 便利関数
 				fValue = start + (end - start) * (0.5f * (1.0f - (1.0f - fSquaredTime) * (1.0f - fSquaredTime)) + 0.5f);
 			}
 			return fValue;
+		}
+
+		/**
+		@brief	線形補正(加速してから減速, イーズインアウト)
+		@details https://mo-no.design/blog/wp-content/uploads/2023/02/easeinout_1.mp4
+		@param	start		[in]	初期値
+		@param	end			[in]	目標値
+		@param	startTime	[in]	開始時間
+		@param	endTime		[in]	終了時間
+		@param	currentTime	[in]	現在の時間
+		@return	補正されたfloat値
+		*/
+		inline float EasingEaseInOut(float start, float end, float startTime, float endTime, float currentTime)
+		{
+			// 割合
+			float ratio = (currentTime - startTime) / (endTime - startTime);
+			UtilFunc::Transformation::ValueNormalize(ratio, 1.0f, 0.0f);
+
+			return EasingEaseInOut(start, end, ratio);
 		}
 
 		/**
