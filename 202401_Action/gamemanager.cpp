@@ -32,7 +32,7 @@
 #include "calculation.h"
 #include "fog.h"
 #include "controlassist.h"
-#include "battlestart.h"
+#include "beforebattle.h"
 
 
 //==========================================================================
@@ -150,7 +150,7 @@ void CGameManager::Update()
 		m_bControll = true;
 		break;
 
-	case SCENE_BEFOREBATTLE:
+	case SceneType::SCENE_BEFOREBATTLE:
 		m_bControll = false;
 		break;
 
@@ -296,9 +296,7 @@ void CGameManager::SceneTransition()
 		pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_CHANGETARGET);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_NORMAL);
-		//pAssist->SetText(CControlAssist::CONTROLTYPE_COUNTER);
 		pAssist->SetText(CControlAssist::CONTROLTYPE_AVOID);
-		//pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
 
 		if (!m_bEndNormalStage)
 		{// 通常ステージが終わっていなかったら
@@ -309,9 +307,9 @@ void CGameManager::SceneTransition()
 			SetBoss();
 		}
 
-		// 戦闘開始に遷移
-		CBattleStart::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
-		SetType(SceneType::SCENE_BATTLESTART);
+		// 戦闘準備に遷移
+		CBeforeBattle::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
+		SetType(SceneType::SCENE_BEFOREBATTLE);
 	}
 }
 
@@ -521,9 +519,9 @@ void CGameManager::SetBoss()
 	while (playerList.ListLoop(&pPlayer))
 	{
 		// 位置設定
-		pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -1000.0f));
-		pPlayer->SetRotation(0.0f);
-		pPlayer->SetRotDest(0.0f);
+		pPlayer->SetPosition(MyLib::Vector3(0.0f, 0.0f, -1000.0f));
+		pPlayer->SetRotation(MyLib::Vector3(0.0f, D3DX_PI, 0.0f));
+		pPlayer->SetRotDest(D3DX_PI);
 	}
 
 	// カメラの情報取得
@@ -562,9 +560,9 @@ void CGameManager::SetEnemy()
 	while (playerList.ListLoop(&pPlayer))
 	{
 		// 位置設定
-		pPlayer->SetPosition(0.0f);
-		pPlayer->SetRotation(0.0f);
-		pPlayer->SetRotDest(0.0f);
+		pPlayer->SetPosition(MyLib::Vector3(0.0f, 0.0f, -1000.0f));
+		pPlayer->SetRotation(MyLib::Vector3(0.0f, D3DX_PI, 0.0f));
+		pPlayer->SetRotDest(D3DX_PI);
 	}
 
 	// カメラの情報取得

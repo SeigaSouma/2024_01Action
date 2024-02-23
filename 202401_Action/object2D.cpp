@@ -41,7 +41,7 @@ CObject2D::CObject2D(int nPriority) : CObject(nPriority)
 	m_sizeOrigin = D3DXVECTOR2(0.0f, 0.0f);		// 元のサイズ
 	m_fLength = 0.0f;							// 対角線の長さ
 	m_fAngle = 0.0f;							// 対角線の向き
-	m_pVtxBuff = NULL;							// 頂点バッファ
+	m_pVtxBuff = nullptr;							// 頂点バッファ
 	m_nTexIdx = 0;								// テクスチャのインデックス番号
 
 	for (int nCntVtx = 0; nCntVtx < 32; nCntVtx++)
@@ -74,53 +74,35 @@ void CObject2D::BindTexture(int nIdx)
 //==========================================================================
 CObject2D *CObject2D::Create()
 {
-	// 生成用のオブジェクト
-	CObject2D *pObject2D = NULL;
+	// メモリの確保
+	CObject2D* pObject2D = DEBUG_NEW CObject2D;
 
-	if (pObject2D == NULL)
-	{// NULLだったら
+	if (pObject2D != nullptr)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D;
-
-		if (pObject2D != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObject2D->Init();
-		}
-
-		return pObject2D;
+		// 初期化処理
+		pObject2D->Init();
 	}
 
-	return NULL;
+	return pObject2D;
 }
 
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject2D *CObject2D::Create(int nPriority)
+CObject2D* CObject2D::Create(int nPriority)
 {
-	// 生成用のオブジェクト
-	CObject2D *pObject2D = NULL;
+	// メモリの確保
+	CObject2D* pObject2D = DEBUG_NEW CObject2D(nPriority);
 
-	if (pObject2D == NULL)
-	{// NULLだったら
+	if (pObject2D != nullptr)
+	{// メモリの確保が出来ていたら
 
-		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D(nPriority);
-
-		if (pObject2D != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObject2D->Init();
-		}
-
-		return pObject2D;
+		// 初期化処理
+		pObject2D->Init();
 	}
 
-	return NULL;
+	return pObject2D;
 }
 
 //==========================================================================
@@ -129,15 +111,15 @@ CObject2D *CObject2D::Create(int nPriority)
 CObject2D *CObject2D::Create(int nPriority, int nNumVtx)
 {
 	// 生成用のオブジェクト
-	CObject2D *pObject2D = NULL;
+	CObject2D *pObject2D = nullptr;
 
-	if (pObject2D == NULL)
-	{// NULLだったら
+	if (pObject2D == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObject2D = DEBUG_NEW CObject2D(nPriority);
 
-		if (pObject2D != NULL)
+		if (pObject2D != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -147,7 +129,7 @@ CObject2D *CObject2D::Create(int nPriority, int nNumVtx)
 		return pObject2D;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -166,7 +148,7 @@ HRESULT CObject2D::Init()
 	m_fTex[3] = D3DXVECTOR2(1.0f, 1.0f);	// テクスチャ座標
 
 	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 既に情報が入ってる場合
 
 		return E_FAIL;
@@ -177,7 +159,7 @@ HRESULT CObject2D::Init()
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗したとき
@@ -187,6 +169,9 @@ HRESULT CObject2D::Init()
 
 	// 頂点情報設定
 	SetVtx();
+
+	// 種類設定
+	SetType(CObject::TYPE::TYPE_OBJECT2D);
 
 	return S_OK;
 }
@@ -207,7 +192,7 @@ HRESULT CObject2D::Init(int nNumVertex)
 	m_fTex[3] = D3DXVECTOR2(1.0f, 1.0f);	// テクスチャ座標
 
 	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 既に情報が入ってる場合
 
 		return E_FAIL;
@@ -218,7 +203,7 @@ HRESULT CObject2D::Init(int nNumVertex)
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗したとき
@@ -238,10 +223,10 @@ HRESULT CObject2D::Init(int nNumVertex)
 void CObject2D::Uninit()
 {
 	// 頂点バッファの破棄
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// オブジェクトの破棄

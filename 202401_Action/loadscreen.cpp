@@ -81,7 +81,8 @@ HRESULT CLoadScreen::Init()
 	{// 失敗していたら
 		return E_FAIL;
 	}
-	
+	m_aObject2D->SetType(CObject::TYPE::TYPE_NONE);
+
 	m_aObject2D->SetSize(D3DXVECTOR2(640.0f, 360.0f));	// サイズ
 	m_aObject2D->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));	// 位置
 	m_aObject2D->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 色設定

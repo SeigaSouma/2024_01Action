@@ -124,6 +124,12 @@
     <Filter Include="ヘッダー ファイル\arena">
       <UniqueIdentifier>{7d1360bf-7875-4638-999d-33c0218bfdde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\battlestart">
+      <UniqueIdentifier>{d3120429-c552-442f-b67d-1d5754760183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\battlestart">
+      <UniqueIdentifier>{98f40dd5-d291-4369-93f5-bd255402f0d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -519,12 +525,6 @@
     <ClCompile Include="enemy_stonegolem.cpp">
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="battlestart.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="battlestart_effect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="titlelogo.cpp">
       <Filter>ソース ファイル\mode\title</Filter>
     </ClCompile>
@@ -533,6 +533,15 @@
     </ClCompile>
     <ClCompile Include="skillpoint.cpp">
       <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="battlestart_effect.cpp">
+      <Filter>ソース ファイル\battlestart</Filter>
+    </ClCompile>
+    <ClCompile Include="battlestart.cpp">
+      <Filter>ソース ファイル\battlestart</Filter>
+    </ClCompile>
+    <ClCompile Include="beforebattle.cpp">
+      <Filter>ソース ファイル\battlestart</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -938,12 +947,6 @@
     <ClInclude Include="enemy_stonegolem.h">
       <Filter>ヘッダー ファイル\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="battlestart.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="battlestart_effect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="title_pressenter.h">
       <Filter>ヘッダー ファイル\mode\title</Filter>
     </ClInclude>
@@ -952,6 +955,15 @@
     </ClInclude>
     <ClInclude Include="skillpoint.h">
       <Filter>ヘッダー ファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="battlestart_effect.h">
+      <Filter>ヘッダー ファイル\battlestart</Filter>
+    </ClInclude>
+    <ClInclude Include="battlestart.h">
+      <Filter>ヘッダー ファイル\battlestart</Filter>
+    </ClInclude>
+    <ClInclude Include="beforebattle.h">
+      <Filter>ソース ファイル\battlestart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,8 +6,6 @@
 //=============================================================================
 #include "title_pressenter.h"
 #include "title.h"
-#include "renderer.h"
-#include "texture.h"
 #include "manager.h"
 #include "sound.h"
 #include "calculation.h"
@@ -103,7 +101,14 @@ void CTitle_PressEnter::Update()
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
 	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_A, 0) ||
-		pInputKeyboard->GetTrigger(DIK_RETURN))
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_B, 0) ||
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_X, 0) ||
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_Y, 0) ||
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_START, 0) ||
+		pInputKeyboard->GetTrigger(DIK_RETURN) ||
+		pInputKeyboard->GetTrigger(DIK_SPACE) ||
+		pInputKeyboard->GetTrigger(DIK_BACKSPACE)
+		)
 	{
 		//CTitle::GetInstance()->SetSceneType(CTitle::SCENETYPE::SCENETYPE_FADEOUT_LOGO);
 		// ÉÇÅ[Éhê›íË

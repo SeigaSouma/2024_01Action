@@ -84,6 +84,7 @@ HRESULT CFade::Init()
 	{// é∏îsÇµÇƒÇ¢ÇΩÇÁ
 		return E_FAIL;
 	}
+	m_aObject2D->SetType(CObject::TYPE::TYPE_NONE);
 
 	m_state = STATE_FADEIN;			// èÛë‘
 #if _DEBUG

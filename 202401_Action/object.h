@@ -10,6 +10,8 @@
 
 #include "main.h"
 #include "constans.h"
+#include "renderer.h"
+#include "texture.h"
 
 class CObject2D;
 class CObject3D;

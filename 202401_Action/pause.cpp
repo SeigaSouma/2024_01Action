@@ -104,6 +104,7 @@ HRESULT CPause::Init()
 		{// 失敗していたら
 			return E_FAIL;
 		}
+		m_aObject2D[nCntVtx]->SetType(CObject::TYPE::TYPE_NONE);
 
 		// テクスチャの割り当て
 		m_nTexIdx[nCntVtx] = CTexture::GetInstance()->Regist(m_apTextureFile[nCntVtx]);

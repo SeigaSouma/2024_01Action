@@ -79,6 +79,7 @@ HRESULT CInstantFade::Init()
 {
 	// ¶¬ˆ—
 	m_aObject2D = CObject2D::Create(8);
+	m_aObject2D->SetType(CObject::TYPE::TYPE_NONE);
 
 	if (m_aObject2D == NULL)
 	{// Ž¸”s‚µ‚Ä‚¢‚½‚ç

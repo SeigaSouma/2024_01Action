@@ -162,6 +162,7 @@
     <ClCompile Include="battlestart.cpp" />
     <ClCompile Include="battlestart_effect.cpp" />
     <ClCompile Include="beam.cpp" />
+    <ClCompile Include="beforebattle.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="blackframe.cpp" />
     <ClCompile Include="bullet_obstacle.cpp" />
@@ -303,6 +304,7 @@
     <ClInclude Include="battlestart.h" />
     <ClInclude Include="battlestart_effect.h" />
     <ClInclude Include="beam.h" />
+    <ClInclude Include="beforebattle.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="blackframe.h" />
     <ClInclude Include="bullet_obstacle.h" />
