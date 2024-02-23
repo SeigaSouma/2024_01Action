@@ -12,6 +12,7 @@
 #include "calculation.h"
 #include "particle.h"
 #include "game.h"
+#include "camera.h"
 
 //==========================================================================
 // 定数定義
@@ -264,6 +265,10 @@ void CBattleStart::StateGetTogether()
 //==========================================================================
 void CBattleStart::StateCharge()
 {
+
+	// 振動
+	CManager::GetInstance()->GetCamera()->SetShake(8, 4.0f, 0.0f);
+
 	if (m_fStateTime >= TIME_CHARGE)
 	{
 		m_fStateTime = 0.0f;
@@ -298,6 +303,8 @@ void CBattleStart::StateStings()
 		m_fStateTime = 0.0f;
 		m_state = STATE_SCALE;
 
+		// 振動
+		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
 
 		// 完了後のテクスチャに切替
 		int nTexIdx = CTexture::GetInstance()->Regist(TEXT_TEXTURE_COMPLETE);

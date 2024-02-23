@@ -46,10 +46,10 @@ private:
 
 	enum STATE
 	{
-		STATE_GETTOGETHER = 0,
-		STATE_CHARGE,
-		STATE_STINGS,
-		STATE_SCALE,
+		STATE_GETTOGETHER = 0,	// èWÇ‹ÇÈ
+		STATE_CHARGE,	// ó≠Çﬂ
+		STATE_STINGS,	// éhÇ≥ÇË
+		STATE_SCALE,	// ägëÂ
 		STATE_FADEOUT,
 		STATE_MAX
 	};

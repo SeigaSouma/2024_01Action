@@ -10,17 +10,18 @@
 #include "manager.h"
 #include "sound.h"
 #include "calculation.h"
+#include "camera.h"
 
 //==========================================================================
 // マクロ定義
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\stageclear_01.png";
-	const int TIME_SCALEUP = 25;				// 拡大時間
-	const int TIME_SCALEDOWN = 25;				// 縮小時間
-	const int TIME_SCALENONE = 25;				// 変更なし時間
-	const int TIME_FADEOUT = 120;				// フェードアウト時間
+	const char* TEXTURE = "data\\TEXTURE\\battlewin\\text_win.png";
+	const float TIME_SCALNONE = 0.4f;			// なにもない
+	const float TIME_SCALEDOWN = 0.2f;			// 縮小時間
+	const float TIME_SCALENONE = 0.7f;			// 整わせる時間
+	const float TIME_FADEOUT = 0.4f;			// フェードアウト時間
 	const float SIZE_SCALEORIGIN = 0.3f;		// 元の大きさ
 	const float SIZE_SCALEUP = 0.6f;			// 拡大の大きさ
 	const float SIZE_SCALEDOWN = 0.25f;			// 縮小の大きさ
@@ -32,7 +33,6 @@ namespace
 CStageClearText::STATE_FUNC CStageClearText::m_StateFuncList[] =
 {
 	&CStageClearText::StateNone,
-	&CStageClearText::StateScaleUP,
 	&CStageClearText::StateScaleDOWN,
 	&CStageClearText::StateScaleNone,
 	&CStageClearText::StateFadeOut,
@@ -48,9 +48,8 @@ CStageClearText::STATE_FUNC CStageClearText::m_StateFuncList[] =
 CStageClearText::CStageClearText(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
-	m_nTexIdx = 0;			// テクスチャのインデックス番号
-	m_nCntState = 0;		// 状態遷移カウンター
 	m_state = STATE_NONE;	// 状態
+	m_fStateTimer = 0.0f;	// 状態タイマー
 }
 
 //==========================================================================
@@ -107,20 +106,22 @@ HRESULT CStageClearText::Init()
 	SetType(TYPE_OBJECT2D);
 
 	// テクスチャの割り当て
-	m_nTexIdx = CTexture::GetInstance()->Regist(TEXTURE);
-
-	// テクスチャの割り当て
-	BindTexture(m_nTexIdx);
-
-	// サイズ取得
-	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(m_nTexIdx) * SIZE_SCALEORIGIN;
+	int nTexIdx = CTexture::GetInstance()->Regist(TEXTURE);
+	BindTexture(nTexIdx);
 
 	// サイズ設定
-	SetSize(D3DXVECTOR2(0.0f, 0.0f));
+	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nTexIdx);
+	size = UtilFunc::Transformation::AdjustSizeByWidth(size, 1600.0f);
+	SetSize(size);
 	SetSizeOrigin(size);
 
-	m_nCntState = TIME_SCALEUP;
-	m_state = STATE_SCALEUP;
+	// 縮小から開始
+	m_fStateTimer = TIME_SCALEDOWN;
+	m_state = eState::STATE_SCALEDOWN;
+
+	// 向き設定
+	SetRotation(MyLib::Vector3(0.0f, 0.0f, -D3DX_PI * 0.35f));
+	SetOriginRotation(GetRotation());
 
 	return S_OK;
 }
@@ -162,38 +163,13 @@ void CStageClearText::Update()
 void CStageClearText::StateNone()
 {
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();
 
-	if (m_nCntState <= 0)
+	if (m_fStateTimer <= 0.0f)
 	{
-		m_nCntState = 0;
+		m_fStateTimer = TIME_FADEOUT;
+		m_state = eState::STATE_FADEOUT;
 	}
-}
-
-//==========================================================================
-// 拡大状態
-//==========================================================================
-void CStageClearText::StateScaleUP()
-{
-	// サイズ取得
-	D3DXVECTOR2 size = GetSize();
-	D3DXVECTOR2 DestImageSize = CTexture::GetInstance()->GetImageSize(m_nTexIdx) * SIZE_SCALEUP;
-
-	// 状態遷移カウンター減算
-	m_nCntState--;
-
-	// 徐々に加速
-	size.x = UtilFunc::Correction::EasingEaseIn(0.0f, DestImageSize.x, 1.0f - (float)m_nCntState / (float)TIME_SCALEUP);
-	size.y = UtilFunc::Correction::EasingEaseIn(0.0f, DestImageSize.y, 1.0f - (float)m_nCntState / (float)TIME_SCALEUP);
-
-	if (m_nCntState <= 0)
-	{
-		m_nCntState = TIME_SCALEDOWN;
-		m_state = STATE_SCALEDOWN;
-	}
-
-	// サイズ設定
-	SetSize(size);
 }
 
 //==========================================================================
@@ -203,20 +179,33 @@ void CStageClearText::StateScaleDOWN()
 {
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
-	D3DXVECTOR2 ImageSize = CTexture::GetInstance()->GetImageSize(m_nTexIdx);
+	D3DXVECTOR2 sizeOrigin = GetSizeOrigin();
+	D3DXVECTOR2 destSize = UtilFunc::Transformation::AdjustSizeByWidth(size, 200.0f);
 
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();
+
+	if (m_fStateTimer <= 0.0f)
+	{
+		m_fStateTimer = TIME_SCALENONE;
+		m_state = STATE_SCALENONE;
+
+		// サイズ設定
+		SetSize(destSize);
+		SetSizeOrigin(destSize);
+
+		// 振動
+		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		return;
+	}
 
 	// 徐々に減速
-	size.x = UtilFunc::Correction::EasingEaseOut(ImageSize.x * SIZE_SCALEUP, ImageSize.x * SIZE_SCALEDOWN, 1.0f - (float)m_nCntState / (float)TIME_SCALEDOWN);
-	size.y = UtilFunc::Correction::EasingEaseOut(ImageSize.y * SIZE_SCALEUP, ImageSize.y * SIZE_SCALEDOWN, 1.0f - (float)m_nCntState / (float)TIME_SCALEDOWN);
+	size.x = UtilFunc::Correction::EasingEaseOut(sizeOrigin.x, destSize.x, 1.0f - (m_fStateTimer / TIME_SCALEDOWN));
+	size.y = UtilFunc::Correction::EasingEaseOut(sizeOrigin.y, destSize.y, 1.0f - (m_fStateTimer / TIME_SCALEDOWN));
 
-	if (m_nCntState <= 0)
-	{
-		m_nCntState = TIME_SCALENONE;
-		m_state = STATE_SCALENONE;
-	}
+	// 向き設定
+	float angle = UtilFunc::Correction::EasingEaseOut(GetOriginRotation().z, 0.0f, 1.0f - (m_fStateTimer / TIME_SCALEDOWN));
+	SetRotation(MyLib::Vector3(0.0f, 0.0f, angle));
 
 	// サイズ設定
 	SetSize(size);
@@ -230,20 +219,25 @@ void CStageClearText::StateScaleNone()
 	// サイズ取得
 	D3DXVECTOR2 size = GetSize();
 	D3DXVECTOR2 sizeOrigin = GetSizeOrigin();
-	D3DXVECTOR2 ImageSize = CTexture::GetInstance()->GetImageSize(m_nTexIdx);
+	D3DXVECTOR2 destSize = UtilFunc::Transformation::AdjustSizeByWidth(size, 240.0f);
 
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();
+
+	if (m_fStateTimer <= 0.0f)
+	{
+		m_fStateTimer = TIME_SCALNONE;
+		m_state = eState::STATE_NONE;
+
+		// サイズ設定
+		SetSize(destSize);
+		SetSizeOrigin(destSize);
+		return;
+	}
 
 	// 徐々に減速
-	size.x = UtilFunc::Correction::EasingEaseOut(ImageSize.x * SIZE_SCALEDOWN, sizeOrigin.x, 1.0f - (float)m_nCntState / (float)TIME_SCALENONE);
-	size.y = UtilFunc::Correction::EasingEaseOut(ImageSize.y * SIZE_SCALEDOWN, sizeOrigin.y, 1.0f - (float)m_nCntState / (float)TIME_SCALENONE);
-
-	if (m_nCntState <= 0)
-	{
-		m_nCntState = TIME_FADEOUT;
-		m_state = STATE_FADEOUT;
-	}
+	size.x = UtilFunc::Correction::EasingEaseOut(sizeOrigin.x, destSize.x, 1.0f - (m_fStateTimer / TIME_SCALENONE));
+	size.y = UtilFunc::Correction::EasingEaseOut(sizeOrigin.y, destSize.y, 1.0f - (m_fStateTimer / TIME_SCALENONE));
 
 	// サイズ設定
 	SetSize(size);
@@ -254,21 +248,16 @@ void CStageClearText::StateScaleNone()
 //==========================================================================
 void CStageClearText::StateFadeOut()
 {
-	// 色取得
-	D3DXCOLOR col = GetColor();
-
 	// 状態遷移カウンター減算
-	m_nCntState--;
+	m_fStateTimer -= CManager::GetInstance()->GetDeltaTime();
 
 	// 不透明度更新
-	col.a = (float)m_nCntState / (float)TIME_FADEOUT;
+	float alpha = m_fStateTimer / TIME_FADEOUT;
+	SetAlpha(alpha);
 
-	// 色設定
-	SetColor(col);
-
-	if (m_nCntState <= 0)
+	if (m_fStateTimer <= 0.0f)
 	{
-		m_nCntState = 0;
+		m_fStateTimer = 0.0f;
 		Uninit();
 		return;
 	}

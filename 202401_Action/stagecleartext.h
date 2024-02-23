@@ -37,7 +37,6 @@ private:
 	enum eState
 	{
 		STATE_NONE = 0,		// なにもなし
-		STATE_SCALEUP,		// 拡大
 		STATE_SCALEDOWN,	// 縮小
 		STATE_SCALENONE,	// 整い
 		STATE_FADEOUT,		// フェードアウト
@@ -52,9 +51,8 @@ private:
 	void StateFadeOut();	// フェードアウト状態
 
 	// メンバ変数
-	int m_nTexIdx;		// テクスチャのインデックス番号
-	int m_nCntState;	// 状態遷移カウンター
 	eState m_state;		// 状態
+	float m_fStateTimer;	// 状態タイマー
 
 	typedef void(CStageClearText::*STATE_FUNC)();	// 状態処理のリスト
 	static STATE_FUNC m_StateFuncList[];

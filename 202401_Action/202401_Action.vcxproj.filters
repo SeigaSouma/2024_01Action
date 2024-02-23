@@ -963,7 +963,7 @@
       <Filter>ヘッダー ファイル\battlestart</Filter>
     </ClInclude>
     <ClInclude Include="beforebattle.h">
-      <Filter>ソース ファイル\battlestart</Filter>
+      <Filter>ヘッダー ファイル\battlestart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
