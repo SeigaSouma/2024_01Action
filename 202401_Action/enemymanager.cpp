@@ -144,7 +144,7 @@ void CEnemyManager::Uninit()
 //==========================================================================
 void CEnemyManager::Update()
 {
-	int nNumAll = CEnemy::GetListObj().GetNumAll();
+	int nNumAll = CEnemy::GetNumSurvival();
 	if (nNumAll <= 0 && !m_bChangeStage)
 	{// ‘Sˆõ“|‚³‚ê‚½‚ç
 

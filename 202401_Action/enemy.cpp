@@ -42,9 +42,9 @@ namespace
 	const float TIME_DMG = static_cast<float>(10) / static_cast<float>(mylib_const::DEFAULT_FPS);	// ダメージ時間
 	const float TIME_DEAD = static_cast<float>(40) / static_cast<float>(mylib_const::DEFAULT_FPS);	// 死亡時間
 	const float TIME_DOWN = static_cast<float>(150) / static_cast<float>(mylib_const::DEFAULT_FPS);	// ダウン時間
-
+	const float TIME_FADEOUT = static_cast<float>(30) / static_cast<float>(mylib_const::DEFAULT_FPS);	// 死亡時間
 }
-
+int CEnemy::m_nNumSurvival = 0;			// 生存人数
 
 //==========================================================================
 // 関数ポインタ
@@ -106,6 +106,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_bStateChanging = false;	// 状態が切り替わった瞬間
 	m_pATKState = nullptr;		// 今の行動ポインタ
 	m_pNextATKState = nullptr;	// 次の行動ポインタ
+	m_pReturnDown = nullptr;	// ダウン復帰
 	m_bCatchUp = false;						// 追い着き判定
 	m_bInSight = false;						// 視界内判定
 	m_sMotionFrag = SMotionFrag();		// モーションのフラグ
@@ -206,6 +207,9 @@ HRESULT CEnemy::Init()
 	{
 		pMotion->Set(MOTION_DEF);
 	}
+
+	// 生存人数加算
+	m_nNumSurvival++;
 
 	return S_OK;
 }
@@ -622,10 +626,7 @@ void CEnemy::Collision()
 	{// 地面の方が自分より高かったら
 
 		// 地面の高さに補正
-		if (m_state != STATE_DEAD && m_state != STATE_FADEOUT)
-		{
-			pos.y = fHeight;
-		}
+		pos.y = fHeight;
 
 		if (bLand == true)
 		{// 着地してたら
@@ -634,10 +635,7 @@ void CEnemy::Collision()
 			ProcessLanding();
 
 			// ジャンプ使用可能にする
-			if (m_state != STATE_DMG && m_state != STATE_DEAD)
-			{
-				move.y = 0.0f;
-			}
+			move.y = 0.0f;
 			m_sMotionFrag.bJump = false;
 		}
 	}
@@ -694,7 +692,13 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 		// 当たった
 		bHit = true;
 
-		// ダメージ受付フラグリセット
+		// 行動可能判定
+		if (!m_bActiveSuperArmor)
+		{
+			m_bActionable = false;
+		}
+
+		// ダメージを受け付けない
 		m_bDamageReceived = false;
 
 		// 体力減らす
@@ -704,6 +708,8 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 		// 体力設定
 		SetLife(nLife);
 
+		// ダメージ時間設定
+		m_fDamageReciveTime = TIME_DMG;
 		if (nLife > 0)
 		{
 			// ダメージ音再生
@@ -711,6 +717,9 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 		}
 		else
 		{// 体力がなくなったら
+
+			// 行動可能判定
+			m_bActionable = false;
 
 			// ヒットストップ
 			CManager::GetInstance()->SetEnableHitStop(2);
@@ -731,7 +740,10 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 			m_sMotionFrag.bKnockback = true;
 
 			// やられモーション
-			//pMotion->Set(MOTION_KNOCKBACK);
+			GetMotion()->Set(MOTION_KNOCKBACK);
+
+			// 生存人数減算
+			m_nNumSurvival--;
 
 			// 爆発再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_ENEMYEXPLOSION);
@@ -1078,64 +1090,28 @@ void CEnemy::StateDead()
 	// ダメージを受け付けない
 	m_bDamageReceived = false;
 
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
+	SetMove(0.0f);
 
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
-
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
-
-	// 目標の向き取得
-	float fRotDest = GetRotDest();
-
-	// 移動量取得
-	float fMove = GetVelocity();
-
-	// 現在と目標の差分
-	float fRotDiff = 0.0f;
-
-	// 距離の判定
-	bool bLen = false;
-
-	// 状態遷移カウンター減算
-	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
-
-	// 色設定
-	m_mMatcol = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_mMatcol.a);
-	m_mMatcol.a -= 1.0f / 80.0f;
-
-	// 重力で落下
-	move.y += -mylib_const::GRAVITY * 0.25f;
-	pos.y += move.y;
-
-	// 回転
-	rot.y += D3DX_PI * 0.025f;
-	rot.x += D3DX_PI * (UtilFunc::Transformation::Random(5, 25) * 0.001f);
-
-	if(CGame::GetInstance()->GetElevation()->IsHit(pos))
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
 	{
-		// パーティクル生成
-		my_particle::Create(pos, my_particle::TYPE_ENEMY_FADE);
-
-		// 敵の終了処理
-		m_state = STATE_FADEOUT;
 		return;
 	}
 
+	int nType = pMotion->GetType();
+	if (nType == MOTION::MOTION_KNOCKBACK && pMotion->IsFinish() == true)
+	{
+		// 次の行動抽選
+		m_state = STATE::STATE_FADEOUT;
+		m_fStateTime = TIME_FADEOUT;
+		return;
+	}
 
-	// 位置設定
-	SetPosition(pos);
-
-	// 移動量設定
-	SetMove(move);
-
-	// 向き設定
-	SetRotation(rot);
-
-	// 目標の向き設定
-	SetRotDest(fRotDest);
+	/*if (nType != MOTION::MOTION_KNOCKBACK)
+	{
+		pMotion->Set(MOTION::MOTION_KNOCKBACK);
+	}*/
 }
 
 //==========================================================================
@@ -1149,12 +1125,6 @@ void CEnemy::StateFadeOut()
 	// ダメージを受け付けない
 	m_bDamageReceived = false;
 
-	// 移動量取得
-	float fMove = GetVelocity();
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
 	// モーション取得
 	CMotion* pMotion = GetMotion();
 	if (pMotion == nullptr)
@@ -1162,35 +1132,17 @@ void CEnemy::StateFadeOut()
 		return;
 	}
 
-	// フェードアウトモーション設定
-	pMotion->Set(MOTION_FADEOUT);
-
-	// フェードアウトのフレーム数
-	int nAllFrame = pMotion->GetMaxAllCount(MOTION_FADEOUT);
-	float fFrame = pMotion->GetFrameCount();
-
-	// モーションの情報取得
-	CMotion::Info aInfo = pMotion->GetInfo(pMotion->GetType());
-
-	// 攻撃情報の総数取得
-	int nNumAttackInfo = aInfo.nNumAttackInfo;
-
-	// 高さ取得
-	bool bLand = false;
-	float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(pos, &bLand);
-
 	m_sMotionFrag.bMove = false;	// 移動判定OFF
 	m_sMotionFrag.bATK = false;		// 攻撃判定OFF
 
-	// 遷移カウンター加算
-	m_fStateTime++;
+	// 状態遷移カウンター減算
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
 
 	// 色設定
-	m_mMatcol.a = 1.0f - ((float)m_fStateTime / (float)nAllFrame);
+	m_mMatcol.a = m_fStateTime / TIME_FADEOUT;
 
-	if (m_fStateTime >= nAllFrame)
-	{// 遷移カウンターがモーションを超えたら
-
+	if (m_fStateTime <= 0.0f)
+	{
 		// 敵の終了処理
 		Kill();
 		Uninit();
@@ -1220,11 +1172,21 @@ void CEnemy::StateDown()
 	if (m_fDownTime <= 0.0f)
 	{
 		m_state = STATE_NONE;
+
 		// 行動可能判定
 		m_bActionable = true;
 
-		// 行動抽選
-		DrawingRandomAction();
+		// ダウン復帰
+		if (m_pReturnDown != nullptr)
+		{
+			ChangeATKState(m_pReturnDown);
+			m_pATKState->ChangeMotionIdx(this);
+		}
+		else
+		{
+			// 行動抽選
+			DrawingRandomAction();
+		}
 		return;
 	}
 
@@ -1253,7 +1215,7 @@ void CEnemy::StateStrongAtk()
 }
 
 //==========================================================================
-//  大人の壁
+// 大人の壁
 //==========================================================================
 void CEnemy::LimitArea()
 {
@@ -1486,8 +1448,6 @@ void CEnemyBeforeAction::Action(CEnemy* boss)
 //==========================================================================
 void CEnemyState::SetFlinchAction(CEnemyFlinch* pFlinch)
 {
-	
-
 	m_bFinchAction = true;
 	m_pFlinchAction = pFlinch;
 }
@@ -1533,12 +1493,39 @@ void CEnemyFlinch::Action(CEnemy* boss)
 	{
 		// 次の行動抽選
 		boss->DrawingRandomAction();
-
-		// モーション設定
-		//pMotion->Set(m_nIdxMotion);
 	}
 }
 
+//==========================================================================
+// ダウン復帰
+//==========================================================================
+void CEnemyReturnDown::Action(CEnemy* boss)
+{
+	// モーション取得
+	CMotion* pMotion = boss->GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType == m_nIdxMotion && pMotion->IsFinish() == true)
+	{// ステップ終了
+
+		// 次の行動抽選
+		boss->DrawingRandomAction();
+
+		// 待機モーション設定
+		pMotion->Set(CEnemy::MOTION_DEF);
+		return;
+	}
+
+	if (nType != m_nIdxMotion)
+	{
+		// モーション設定
+		pMotion->Set(m_nIdxMotion);
+	}
+}
 
 //==========================================================================
 // 攻撃処理

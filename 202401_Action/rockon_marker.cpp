@@ -17,7 +17,7 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\rockon\\rockon_marker2.png";	// テクスチャのファイル
-	const char* POINT_TEXTURE = "data\\TEXTURE\\rockon\\rockon_point.png";	// テクスチャのファイル
+	const char* POINT_TEXTURE = "data\\TEXTURE\\rockon\\rockon_point2.png";	// テクスチャのファイル
 	const float DIV_ANGLE = (D3DX_PI * 2.0f) * 0.25f;	// 1分割あたりの向き
 	const float ORIGIN_DISTANCE = 35.0f;
 	const float TIME_SCALE = 5.0f;	// 拡縮の時間

@@ -33,6 +33,7 @@ CTexture::CTexture()
 {
 	m_TexInfo.clear();
 	m_ImageNames.clear();	// 読み込み用文字列
+	m_FolderFilePath.clear();	// フォルダー格納のファイルパス
 }
 
 //==========================================================================
@@ -71,6 +72,12 @@ void CTexture::Init()
 {
 	STexture init = {};
 	m_TexInfo.emplace_back();
+
+	m_ImageNames.emplace_back();
+
+	/*std::vector<std::string> filenames = m_ImageNames;
+	m_ImageNames.clear();
+	m_ImageNames.emplace_back();*/
 }
 
 //==========================================================================
@@ -78,18 +85,29 @@ void CTexture::Init()
 //==========================================================================
 HRESULT CTexture::LoadAll()
 {
-#if 0
+#if 1
+
 	// 読み込み用文字列
-	m_ImageNames.clear();
+	//m_ImageNames.clear();
+	//m_ImageNames.emplace_back();
 
 	// 全検索
 	SearchAllImages(MAINFOLODER);
-	for (const auto& name : m_ImageNames)
+
+	//// 読み込み用文字列
+	//m_ImageNames.clear();
+
+	//// 全検索
+	//SearchAllImages(MAINFOLODER);
+
+	std::vector<std::string> filenames = m_FolderFilePath;
+
+	for (const auto& name : filenames)
 	{
-		Regist(name);
+		LoadTex(name);
 	}
 
-	m_ImageNames.clear();
+	//m_ImageNames.clear();
 #endif
 
 	// マップ用の読み込み
@@ -109,36 +127,41 @@ HRESULT CTexture::LoadAll()
 //==========================================================================
 void CTexture::SearchAllImages(const std::wstring& folderPath) 
 {
-	// ファイル検索用構造体
-	WIN32_FIND_DATAW findFileData;
+	std::stack<std::wstring> folderStack;
+	folderStack.push(folderPath);
 
-	// 最初のファイルを検索
-	HANDLE hFind = FindFirstFileW((folderPath + L"\\*").c_str(), &findFileData);
+	while (!folderStack.empty()) 
+	{
+		std::wstring currentFolder = folderStack.top();
+		folderStack.pop();
 
-	if (hFind == INVALID_HANDLE_VALUE) 
-	{// 最初のファイルがない場合
-		return;
+		WIN32_FIND_DATAW findFileData;
+		HANDLE hFind = FindFirstFileW((currentFolder + L"\\*").c_str(), &findFileData);
+
+		if (hFind == INVALID_HANDLE_VALUE) 
+		{
+			continue;
+		}
+
+		do {
+
+			if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+			{
+				std::string fileName = UtilFunc::Transformation::WideToMultiByte((currentFolder + L"\\" + findFileData.cFileName).c_str());
+				m_FolderFilePath.push_back(fileName);
+			}
+			else if (lstrcmpW(findFileData.cFileName, L".") != 0 && lstrcmpW(findFileData.cFileName, L"..") != 0) 
+			{
+				std::wstring subFolderPath = currentFolder + L"\\" + findFileData.cFileName;
+				folderStack.push(subFolderPath);
+			}
+
+		} while (FindNextFileW(hFind, &findFileData) != 0);
+
+		FindClose(hFind);
 	}
 
-	do 
-	{
-		// フォルダかどうか判定
-		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
-		{
-			// ファイルが見つかったらファイル名を保存
-			std::string fileName = UtilFunc::Transformation::WideToMultiByte((folderPath + L"\\" + findFileData.cFileName).c_str());
-			m_ImageNames.push_back(fileName);
-		}
-		else if (lstrcmpW(findFileData.cFileName, L".") != 0 && lstrcmpW(findFileData.cFileName, L"..") != 0) 
-		{// サブフォルダだった場合
-
-			// サブフォルダ名を加えて再検索
-			std::wstring subFolderPath = folderPath + L"\\" + findFileData.cFileName;
-			SearchAllImages(subFolderPath);
-		}
-	} while (FindNextFileW(hFind, &findFileData) != 0);
-
-	FindClose(hFind);
+	int n = 0;
 }
 
 //==========================================================================
@@ -161,6 +184,25 @@ void CTexture::Unload()
 }
 
 //==========================================================================
+// 文字列内の\\\\を\\に置換する
+//==========================================================================
+std::string replaceDoubleBackslash(std::string str)
+{
+	size_t pos = 0;
+
+	// 文字列内に\\\\が見つかる間繰り返す
+	while ((pos = str.find("\\\\", pos)) != std::string::npos) 
+	{
+		// \\\\を\\に置換
+		str.replace(pos, 2, "\\");
+
+		// 次の検索開始位置を更新
+		pos += 1; // "\\" の次の位置から検索を再開
+	}
+	return str;
+}
+
+//==========================================================================
 // テクスチャの割り当て処理
 //==========================================================================
 int CTexture::Regist(std::string file)
@@ -175,26 +217,35 @@ int CTexture::Regist(std::string file)
 	int nNowLen = 0;	// 今回のファイル名長さ
 	nNowLen = file.length();
 
-	for (int nCntData = 0; nCntData < nNumAll; nCntData++)
+	//for (int nCntData = 0; nCntData < nNumAll; nCntData++)
+	//{
+	//	if (m_TexInfo[nCntData].nFileNameLen != nNowLen)
+	//	{// ファイル名の長さが違ったら
+	//		continue;
+	//	}
+
+	//	if (m_TexInfo[nCntData].filename.length() != nNowLen)
+	//	{// ファイル名の長さが違ったら
+	//		continue;
+	//	}
+
+	//	// 既にテクスチャが読み込まれてないかの最終確認
+	//	if (m_TexInfo[nCntData].filename == file)
+	//	{// ファイル名が一致している
+
+	//		// 番号割り当て
+	//		nIdx = nCntData;
+	//		return nIdx;
+	//	}
+	//}
+
+	file = replaceDoubleBackslash(file);
+
+	auto itr = std::find(m_ImageNames.begin(), m_ImageNames.end(), file);
+
+	if (itr != m_ImageNames.end())
 	{
-		if (m_TexInfo[nCntData].nFileNameLen != nNowLen)
-		{// ファイル名の長さが違ったら
-			continue;
-		}
-
-		if (m_TexInfo[nCntData].filename.length() != nNowLen)
-		{// ファイル名の長さが違ったら
-			continue;
-		}
-
-		// 既にテクスチャが読み込まれてないかの最終確認
-		if (m_TexInfo[nCntData].filename == file)
-		{// ファイル名が一致している
-
-			// 番号割り当て
-			nIdx = nCntData;
-			return nIdx;
-		}
+		return static_cast<int>(std::distance(m_ImageNames.begin(), itr));
 	}
 
 	// テクスチャ読み込み
@@ -219,6 +270,7 @@ HRESULT CTexture::LoadTex(std::string file)
 
 	// 割り当て
 	m_TexInfo.emplace_back();
+	m_ImageNames.emplace_back();	// 読み込み用文字列
 
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevive = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -228,7 +280,7 @@ HRESULT CTexture::LoadTex(std::string file)
 		file.c_str(),
 		&m_TexInfo[nIdx].pTexture);
 
-	if (hr == D3DXERR_INVALIDDATA)
+	if (FAILED(hr))
 	{
 		// 要素削除
 		m_TexInfo.erase(m_TexInfo.end() - 1);
@@ -242,6 +294,8 @@ HRESULT CTexture::LoadTex(std::string file)
 	m_TexInfo[nIdx].filename = file;
 	m_TexInfo[nIdx].nFileNameLen = m_TexInfo[nIdx].filename.length();
 
+	m_ImageNames.back() = file;	// 読み込み用文字列
+
 	return S_OK;
 }
 
@@ -250,6 +304,10 @@ HRESULT CTexture::LoadTex(std::string file)
 //==========================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetAdress(int nIdx)
 {
+	if (static_cast<int>(m_TexInfo.size()) <= nIdx)
+	{
+		return nullptr;
+	}
 	return m_TexInfo[nIdx].pTexture;
 }
 

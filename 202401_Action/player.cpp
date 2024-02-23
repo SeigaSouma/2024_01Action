@@ -53,7 +53,7 @@ namespace
 {
 	const char* CHARAFILE = "data\\TEXT\\character\\player\\tyuuni\\setup_player.txt";	// キャラクターファイル
 	const float JUMP = 20.0f * 1.5f;			// ジャンプ力初期値
-	const int TIME_DMG = 20;					// ダメージ時間
+	const float TIME_DMG = static_cast<float>(20) / static_cast<float>(mylib_const::DEFAULT_FPS);	// ダメージ時間
 	const int INVINCIBLE_INT = 2;				// 無敵の間隔
 	const int INVINCIBLE_TIME = 0;				// 無敵の時間
 	const int DEADTIME = 120;					// 死亡時の時間
@@ -67,13 +67,13 @@ namespace
 	// ステータス
 	const float DEFAULT_RESPAWNHEAL = 0.3f;				// リスポーン時の回復割合
 	const float DEFAULT_SUBVALUE_GUARD = 60.0f;			// ガードのスタミナ減算量
-	const float DEFAULT_SUBVALUE_COUNTER = 40.0f;		// カウンターのスタミナ減算量
+	const float DEFAULT_SUBVALUE_COUNTER = 5.0f;		// カウンターのスタミナ減算量
 	const float DEFAULT_COUNTERHEAL = 0.0f;				// カウンターのスタミナ回復量
 	const float DEFAULT_MULTIPLY_ATTACK = 1.0f;			// 攻撃倍率
 	const float DEFAULT_CHARGETIME = 0.9f;				// チャージ時間
-	const int DEFAULT_FRAME_EXTENSION_COUNTER = 16;	// カウンター猶予フレーム
+	const int DEFAULT_FRAME_EXTENSION_COUNTER = 14;		// カウンター猶予フレーム
 	const float  DEFAULT_MULTIPLY_GUARD = 0.4f;			// カードの軽減
-	const float DEFAULT_TIME_ADDDOWN = 2.5f;			// ダウン時間付与
+	const float DEFAULT_TIME_ADDDOWN = 3.0f;			// ダウン時間付与
 	const bool DEFAULT_IS_CHARGEFLINCH = true;			// チャージ時怯みフラグ
 	const int DEFAULT_RESPAWN_PERCENT = 20;				// 復活確率
 	const float MULTIPLY_CHARGEATK = 2.0f;				// チャージ攻撃の倍率
@@ -128,6 +128,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_posKnokBack = mylib_const::DEFAULT_VECTOR3;	// ノックバックの位置
 	m_KnokBackMove = mylib_const::DEFAULT_VECTOR3;	// ノックバックの移動量
 	m_nCntState = 0;								// 状態遷移カウンター
+	m_nCntPowerEmission = 0;						// パワーアップの発生物カウンター
 	m_nComboStage = 0;								// コンボの段階
 	m_nIdxRockOn = 0;								// ロックオン対象のインデックス番号
 	m_bLockOnAtStart = false;						// カウンター開始時にロックオンしていたか
@@ -140,8 +141,10 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_bChargeCompletion = false;					// チャージ完了フラグ
 	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
+	m_bMotionAutoSet = false;						// モーションの自動設定
 
 	m_PlayerStatus = sPlayerStatus();				// プレイヤーステータス
+	m_sDamageInfo = sDamageInfo();					// ダメージ情報
 
 	m_nMyPlayerIdx = 0;								// プレイヤーインデックス番号
 	m_pShadow = nullptr;								// 影の情報
@@ -207,6 +210,7 @@ HRESULT CPlayer::Init()
 	m_state = STATE_NONE;	// 状態
 	m_nCntState = 0;		// 状態遷移カウンター
 	m_bLandOld = true;		// 前回の着地状態
+	m_bMotionAutoSet = true;						// モーションの自動設定
 	m_nRespawnPercent = DEFAULT_RESPAWN_PERCENT;	// リスポーン確率
 
 	// 強化リセット
@@ -236,14 +240,6 @@ HRESULT CPlayer::Init()
 
 	// スタミナゲージ生成
 	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
-
-	//// 操作関数
-	//ChangeAtkControl(DEBUG_NEW CPlayerControlAttack);	// 攻撃操作
-	//ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence);	// 防御操作
-	//ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid);	// 回避操作
-
-	// ガード
-	ChangeGuardGrade(DEBUG_NEW CPlayerGuard);
 
 	return S_OK;
 }
@@ -476,6 +472,9 @@ void CPlayer::Update()
 
 	// モーション別の状態設定
 	MotionBySetState();
+
+	// ダメージ受付時間更新
+	UpdateDamageReciveTimer();
 
 	// 状態更新
 	(this->*(m_StateFunc[m_state]))();
@@ -1053,6 +1052,12 @@ void CPlayer::MotionSet()
 		return;
 	}
 
+	// モーションの自動設定
+	if (!m_bMotionAutoSet)
+	{
+		return;
+	}
+
 	if (m_state == STATE_DEAD ||
 		m_state == STATE_DEADWAIT ||
 		m_state == STATE_DOWN ||
@@ -1218,16 +1223,27 @@ void CPlayer::MotionBySetState()
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
 	// チャージ移行
+	nType = pMotion->GetType();
 	switch (nType)
 	{
 	case MOTION_ATK4:
 		if (pInputGamepad->GetPress(CInputGamepad::BUTTON_Y, m_nMyPlayerIdx))
 		{
 			m_state = STATE_CHARGE;
+
+			if (!m_PlayerStatus.bChargeFlinch)
+			{
+				m_sDamageInfo.bActiveSuperArmor = true;
+			}
 		}
 		break;
 
 	default:
+		if (!m_PlayerStatus.bChargeFlinch)
+		{
+			m_sDamageInfo.bActiveSuperArmor = false;
+		}
+
 		m_fChargeTime = 0.0f;
 		break;
 	}
@@ -1907,6 +1923,11 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 
+	if (!m_sDamageInfo.bReceived)
+	{// ダメージ受付中のみ
+		return hitresult;
+	}
+
 	if (m_state == STATE_COUNTER ||
 		m_state == STATE_AVOID)
 	{// ダメージ受けない状態
@@ -1961,7 +1982,7 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 		m_mMatcol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 
 		// 遷移カウンター設定
-		m_nCntState = 0;
+		//m_nCntState = 0;
 
 		// ノックバックの位置更新
 		MyLib::Vector3 pos = GetPosition();
@@ -1992,8 +2013,9 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 		}
 		else
 		{
-			// ダメージ状態にする
-			m_state = STATE_DMG;
+
+			m_sDamageInfo.reciveTime = TIME_DMG;
+			m_sDamageInfo.bReceived = false;
 
 			MyLib::Vector3 move;
 			move.x = sinf(D3DX_PI + hitAngle) * -10.0f;
@@ -2001,7 +2023,13 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 			SetMove(move);
 
 			// やられモーション
-			GetMotion()->Set(MOTION_DMG);
+			if (!m_sDamageInfo.bActiveSuperArmor)
+			{
+				// ダメージ状態にする
+				m_state = STATE_DMG;
+
+				GetMotion()->Set(MOTION_DMG);
+			}
 		}
 
 		//CManager::GetInstance()->SetEnableHitStop(12);
@@ -2105,6 +2133,37 @@ void CPlayer::DeadSetting(MyLib::HitResult_Character* result)
 }
 
 //==========================================================================
+// ダメージ受付時間更新
+//==========================================================================
+void CPlayer::UpdateDamageReciveTimer()
+{
+	// ダメージ受け付け時間減算
+	m_sDamageInfo.reciveTime -= CManager::GetInstance()->GetDeltaTime();
+	if (m_sDamageInfo.reciveTime <= 0.0f)
+	{
+		// スーパーアーマーがない時はダメージモーション終了
+		if (!m_sDamageInfo.bActiveSuperArmor &&
+			!m_sDamageInfo.bReceived)
+		{
+			// なにもない状態にする
+			m_state = STATE_NONE;
+
+			// モーション取得
+			CMotion* pMotion = GetMotion();
+			if (pMotion == nullptr)
+			{
+				return;
+			}
+			pMotion->ToggleFinish(true);
+		}
+
+		// ダメージ受け付け判定
+		m_sDamageInfo.bReceived = true;
+		m_sDamageInfo.reciveTime = 0.0f;
+	}
+}
+
+//==========================================================================
 // なし
 //==========================================================================
 void CPlayer::StateNone()
@@ -2153,43 +2212,25 @@ void CPlayer::StateInvincible()
 //==========================================================================
 void CPlayer::StateDamage()
 {
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
+	//// 状態遷移カウンター減算
+	//m_nCntState++;
 
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
+	//// 色設定
+	//m_mMatcol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 
-	// 向き取得
-	MyLib::Vector3 rot = GetRotation();
+	//if (m_nCntState >= TIME_DMG)
+	//{
+	//	m_state = STATE_INVINCIBLE;
+	//	m_nCntState = INVINCIBLE_TIME;
 
-	// 状態遷移カウンター減算
-	m_nCntState++;
-
-	// 色設定
-	m_mMatcol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-
-	if (m_nCntState >= TIME_DMG)
-	{
-		m_state = STATE_INVINCIBLE;
-		m_nCntState = INVINCIBLE_TIME;
-
-		// モーション取得
-		CMotion* pMotion = GetMotion();
-		if (pMotion == nullptr)
-		{
-			return;
-		}
-		pMotion->ToggleFinish(true);
-	}
-
-	// 位置設定
-	SetPosition(pos);
-
-	// 移動量設定
-	SetMove(move);
-
-	// 向き設定
-	SetRotation(rot);
+	//	// モーション取得
+	//	CMotion* pMotion = GetMotion();
+	//	if (pMotion == nullptr)
+	//	{
+	//		return;
+	//	}
+	//	pMotion->ToggleFinish(true);
+	//}
 }
 
 //==========================================================================
@@ -2582,7 +2623,7 @@ void CPlayer::StateCharge()
 
 
 	// 状態カウンターループ
-	m_nCntState = (m_nCntState + 1) % 4;
+	m_nCntPowerEmission = (m_nCntPowerEmission + 1) % 4;
 
 	// チャージ時間加算
 	if (nType == MOTION_ATK4)
@@ -2592,6 +2633,7 @@ void CPlayer::StateCharge()
 
 	if (m_fChargeTime < m_PlayerStatus.chargeTime)
 	{
+		// チャージ完了フラグ
 		m_bChargeCompletion = false;
 	}
 
@@ -2624,8 +2666,10 @@ void CPlayer::StateCharge()
 		}
 	}
 
-	// 塵
-	if (nType == MOTION_ATK4 && m_bChargeCompletion && m_nCntState == 0)
+	// チャージエフェクト発生
+	if (nType == MOTION_ATK4 && 
+		m_bChargeCompletion && 
+		m_nCntPowerEmission == 0)
 	{
 		CMyEffekseer::GetInstance()->SetEffect(
 			CMyEffekseer::EFKLABEL_CHARGE,
@@ -2725,6 +2769,10 @@ void CPlayer::ResetEnhance()
 		DEFAULT_RESPAWNHEAL, DEFAULT_SUBVALUE_GUARD, DEFAULT_SUBVALUE_COUNTER,
 		DEFAULT_COUNTERHEAL, DEFAULT_MULTIPLY_ATTACK, DEFAULT_CHARGETIME,
 		DEFAULT_FRAME_EXTENSION_COUNTER, DEFAULT_MULTIPLY_GUARD, DEFAULT_TIME_ADDDOWN, DEFAULT_IS_CHARGEFLINCH);
+
+	// ダメージ情報
+	m_sDamageInfo = sDamageInfo();
+
 }
 
 //==========================================================================

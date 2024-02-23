@@ -52,7 +52,8 @@ public:
 		EFKLABEL_STONEBASE_BEGIN,		// 石板起動
 		EFKLABEL_TRANSFER,				// 転移
 		EFKLABEL_CHARGEFINISH,			// チャージ完了
-		EFKLABEL_CHARGE,			// チャージ完了
+		EFKLABEL_CHARGE,			// チャージ完了後
+		EFKLABEL_TITLEBLUR,			// タイトルの光
 		EFKLABEL_MAX
 	};
 

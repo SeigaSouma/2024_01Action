@@ -30,6 +30,7 @@ public:
 		MOTION_ATTACK_STRONG,	// 強攻撃
 		MOTION_DMG,				// ダメージ
 		MOTION_DOWN,				// ダウン
+		MOTION_RETURNDOWN,				// ダウン
 		MOTION_KNOCKBACK,		// やられ
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_FLINCH_NORMALATK,			// フェードアウト
@@ -63,6 +64,20 @@ private:
 };
 
 
+
+// ダウン復帰
+class CReturnDown_Gobelin : public CEnemyReturnDown
+{
+public:
+	CReturnDown_Gobelin() {}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGobelin::MOTION::MOTION_RETURNDOWN;
+		CEnemyReturnDown::ChangeMotionIdx(boss);
+	}
+};
 
 // 通常攻撃の怯み
 class CFlinch_GobelinNormalATK : public CEnemyFlinch

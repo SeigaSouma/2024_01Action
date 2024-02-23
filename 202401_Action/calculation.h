@@ -1696,10 +1696,25 @@ namespace UtilFunc	// 便利関数
 		*/
 		inline std::string WideToMultiByte(const wchar_t* wideStr)
 		{
-			int size_needed = WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, NULL, 0, NULL, NULL);
-			std::string result(size_needed, 0);
-			WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, &result[0], size_needed, NULL, NULL);
-			return result;
+			if (wideStr == nullptr)
+				return std::string();
+
+			// ワイド文字列の長さを取得
+			int wideLength = wcslen(wideStr);
+
+			// マルチバイト文字列の長さを計算
+			int multiLength = WideCharToMultiByte(CP_UTF8, 0, wideStr, wideLength, nullptr, 0, nullptr, nullptr);
+
+			if (multiLength == 0)
+				return std::string();
+
+			// マルチバイト文字列を格納するためのバッファを確保
+			std::string multiString(multiLength, 0);
+
+			// ワイド文字列をマルチバイト文字列に変換
+			WideCharToMultiByte(CP_UTF8, 0, wideStr, wideLength, &multiString[0], multiLength, nullptr, nullptr);
+
+			return multiString;
 		}
 	}
 

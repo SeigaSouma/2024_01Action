@@ -178,7 +178,7 @@ void CEnemyBase::Uninit()
 //==========================================================================
 void CEnemyBase::Update()
 {
-#if _DEBUG
+#if 0
 
 	int nCntObj = 0;
 	for (int nCntStage = 0; nCntStage < m_nNumStage; nCntStage++)

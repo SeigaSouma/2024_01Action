@@ -114,6 +114,16 @@ public:
 			counterExtensionFrame(countertime), damageMitigation(damagemitigation), addDownTime(downtime), bChargeFlinch(bFlinsh) {}
 	};
 
+	// ダメージ情報
+	struct sDamageInfo
+	{
+		bool bActiveSuperArmor;	// スーパーアーマー
+		bool bReceived;			// ダメージ受け付け判定
+		float reciveTime;		// ダメージ受付時間
+
+		sDamageInfo() : bActiveSuperArmor(false), bReceived(false), reciveTime(0.0f) {}
+	};
+
 	// モーションの判定
 	struct SMotionFrag
 	{
@@ -154,6 +164,8 @@ public:
 	bool IsReadyDashAtk() { return m_bReadyDashAtk; }
 	void SetMotionFrag(SMotionFrag frag) { m_sMotionFrag = frag; }
 	SMotionFrag GetMotionFrag() { return m_sMotionFrag; }
+	void SetDamageInfo(sDamageInfo info) { m_sDamageInfo = info; }	// ダメージ情報設定
+	sDamageInfo GetDamageInfo() { return m_sDamageInfo; }			// ダメージ情報取得
 
 	// 転移ビーコン
 	void SetEnableTouchBeacon(bool bTouch) { m_bTouchBeacon = bTouch; }	// ビーコンに触れてる判定設定
@@ -272,6 +284,7 @@ private:
 	void MotionBySetState();	// モーション別の状態設定
 	void ResetFrag();			// フラグリセット
 	void RockOn();				// ロックオン
+	void UpdateDamageReciveTimer();	// ダメージ受付時間更新
 
 	// モーション系関数
 	void AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK) override;	// 攻撃時処理
@@ -285,6 +298,7 @@ private:
 	MyLib::Vector3 m_posKnokBack;	// ノックバックの位置
 	MyLib::Vector3 m_KnokBackMove;	// ノックバックの移動量
 	int m_nCntState;				// 状態遷移カウンター
+	int m_nCntPowerEmission;		// パワーアップの発生物カウンター
 	int m_nComboStage;				// コンボの段階
 	int m_nIdxRockOn;				// ロックオン対象のインデックス番号
 	bool m_bLockOnAtStart;			// カウンター開始時にロックオンしていたか
@@ -297,8 +311,10 @@ private:
 	bool m_bChargeCompletion;		// チャージ完了フラグ
 	int m_nRespawnPercent;			// リスポーン確率
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
+	bool m_bMotionAutoSet;			// モーションの自動設定
 
-	sPlayerStatus m_PlayerStatus;		// プレイヤーステータス
+	sPlayerStatus m_PlayerStatus;	// プレイヤーステータス
+	sDamageInfo m_sDamageInfo;		// ダメージ情報
 
 	CSkillPoint* m_pSkillPoint;		// スキルポイントのオブジェクト
 	CHP_GaugePlayer* m_pHPGauge;		// HPゲージのポインタ

@@ -50,6 +50,9 @@ HRESULT CEnemyGolem::Init()
 	m_pAtkPattern.push_back(DEBUG_NEW CEnemyGolemSideSwipe());	// 2段目
 	m_pAtkPattern.push_back(DEBUG_NEW CGolemStrongAttack());	// 強攻撃
 
+	// ダウン復帰
+	m_pReturnDown = DEBUG_NEW CReturnDown_Golem();
+
 	// ロックオンの距離
 	m_fRockOnDistance = 400.0f;
 

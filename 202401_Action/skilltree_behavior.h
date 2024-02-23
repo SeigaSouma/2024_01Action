@@ -190,8 +190,8 @@ class CAbillityCounter : public CEnhance
 	void SubNeedStamina03() { m_pPlayer->SetCounterSubValue(10.0f); }
 	void ExtensionFrame01() { m_pPlayer->SetCounterExtensionFrame(19); }
 	void ExtensionFrame02() { m_pPlayer->SetCounterExtensionFrame(24); }
-	void LongerDown01() { m_pPlayer->SetAddDownTime(3.0f); }
-	void LongerDown02() { m_pPlayer->SetAddDownTime(4.0f); }
+	void LongerDown01() { m_pPlayer->SetAddDownTime(4.0f); }
+	void LongerDown02() { m_pPlayer->SetAddDownTime(5.0f); }
 
 };
 

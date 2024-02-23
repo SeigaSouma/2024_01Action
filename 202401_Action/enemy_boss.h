@@ -36,15 +36,16 @@ public:
 		MOTION_HANDSLAP,		// ハンドスラップ
 		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
 		MOTION_ROLLING,			// ローリング
-		MOTION_DOWN,			// ダウンモーション
+		MOTION_DOWN,			// ダウン
+		MOTION_RETURNDOWN,		// ダウン復帰
 		MOTION_BACKSTEP,		// バックステップ
 		MOTION_BACKSTEP_SMALL,	// 小バックステップ
 		MOTION_FADEOUT,			// フェードアウト
-		MOTION_FLINCH_HANDSLAP,		// ハンドスラップ
-		MOTION_FLINCH_OVERHEAD,		// 振り下ろしの怯み
+		MOTION_FLINCH_HANDSLAP,	// ハンドスラップ
+		MOTION_FLINCH_OVERHEAD,	// 振り下ろしの怯み
+		MOTION_KNOCKBACK,		// ノックバック
 		MOTION_MAX
 	};
-
 
 	CEnemyBoss(int nPriority = mylib_const::ENEMY_PRIORITY);
 	~CEnemyBoss();
@@ -75,8 +76,9 @@ private:
 	// メンバ関数
 	//=============================
 	// 状態関数
-	virtual void StateDown() override;	// ダウン状態
-
+	virtual void StateDown() override;		// ダウン状態
+	virtual void StateDead() override;		// 死亡
+	virtual void StateFadeOut() override;	// フェードアウト
 
 	// その他関数
 	void MotionSet() override;	// モーションの設定
@@ -96,15 +98,26 @@ private:
 //=============================
 // ボスステート
 //=============================
+// ダウン復帰
+class CReturnDown_Boss : public CEnemyReturnDown
+{
+public:
+	CReturnDown_Boss() {}
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyBoss::MOTION::MOTION_RETURNDOWN;
+		CEnemyReturnDown::ChangeMotionIdx(boss);
+	}
+};
+
 // ステップ
 class CBossStep : public CEnemyBeforeAction
 {
 public:
 
 	CBossStep() {}
-	//
-	//virtual void Action(CEnemy* enemy) override;		// 行動
-	//virtual void Attack(CEnemy* enemy) override {}	// 攻撃処理
 
 	// モーションインデックス切り替え
 	virtual void ChangeMotionIdx(CEnemy* enemy) override

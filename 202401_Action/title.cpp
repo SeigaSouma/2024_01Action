@@ -14,6 +14,18 @@
 #include "particle.h"
 #include "gallery.h"
 #include "torch.h"
+#include "MyEffekseer.h"
+#include "titlelogo.h"
+#include "title_pressenter.h"
+
+//==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const float TIME_FADELOGO = 0.6f;	// ロゴのフェードアウト時間
+	const char* TEXTURE = "data\\TEXTURE\\title\\titlelogo3.png";
+}
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -21,12 +33,24 @@
 CTitle* CTitle::m_pThisPtr = nullptr;	// 自身のポインタ
 
 //==========================================================================
+// 関数ポインタ
+//==========================================================================
+CTitle::SCENE_FUNC CTitle::m_SceneFunc[] =
+{
+	&CTitle::SceneNone,			// なにもなし
+	&CTitle::SceneFadeOutLoGo,	// ロゴフェードアウト
+};
+
+//==========================================================================
 // コンストラクタ
 //==========================================================================
 CTitle::CTitle()
 {
 	// 値のクリア
-	m_nCntSwitch = 0;		// 切り替えのカウンター
+	m_SceneType = SCENETYPE::SCENETYPE_NONE;	// シーンの種類
+	m_fSceneTime = 0.0f;						// シーンカウンター
+	m_pLogo = nullptr;		// ロゴのポインタ
+	m_pPressEnter = nullptr;	// プレスエンター
 }
 
 //==========================================================================
@@ -93,6 +117,21 @@ HRESULT CTitle::Init()
 	// タイトル画面
 	//CTitleScreen::Create();
 
+	// タイトルロゴ生成
+	m_pLogo = CTitleLogo::Create(2.0f);
+
+	// プレスエンター
+	m_pPressEnter = CTitle_PressEnter::Create(2.0f);
+
+	// 塵
+	CMyEffekseer::GetInstance()->SetEffect(
+		CMyEffekseer::EFKLABEL::EFKLABEL_TITLEBLUR,
+		MyLib::Vector3(185.0f, 65.0f, -148.0f),
+		0.0f, 0.0f, 10.0f, false);
+
+	// シーンの種類
+	m_SceneType = SCENETYPE::SCENETYPE_NONE;
+
 	// 成功
 	return S_OK;
 }
@@ -117,29 +156,64 @@ void CTitle::Update()
 		"現在のモード：【タイトル】\n"
 		"切り替え：【 F 】\n\n");
 
-	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	// ゲームパッド情報取得
-	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
-
-	// 切り替えのカウンター加算
-	m_nCntSwitch++;
+	// 入力情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
 	if (CManager::GetInstance()->GetFade()->GetState() != CFade::STATE_NONE)
 	{// フェード中は抜ける
 		return;
 	}
 
-	if (m_nCntSwitch <= 120)
-	{
-		//return;
-	}
+	// 状態別更新処理
+	(this->*(m_SceneFunc[m_SceneType]))();
 
-	if (pInputKeyboard->GetTrigger(DIK_RETURN) || pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) == true)
+	//if (pInputKeyboard->GetTrigger(DIK_RETURN) || pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) == true)
+	//{
+	//	// モード設定
+	//	CManager::GetInstance()->GetFade()->SetFade(CScene::MODE::MODE_GAME);
+	//}
+}
+
+//==========================================================================
+// なにもなし
+//==========================================================================
+void CTitle::SceneNone()
+{
+	// シーンカウンター
+	m_fSceneTime = TIME_FADELOGO;
+}
+
+//==========================================================================
+// ロゴフェードアウト
+//==========================================================================
+void CTitle::SceneFadeOutLoGo()
+{
+	// シーンカウンター減算
+	m_fSceneTime -= CManager::GetInstance()->GetDeltaTime();
+
+	// 不透明度更新
+	float alpha = m_fSceneTime / TIME_FADELOGO;
+	m_pLogo->SetAlpha(alpha);
+
+	// エンターの色
+	m_pPressEnter->SetAlpha(alpha);
+
+	if (m_fSceneTime <= 0.0f)
 	{
-		// モード設定
-		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TUTORIAL);
+		m_fSceneTime = 0.0f;
+		m_SceneType = SCENETYPE_NONE;
+
+		// 不透明度更新
+		m_pLogo->SetAlpha(1.0f);
+		m_pLogo->Uninit();
+		m_pLogo = nullptr;
+
+		// エンターの色
+		m_pPressEnter->SetAlpha(1.0f);
+		m_pPressEnter->Uninit();
+		m_pPressEnter = nullptr;
+		return;
 	}
 }
 

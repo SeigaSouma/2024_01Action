@@ -30,6 +30,7 @@ public:
 		MOTION_ATTACK_STRONG,	// 強攻撃
 		MOTION_DMG,				// ダメージ
 		MOTION_DOWN,			// ダウン
+		MOTION_RETURNDOWN,		// ダウン復帰
 		MOTION_KNOCKBACK,		// やられ
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_ATTACK_SIDESWIPE,	// 横薙ぎ
@@ -73,7 +74,21 @@ private:
 };
 
 
+//=============================
+// ダウン復帰
+//=============================
+class CReturnDown_Golem : public CEnemyReturnDown
+{
+public:
+	CReturnDown_Golem() {}
 
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		m_nIdxMotion = CEnemyGolem::MOTION::MOTION_RETURNDOWN;
+		CEnemyReturnDown::ChangeMotionIdx(boss);
+	}
+};
 
 // 縦薙ぎ(4段目)
 class CEnemyGolemUpSwipe2 : public CEnemyProximity

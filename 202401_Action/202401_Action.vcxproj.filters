@@ -381,9 +381,6 @@
     <ClCompile Include="transferBeacon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="skillpoint.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="loadmanager.cpp">
       <Filter>ソース ファイル\load</Filter>
     </ClCompile>
@@ -527,6 +524,15 @@
     </ClCompile>
     <ClCompile Include="battlestart_effect.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="titlelogo.cpp">
+      <Filter>ソース ファイル\mode\title</Filter>
+    </ClCompile>
+    <ClCompile Include="title_pressenter.cpp">
+      <Filter>ソース ファイル\mode\title</Filter>
+    </ClCompile>
+    <ClCompile Include="skillpoint.cpp">
+      <Filter>ソース ファイル\player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -794,9 +800,6 @@
     <ClInclude Include="transferBeacon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="skillpoint.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="loadmanager.h">
       <Filter>ヘッダー ファイル\load</Filter>
     </ClInclude>
@@ -940,6 +943,15 @@
     </ClInclude>
     <ClInclude Include="battlestart_effect.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="title_pressenter.h">
+      <Filter>ヘッダー ファイル\mode\title</Filter>
+    </ClInclude>
+    <ClInclude Include="titlelogo.h">
+      <Filter>ヘッダー ファイル\mode\title</Filter>
+    </ClInclude>
+    <ClInclude Include="skillpoint.h">
+      <Filter>ヘッダー ファイル\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

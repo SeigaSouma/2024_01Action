@@ -188,7 +188,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/stonegolem/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 13
+NUM_MOTION = 14
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -199,6 +199,7 @@ MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_upswipe.txt		# [2]
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_strongattack.txt	# [3]強攻撃
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_dmg.txt			# [4]ダメージ
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_down.txt			# [5]ダウン
+MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_returndown.txt	# [5]ダウン復帰
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_knockback.txt		# [6]ノックバック
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_fadeout.txt		# [7]フェードアウト
 MOTION_FILENAME = data/TEXT/character/enemy/stonegolem/motion_sideswipe.txt		# [8]横薙ぎ

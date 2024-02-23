@@ -11,6 +11,11 @@
 #include "camera.h"
 #include "controlassist.h"
 
+namespace
+{
+	const float STAMINA_AVOID = 30.0f;	// 回避のスタミナ消費量
+}
+
 //==========================================================================
 // 攻撃可能フラグ取得
 //==========================================================================
@@ -138,7 +143,6 @@ void CPlayerControlAttack_Level1::Attack(CPlayer* player)
 
 		// 段階別リセット処理
 		player->SetComboStage(0);
-		//StageByReset(player);
 		m_bChargePossible = false;
 	}
 
@@ -261,10 +265,18 @@ void CPlayerControlAvoid::Avoid(CPlayer* player)
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 	MyLib::Vector3 Camerarot = pCamera->GetRotation();
 
+	// スタミナ取得
+	CStaminaGauge_Player* pStamina = player->GetStaminaGauge();
+	if (pStamina == nullptr)
+	{
+		return;
+	}
+
 	// 回避
 	if (!player->IsJump() &&
 		(pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
-		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, player->GetMyPlayerIdx()))
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, player->GetMyPlayerIdx()) &&
+		pStamina->GetValue() >= STAMINA_AVOID)
 	{
 		pMotion->Set(CPlayer::MOTION_DEF);
 		pMotion->Set(CPlayer::MOTION_AVOID);
@@ -274,12 +286,11 @@ void CPlayerControlAvoid::Avoid(CPlayer* player)
 
 			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
 		}
-		//player->SetState(CPlayer::STATE_AVOID);
 
 		// スタミナ減算
 		if (player->GetStaminaGauge() != nullptr)
 		{
-			player->GetStaminaGauge()->SubValue(40.0f);
+			player->GetStaminaGauge()->SubValue(STAMINA_AVOID);
 		}
 	}
 

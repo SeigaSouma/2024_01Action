@@ -39,8 +39,8 @@ namespace
 	const float TIME_LOAD = 2.0f;	// ロード時間
 
 #if _DEBUG
-	//const CScene::MODE STARTMODE = CScene::MODE_TITLE;
-	const CScene::MODE STARTMODE = CScene::MODE_GAME;
+	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
+	//const CScene::MODE STARTMODE = CScene::MODE_GAME;
 #else
 	//const CScene::MODE STARTMODE = CScene::MODE_GAME;
 	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
@@ -355,11 +355,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-#if 1
-	//m_pFade->SetFade(CScene::MODE_GAME);
-#else
-	SetMode(CScene::MODE_GAME);
-#endif
 
 	// ロードフラグリセット
 	m_bLoadComplete = false;

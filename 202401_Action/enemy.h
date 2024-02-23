@@ -25,6 +25,7 @@ class CRockOnMarker;
 
 class CEnemyState;
 class CEnemyAttack;
+class CEnemyReturnDown;
 
 //==========================================================================
 // クラス定義
@@ -73,6 +74,7 @@ public:
 		MOTION_ATTACK_STRONG,	// 強攻撃
 		MOTION_DMG,				// ダメージ
 		MOTION_DOWN,			// ダウン
+		MOTION_RETURNDOWN,			// ダウン
 		MOTION_KNOCKBACK,		// やられ
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
@@ -130,6 +132,7 @@ public:
 	void SetParent(CEnemy *pParent);		// 親のポインタ設定
 	CEnemy *GetEnemy();
 	TYPE GetType() { return m_type; }	// 種類取得
+	static int GetNumSurvival() { return m_nNumSurvival; }	// 生存人数
 	static CListManager<CEnemy> GetListObj() { return m_List; }	// リスト取得
 	static CEnemy* Create(const char* pFileName, MyLib::Vector3 pos, TYPE type = TYPE_BOSS);
 
@@ -204,6 +207,7 @@ protected:
 	CEnemyState* m_pNextATKState;	// 次の行動ポインタ
 	bool m_bStateChanging;			// 状態が切り替わった瞬間
 	std::vector<CEnemyAttack*> m_pAtkPattern;	// 攻撃の種類
+	CEnemyReturnDown* m_pReturnDown;			// ダウン復帰
 
 private:
 	
@@ -233,6 +237,7 @@ private:
 	CShadow *m_pShadow;			// 影の情報
 	CRockOnMarker* m_pRockOnMarker;		// ロックオンマーカー
 	static CListManager<CEnemy> m_List;	// リスト
+	static int m_nNumSurvival;			// 生存人数
 };
 
 
@@ -309,6 +314,25 @@ class CEnemyFlinch : public CEnemyState
 {
 public:
 	CEnemyFlinch() {}
+
+	virtual void Action(CEnemy* boss) override;		// 行動
+	virtual void Attack(CEnemy* boss) override {}	// 攻撃処理
+
+	// モーションインデックス切り替え
+	virtual void ChangeMotionIdx(CEnemy* boss) override
+	{
+		CEnemyState::ChangeMotionIdx(boss);
+	}
+};
+
+
+//=============================
+// ダウン復帰
+//=============================
+class CEnemyReturnDown : public CEnemyState
+{
+public:
+	CEnemyReturnDown() { m_bCreateFirstTime = true; }
 
 	virtual void Action(CEnemy* boss) override;		// 行動
 	virtual void Attack(CEnemy* boss) override {}	// 攻撃処理

@@ -37,9 +37,9 @@
 #define MIN_ROT			(-D3DX_PI * 0.49f)	// カメラ固定用
 #define MAX_ROT			(D3DX_PI * 0.49f)	// カメラ固定用
 #define BACKFOLLOW_TIME	(20)				// 背面補正までの時間
-#define TITLE_POSR_DEST	(MyLib::Vector3(0.0f, 0.0f, 0.0f))
-#define TITLE_LEN_DEST	(1400.0f)
-#define TITLECAMERAROT_NONE		(MyLib::Vector3(0.0f, 0.0f, -0.2f))
+#define TITLE_POSR_DEST	(MyLib::Vector3(321.91f, 160.74f, -296.28f))
+#define TITLE_LEN_DEST	(365.0f)
+#define TITLECAMERAROT_NONE		(MyLib::Vector3(0.0f, -0.76f, 0.24f))
 #define TITLECAMERAROT_ENEMY	(MyLib::Vector3(0.0f, -0.79f, -0.12f))
 #define TITLESTATE_CHANGE	(60 * 14)
 #define TITLESTATE_CHASE	(60 * 20)
@@ -1349,8 +1349,8 @@ bool CCamera::IsOnScreen(const MyLib::Vector3 pos)
 //==========================================================================
 void CCamera::ResetTitle()
 {
-	m_posR = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 注視点(見たい場所)
 	m_posV = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 視点(カメラの位置)
+	m_posR = TITLE_POSR_DEST;	// 注視点(見たい場所)
 	m_posVDest = m_posV;								// 目標の視点
 	m_posRDest = m_posR;								// 目標の注視点
 	m_vecU = MyLib::Vector3(0.0f, 1.0f, 0.0f);				// 上方向ベクトル

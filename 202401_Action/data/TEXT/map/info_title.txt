@@ -65,7 +65,7 @@ MODEL_FILENAME = data/MODEL/arena/jouheki_kabe.x		# [33]
 MODEL_FILENAME = data/MODEL/arena/taimatu_001.x		# [34]
 MODEL_FILENAME = data/MODEL/arena/taimatu_002.x		# [35]
 MODEL_FILENAME = data/MODEL/gallery/gallery_red_wait.x		# [36]
-MODEL_FILENAME = data/MODEL/enemy/gobelin/TModel.x		# [36]
+MODEL_FILENAME = data\\MODEL\\stage\\titilesword.x		# [36]
 
 #==============================================================================
 # éRèÓïÒ
@@ -516,6 +516,13 @@ MODELSET
 	TYPE = 31
 	POS = -231.42 710.00 -2839.11
 	ROT = 0.00 -1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 37
+	POS = 165.33 0.00 -154.94
+	ROT = 0.00 0.00 0.00
 	SHADOW = 1
 END_MODELSET
 

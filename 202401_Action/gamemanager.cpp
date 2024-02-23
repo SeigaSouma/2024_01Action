@@ -129,12 +129,14 @@ void CGameManager::Uninit()
 //==========================================================================
 void CGameManager::Update()
 {
-	
-	// 操作補助生成
-	CControlAssist* pAssist = CControlAssist::GetInstance();
-	if (pAssist)
+	if (m_SceneType != SCENE_SKILLTREE)
 	{
-		pAssist->SetDefaultText();
+		// 操作補助生成
+		CControlAssist* pAssist = CControlAssist::GetInstance();
+		if (pAssist)
+		{
+			pAssist->SetDefaultText();
+		}
 	}
 
 	// 操作状態
@@ -146,6 +148,10 @@ void CGameManager::Update()
 
 	case CGameManager::SCENE_MAINCLEAR:
 		m_bControll = true;
+		break;
+
+	case SCENE_BEFOREBATTLE:
+		m_bControll = false;
 		break;
 
 	case SceneType::SCENE_BATTLESTART:
@@ -516,6 +522,8 @@ void CGameManager::SetBoss()
 	{
 		// 位置設定
 		pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -1000.0f));
+		pPlayer->SetRotation(0.0f);
+		pPlayer->SetRotDest(0.0f);
 	}
 
 	// カメラの情報取得
@@ -551,12 +559,12 @@ void CGameManager::SetEnemy()
 	CPlayer* pPlayer = nullptr;
 
 	// リストループ
-	int i = 0;
 	while (playerList.ListLoop(&pPlayer))
 	{
 		// 位置設定
 		pPlayer->SetPosition(0.0f);
-		i++;
+		pPlayer->SetRotation(0.0f);
+		pPlayer->SetRotDest(0.0f);
 	}
 
 	// カメラの情報取得

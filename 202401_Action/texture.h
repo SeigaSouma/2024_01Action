@@ -60,9 +60,10 @@ private:
 	//=============================
 	// メンバ変数
 	//=============================
-	std::vector<STexture> m_TexInfo;		// テクスチャの情報
-	std::vector<std::string> m_ImageNames;	// 読み込み用文字列
-	static CTexture* m_pTexture;			// 自身のポインタ
+	std::vector<STexture> m_TexInfo;			// テクスチャの情報
+	std::vector<std::string> m_ImageNames;		// 読み込み用文字列
+	std::vector<std::string> m_FolderFilePath;	// フォルダー格納のファイルパス
+	static CTexture* m_pTexture;				// 自身のポインタ
 };
 
 

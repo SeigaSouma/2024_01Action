@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "particle.h"
 #include "player.h"
+#include "game.h"
 
 //==========================================================================
 // 定数定義
@@ -47,7 +48,14 @@ HRESULT CEnemyGobelin::Init()
 	// 行動
 	m_Action = ACTION_DEF;
 	m_pAtkPattern.push_back(DEBUG_NEW CAttack_GobelinNormalAttack());	// 通常攻撃
-	m_pAtkPattern.push_back(DEBUG_NEW CEnemyStrongAttack());	// 通常攻撃
+
+	if (CGame::GetInstance()->GetGameManager()->GetNowStage() > 0)
+	{
+		m_pAtkPattern.push_back(DEBUG_NEW CEnemyStrongAttack());	// 強攻撃
+	}
+
+	// ダウン復帰
+	m_pReturnDown = DEBUG_NEW CReturnDown_Gobelin();
 
 	// 視界・追い着きフラグリセット
 	m_bCatchUp = false;
@@ -55,7 +63,6 @@ HRESULT CEnemyGobelin::Init()
 
 	// 攻撃切り替え
 	ChangeATKState(m_pAtkPattern[0]);
-	//m_pATKState->ChangeMotionIdx(this);
 
 	// 強攻撃タイマー
 	m_fStrongAttackTime = TIME_STRONGATK;
@@ -133,8 +140,17 @@ void CEnemyGobelin::StateDown()
 		// 行動可能判定
 		m_bActionable = true;
 
-		// 行動抽選
-		DrawingRandomAction();
+		// ダウン復帰
+		if (m_pReturnDown != nullptr)
+		{
+			ChangeATKState(m_pReturnDown);
+			m_pATKState->ChangeMotionIdx(this);
+		}
+		else
+		{
+			// 行動抽選
+			DrawingRandomAction();
+		}
 		return;
 	}
 

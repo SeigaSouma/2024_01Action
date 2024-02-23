@@ -262,6 +262,16 @@ void CObject2D::Update()
 //==========================================================================
 void CObject2D::Draw()
 {
+#if _DEBUG
+	if (CManager::GetInstance()->GetPause() != nullptr)
+	{
+		if (CManager::GetInstance()->GetPause()->IsPause())
+		{
+			return;
+		}
+	}
+#endif
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 

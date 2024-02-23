@@ -96,6 +96,9 @@ HRESULT CEnemyBoss::Init()
 	// 行動可能判定
 	//m_bActionable = true;
 
+	// ダウン復帰
+	m_pReturnDown = DEBUG_NEW CReturnDown_Boss();
+
 
 	// 視界・追い着きフラグリセット
 	m_bCatchUp = false;
@@ -430,8 +433,17 @@ void CEnemyBoss::StateDown()
 		// 行動可能判定
 		m_bActionable = true;
 
-		// 行動抽選
-		DrawingRandomAction();
+		// ダウン復帰
+		if (m_pReturnDown != nullptr)
+		{
+			ChangeATKState(m_pReturnDown);
+			m_pATKState->ChangeMotionIdx(this);
+		}
+		else
+		{
+			// 行動抽選
+			DrawingRandomAction();
+		}
 		return;
 	}
 
@@ -447,6 +459,77 @@ void CEnemyBoss::StateDown()
 	{
 		// ダウンモーション設定
 		pMotion->Set(MOTION_DOWN);
+	}
+}
+
+//==========================================================================
+// 死亡
+//==========================================================================
+void CEnemyBoss::StateDead()
+{
+	// 行動可能判定
+	m_bActionable = false;
+
+	// ダメージを受け付けない
+	m_bDamageReceived = false;
+
+	SetMove(0.0f);
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION::MOTION_KNOCKBACK)
+	{
+		pMotion->Set(MOTION::MOTION_KNOCKBACK);
+	}
+
+	if (nType == MOTION::MOTION_KNOCKBACK && pMotion->IsFinish() == true)
+	{
+		// 次の行動抽選
+		m_state = STATE::STATE_FADEOUT;
+		m_fStateTime = 2.0f;
+		return;
+	}
+}
+
+//==========================================================================
+// フェードアウト
+//==========================================================================
+void CEnemyBoss::StateFadeOut()
+{
+	// 行動可能判定
+	m_bActionable = false;
+
+	// ダメージを受け付けない
+	m_bDamageReceived = false;
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	m_sMotionFrag.bMove = false;	// 移動判定OFF
+	m_sMotionFrag.bATK = false;		// 攻撃判定OFF
+
+	// 状態遷移カウンター減算
+	m_fStateTime -= CManager::GetInstance()->GetDeltaTime();
+
+	// 色設定
+	m_mMatcol.a = m_fStateTime / 2.0f;
+
+	if (m_fStateTime <= 0.0f)
+	{
+		// 敵の終了処理
+		Kill();
+		Uninit();
+		return;
 	}
 }
 

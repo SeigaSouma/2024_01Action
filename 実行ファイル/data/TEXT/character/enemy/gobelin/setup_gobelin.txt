@@ -40,7 +40,7 @@ MODEL_FILENAME = data/MODEL/enemy/gobelin/sword.x		# [14]左足
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
-	VELOCITY = 5.00		
+	VELOCITY = 2.00		
 	JUMP = 0.00		
 	RADIUS = 100.00		
 	HEIGHT = 200.00		
@@ -191,18 +191,20 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/gobelin/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 7
+NUM_MOTION = 9
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
 MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_def.txt			# [0]デフォルト
-MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_walk.txt		# [1]歩き
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_walk.txt			# [1]歩き
 MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_attack.txt		# [2]攻撃
-MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_dmg.txt		# [3]ダメージ
-MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_down.txt		# [3]ダウン
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_strongattack.txt		# [2]強攻撃
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_dmg.txt			# [3]ダメージ
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_down.txt			# [3]ダウン
 MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_knockback.txt	# [4]ノックバック
-MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_fadeout.txt	# [5]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_fadeout.txt		# [5]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/gobelin/motion_flinch_attack.txt		# [2]攻撃の怯み
 
 
 END_SCRIPT		# この行は絶対消さないこと！

@@ -2160,7 +2160,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\Rock-Set\\Rock_5\\Rock_5_Tex\\Rock_5_Base_Color.jpg";
+    "data\\TEXTURE\\map_object\\Rock_5_Base_Color.jpg";
    }
   }
  }

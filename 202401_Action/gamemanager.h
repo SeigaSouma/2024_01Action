@@ -26,6 +26,7 @@ public:
 	{
 		SCENE_MAIN = 0,			// メイン
 		SCENE_MAINCLEAR,		// メインクリア
+		SCENE_BEFOREBATTLE,		// 戦闘準備
 		SCENE_BATTLESTART,		// 戦闘開始
 		SCENE_ENHANCE,			// 強化
 		SCENE_SKILLTREE,		// スキルツリー
