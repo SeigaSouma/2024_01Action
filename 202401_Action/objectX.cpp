@@ -229,7 +229,7 @@ HRESULT CObjectX::Init()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// Xファイルのデータ取得
-	CXLoad *pXLoad = CScene::GetXLoad();
+	CXLoad *pXLoad = CXLoad::GetInstance();
 
 	// Xファイルのロード
 	m_nIdxXFile = pXLoad->XLoad("data\\MODEL\\radiokaikan_01.x");
@@ -238,7 +238,7 @@ HRESULT CObjectX::Init()
 	BindXData(m_nIdxXFile);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// 全頂点チェック
 	UtilFunc::Calculation::CalModelVtx(GetRotation().y, &pXData->vtxMax, &pXData->vtxMin, pXData->pMesh, pXData->pVtxBuff);
@@ -255,7 +255,7 @@ HRESULT CObjectX::Init(const char *pFileName)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// Xファイルのデータ取得
-	CXLoad *pXLoad = CScene::GetXLoad();
+	CXLoad *pXLoad = CXLoad::GetInstance();
 
 	// Xファイルのロード
 	m_nIdxXFile = pXLoad->XLoad(pFileName);
@@ -269,7 +269,7 @@ HRESULT CObjectX::Init(const char *pFileName)
 	}
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// 全頂点チェック
 	UtilFunc::Calculation::CalModelVtx(GetRotation().y, &pXData->vtxMax, &pXData->vtxMin, pXData->pMesh, pXData->pVtxBuff);
@@ -286,7 +286,7 @@ HRESULT CObjectX::Init(int nIdxXFile)
 	BindXData(nIdxXFile);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// 全頂点チェック
 	UtilFunc::Calculation::CalModelVtx(GetRotation().y, &pXData->vtxMax, &pXData->vtxMin, pXData->pMesh, pXData->pVtxBuff);
@@ -338,10 +338,10 @@ void CObjectX::Update()
 {
 #if 0
 	// Xファイルのデータ取得
-	CXLoad *pXLoad = CScene::GetXLoad();
+	CXLoad *pXLoad = CXLoad::GetInstance();
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	MyLib::Vector3 pos = GetPosition();
 	/*bool bLand = false;
@@ -364,7 +364,7 @@ void CObjectX::Update()
 float CObjectX::GetHeight(MyLib::Vector3 pos, bool &bLand)
 {
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	if (pXData == NULL)
 	{// NULLだったら
@@ -459,7 +459,7 @@ void CObjectX::Draw()
 	pDevice->GetMaterial(&matDef);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)pXData->pBuffMat->GetBufferPointer();
@@ -542,7 +542,7 @@ void CObjectX::Draw(D3DXCOLOR col)
 	pDevice->GetMaterial(&matDef);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)pXData->pBuffMat->GetBufferPointer();
@@ -623,7 +623,7 @@ void CObjectX::Draw(float fAlpha)
 	pDevice->GetMaterial(&matDef);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)pXData->pBuffMat->GetBufferPointer();
@@ -736,7 +736,7 @@ MyLib::Vector3 CObjectX::GetSize() const
 MyLib::Vector3 CObjectX::GetVtxMax() const
 {
 	// Xファイルのデータ取得
-	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMax;
+	return CXLoad::GetInstance()->GetMyObject(m_nIdxXFile)->vtxMax;
 }
 
 //==========================================================================
@@ -745,7 +745,7 @@ MyLib::Vector3 CObjectX::GetVtxMax() const
 MyLib::Vector3 CObjectX::GetVtxMin() const
 {
 	// Xファイルのデータ取得
-	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMin;
+	return CXLoad::GetInstance()->GetMyObject(m_nIdxXFile)->vtxMin;
 }
 
 //==========================================================================

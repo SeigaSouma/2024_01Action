@@ -233,6 +233,7 @@ private:
 	//=============================
 	TYPE m_type;			// 種類
 	int m_nNumChild;			// 子の数
+	bool m_bDecrementSurvival;	// 生存人数減少フラグ
 	CEnemy *m_pChild[mylib_const::MAX_ENEMY];	// 子のポインタ
 	CShadow *m_pShadow;			// 影の情報
 	CRockOnMarker* m_pRockOnMarker;		// ロックオンマーカー

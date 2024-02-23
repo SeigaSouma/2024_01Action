@@ -47,20 +47,24 @@ public:
 	HRESULT Init();
 	void Uninit();
 	int XLoad(std::string file);
+	HRESULT LoadAll();	// 全てのモデル読み込み
+	void Unload();
 
 	SXFile *GetMyObject(int nIdx);
 	int GetNumAll();		// 総数
 
 	static CXLoad* Create();
-	static CXLoad* GetInstance() { return m_pXX; }
+	static CXLoad* GetInstance() { return m_pThisPtr; }
 protected:
 
 private:
 	HRESULT Load(std::string file);
-	static void Unload();
+	void SearchAllXModel(const std::wstring& folderPath);	// 全検索
 
 	std::vector<SXFile> m_XFileInfo;	// Xファイルの情報
-	static CXLoad* m_pXX;	// 自身のポインタ
+	std::vector<std::string> m_ImageNames;		// 読み込み用文字列
+	std::vector<std::string> m_FolderFilePath;	// フォルダー格納のファイルパス
+	static CXLoad* m_pThisPtr;	// 自身のポインタ
 };
 
 

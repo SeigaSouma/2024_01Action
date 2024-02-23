@@ -492,8 +492,6 @@ HRESULT MyMap::ReadTexture()
 				TextureFile.emplace_back();
 				TextureFile.back() = &aComment[0];
 
-				//TextureFile.push_back(std::string());
-
 				// テクスチャの割り当て
 				CTexture::GetInstance()->Regist(&TextureFile[nCntTexture][0]);
 
@@ -569,7 +567,7 @@ HRESULT MyMap::ReadXFile(const char *pTextFile)
 				ModelFile.push_back(&aComment[0]);
 
 				// Xファイルのデータ取得
-				CXLoad *pXLoad = CScene::GetXLoad();
+				CXLoad *pXLoad = CXLoad::GetInstance();
 
 				// ファイル読み込み
 				pXLoad->XLoad(&ModelFile[mapdate::nNumModelAll][0]);

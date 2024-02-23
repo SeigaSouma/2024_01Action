@@ -267,7 +267,7 @@ void CBattleStart::StateCharge()
 {
 
 	// U“®
-	CManager::GetInstance()->GetCamera()->SetShake(8, 4.0f, 0.0f);
+	CManager::GetInstance()->GetCamera()->SetShake(3, 1.0f, 0.0f);
 
 	if (m_fStateTime >= TIME_CHARGE)
 	{
@@ -304,7 +304,7 @@ void CBattleStart::StateStings()
 		m_state = STATE_SCALE;
 
 		// U“®
-		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		CManager::GetInstance()->GetCamera()->SetShake(15, 15.0f, 0.0f);
 
 		// Š®—¹Œã‚ÌƒeƒNƒXƒ`ƒƒ‚ÉØ‘Ö
 		int nTexIdx = CTexture::GetInstance()->Regist(TEXT_TEXTURE_COMPLETE);

@@ -104,6 +104,7 @@ HRESULT CHP_GaugeBoss::Init()
 		{// NULLだったら
 			return E_FAIL;
 		}
+		m_HPGauge[nCntGauge].pObj2D->SetType(CObject::TYPE::TYPE_NONE);
 
 		// テクスチャの割り当て
 		int nTexIdx = CTexture::GetInstance()->Regist(TEXTURE[nCntGauge]);

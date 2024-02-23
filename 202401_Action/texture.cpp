@@ -11,7 +11,6 @@
 
 // 読み込むテクスチャのヘッダー
 #include "map.h"
-#include "3D_effect.h"
 
 //==========================================================================
 // 定数定義
@@ -56,11 +55,6 @@ CTexture* CTexture::Create()
 		m_pTexture = DEBUG_NEW CTexture;
 		m_pTexture->Init();
 	}
-	else
-	{
-		// インスタンス取得
-		m_pTexture->GetInstance();
-	}
 
 	return m_pTexture;
 }
@@ -71,13 +65,8 @@ CTexture* CTexture::Create()
 void CTexture::Init()
 {
 	STexture init = {};
-	m_TexInfo.emplace_back();
-
-	m_ImageNames.emplace_back();
-
-	/*std::vector<std::string> filenames = m_ImageNames;
-	m_ImageNames.clear();
-	m_ImageNames.emplace_back();*/
+	m_TexInfo.emplace_back();		// 最初にnullを追加
+	m_ImageNames.emplace_back();	// 最初にnullを追加
 }
 
 //==========================================================================
@@ -87,27 +76,16 @@ HRESULT CTexture::LoadAll()
 {
 #if 1
 
-	// 読み込み用文字列
-	//m_ImageNames.clear();
-	//m_ImageNames.emplace_back();
-
 	// 全検索
 	SearchAllImages(MAINFOLODER);
 
-	//// 読み込み用文字列
-	//m_ImageNames.clear();
-
-	//// 全検索
-	//SearchAllImages(MAINFOLODER);
-
+	// 読み込んだファイル名コピー
 	std::vector<std::string> filenames = m_FolderFilePath;
-
 	for (const auto& name : filenames)
 	{
 		LoadTex(name);
 	}
 
-	//m_ImageNames.clear();
 #endif
 
 	// マップ用の読み込み
@@ -115,9 +93,6 @@ HRESULT CTexture::LoadAll()
 	{// 失敗した場合
 		return E_FAIL;
 	}
-
-	// 3Dエフェクト
-	CEffect3D::LoadTexture();
 
 	return S_OK;
 }
@@ -184,25 +159,6 @@ void CTexture::Unload()
 }
 
 //==========================================================================
-// 文字列内の\\\\を\\に置換する
-//==========================================================================
-std::string replaceDoubleBackslash(std::string str)
-{
-	size_t pos = 0;
-
-	// 文字列内に\\\\が見つかる間繰り返す
-	while ((pos = str.find("\\\\", pos)) != std::string::npos) 
-	{
-		// \\\\を\\に置換
-		str.replace(pos, 2, "\\");
-
-		// 次の検索開始位置を更新
-		pos += 1; // "\\" の次の位置から検索を再開
-	}
-	return str;
-}
-
-//==========================================================================
 // テクスチャの割り当て処理
 //==========================================================================
 int CTexture::Regist(std::string file)
@@ -212,52 +168,27 @@ int CTexture::Regist(std::string file)
 		return 0;
 	}
 
-	int nNumAll = GetNumAll();	// 最大数取得
-	int nIdx = -1;	// 今回の番号保存
-	int nNowLen = 0;	// 今回のファイル名長さ
-	nNowLen = file.length();
-
-	//for (int nCntData = 0; nCntData < nNumAll; nCntData++)
-	//{
-	//	if (m_TexInfo[nCntData].nFileNameLen != nNowLen)
-	//	{// ファイル名の長さが違ったら
-	//		continue;
-	//	}
-
-	//	if (m_TexInfo[nCntData].filename.length() != nNowLen)
-	//	{// ファイル名の長さが違ったら
-	//		continue;
-	//	}
-
-	//	// 既にテクスチャが読み込まれてないかの最終確認
-	//	if (m_TexInfo[nCntData].filename == file)
-	//	{// ファイル名が一致している
-
-	//		// 番号割り当て
-	//		nIdx = nCntData;
-	//		return nIdx;
-	//	}
-	//}
-
-	file = replaceDoubleBackslash(file);
+	// \\変換
+	file = UtilFunc::Transformation::ReplaceBackslash(file);
+	file = UtilFunc::Transformation::ReplaceForwardSlashes(file);
 
 	auto itr = std::find(m_ImageNames.begin(), m_ImageNames.end(), file);
-
 	if (itr != m_ImageNames.end())
 	{
 		return static_cast<int>(std::distance(m_ImageNames.begin(), itr));
 	}
 
+	// 総数保存
+	int nNumAll = GetNumAll();
+
 	// テクスチャ読み込み
 	HRESULT hr = LoadTex(file);
 	if (FAILED(hr))
-	{// 失敗していたら
+	{
 		return 0;
 	}
 
-	// 番号割り当て
-	nIdx = nNumAll;
-	return nIdx;
+	return nNumAll;
 }
 
 //==========================================================================

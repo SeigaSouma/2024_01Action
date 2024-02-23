@@ -134,7 +134,7 @@ void CEnemyBoss::Uninit()
 //==========================================================================
 void CEnemyBoss::Kill()
 {
-	if (m_pHPGauge != nullptr)
+	if (m_pBossHPGauge != nullptr)
 	{
 		m_pBossHPGauge->Kill();
 		m_pBossHPGauge = nullptr;

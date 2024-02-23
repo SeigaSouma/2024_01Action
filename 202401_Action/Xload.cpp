@@ -11,21 +11,27 @@
 #include "objectX.h"
 #include "calculation.h"
 
-// Xファイルオブジェクトを読み込むファイル
-#include "map.h"
-#include "ballast.h"
+//==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const std::wstring MAINFOLODER = L"data\\MODEL";
+}
 
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-CXLoad* CXLoad::m_pXX = nullptr;	// 自身のポインタ
+CXLoad* CXLoad::m_pThisPtr = nullptr;	// 自身のポインタ
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
 CXLoad::CXLoad()
 {
-	m_XFileInfo.clear();	// Xファイルの情報
+	m_XFileInfo.clear();		// Xファイルの情報
+	m_ImageNames.clear();		// 読み込み用文字列
+	m_FolderFilePath.clear();	// フォルダー格納用文字列
 }
 
 //==========================================================================
@@ -41,20 +47,15 @@ CXLoad::~CXLoad()
 //==========================================================================
 CXLoad* CXLoad::Create()
 {
-	if (m_pXX == nullptr)
+	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
 
 		// インスタンス生成
-		m_pXX = DEBUG_NEW CXLoad;
-		m_pXX->Init();
-	}
-	else
-	{
-		// インスタンス取得
-		m_pXX->GetInstance();
+		m_pThisPtr = DEBUG_NEW CXLoad;
+		m_pThisPtr->Init();
 	}
 
-	return m_pXX;
+	return m_pThisPtr;
 }
 
 //==========================================================================
@@ -62,8 +63,70 @@ CXLoad* CXLoad::Create()
 //==========================================================================
 HRESULT CXLoad::Init()
 {
-
 	return S_OK;
+}
+
+//==========================================================================
+// 全てのモデル読み込み
+//==========================================================================
+HRESULT CXLoad::LoadAll()
+{
+#if 1
+
+	// 全検索
+	SearchAllXModel(MAINFOLODER);
+
+	// 読み込んだファイル名コピー
+	for (const auto& name : m_FolderFilePath)
+	{
+		if (FAILED(Load(name)))
+		{
+			return E_FAIL;
+		}
+	}
+
+#endif
+	return S_OK;
+}
+
+//==========================================================================
+// 全てのモデル検索
+//==========================================================================
+void CXLoad::SearchAllXModel(const std::wstring& folderPath)
+{
+	std::stack<std::wstring> folderStack;
+	folderStack.push(folderPath);
+
+	while (!folderStack.empty())
+	{
+		std::wstring currentFolder = folderStack.top();
+		folderStack.pop();
+
+		WIN32_FIND_DATAW findFileData;
+		HANDLE hFind = FindFirstFileW((currentFolder + L"\\*").c_str(), &findFileData);
+
+		if (hFind == INVALID_HANDLE_VALUE)
+		{
+			continue;
+		}
+
+		do {
+
+			if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				std::string fileName = UtilFunc::Transformation::WideToMultiByte((currentFolder + L"\\" + findFileData.cFileName).c_str());
+				m_FolderFilePath.push_back(fileName);
+			}
+			else if (lstrcmpW(findFileData.cFileName, L".") != 0 && lstrcmpW(findFileData.cFileName, L"..") != 0)
+			{
+				std::wstring subFolderPath = currentFolder + L"\\" + findFileData.cFileName;
+				folderStack.push(subFolderPath);
+			}
+
+		} while (FindNextFileW(hFind, &findFileData) != 0);
+
+		FindClose(hFind);
+	}
 }
 
 //==========================================================================
@@ -102,11 +165,12 @@ void CXLoad::Uninit()
 	}
 
 	m_XFileInfo.clear();
+	m_ImageNames.clear();	// 読み込み用文字列
 
-	if (m_pXX != nullptr)
+	if (m_pThisPtr != nullptr)
 	{
-		delete m_pXX;
-		m_pXX = nullptr;
+		delete m_pThisPtr;
+		m_pThisPtr = nullptr;
 	}
 }
 
@@ -118,12 +182,12 @@ void CXLoad::Unload()
 
 }
 
-
 //==========================================================================
 // Xファイルの読み込み
 //==========================================================================
 int CXLoad::XLoad(std::string file)
 {
+#if 0
 	// 最大数取得
 	int nIdx = 0;
 	int nNumAll = GetNumAll();
@@ -158,6 +222,37 @@ int CXLoad::XLoad(std::string file)
 	// インデックス番号保存
 	nIdx = nNumAll;
 	return nIdx;
+
+#else
+
+
+	if (file == "")
+	{
+		return 0;
+	}
+
+	// \\変換
+	file = UtilFunc::Transformation::ReplaceBackslash(file);
+	file = UtilFunc::Transformation::ReplaceForwardSlashes(file);
+
+	auto itr = std::find(m_ImageNames.begin(), m_ImageNames.end(), file);
+	if (itr != m_ImageNames.end())
+	{
+		return static_cast<int>(std::distance(m_ImageNames.begin(), itr));
+	}
+
+	// 総数保存
+	int nNumAll = GetNumAll();
+
+	// 読み込み
+	HRESULT hr = Load(file);
+	if (FAILED(hr))
+	{
+		return 0;
+	}
+
+	return nNumAll;
+#endif
 }
 
 //==========================================================================
@@ -168,7 +263,6 @@ HRESULT CXLoad::Load(std::string file)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 	int nIdx = GetNumAll();
-
 
 	// 要素追加
 	SXFile initinfo = {};
@@ -195,6 +289,10 @@ HRESULT CXLoad::Load(std::string file)
 	// ファイル名と長さ保存
 	m_XFileInfo[nIdx].filename = file;
 	m_XFileInfo[nIdx].nFileNameLen = file.length();
+
+	// 読み込み用にも保存
+	m_ImageNames.emplace_back();
+	m_ImageNames.back() = file;
 
 	// テクスチャのインデックス番号
 	if (m_XFileInfo[nIdx].nIdxTexture == nullptr)

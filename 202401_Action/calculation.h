@@ -1716,6 +1716,44 @@ namespace UtilFunc	// 便利関数
 
 			return multiString;
 		}
+
+
+		/**
+		@brief	\\\\を\\に置換する
+		@param	str		[in]	文字列
+		@return	変換されたstring文字
+		*/
+		inline std::string ReplaceBackslash(std::string str)
+		{
+			size_t pos = 0;
+
+			while ((pos = str.find("\\\\", pos)) != std::string::npos)
+			{
+				// \\\\を\\に置換
+				str.replace(pos, 2, "\\");
+
+				// \\の次から検索を再開
+				pos += 1;
+			}
+			return str;
+		}
+
+		/**
+		@brief	/を\\に置換する
+		@param	str		[in]	文字列
+		@return	変換されたstring文字
+		*/
+		inline std::string ReplaceForwardSlashes(std::string str)
+		{
+			for (size_t i = 0; i < str.size(); i++) 
+			{
+				if (str[i] == '/') 
+				{
+					str.replace(i, 1, "\\");
+				}
+			}
+			return str;
+		}
 	}
 
 }

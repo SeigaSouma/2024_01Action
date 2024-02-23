@@ -57,24 +57,25 @@ CManager *CManager::m_pManager = nullptr;					// マネージャのオブジェクト
 //==========================================================================
 CManager::CManager()
 {
-	m_pRenderer = nullptr;				// レンダラーのオブジェクト
-	m_pInputKeyboard = nullptr;		// キーボードのオブジェクト
-	m_pInputGamepad = nullptr;			// ゲームパッドのオブジェクト
-	m_pSound = nullptr;				// サウンドのオブジェクト
-	m_pInputMouse = nullptr;			// マウスのオブジェクト
-	m_pDebugProc = nullptr;			// デバッグ表示のオブジェクト
-	m_pLight = nullptr;				// ライトのオブジェクト
-	m_pCamera = nullptr;				// カメラのオブジェクト
-	m_pTexture = nullptr;				// テクスチャのオブジェクト
-	m_pEdit = nullptr;					// エディットのオブジェクト
-	m_pScene = nullptr;				// シーンのオブジェクト
-	m_pFade = nullptr;					// フェードのオブジェクト
-	m_pInstantFade = nullptr;			// 遷移なしフェードのオブジェクト
-	m_pBlackFrame = nullptr;			// 黒フレームのオブジェクト
-	m_pPause = nullptr;				// ポーズのオブジェクト
-	m_pResultManager = nullptr;		// リザルトマネージャのオブジェクト
-	m_pRankingManager = nullptr;		// ランキングマネージャのオブジェクト
-	m_pMyEffekseer = nullptr;		// エフェクシアのオブジェクト
+	m_pRenderer = nullptr;			// レンダラー
+	m_pInputKeyboard = nullptr;		// キーボード
+	m_pInputGamepad = nullptr;		// ゲームパッド
+	m_pSound = nullptr;				// サウンド
+	m_pInputMouse = nullptr;		// マウス
+	m_pDebugProc = nullptr;			// デバッグ表示
+	m_pLight = nullptr;				// ライト
+	m_pCamera = nullptr;			// カメラ
+	m_pTexture = nullptr;			// テクスチャ
+	m_pXLoad = nullptr;				// Xファイル
+	m_pEdit = nullptr;				// エディット
+	m_pScene = nullptr;				// シーン
+	m_pFade = nullptr;				// フェード
+	m_pInstantFade = nullptr;		// 遷移なしフェード
+	m_pBlackFrame = nullptr;		// 黒フレーム
+	m_pPause = nullptr;				// ポーズ
+	m_pResultManager = nullptr;		// リザルトマネージャ
+	m_pRankingManager = nullptr;	// ランキングマネージャ
+	m_pMyEffekseer = nullptr;		// エフェクシア
 	m_bWireframe = false;			// ワイヤーフレーム
 	m_bHitStop = false;				// ヒットストップの判定
 	m_nCntHitStop = 0;				// ヒットストップのカウンター
@@ -342,7 +343,16 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//**********************************
 	m_pTexture = CTexture::Create();
 	if (m_pTexture == nullptr)
-	{// 失敗していたら
+	{
+		return E_FAIL;
+	}
+
+	//**********************************
+	// Xファイル
+	//**********************************
+	m_pXLoad = CXLoad::Create();
+	if (m_pXLoad == nullptr)
+	{
 		return E_FAIL;
 	}
 
@@ -375,6 +385,9 @@ void CManager::Load()
 
 	// 全てのテクスチャ読み込み
 	m_pTexture->LoadAll();
+
+	// 全てのモデル読み込み
+	m_pXLoad->LoadAll();
 
 	//**********************************
 	// 遷移なしフェード
@@ -670,6 +683,16 @@ void CManager::Uninit()
 		// メモリの開放
 		delete m_pTexture;
 		m_pTexture = nullptr;
+	}
+
+	if (m_pXLoad != nullptr)
+	{
+		// 終了処理
+		m_pXLoad->Unload();
+
+		// メモリの開放
+		delete m_pXLoad;
+		m_pXLoad = nullptr;
 	}
 
 	if (m_pScene != nullptr)

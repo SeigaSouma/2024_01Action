@@ -94,6 +94,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_fStrongAttackTime = 0.0f;	// 強攻撃のタイマー
 	m_fStateTime = 0.0f;		// 状態遷移カウンター
 	m_nNumChild = 0;			// 子の数
+	m_bDecrementSurvival = false;	// 生存人数減少フラグ
 	m_nTargetPlayerIndex = 0;	// 追い掛けるプレイヤーのインデックス番号
 	m_bDamageReceived = false;				// ダメージ受け付け判定
 	m_fDamageReciveTime = 0.0f;				// ダメージ受付時間
@@ -300,7 +301,13 @@ void CEnemy::SetParent(CEnemy *pParent)
 //==========================================================================
 void CEnemy::Uninit()
 {
-	
+	// 生存人数減少
+	if (!m_bDecrementSurvival)
+	{
+		m_nNumSurvival--;
+		m_bDecrementSurvival = true;
+	}
+
 	// 影を消す
 	if (m_pShadow != nullptr)
 	{
@@ -743,7 +750,11 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 			GetMotion()->Set(MOTION_KNOCKBACK);
 
 			// 生存人数減算
-			m_nNumSurvival--;
+			if (!m_bDecrementSurvival)
+			{
+				m_nNumSurvival--;
+				m_bDecrementSurvival = true;
+			}
 
 			// 爆発再生
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_ENEMYEXPLOSION);

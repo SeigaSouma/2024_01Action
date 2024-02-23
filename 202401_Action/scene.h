@@ -8,13 +8,11 @@
 #ifndef _SCENE_H_
 #define _SCENE_H_	// 二重インクルード防止
 
-#include "main.h"
 #include "elevation.h"
 
 //==========================================================================
 // 前方宣言
 //==========================================================================
-class CXLoad;
 class CCamera;
 
 //==========================================================================
@@ -47,7 +45,6 @@ public:
 
 	void ResetScene();	// シーンのリセット
 	static CScene *Create(MODE mode);
-	static CXLoad *GetXLoad();			// Xファイルのデータ取得
 	static CElevation *GetElevation();	// オブジェクト3Dの取得
 	MODE GetMode();						// 現在のモード取得
 
@@ -56,7 +53,6 @@ protected:
 private:
 
 	MODE m_mode;				// 現在のモード
-	static CXLoad *m_pXLoad;						// Xファイルのオブジェクト
 	static CElevation *m_pObject3DMesh;				// オブジェクト3Dメッシュのオブジェクト
 };
 

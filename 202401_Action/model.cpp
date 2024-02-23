@@ -71,7 +71,7 @@ void CModel::BindTexture()
 	}
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアル分メモリ確保
 	m_nIdxTexture = DEBUG_NEW int[(int)pXData->dwNumMat];
@@ -144,7 +144,7 @@ CModel *CModel::Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vector3
 HRESULT CModel::Init(const char *pFileName)
 {
 	// Xファイルのデータ取得
-	CXLoad *pXLoad = CScene::GetXLoad();
+	CXLoad *pXLoad = CXLoad::GetInstance();
 
 	// Xファイルのロード
 	m_nIdxXFile = pXLoad->XLoad(pFileName);
@@ -153,7 +153,7 @@ HRESULT CModel::Init(const char *pFileName)
 	BindXData(m_nIdxXFile);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// 全頂点チェック
 	UtilFunc::Calculation::CalModelVtx(GetRotation().y, &pXData->vtxMax, &pXData->vtxMin, pXData->pMesh, pXData->pVtxBuff);
@@ -185,10 +185,10 @@ void CModel::Uninit()
 void CModel::Update()
 {
 	// Xファイルのデータ取得
-	CXLoad *pXLoad = CScene::GetXLoad();
+	CXLoad *pXLoad = CXLoad::GetInstance();
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// 全頂点チェック
 	UtilFunc::Calculation::CalModelVtx(GetRotation().y, &pXData->vtxMax, &pXData->vtxMin, pXData->pMesh, pXData->pVtxBuff);
@@ -300,7 +300,7 @@ void CModel::DrawShadowMtx()
 
 	
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	//ライトの位置を設定
 	pDevice->GetLight(0, &light);
@@ -371,7 +371,7 @@ void CModel::Draw()
 	pDevice->GetMaterial(&matDef);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)pXData->pBuffMat->GetBufferPointer();
@@ -420,7 +420,7 @@ void CModel::Draw(D3DXCOLOR col)
 	pDevice->GetMaterial(&matDef);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)pXData->pBuffMat->GetBufferPointer();
@@ -472,7 +472,7 @@ void CModel::Draw(float fAlpha)
 	pDevice->GetMaterial(&matDef);
 
 	// Xファイルのデータ取得
-	CXLoad::SXFile *pXData = CScene::GetXLoad()->GetMyObject(m_nIdxXFile);
+	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)pXData->pBuffMat->GetBufferPointer();
@@ -647,7 +647,7 @@ MyLib::Vector3 CModel::GetScale() const
 MyLib::Vector3 CModel::GetVtxMax() const
 {
 	// Xファイルのデータ取得
-	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMax;
+	return CXLoad::GetInstance()->GetMyObject(m_nIdxXFile)->vtxMax;
 }
 
 //==========================================================================
@@ -656,7 +656,7 @@ MyLib::Vector3 CModel::GetVtxMax() const
 MyLib::Vector3 CModel::GetVtxMin() const
 {
 	// Xファイルのデータ取得
-	return CScene::GetXLoad()->GetMyObject(m_nIdxXFile)->vtxMin;
+	return CXLoad::GetInstance()->GetMyObject(m_nIdxXFile)->vtxMin;
 }
 
 //==========================================================================

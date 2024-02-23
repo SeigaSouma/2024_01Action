@@ -62,7 +62,7 @@ namespace
 	const float TIME_DASHATTACK = 0.3f;			// ダッシュ攻撃に必要な時間
 	const int DEFAULT_STAMINA = 200;			// スタミナのデフォルト値
 	const float SUBVALUE_DASH = 0.1f;			// ダッシュの減算量
-	const float SUBVALUE_AVOID = 30.0f;			// 回避の減算量
+	const float SUBVALUE_AVOID = 25.0f;			// 回避の減算量
 
 	// ステータス
 	const float DEFAULT_RESPAWNHEAL = 0.3f;				// リスポーン時の回復割合

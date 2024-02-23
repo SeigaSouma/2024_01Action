@@ -297,7 +297,7 @@ HRESULT CStage::ReadXFile(const char *pTextFile)
 				ModelFile.push_back(&aComment[0]);
 
 				// Xファイルのデータ取得
-				CXLoad *pXLoad = CScene::GetXLoad();
+				CXLoad *pXLoad = CXLoad::GetInstance();
 
 				// ファイル読み込み
 				pXLoad->XLoad(&ModelFile[m_nNumAll][0]);

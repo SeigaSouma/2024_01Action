@@ -102,7 +102,7 @@ HRESULT CEdit::Init()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 生成処理
-	m_pObjX = m_pObjX->Create(CScene::GetXLoad()->GetMyObject(m_nType)->filename.c_str());
+	m_pObjX = m_pObjX->Create(CXLoad::GetInstance()->GetMyObject(m_nType)->filename.c_str());
 	m_pObjX->SetType(TYPE_EDIT);
 
 	if (m_pObjX == NULL)
@@ -402,7 +402,7 @@ void CEdit::ChangeType()
 		// 色の種類更新
 		m_nType = (m_nType + (nNumAll - 1)) % nNumAll;
 
-		int nIdx = CScene::GetXLoad()->XLoad(MyMap::GetModelFileName(m_nType));
+		int nIdx = CXLoad::GetInstance()->XLoad(MyMap::GetModelFileName(m_nType));
 
 		// オブジェクト割り当て
 		m_pObjX->BindXData(nIdx);
@@ -414,7 +414,7 @@ void CEdit::ChangeType()
 		m_nType = (m_nType + 1) % nNumAll;
 
 		// オブジェクト割り当て
-		int nIdx = CScene::GetXLoad()->XLoad(MyMap::GetModelFileName(m_nType));
+		int nIdx = CXLoad::GetInstance()->XLoad(MyMap::GetModelFileName(m_nType));
 		m_pObjX->BindXData(nIdx);
 	}
 
