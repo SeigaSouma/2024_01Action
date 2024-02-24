@@ -36,6 +36,7 @@
 #include "gallery.h"
 #include "torch.h"
 #include "controlassist.h"
+#include "gamerating.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -184,22 +185,9 @@ HRESULT CGame::Init()
 	// クリアの判定
 	SetEnableClear(true);
 
-	//// 観衆設定
-	//CGallery::SetGallery();
+	// 評価基準読み込み
+	CGameRating::ReadText();
 
-	//// 松明設定
-	//CTorch::SetTorch();
-
-	//CMyEffekseer::GetInstance()->SetEffect(
-	//	CMyEffekseer::EFKLABEL_BGFIRE,
-	//	MyLib::Vector3(0.0f, 0.0f, 0.0f),
-	//	0.0f, 0.0f, 100.0f, false);
-
-
-	//// 操作補助生成
-	//CControlAssist* pAssist = CControlAssist::Create();
-	//pAssist->ResetText();
-	//pAssist->SetText(CControlAssist::CONTROLTYPE_ROCKON);
 
 	// 成功
 	return S_OK;

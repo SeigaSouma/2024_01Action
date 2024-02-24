@@ -37,6 +37,7 @@
 #include "stagename.h"
 #include "afterrespawn_text.h"
 #include "gamerating.h"
+#include "battleresult.h"
 
 
 //==========================================================================
@@ -161,7 +162,7 @@ void CGameManager::Update()
 		break;
 
 	case CGameManager::SCENE_MAINCLEAR:
-		m_bControll = true;
+		m_bControll = false;
 		break;
 
 	case SceneType::SCENE_BEFOREBATTLE:
@@ -212,7 +213,13 @@ void CGameManager::Update()
 	CManager::GetInstance()->GetDebugProc()->Print(
 		"---------------- ゲームマネージャ情報 ----------------\n"
 		"【モード】[%d]\n"
-		"【ステージ】[%d]\n", m_SceneType, m_nNowStage);
+		"【ステージ】[%d]\n"
+		"【クリア時間】「%f」\n"
+		"【死亡回数】「%d」\n"
+		"【被ダメージ】「%d」\n"
+		, m_SceneType, m_nNowStage, m_pGameRating[m_nNowStage]->GetClearTime(),
+		m_pGameRating[m_nNowStage]->GetNumDead(), 
+		m_pGameRating[m_nNowStage]->GetReceiveDamage());
 }
 
 //==========================================================================
@@ -240,7 +247,7 @@ void CGameManager::GameClearSettings()
 	// クリアポイント追加
 	CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
 	pSkillPoint->AddPoint(POINT_WAVECLEAR);
-	pSkillPoint->SetSlideIn();
+	//pSkillPoint->SetSlideIn();
 
 	// 前回のポイント保存
 	m_nPrevPoint = pSkillPoint->GetPoint();
@@ -256,6 +263,7 @@ void CGameManager::GameClearSettings()
 		pGallery->SetState(CGallery::STATE_CLEARHEAT);
 	}
 
+	CBattleResult::Create();
 }
 
 //==========================================================================
@@ -494,6 +502,12 @@ void CGameManager::SceneReaspawn()
 	{
 		m_pGameRating[m_nNowStage]->AddNumDead();
 	}
+
+	// 復活回数加算
+	m_pGameRating[m_nNowStage]->AddNumDead();
+
+	// クリアタイムリセット
+	m_pGameRating[m_nNowStage]->SetClearTime(0.0f);
 
 	// 現在のステージ
 	m_nNowStage--;

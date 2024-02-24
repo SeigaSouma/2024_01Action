@@ -41,10 +41,9 @@
 #include "deadmanager.h"
 #include "gallery.h"
 #include "skilltree_obj.h"
+#include "gamerating.h"
 
 #include "playercontrol.h"
-
-struct sPlayerStatus;
 
 //==========================================================================
 // 定数定義
@@ -1949,6 +1948,9 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 
 		// 体力減らす
 		nLife -= nValue;
+
+		// ゲーム評価の被ダメージ加算
+		CGame::GetInstance()->GetGameManager()->GetGameRating()->AddReceiveDamage(nValue);
 
 		// ゲームパッド情報取得
 		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();

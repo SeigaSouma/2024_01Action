@@ -274,7 +274,7 @@ void CTransferBeacon::CollisionPlayer()
 				// 遷移状態に変更
 				CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_RESULT);
 
-				// フェード追加
+				// フェード
 				CManager::GetInstance()->GetFade()->SetFade(CScene::MODE::MODE_TITLE);
 				break;
 			}

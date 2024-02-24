@@ -28,7 +28,8 @@ public:
 	// 寄せ種類
 	enum AlignmentType
 	{
-		ALIGNMENT_RIGHT = 0,	// 右寄せ
+		ALIGNMENT_LEFT = 0,	// 左寄せ
+		ALIGNMENT_RIGHT,	// 右寄せ
 		ALIGNMENT_MAX
 	};
 
@@ -36,7 +37,7 @@ public:
 	~CMultiNumber();
 
 	static CMultiNumber *Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNum, CNumber::EObjectType objtype, bool bDigitDraw = false, int nPriority = 8);
-	static CMultiNumber *Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNum, CNumber::EObjectType objtype, const char *pTextureFile, bool bDigitDraw = false, int nPriority = 8);
+	static CMultiNumber *Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNum, CNumber::EObjectType objtype, const char *pTextureFile, bool bDigitDraw = true, int nPriority = 8);
 
 	// メンバ関数
 	HRESULT Init();
@@ -61,25 +62,29 @@ public:
 	D3DXVECTOR2 GetSize() const;			// サイズ取得
 	void SetSizeOrigin(const D3DXVECTOR2 size);		// サイズ設定
 	D3DXVECTOR2 GetSizeOrigin() const;			// サイズ取得
+	void SetKerning(float kerning);	// 文字間隔設定
+	void SetAlignmentType(AlignmentType type) { m_Alignment = type; }
 
 private:
 
 	void SettingDisp();
 
 	// メンバ変数
-	MyLib::Vector3 m_pos;				// 位置
-	MyLib::Vector3 m_posOrigin;				// 位置
-	MyLib::Vector3 m_rot;				// 向き
+	MyLib::Vector3 m_pos;			// 位置
+	MyLib::Vector3 m_posOrigin;		// 位置
+	MyLib::Vector3 m_rot;			// 向き
 	D3DXCOLOR m_col;				// 色
 	D3DXVECTOR2 m_size;				// 数字のサイズ
-	D3DXVECTOR2 m_sizeOrigin;				// 数字のサイズ
+	D3DXVECTOR2 m_sizeOrigin;		// 数字のサイズ
 	int m_nNum;						// 数字
 	int m_nNumNumber;				// 数字の数
 	int m_nTexIdx;					// テクスチャのインデックス番号
 	int m_nPriority;				// 優先順位
 	bool m_bDigitDraw;				// 桁数描画
+	float m_fKerning;				// 文字間隔
 	CNumber **m_ppMultiNumber;		// 数字のオブジェクト
 	CNumber::EObjectType m_objType;	// オブジェクトの種類
+	AlignmentType m_Alignment;		// 揃え
 
 };
 

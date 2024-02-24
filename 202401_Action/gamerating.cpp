@@ -5,10 +5,29 @@
 // 
 //=============================================================================
 #include "gamerating.h"
-#include "renderer.h"
-#include "texture.h"
+#include "game.h"
+#include "gamemanager.h"
 #include "manager.h"
 #include "calculation.h"
+
+//==========================================================================
+// 定数定義
+//==========================================================================
+namespace
+{
+	const std::string TEXT_STANDARDS = "data\\TEXT\\gamerating\\ratingStandards.txt";		// 評価基準の外部ファイル名
+	const std::map<std::string, int> PRIORITY_RANK =
+	{
+		{"RankS", 3}, // Sランクの優先順位
+		{"RankA", 2}, // Aランクの優先順位
+		{"RankB", 1}  // Bランクの優先順位
+	};
+}
+
+//==========================================================================
+// 静的メンバ変数宣言
+//==========================================================================
+std::map<std::string, std::map<std::string, CGameRating::sRating>> CGameRating::m_RatingStandards = {};	// 評価基準
 
 //==========================================================================
 // コンストラクタ
@@ -16,10 +35,7 @@
 CGameRating::CGameRating()
 {
 	// 値のクリア
-	m_nReceiveDamage = 0;			// 被ダメージ
-	m_nNumDead = 0;					// 死亡回数
-	m_fClearTime = 0.0f;			// クリア時間
-	m_rating = RATING::RATING_B;	// 評価
+	m_RatingInfo = sRating();	// 評価情報
 }
 
 //==========================================================================
@@ -74,4 +90,174 @@ void CGameRating::Uninit()
 void CGameRating::Update()
 {
 	
+}
+
+//==========================================================================
+// テキスト読み込み処理
+//==========================================================================
+void CGameRating::ReadText()
+{
+	// ファイルを開く
+	std::ifstream File(TEXT_STANDARDS);
+	if (!File.is_open())
+	{
+		return;
+	}
+
+	// リセット
+	m_RatingStandards.clear();
+
+	// データ読み込み
+	std::string line;
+	while (std::getline(File, line))
+	{
+		// コメントはスキップ
+		if (line.empty() || 
+			line[0] == '#')
+		{
+			continue;
+		}
+
+		// ストリーム作成
+		std::istringstream lineStream(line);
+
+		// ステージとランク
+		std::string stage, rank;
+
+		// 評価基準
+		float time;
+		int damage;
+		int dead;
+
+		// 評価基準追加
+		if (lineStream >> stage >> rank >> time >> damage >> dead)
+		{
+			m_RatingStandards[stage][rank] = sRating(time, damage, dead);
+
+			// ランク割り当て
+			if (rank == "RankB") {
+				m_RatingStandards[stage][rank].rating = RATING::RATING_B;
+			}
+			else if (rank == "RankA") {
+				m_RatingStandards[stage][rank].rating = RATING::RATING_A;
+			}
+			else if (rank == "RankS") {
+				m_RatingStandards[stage][rank].rating = RATING::RATING_S;
+			}
+		}
+	}
+
+	// ファイルを閉じる
+	File.close();
+}
+
+//==========================================================================
+// ステージ毎のランク割り出し
+//==========================================================================
+CGameRating::RATING CGameRating::CalculateRank(const sRating& result, const std::map<std::string, sRating>& rankStandards)
+{
+	for (const auto& rankInfo : rankStandards) 
+	{
+		const sRating& standard = rankInfo.second;
+		
+		// 基準チェック
+		if (result.receiveDamage <= standard.receiveDamage &&
+			result.numDead <= standard.numDead &&
+			result.clearTime <= standard.clearTime)
+		{
+			return standard.rating;
+		}
+	}
+	return RATING::RATING_B;
+}
+
+//==========================================================================
+// クリアタイムのランク割り出し
+//==========================================================================
+CGameRating::RATING CGameRating::CalculateClearTimeRank(const float time)
+{
+
+	std::string stageName = "Stage" + std::to_string(CGame::GetInstance()->GetGameManager()->GetNowStage());
+
+	// 評価の最高値保持
+	RATING maxRating = RATING::RATING_B;
+	int maxPriority = 0;
+
+	for (const auto& rankInfo : m_RatingStandards[stageName]) 
+	{
+		const sRating& standard = rankInfo.second;
+
+		// 優先順位割り出し
+		int priority = PRIORITY_RANK.at(rankInfo.first);
+
+		// 基準チェック
+		if (time <= standard.clearTime && 
+			priority >= maxPriority)
+		{
+			maxPriority = priority;
+			maxRating = rankInfo.second.rating;
+		}
+	}
+
+	return maxRating;
+}
+
+//==========================================================================
+// 被ダメージのランク割り出し
+//==========================================================================
+CGameRating::RATING CGameRating::CalculateRecieveDamageRank(const int damage)
+{
+	std::string stageName = "Stage" + std::to_string(CGame::GetInstance()->GetGameManager()->GetNowStage());
+
+	// 評価の最高値保持
+	RATING maxRating = RATING::RATING_B;
+	int maxPriority = 0;
+
+	for (const auto& rankInfo : m_RatingStandards[stageName])
+	{
+		const sRating& standard = rankInfo.second;
+
+		// 優先順位割り出し
+		int priority = PRIORITY_RANK.at(rankInfo.first);
+
+		// 基準チェック
+		if (damage <= standard.receiveDamage &&
+			priority >= maxPriority)
+		{
+			maxPriority = priority;
+			maxRating = rankInfo.second.rating;
+		}
+	}
+
+	return maxRating;
+}
+
+//==========================================================================
+// 死亡回数のランク割り出し
+//==========================================================================
+CGameRating::RATING CGameRating::CalculateNumDeadRank(const int dead)
+{
+	std::string stageName = "Stage" + std::to_string(CGame::GetInstance()->GetGameManager()->GetNowStage());
+
+	// 評価の最高値保持
+	RATING maxRating = RATING::RATING_B;
+	int maxPriority = 0;
+
+	for (const auto& rankInfo : m_RatingStandards[stageName])
+	{
+		const sRating& standard = rankInfo.second;
+
+		// 優先順位割り出し
+		int priority = PRIORITY_RANK.at(rankInfo.first);
+
+		// 基準チェック
+		if (dead <= standard.numDead &&
+			priority >= maxPriority)
+		{
+			maxPriority = priority;
+			maxRating = rankInfo.second.rating;
+		}
+	}
+
+	return maxRating;
 }

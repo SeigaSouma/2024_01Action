@@ -130,6 +130,9 @@
     <Filter Include="ヘッダー ファイル\battlestart">
       <UniqueIdentifier>{98f40dd5-d291-4369-93f5-bd255402f0d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\battleresult">
+      <UniqueIdentifier>{d3657a34-2ac1-4c98-8f10-fe90c8424faf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -551,6 +554,9 @@
     </ClCompile>
     <ClCompile Include="targetpoint.cpp">
       <Filter>ソース ファイル\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="battleresult.cpp">
+      <Filter>ソース ファイル\battleresult</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -982,6 +988,9 @@
     </ClInclude>
     <ClInclude Include="gamerating.h">
       <Filter>ソース ファイル\mode\game</Filter>
+    </ClInclude>
+    <ClInclude Include="battleresult.h">
+      <Filter>ソース ファイル\battleresult</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

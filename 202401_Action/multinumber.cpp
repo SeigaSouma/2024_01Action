@@ -41,6 +41,8 @@ CMultiNumber::CMultiNumber(int nPriority)
 	m_size = D3DXVECTOR2(0.0f, 0.0f);	// 数字のサイズ
 	m_objType = CNumber::OBJECTTYPE_2D;	// オブジェクトの種類
 	m_bDigitDraw = false;				// 桁数描画
+	m_fKerning = 0.0f;				// 文字間隔
+	m_Alignment = AlignmentType::ALIGNMENT_LEFT;		// 揃え
 }
 
 //==========================================================================
@@ -209,6 +211,9 @@ HRESULT CMultiNumber::Init()
 		SetRotation(MyLib::Vector3(0.0f, camerarot.y, 0.0f));
 	}
 
+	// 文字間隔
+	m_fKerning = m_size.y;
+
 	return S_OK;
 }
 
@@ -219,7 +224,7 @@ void CMultiNumber::Uninit()
 {
 	// 終了処理
 	if (m_ppMultiNumber != NULL)
-	{// NULLじゃなかったら
+	{
 
 	 // 各数字オブジェクトの破棄
 		for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
@@ -245,7 +250,7 @@ void CMultiNumber::Release()
 {
 	// 終了処理
 	if (m_ppMultiNumber != NULL)
-	{// NULLじゃなかったら
+	{
 
 	 // 各数字オブジェクトの破棄
 		for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
@@ -294,11 +299,10 @@ void CMultiNumber::SettingDisp()
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
 		if (m_ppMultiNumber[nCntNum] == NULL)
-		{// NULLだったら
+		{
 			continue;
 		}
 
-		// 右詰めの描き方
 		switch (m_objType)
 		{
 		case CNumber::OBJECTTYPE_2D:
@@ -347,15 +351,6 @@ void CMultiNumber::Draw()
 	{// 桁数描画だったら
 		nNumNumber = UtilFunc::Calculation::GetDigit(m_nNum);
 	}
-
-	//for (int nCntNum = m_nNumNumber - 1; nCntNum >= m_nNumNumber - nNumNumber; nCntNum--)
-	//{
-	//	if (m_ppMultiNumber[nCntNum] == NULL)
-	//	{// NULLだったら
-	//		continue;
-	//	}
-	//	m_ppMultiNumber[nCntNum]->Draw();
-	//}
 }
 
 //==========================================================================
@@ -396,7 +391,7 @@ void CMultiNumber::SetValue()
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
 		if (m_ppMultiNumber[nCntNum] == NULL)
-		{// NULLだったら
+		{
 			continue;
 		}
 
@@ -429,14 +424,55 @@ void CMultiNumber::SetPosition(const MyLib::Vector3 pos)
 	// 位置設定
 	m_pos = pos;
 
-	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
+	int nNumberDigit = UtilFunc::Calculation::GetDigit(m_nNum);
+	if (m_Alignment == AlignmentType::ALIGNMENT_LEFT)
 	{
-		if (m_ppMultiNumber[nCntNum] != NULL)
+		if (!m_bDigitDraw)
 		{
-			m_ppMultiNumber[nCntNum]->SetPosition(MyLib::Vector3(
-				m_pos.x + sinf(D3DX_PI / 2 + m_rot.y) * (m_size.y * nCntNum),
-				m_pos.y,
-				m_pos.z + cosf(D3DX_PI / 2 + m_rot.y) * (m_size.y * nCntNum)));	// 位置
+			nNumberDigit = m_nNumNumber;
+		}
+
+		MyLib::Vector3 setpos = m_pos;
+		if (m_bDigitDraw)
+		{
+			for (int i = 0; i < m_nNumNumber - nNumberDigit; i++)
+			{
+				setpos.x -= sinf(D3DX_PI * 0.5f + m_rot.y) * m_fKerning;
+				setpos.z -= cosf(D3DX_PI * 0.5f + m_rot.y) * m_fKerning;
+			}
+		}
+
+		for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
+		{
+			if (m_ppMultiNumber[nCntNum] != nullptr)
+			{
+				m_ppMultiNumber[nCntNum]->SetPosition(MyLib::Vector3
+				(
+					setpos.x + sinf(D3DX_PI * 0.5f + m_rot.y) * (m_fKerning * nCntNum),
+					setpos.y,
+					setpos.z + cosf(D3DX_PI * 0.5f + m_rot.y) * (m_fKerning * nCntNum))
+				);	// 位置
+			}
+		}
+	}
+	else if (m_Alignment == AlignmentType::ALIGNMENT_RIGHT)
+	{
+		MyLib::Vector3 setpos = m_pos;
+		for (int i = 0; i < m_nNumNumber; i++)
+		{
+			setpos.x -= sinf(D3DX_PI * 0.5f + m_rot.y) * m_fKerning;
+			setpos.z -= cosf(D3DX_PI * 0.5f + m_rot.y) * m_fKerning;
+		}
+
+		for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
+		{
+			if (m_ppMultiNumber[nCntNum] != nullptr)
+			{
+				setpos.x += sinf(D3DX_PI * 0.5f + m_rot.y) * m_fKerning;
+				setpos.z += cosf(D3DX_PI * 0.5f + m_rot.y) * m_fKerning;
+
+				m_ppMultiNumber[nCntNum]->SetPosition(setpos);	// 位置
+			}
 		}
 	}
 }
@@ -550,4 +586,12 @@ void CMultiNumber::SetSizeOrigin(const D3DXVECTOR2 size)
 D3DXVECTOR2 CMultiNumber::GetSizeOrigin() const
 {
 	return m_sizeOrigin;
+}
+
+//==========================================================================
+// 文字間隔設定
+//==========================================================================
+void CMultiNumber::SetKerning(float kerning)
+{
+	m_fKerning = kerning;
 }

@@ -160,6 +160,7 @@
     <ClCompile Include="3D_effect.cpp" />
     <ClCompile Include="afterrespawn_text.cpp" />
     <ClCompile Include="ballast.cpp" />
+    <ClCompile Include="battleresult.cpp" />
     <ClCompile Include="battlestart.cpp" />
     <ClCompile Include="battlestart_effect.cpp" />
     <ClCompile Include="beam.cpp" />
@@ -305,6 +306,7 @@
     <ClInclude Include="3D_effect.h" />
     <ClInclude Include="afterrespawn_text.h" />
     <ClInclude Include="ballast.h" />
+    <ClInclude Include="battleresult.h" />
     <ClInclude Include="battlestart.h" />
     <ClInclude Include="battlestart_effect.h" />
     <ClInclude Include="beam.h" />
