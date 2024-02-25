@@ -20,7 +20,7 @@ namespace
 	const char* TEXTURE = "data\\TEXTURE\\battlewin\\text_win.png";
 	const float TIME_SCALNONE = 0.4f;			// なにもない
 	const float TIME_SCALEDOWN = 0.16f;			// 縮小時間
-	const float TIME_SCALENONE = 2.7f;			// 整わせる時間
+	const float TIME_SCALENONE = 2.0f;			// 整わせる時間
 	const float TIME_FADEOUT = 0.4f;			// フェードアウト時間
 }
 

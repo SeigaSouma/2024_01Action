@@ -5,13 +5,7 @@
 //
 //==========================================================================
 #include "sound.h"
-
-//==========================================================================
-//マクロ定義
-//==========================================================================
-#define START_VOLUME	(1.0f)		//音量補正の初期値
-#define MAX_VOLUME		(1.0f)		//音量補正の最大値
-#define MIN_VOLUME		(0.0f)		//音量補正の最小値
+#include "calculation.h"
 
 //==========================================================================
 // 静的メンバ変数宣言
@@ -41,6 +35,12 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/SE/gallery01.wav", 0 },			// 観客1
 	{ "data/SE/gallery02.wav", 0 },			// 観客2
 	{ "data/SE/Inenhance.wav", 0 },			// 強化入場
+	{ "data/SE/battlestart.wav", 0 },			// 戦闘開始
+	{ "data/SE/battlestart_strart.wav", 0 },	// 戦闘開始開始
+	{ "data/SE/battlestart_charge.wav", 0 },	// 戦闘開始溜め
+	{ "data/SE/skilltreeStart.wav", 0 },		// スキルツリー起動
+	{ "data/SE/skillget.wav", 0 },				// スキル獲得
+	{ "data/SE/skilltree_wait.wav", -1 },		// スキルツリー起動待ち
 
 };	// サウンドの情報
 
@@ -192,10 +192,10 @@ HRESULT CSound::Init(HWND hWnd)
 		buffer.LoopCount  = m_aSoundInfo[nCntSound].nCntLoop;
 		SetVolume.dwFlags = DSBCAPS_CTRLVOLUME;		//音量調整のフラグ
 
-		m_fVolume = START_VOLUME;
+		m_fVolume = 1.0f;
 
 		//音量をセットする
-		m_pMasteringVoice->SetVolume(START_VOLUME);
+		m_pMasteringVoice->SetVolume(1.0f);
 
 		// オーディオバッファの登録
 		m_apSourceVoice[nCntSound]->SubmitSourceBuffer(&buffer);
@@ -309,6 +309,9 @@ HRESULT CSound::PlaySound(LABEL label)
 
 	// 周波数リセット
 	m_apSourceVoice[label]->SetFrequencyRatio(1.0f);
+
+	// 音量リセット
+	m_apSourceVoice[label]->SetVolume(1.0f);
 
 #endif
 	return S_OK;
@@ -466,22 +469,27 @@ HRESULT CSound::ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, D
 }
 
 //==========================================================================
-// 音量調整(0.0～1.0まで)
+// 音量設定
+//==========================================================================
+void CSound::VolumeChange(LABEL label, float volume)
+{
+	if (m_apSourceVoice[label] == nullptr)
+	{
+		return;
+	}
+	UtilFunc::Transformation::ValueNormalize(volume, 2.0f, 0.0f);
+
+	// 音量設定
+	m_apSourceVoice[label]->SetVolume(volume);
+}
+
+//==========================================================================
+// 音量調整(マスターボリューム設定)
 //==========================================================================
 void CSound::VolumeChange(float fVolume)
 {
-
 	m_fVolume += fVolume;
-
-	if (m_fVolume >= MAX_VOLUME)
-	{
-		m_fVolume = MAX_VOLUME;
-	}
-
-	if (m_fVolume <= MIN_VOLUME)
-	{
-		m_fVolume = MIN_VOLUME;
-	}
+	UtilFunc::Transformation::ValueNormalize(m_fVolume, 2.0f, 0.0f);
 
 	//音量をセットする
 	m_pMasteringVoice->SetVolume(m_fVolume);

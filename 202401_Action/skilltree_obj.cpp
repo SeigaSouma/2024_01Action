@@ -30,6 +30,7 @@ namespace
 	const MyLib::Vector3 POSITION = MyLib::Vector3(0.0f, 0.0f, 1100.0f);	// 半径
 	const float RADIUS = 100.0f;	// 半径
 	const float TIME_STARTUP = 1.0f;		// 起動時間
+	const float MAX_DISTANCE_VOLUME = 700.0f;		// 音が聞こえる最大距離
 }
 CSkillTree_Obj* CSkillTree_Obj::m_pThisPtr = nullptr;		// 自身のポインタ
 
@@ -128,6 +129,9 @@ HRESULT CSkillTree_Obj::Init()
 		pos.z += 50.0f;
 		m_pPickupGuide = CPickupGuide::Create(pos, CPickupGuide::TYPE_SKILLTREE_BEGIN);
 	}
+
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_SKILLTREE_WAIT);
+
 	return S_OK;
 }
 
@@ -200,6 +204,18 @@ void CSkillTree_Obj::CollisionPlayer()
 	while (playerList.ListLoop(&pPlayer))
 	{
 		pPlayer->SetEnableTouchBeacon(false);
+		MyLib::Vector3 playerPos = pPlayer->GetPosition();
+
+		// プレイヤーとの距離
+		float distance = pos.DistanceXZ(playerPos) - RADIUS;
+
+		float ratio = 1.0f - (distance / MAX_DISTANCE_VOLUME);
+		if (ratio <= 0.0f) {
+			ratio = 0.0f;
+		}
+		CManager::GetInstance()->GetSound()->VolumeChange(CSound::LABEL::LABEL_SE_SKILLTREE_WAIT, ratio);
+
+
 		if (UtilFunc::Collision::CircleRange3D(pos, pPlayer->GetPosition(), RADIUS, pPlayer->GetRadius()))
 		{
 			bHit = true;
@@ -267,6 +283,9 @@ void CSkillTree_Obj::StartUp()
 		CMyEffekseer::EFKLABEL_STONEBASE_BEGIN,
 		pos,
 		0.0f, 0.0f, 100.0f, true);
+
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_SKILLTREE_START);
+	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_SKILLTREE_WAIT);
 }
 
 //==========================================================================
@@ -289,6 +308,7 @@ void CSkillTree_Obj::ReStartUp()
 		CMyEffekseer::EFKLABEL_STONEBASE_LIGHT,
 		pos,
 		0.0f, 0.0f, 100.0f, false);
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_SKILLTREE_WAIT);
 }
 
 //==========================================================================

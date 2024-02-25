@@ -179,6 +179,15 @@ namespace MyLib
 		}
 
 		/**
+		@brief	XZ平面のベクトルの距離
+		@return	2つのベクトルの距離(XZ平面)
+		*/
+		float DistanceXZ(const Vector3& v) const
+		{
+			return sqrtf((v.x - x) * (v.x - x) + (v.z - z) * (v.z - z));
+		}
+
+		/**
 		@brief	ベクトルの距離の2乗
 		@return	2つのベクトルの距離の2乗
 		*/

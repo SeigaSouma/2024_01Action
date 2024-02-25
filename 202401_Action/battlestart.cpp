@@ -152,6 +152,7 @@ HRESULT CBattleStart::Init()
 		pObj->SetPosition(MyLib::Vector3(640.0f + 640.0f * m_RockOnInfo[nCntGauge].Angle, pos.y, 0.0f));
 		pObj->SetOriginPosition(pObj->GetPosition());
 	}
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLESTART_START);
 
 
 	return S_OK;
@@ -222,6 +223,7 @@ void CBattleStart::StateGetTogether()
 	{
 		m_fStateTime = 0.0f;
 		m_state = STATE_CHARGE;
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLESTART_CHARGE);
 
 		SetSize(GetSizeOrigin());
 		for (const auto& info : m_RockOnInfo)
@@ -273,6 +275,8 @@ void CBattleStart::StateCharge()
 	{
 		m_fStateTime = 0.0f;
 		m_state = STATE_STINGS;
+		CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_BATTLESTART_CHARGE);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLESTART);
 
 		for (const auto& info : m_RockOnInfo)
 		{

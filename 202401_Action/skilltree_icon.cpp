@@ -310,6 +310,7 @@ bool CSkillTree_Icon::BindAvillity()
 
 		// K“¾Ï‚Ý‚É‚·‚é
 		m_Mastering = MASTERING_DONE;
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_SKILLTREE_GET);
 		return true;
 	}
 	return false;
