@@ -192,7 +192,7 @@ void CResultScore::MoveToatalScore()
 	if (pos.x == INIT_POSX)
 	{
 		// サウンド再生
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBERMOVE);
+		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBERMOVE);
 	}
 
 	// 移動
@@ -236,7 +236,7 @@ void CResultScore::MoveToatalScore()
 			m_nToatalNum += (int)((float)m_nToatalNumDest / (float)INT_SCORESET);
 
 			// サウンド再生
-			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBER);
+			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBER);
 		}
 		else
 		{// 目標の値で固定

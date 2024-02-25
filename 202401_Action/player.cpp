@@ -1396,12 +1396,46 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	switch (nType)
 	{
-	case MOTION_ATK:
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_SNOWGET);
+	case MOTION::MOTION_ATK:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING1);
 		break;
 
-	case MOTION_WALK:
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_WALK);
+	case MOTION::MOTION_ATK2:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING2);
+		break;
+
+	case MOTION::MOTION_DASHATK:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_DASHATK_SWING2);
+		break;
+
+	case MOTION::MOTION_ATK3:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING3);
+		break;
+
+	case MOTION::MOTION_ATK4:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING1);
+		break;
+
+	case MOTION::MOTION_WALK:
+		if (nCntATK == 0)
+		{
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_WALK1);
+		}
+		else{
+
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_WALK2);
+		}
+		break;
+
+	case MOTION::MOTION_DASH:
+		if (nCntATK == 0)
+		{
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DASH1);
+		}
+		else {
+
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DASH2);
+		}
 		break;
 
 	case MOTION_COUNTER_TURN:
@@ -1509,6 +1543,11 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 		pATKInfo->fRangeSize, 2, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 #endif
 
+	if (pATKInfo->bEndAtk)
+	{
+		return;
+	}
+
 	// 敵のリスト取得
 	CListManager<CEnemy> enemyList = CEnemy::GetListObj();
 	CEnemy* pEnemy = nullptr;
@@ -1535,6 +1574,8 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 				if (pEnemy->Hit(damage, GetPosition()) == true)
 				{// 当たってたら
 
+					pATKInfo->bEndAtk = true;
+
 					// 位置
 					MyLib::Vector3 pos = GetPosition();
 					MyLib::Vector3 enemypos = pEnemy->GetPosition();
@@ -1556,6 +1597,22 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 					enemypos.y += pEnemy->GetHeight() * 0.5f;
 					enemypos += UtilFunc::Transformation::GetRandomPositionSphere(enemypos, collider.radius * 0.5f);
 					CDamagePoint::Create(hitresult.hitpos, damage);
+
+					switch (pMotion->GetType())
+					{
+					case MOTION::MOTION_ATK:
+						CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT1);
+						break;
+
+					case MOTION::MOTION_ATK2:
+					case MOTION::MOTION_DASHATK:
+						CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT2);
+						break;
+
+					case MOTION::MOTION_ATK3:
+						CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT3);
+						break;
+					}
 					break;
 				}
 			}
@@ -2034,13 +2091,11 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 			}
 		}
 
-		//CManager::GetInstance()->SetEnableHitStop(12);
-
 		// 振動
 		pCamera->SetShake(8, 18.0f, 0.0f);
 
 		// サウンド再生
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_PLAYERDMG);
+		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_PLAYERDMG);
 	}
 
 	return hitresult;

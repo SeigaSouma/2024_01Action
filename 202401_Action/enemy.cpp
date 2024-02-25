@@ -724,7 +724,7 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 		if (nLife > 0)
 		{
 			// ダメージ音再生
-			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
+			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DMG01);
 		}
 		else
 		{// 体力がなくなったら
@@ -752,6 +752,7 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 
 			// やられモーション
 			GetMotion()->Set(MOTION_KNOCKBACK);
+			StateDead();
 
 			// 生存人数減算
 			if (!m_bDecrementSurvival)
@@ -761,7 +762,7 @@ bool CEnemy::Hit(const int nValue, const MyLib::Vector3& hitpos, CGameManager::A
 			}
 
 			// 爆発再生
-			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_ENEMYEXPLOSION);
+			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_ENEMYEXPLOSION);
 
 			return true;
 		}

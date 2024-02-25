@@ -254,7 +254,7 @@ void CRankingScore::Moving(int nCntRanking)
 		if (pos.x == INIT_POSX)
 		{
 			// サウンド再生
-			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBERMOVE);
+			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBERMOVE);
 		}
 
 		// 色取得
@@ -341,7 +341,7 @@ void CRankingScore::SetAllArrival()
 			if (pos.x == INIT_POSX)
 			{
 				// サウンド再生
-				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBERMOVE);
+				//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NUMBERMOVE);
 			}
 
 			// 色取得

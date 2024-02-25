@@ -26,6 +26,8 @@ public:
 	enum SceneType
 	{
 		SCENE_MAIN = 0,			// メイン
+		SCENE_MAINRESULT,		// メインリザルト
+		SCENE_DURING_MAINRESULT,		// メインリザルト中
 		SCENE_MAINCLEAR,		// メインクリア
 		SCENE_BEFOREBATTLE,		// 戦闘準備
 		SCENE_BATTLESTART,		// 戦闘開始
@@ -71,6 +73,7 @@ public:
 	CGameRating* GetGameRating();	// ゲーム評価取得
 
 	void GameClearSettings();	// ゲームクリア時の設定
+	void GameResultSettings();	// ゲームリザルトの設定
 	static CGameManager *Create();	// 生成処理
 
 private:

@@ -21,50 +21,26 @@ public:
 	typedef enum
 	{
 		LABEL_BGM_TITLE = 0,	// タイトル
-		LABEL_BGM_GAME,		// ゲーム
-		LABEL_BGM_BOSSGAME,		// ボス
-		LABEL_BGM_RESULT,	// リザルト
-		LABEL_SE_EXPLOSION,	// 爆発
-		LABEL_SE_KYUPIIN,	// キュピーン
-		LABEL_SE_WALK,		// 歩行
-		LABEL_SE_JUMP,		// ジャンプ
-		LABEL_SE_FIELD,		// 地面
-		LABEL_SE_SWING,		// スイング
-		LABEL_SE_IMPACT01,	// 衝撃
-		LABEL_SE_DMG01,		// ダメージ
-		LABEL_SE_COMBOIN,		// ダメージ
-		LABEL_SE_TUTORIALWINDOW,		// ダメージ
-		LABEL_SE_SPAWN,		// ダメージ
-		LABEL_SE_SPAWNEN,		// ダメージ
-		LABEL_SE_PLAYERDMG,		// ダメージ
-		LABEL_SE_PLAYERDMG_BIG,		// ダメージ
-		LABEL_SE_ENEMYDMG_SMALL,		// ダメージ
-		LABEL_SE_ENEMYDMG_NORMAL,		// ダメージ
-		LABEL_SE_ENEMYDMG_BIG,		// ダメージ
-		LABEL_SE_COMBOKILL,		// ダメージ
-		LABEL_SE_CONFUSION,		// ダメージ
-		LABEL_SE_NUMBER,		// ダメージ
-		LABEL_SE_NUMBERMOVE,		// ダメージ
-		LABEL_SE_CURSOR,		// カーソル移動
-		LABEL_SE_DONE,		// カーソル移動
-		LABEL_SE_STEPCLEAR,		// カーソル移動
-		LABEL_SE_SLASHHIT,		// 斬撃ヒット
-		LABEL_SE_BOUNCE,		// 跳ね返し
-		LABEL_SE_BOUNCEHIT,		// 跳ね返しヒット
-		LABEL_SE_ENEMYEXPLOSION,		// 敵爆発
-		LABEL_SE_TITLESLASH,		// タイトル斬撃
-		LABEL_BGM_HOBARING,		// ホバリング
-		LABEL_SE_ASSULT,		// 突進
-		LABEL_SE_ASSULTEND,		// 突進終了
-		LABEL_SE_STUN,			// スタン
-		LABEL_SE_STUNHEAL,		// スタン回復
-		LABEL_SE_BOSSBULLET,	// ボスの弾攻撃
-		LABEL_SE_BOSSBULLET_CHARGE,	// ボスの弾チャージ
-		LABEL_SE_BOSSTALK,		// ボストーク
-		LABEL_SE_RANKINGSCORE,		// ランキングスコア
-		LABEL_SE_SNOWGET,		// 雪ゲット
-		LABEL_SE_SANTABAG_DMG,		// 袋ダメージ
-		LABEL_SE_ICEGET,		// 氷
+		LABEL_BGM_GAME,			// ゲーム
+		LABEL_BGM_GAMECLEAR,	// クリア
+		LABEL_BGM_ENHANCE,		// 強化
+		LABEL_BGM_ENHANCE_WIND,		// 強化の風
+		LABEL_BGM_BOSS,			// ボス
+		LABEL_BGM_RESULT,		// リザルト
+		LABEL_SE_WALK1,			// 歩行1
+		LABEL_SE_WALK2,			// 歩行2
+		LABEL_SE_DASH1,			// ダッシュ1
+		LABEL_SE_DASH2,			// ダッシュ2
+		LABEL_SE_JUMP,			// ジャンプ
+		LABEL_SE_NORMALATK_SWING1,		// 通常攻撃スイング1
+		LABEL_SE_NORMALATK_SWING2,		// 通常攻撃スイング2
+		LABEL_SE_NORMALATK_SWING3,		// 通常攻撃スイング3
+		LABEL_SE_DASHATK_SWING2,		// ダッシュ攻撃スイング2
+		LABEL_SE_NORMALATK_HIT1,		// 通常攻撃ヒット1
+		LABEL_SE_NORMALATK_HIT2,		// 通常攻撃ヒット2
+		LABEL_SE_NORMALATK_HIT3,		// 通常攻撃ヒット3
+		LABEL_SE_GALLERY1,			// 観客1
+		LABEL_SE_GALLERY2,			// 観客2
 		LABEL_MAX,
 	} LABEL;
 

@@ -152,8 +152,8 @@ void CEnemyManager::Update()
 		m_bChangeStage = true;
 
 		// 通常クリア状態にする
-		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_MAINCLEAR);
-		CGame::GetInstance()->GetGameManager()->GameClearSettings();
+		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SceneType::SCENE_MAINRESULT);
+		CGame::GetInstance()->GetGameManager()->GameResultSettings();
 	}
 
 	// テキストの描画

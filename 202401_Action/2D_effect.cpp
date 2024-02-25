@@ -29,6 +29,7 @@ const char *CEffect2D::m_apTextureFile[] =		// ファイル読み込み
 	"data\\TEXTURE\\effect\\effect000.png",	   // 黒エフェクト
 	"data\\TEXTURE\\effect\\effect001.png",	   // 十字エフェクト
 	"data\\TEXTURE\\effect\\Star01.png",	   // 十字エフェクト
+	"data\\TEXTURE\\effect\\Star02.png",	   // 十字エフェクト
 };
 int CEffect2D::m_nNumAll = 0;	// 総数
 
@@ -242,6 +243,10 @@ HRESULT CEffect2D::Init(const MyLib::Vector3 pos, const MyLib::Vector3 move, con
 		break;
 
 	case TYPE_JUJI2:
+		m_bAddAlpha = true;
+		break;
+
+	case TYPE_JUJI3:
 		m_bAddAlpha = true;
 		break;
 

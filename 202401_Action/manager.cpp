@@ -7,7 +7,6 @@
 #include "manager.h"
 #include "renderer.h"
 #include "input.h"
-#include "sound.h"
 #include "debugproc.h"
 #include "object2D.h"
 #include "object3D.h"
@@ -882,7 +881,7 @@ void CManager::Update()
 		{// フェード中じゃないとき
 
 			// サウンド再生
-			GetSound()->PlaySound(CSound::LABEL_SE_TUTORIALWINDOW);
+			//GetSound()->PlaySound(CSound::LABEL_SE_TUTORIALWINDOW);
 			m_pPause->SetPause();
 		}
 

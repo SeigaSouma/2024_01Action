@@ -108,7 +108,7 @@ HRESULT CGameManager::Init()
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
 
 #if _DEBUG
-	m_nNowStage = 2;			// 現在のステージ
+	m_nNowStage = 0;			// 現在のステージ
 #else
 	m_nNowStage = 0;			// 現在のステージ
 #endif
@@ -143,7 +143,8 @@ void CGameManager::Uninit()
 //==========================================================================
 void CGameManager::Update()
 {
-	if (m_SceneType != SCENE_SKILLTREE)
+	if (m_SceneType != SCENE_SKILLTREE &&
+		m_SceneType != SceneType::SCENE_DURING_MAINRESULT)
 	{
 		// 操作補助生成
 		CControlAssist* pAssist = CControlAssist::GetInstance();
@@ -156,12 +157,20 @@ void CGameManager::Update()
 	// 操作状態
 	switch (m_SceneType)
 	{
-	case CGameManager::SCENE_MAIN:
+	case CGameManager::SceneType::SCENE_MAIN:
 		m_bControll = true;
 		m_pGameRating[m_nNowStage]->AddClearTime(CManager::GetInstance()->GetDeltaTime());
 		break;
 
-	case CGameManager::SCENE_MAINCLEAR:
+	case CGameManager::SceneType::SCENE_MAINCLEAR:
+		m_bControll = true;
+		break;
+
+	case SceneType::SCENE_MAINRESULT:
+		m_bControll = true;
+		break;
+
+	case SceneType::SCENE_DURING_MAINRESULT:
 		m_bControll = false;
 		break;
 
@@ -173,34 +182,34 @@ void CGameManager::Update()
 		m_bControll = false;
 		break;
 
-	case CGameManager::SCENE_ENHANCE:
+	case CGameManager::SceneType::SCENE_ENHANCE:
 		m_bControll = true;
 		SceneEnhance();
 		break;
 
-	case SCENE_SKILLTREE:		// スキルツリー
+	case SceneType::SCENE_SKILLTREE:		// スキルツリー
 		m_bControll = false;
 		break;
 
-	case CGameManager::SCENE_BOSS:
+	case CGameManager::SceneType::SCENE_BOSS:
 		m_bControll = true;
 		break;
 
-	case CGameManager::SCENE_TRANSITIONWAIT:
+	case CGameManager::SceneType::SCENE_TRANSITIONWAIT:
 		m_bControll = false;
 		break;
 
-	case CGameManager::SCENE_TRANSITION:
+	case CGameManager::SceneType::SCENE_TRANSITION:
 		m_bControll = false;
 		SceneTransition();
 		break;
 
-	case CGameManager::SCENE_REASPAWN:		// 復活
+	case CGameManager::SceneType::SCENE_REASPAWN:		// 復活
 		m_bControll = false;
 		SceneReaspawn();
 		break;
 
-	case SCENE_RESULT:
+	case SceneType::SCENE_RESULT:
 		m_bControll = false;
 		break;
 
@@ -227,9 +236,6 @@ void CGameManager::Update()
 //==========================================================================
 void CGameManager::GameClearSettings()
 {
-	// クリアテキスト生成
-	CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
-
 	// 転移ビーコン生成
 	if (m_nNowStage + 1 < m_nNumStage)
 	{
@@ -247,13 +253,27 @@ void CGameManager::GameClearSettings()
 	// クリアポイント追加
 	CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
 	pSkillPoint->AddPoint(POINT_WAVECLEAR);
-	//pSkillPoint->SetSlideIn();
+	pSkillPoint->SetSlideIn();
 
 	// 前回のポイント保存
 	m_nPrevPoint = pSkillPoint->GetPoint();
 
 	// 前回の習得状況保存
 	m_PrevSkillIconMastering = CSkillTree::GetInstance()->GetMastering();
+
+}
+
+//==========================================================================
+// ゲームリザルトの設定
+//==========================================================================
+void CGameManager::GameResultSettings()
+{
+
+	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_BGM_GAME);
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_BGM_GAMECLEAR);
+
+	// クリアテキスト生成
+	CStageClearText::Create(MyLib::Vector3(640.0f, 360.0f, 0.0f));
 
 	// 観衆のリスト取得
 	CListManager<CGallery> galleryList = CGallery::GetList();
@@ -262,8 +282,6 @@ void CGameManager::GameClearSettings()
 	{
 		pGallery->SetState(CGallery::STATE_CLEARHEAT);
 	}
-
-	CBattleResult::Create();
 }
 
 //==========================================================================
@@ -277,6 +295,10 @@ void CGameManager::SceneTransition()
 	if (fadestate == CInstantFade::STATE_FADECOMPLETION || 
 		!m_bGameStart)
 	{// 完了した瞬間
+
+		// BGMストップ
+		CManager::GetInstance()->GetSound()->StopSound();
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
 
 		// ゲーム開始時のフラグ
 		m_bGameStart = true;
@@ -396,6 +418,11 @@ void CGameManager::SceneEnhance()
 		return;
 	}
 
+
+	// BGMストップ
+	CManager::GetInstance()->GetSound()->StopSound();
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_BGM_ENHANCE);
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_BGM_ENHANCE_WIND);
 
 	// 前回のポイント保存
 	m_nPrevPoint = CPlayer::GetListObj().GetData(0)->GetSkillPoint()->GetPoint();

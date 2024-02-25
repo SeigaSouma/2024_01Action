@@ -23,50 +23,26 @@
 CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] = 
 {
 	{ "data/BGM/title.wav", -1 },			// タイトル
-	{ "data/BGM/Xmas.wav", -1 },			// ゲーム中
-	{ "data/BGM/bossBGM.wav", -1 },			// ゲーム中
+	{ "data/BGM/game.wav", -1 },			// ゲーム中
+	{ "data/BGM/gameclear.wav", -1 },		// ゲームクリア
+	{ "data/BGM/enhance.wav", -1 },			// 強化
+	{ "data/BGM/enhance_wind.wav", -1 },	// 強化の風
+	{ "data/BGM/boss.wav", -1 },			// ボス
 	{ "data/BGM/result.wav", -1 },			// タイトル
-	{ "data/SE/explosion000moto.wav", 0 },		// 爆発
-	{ "data/SE/game_clear.wav", 0 },			// キュピーン
-	{ "data/SE/walk.wav", 0 },			// 歩行
-	{ "data/SE/jump.wav", 0 },			// ジャンプ
-	{ "data/SE/field_01.wav", 0 },			// 地面
-	{ "data/SE/swing.wav", 0 },			// スイング
-	{ "data/SE/impact_01.wav", 0 },			// 衝撃
-	{ "data/SE/kill_01.wav", 0 },			// ダメージ
-	{ "data/SE/comboin_01.wav", 0 },			// ダメージ
-	{ "data/SE/tutorialwindow.wav", 0 },			// ダメージ
-	{ "data/SE/spawn.wav", 0 },			// ダメージ
-	{ "data/SE/spawnemey.wav", 0 },			// ダメージ
-	{ "data/SE/playerdmg_01.wav", 0 },			// ダメージ
-	{ "data/SE/playerdmg_big.wav", 0 },			// ダメージ
-	{ "data/SE/enemydmg_01.wav", 0 },			// ダメージ
-	{ "data/SE/enemydmg_02.wav", 0 },			// ダメージ
-	{ "data/SE/enemydmg_03.wav", 0 },			// ダメージ
-	{ "data/SE/combokill.wav", 0 },			// ダメージ
-	{ "data/SE/confusion.wav", -1 },			// ダメージ
-	{ "data/SE/number.wav", 0 },			// ダメージ
-	{ "data/SE/numbermove.wav", 0 },			// ダメージ
-	{ "data/SE/cursor.wav", 0 },			// ダメージ
-	{ "data/SE/done.wav", 0 },			// ダメージ
-	{ "data/SE/tutorial_clear.wav", 0 },			// ダメージ
-	{ "data/SE/slashHit.wav", 0 },			// 斬撃ヒット
-	{ "data/SE/bounce.wav", 0 },			// 跳ね返し
-	{ "data/SE/bounceHit.wav", 0 },		// 跳ね返しヒット
-	{ "data/SE/enemy_explosion.wav", 0 },		// 敵爆発
-	{ "data/SE/titleslash.wav", 0 },		// タイトル斬撃
-	{ "data/SE/hobaring.wav", -1 },		// ホバリング
-	{ "data/SE/assult.wav", 0 },		// 突進
-	{ "data/SE/assultend.wav", 0 },		// 突進終了
-	{ "data/SE/stun.wav", -1 },			// スタン
-	{ "data/SE/stunheal.wav", 0 },		// スタン回復
-	{ "data/SE/boss_bullet.wav", 0 },	// ボスの弾攻撃
-	{ "data/SE/boss_bulletcharge.wav", 0 },	// ボスの弾チャージ
-	{ "data/SE/boss_talk.wav", 0 },		// ボストーク
-	{ "data/SE/ranking_00.wav", 0 },		// ボストーク
-	{ "data/SE/snowget.wav", 0 },		// ボストーク
-	{ "data/SE/enemydmg_034.wav", 0 },		// ボストーク
-	{ "data/SE/iceget.wav", 0 },		// ボストーク
+	{ "data/SE/walk01.wav", 0 },			// 歩行1
+	{ "data/SE/walk02.wav", 0 },			// 歩行2
+	{ "data/SE/dash01.wav", 0 },			// ダッシュ1
+	{ "data/SE/dash02.wav", 0 },			// ダッシュ2
+	{ "data/SE/jump.wav", 0 },				// ジャンプ
+	{ "data/SE/atkswing_01.wav", 0 },		// 通常攻撃スイング1
+	{ "data/SE/atkswing_02.wav", 0 },		// 通常攻撃スイング2
+	{ "data/SE/atkswing_03.wav", 0 },		// 通常攻撃スイング3
+	{ "data/SE/atkswing_02_dash.wav", 0 },		// ダッシュ攻撃スイング2
+	{ "data/SE/atkhit_01.wav", 0 },			// 通常攻撃ヒット1
+	{ "data/SE/atkhit_02.wav", 0 },			// 通常攻撃ヒット2
+	{ "data/SE/atkhit_03.wav", 0 },			// 通常攻撃ヒット3
+	{ "data/SE/gallery01.wav", 0 },			// 観客1
+	{ "data/SE/gallery02.wav", 0 },			// 観客2
 
 };	// サウンドの情報
 

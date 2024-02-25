@@ -6,8 +6,6 @@
 //=============================================================================
 #include "gallery.h"
 #include "manager.h"
-#include "renderer.h"
-#include "texture.h"
 #include "calculation.h"
 #include "objectX.h"
 
@@ -341,6 +339,17 @@ void CGallery::SetState(STATE state)
 { 
 	m_fStateTime = 0.0f;
 	m_State = state;
+
+	if (state == STATE::STATE_COUNTERHEAT)
+	{
+		if (UtilFunc::Transformation::Random(0, 1) == 0) {
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_GALLERY1);
+		}
+		else {
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_GALLERY2);
+		}
+
+	}
 }
 
 //==========================================================================

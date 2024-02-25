@@ -53,6 +53,7 @@ private:
 	// メンバ変数
 	eState m_state;		// 状態
 	float m_fStateTimer;	// 状態タイマー
+	bool m_bCreateResultWindow;	// リザルト画面の呼び出しフラグ
 
 	typedef void(CStageClearText::*STATE_FUNC)();	// 状態処理のリスト
 	static STATE_FUNC m_StateFuncList[];

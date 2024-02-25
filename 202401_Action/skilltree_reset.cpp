@@ -244,7 +244,7 @@ void CSkillTree_Reset::UpdateSelect()
 		m_nSelect = (m_nSelect + (SELECT_MAX - 1)) % SELECT_MAX;
 
 		// サウンド再生
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
+		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_A) ||
 		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_LEFT, 0) ||
@@ -255,7 +255,7 @@ void CSkillTree_Reset::UpdateSelect()
 		m_nSelect = (m_nSelect + 1) % SELECT_MAX;
 
 		// サウンド再生
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
+		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
 	}
 
 	// 決定

@@ -9,6 +9,8 @@
 #include "sound.h"
 #include "calculation.h"
 #include "camera.h"
+#include "battleresult.h"
+#include "game.h"
 
 //==========================================================================
 // マクロ定義
@@ -18,7 +20,7 @@ namespace
 	const char* TEXTURE = "data\\TEXTURE\\battlewin\\text_win.png";
 	const float TIME_SCALNONE = 0.4f;			// なにもない
 	const float TIME_SCALEDOWN = 0.16f;			// 縮小時間
-	const float TIME_SCALENONE = 0.7f;			// 整わせる時間
+	const float TIME_SCALENONE = 2.7f;			// 整わせる時間
 	const float TIME_FADEOUT = 0.4f;			// フェードアウト時間
 }
 
@@ -43,8 +45,9 @@ CStageClearText::STATE_FUNC CStageClearText::m_StateFuncList[] =
 CStageClearText::CStageClearText(int nPriority) : CObject2D(nPriority)
 {
 	// 値のクリア
-	m_state = STATE_NONE;	// 状態
-	m_fStateTimer = 0.0f;	// 状態タイマー
+	m_state = STATE_NONE;			// 状態
+	m_fStateTimer = 0.0f;			// 状態タイマー
+	m_bCreateResultWindow = false;	// リザルト画面の呼び出しフラグ
 }
 
 //==========================================================================
@@ -63,7 +66,7 @@ CStageClearText* CStageClearText::Create(const MyLib::Vector3 pos)
 	// メモリの確保
 	CStageClearText* pEffect = DEBUG_NEW CStageClearText;
 
-	if (pEffect != NULL)
+	if (pEffect != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -240,6 +243,16 @@ void CStageClearText::StateFadeOut()
 	// 不透明度更新
 	float alpha = m_fStateTimer / TIME_FADEOUT;
 	SetAlpha(alpha);
+
+	if (TIME_FADEOUT * 0.5f <= m_fStateTimer &&
+		!m_bCreateResultWindow)
+	{
+		m_bCreateResultWindow = true;
+
+		// 戦果生成
+		CBattleResult::Create();
+		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SceneType::SCENE_DURING_MAINRESULT);
+	}
 
 	if (m_fStateTimer <= 0.0f)
 	{

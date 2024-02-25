@@ -254,11 +254,15 @@ void CMyEffekseer::StopAll()
 		efkManager->StopEffect(loacalhandle);
 	}
 
-	for (int i = 0; i < static_cast<int>(m_EffectObj.size()); i++)
+	int size = static_cast<int>(m_EffectObj.size());
+	for (int i = 0; i < size; i++)
 	{
-		m_EffectObj.erase(m_EffectObj.begin() + i);
-		m_Handle.erase(m_Handle.begin() + i);
+		m_EffectObj[i].bAutoDeath = true;
+		/*m_EffectObj.erase(m_EffectObj.begin() + i);
+		m_Handle.erase(m_Handle.begin() + i);*/
 	}
+	m_EffectObj.clear();
+		m_Handle.clear();
 }
 
 //==========================================================================

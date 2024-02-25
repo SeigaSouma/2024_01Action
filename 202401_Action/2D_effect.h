@@ -38,6 +38,7 @@ public:
 		TYPE_BLACK,			// 黒エフェクト
 		TYPE_JUJI,			// 十字エフェクト
 		TYPE_JUJI2,			// 十字エフェクト
+		TYPE_JUJI3,			// 十字エフェクト
 		TYPE_MAX
 	}TYPE;
 

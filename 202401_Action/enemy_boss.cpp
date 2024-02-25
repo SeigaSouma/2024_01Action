@@ -18,6 +18,7 @@
 #include "bullet_obstacle.h"
 #include "ballast.h"
 #include "model.h"
+#include "game.h"
 
 //==========================================================================
 // 定数定義
@@ -109,6 +110,13 @@ HRESULT CEnemyBoss::Init()
 
 	// スーパーアーマー
 	m_bActiveSuperArmor = true;
+
+	// リセット処理
+	CGame::GetInstance()->ResetBeforeBoss();
+
+	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_BGM_GAME);
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_BGM_BOSS);
+
 
 	return S_OK;
 }

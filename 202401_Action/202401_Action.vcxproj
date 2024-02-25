@@ -266,7 +266,6 @@
     <ClCompile Include="revivalpercent_text.cpp" />
     <ClCompile Include="revivaltime_gauge.cpp" />
     <ClCompile Include="rockon_marker.cpp" />
-    <ClCompile Include="santabag.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shadow.cpp" />
@@ -412,7 +411,6 @@
     <ClInclude Include="revivalpercent_text.h" />
     <ClInclude Include="revivaltime_gauge.h" />
     <ClInclude Include="rockon_marker.h" />
-    <ClInclude Include="santabag.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shadow.h" />

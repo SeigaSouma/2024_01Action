@@ -186,6 +186,7 @@ protected:
 	STATE m_Oldstate;						// 前回の状態
 	float m_fStateTime;						// 状態カウンター
 	int m_nTargetPlayerIndex;				// 追い掛けるプレイヤーのインデックス番号
+	bool m_bDecrementSurvival;				// 生存人数減少フラグ
 	bool m_bActionable;						// 行動可能か
 	bool m_bDamageReceived;					// ダメージ受け付け判定
 	float m_fDamageReciveTime;				// ダメージ受付時間
@@ -202,6 +203,7 @@ protected:
 	D3DXCOLOR m_mMatcol;					// マテリアルの色
 	MyLib::Vector3 m_TargetPosition;		// 目標の位置
 	Effekseer::Handle m_pWeaponHandle;		// エフェクトの武器ハンドル
+	static int m_nNumSurvival;				// 生存人数
 
 	CEnemyState* m_pATKState;		// 今の行動ポインタ
 	CEnemyState* m_pNextATKState;	// 次の行動ポインタ
@@ -233,12 +235,10 @@ private:
 	//=============================
 	TYPE m_type;			// 種類
 	int m_nNumChild;			// 子の数
-	bool m_bDecrementSurvival;	// 生存人数減少フラグ
 	CEnemy *m_pChild[mylib_const::MAX_ENEMY];	// 子のポインタ
 	CShadow *m_pShadow;			// 影の情報
 	CRockOnMarker* m_pRockOnMarker;		// ロックオンマーカー
 	static CListManager<CEnemy> m_List;	// リスト
-	static int m_nNumSurvival;			// 生存人数
 };
 
 

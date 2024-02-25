@@ -24,7 +24,6 @@
 #include "sound.h"
 #include "edit_enemybase.h"
 #include "stage.h"
-#include "santabag.h"
 #include "skilltree.h"
 
 #include "enemymanager.h"
@@ -168,7 +167,7 @@ HRESULT CGame::Init()
 	CManager::GetInstance()->GetCamera()->Reset(CScene::MODE_GAME);
 
 	// BGM再生
-	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
+	//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
 
 	/*CLimitArea::sLimitEreaInfo info;
 	info.fMaxX = 13000.0f;
@@ -431,6 +430,7 @@ CEnemyBase *CGame::GetEnemyBase()
 //==========================================================================
 void CGame::ResetBeforeBoss()
 {
+#if 0
 	// ステージの破棄
 	if (m_pStage != nullptr)
 	{// メモリの確保が出来ていたら
@@ -467,7 +467,7 @@ void CGame::ResetBeforeBoss()
 	{// nullptrだったら
 		return;
 	}
-
+#endif
 	// ロックオンの最大距離
 	m_fMaxRokOnDistance = mylib_const::MAX_ROCKONDISTANCE_BOSS;
 }

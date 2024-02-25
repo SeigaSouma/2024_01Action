@@ -11,6 +11,7 @@
 #include "main.h"
 #include "object.h"
 #include "scene.h"
+#include "sound.h"
 
 // ƒ}ƒNƒ’è‹`
 #define MOVE_LRUP			(0.75f)	// Î‚ßãˆÚ“®

@@ -12,6 +12,7 @@
 #include "calculation.h"
 #include "multinumber.h"
 #include "input.h"
+#include "2D_effect.h"
 
 //==========================================================================
 // 定数定義
@@ -23,7 +24,7 @@ namespace
 	const char* NUMBER_TEXTURE = "data\\TEXTURE\\number\\number_blackclover_01.png";
 	const float WIDTH_FRAME = 280.0f;	// フレームの幅
 	const float TIME_SLIDE = 0.5f;		// スライドにかかる時間
-	const float TIME_DECIDE = 1.0f;		// 到着
+	const float TIME_DECIDE = 0.6f;		// 到着
 	const float TIME_ARRIVE = 2.0f;		// 到着
 	const MyLib::Vector3 DISTANCE_NUMBER = MyLib::Vector3(150.0f, 0.0f, 0.0f);
 	const MyLib::Vector3 DESTPOSITION_SLIDEIN = MyLib::Vector3(SCREEN_WIDTH - WIDTH_FRAME, 80.0f, 0.0f);	// スライドインの目標位置
