@@ -114,9 +114,6 @@ HRESULT CEnemyBoss::Init()
 	// ƒŠƒZƒbƒgˆ—
 	CGame::GetInstance()->ResetBeforeBoss();
 
-	CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_BGM_GAME);
-	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_BGM_BOSS);
-
 
 	return S_OK;
 }

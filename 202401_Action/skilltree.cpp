@@ -31,7 +31,7 @@ namespace
 {
 	const char* LOADTEXT = "data\\TEXT\\skilltree\\iconinfo.json";
 	const char* AUTOSAVE_MASTERING = "data\\TEXT\\skilltree\\mastering.json";
-	const float TIME_FADE = 0.5f;	// フェードアウト時間
+	const float TIME_FADE = 0.65f;	// フェードアウト時間
 	const int MAX_ICON = 4;		// アイコン
 }
 

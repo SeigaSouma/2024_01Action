@@ -963,6 +963,12 @@ void CPlayer::Controll()
 	{
 		CCollisionObject::Create(GetPosition(), mylib_const::DEFAULT_VECTOR3, 100000.0f, 3, 10000, CCollisionObject::TAG_PLAYER);
 	}
+	if (pInputKeyboard->GetRepeat(DIK_RIGHT, 4) == true)
+	{
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT2);
+	}
+
+
 
 	if (pInputKeyboard->GetTrigger(DIK_RETURN) == true)
 	{

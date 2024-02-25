@@ -337,10 +337,8 @@ void CGallery::Draw()
 //==========================================================================
 void CGallery::SetState(STATE state)
 { 
-	m_fStateTime = 0.0f;
-	m_State = state;
-
-	if (state == STATE::STATE_COUNTERHEAT)
+	if (/*m_State != STATE::STATE_COUNTERHEAT &&*/
+		state == STATE::STATE_COUNTERHEAT)
 	{
 		if (UtilFunc::Transformation::Random(0, 1) == 0) {
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_GALLERY1);
@@ -350,6 +348,9 @@ void CGallery::SetState(STATE state)
 		}
 
 	}
+
+	m_fStateTime = 0.0f;
+	m_State = state;
 }
 
 //==========================================================================

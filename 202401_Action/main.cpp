@@ -27,6 +27,7 @@ void LoadInBackground();
 //==========================================================================
 int g_nCountFPS;
 CLoadManager* LoadManager = nullptr;
+HWND hWnd;	// ウインドウハンドル(識別子)
 
 //==========================================================================
 // メイン関数
@@ -52,7 +53,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		LoadIcon(NULL, IDI_APPLICATION)		// ファイルのアイコン
 	};
 
-	HWND hWnd;	// ウインドウハンドル(識別子)
+	//HWND hWnd;	// ウインドウハンドル(識別子)
 	MSG msg;	// メッセージを格納する変数
 
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };	// 画面サイズの構造体
@@ -294,3 +295,5 @@ int GetFPS()
 {
 	return g_nCountFPS;
 }
+
+HWND GetWnd() { return hWnd; }

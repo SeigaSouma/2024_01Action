@@ -24,9 +24,10 @@ public:
 		LABEL_BGM_GAME,			// ゲーム
 		LABEL_BGM_GAMECLEAR,	// クリア
 		LABEL_BGM_ENHANCE,		// 強化
-		LABEL_BGM_ENHANCE_WIND,		// 強化の風
+		LABEL_BGM_ENHANCE_WIND,	// 強化の風
 		LABEL_BGM_BOSS,			// ボス
 		LABEL_BGM_RESULT,		// リザルト
+		LABEL_BGM_GALLERY,		// 観客
 		LABEL_SE_WALK1,			// 歩行1
 		LABEL_SE_WALK2,			// 歩行2
 		LABEL_SE_DASH1,			// ダッシュ1
@@ -41,6 +42,7 @@ public:
 		LABEL_SE_NORMALATK_HIT3,		// 通常攻撃ヒット3
 		LABEL_SE_GALLERY1,			// 観客1
 		LABEL_SE_GALLERY2,			// 観客2
+		LABEL_SE_IN_ENHANCE,		// 強化入場
 		LABEL_MAX,
 	} LABEL;
 
@@ -74,6 +76,7 @@ private:
 	DSBUFFERDESC SetVolume;								// 音量調整
 	float m_fVolume;									// 音量
 	static SOUNDINFO m_aSoundInfo[LABEL_MAX];			// サウンドの情報
+	WAVEFORMATEXTENSIBLE m_wfx[LABEL_MAX];
 };
 
 

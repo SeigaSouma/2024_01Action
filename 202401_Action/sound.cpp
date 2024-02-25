@@ -14,10 +14,6 @@
 #define MIN_VOLUME		(0.0f)		//音量補正の最小値
 
 //==========================================================================
-// プロトタイプ宣言
-//==========================================================================
-
-//==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
 CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] = 
@@ -29,6 +25,7 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/BGM/enhance_wind.wav", -1 },	// 強化の風
 	{ "data/BGM/boss.wav", -1 },			// ボス
 	{ "data/BGM/result.wav", -1 },			// タイトル
+	{ "data/BGM/galleryClear.wav", -1 },	// 観客
 	{ "data/SE/walk01.wav", 0 },			// 歩行1
 	{ "data/SE/walk02.wav", 0 },			// 歩行2
 	{ "data/SE/dash01.wav", 0 },			// ダッシュ1
@@ -37,12 +34,13 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/SE/atkswing_01.wav", 0 },		// 通常攻撃スイング1
 	{ "data/SE/atkswing_02.wav", 0 },		// 通常攻撃スイング2
 	{ "data/SE/atkswing_03.wav", 0 },		// 通常攻撃スイング3
-	{ "data/SE/atkswing_02_dash.wav", 0 },		// ダッシュ攻撃スイング2
+	{ "data/SE/atkswing_02_dash.wav", 0 },	// ダッシュ攻撃スイング2
 	{ "data/SE/atkhit_01.wav", 0 },			// 通常攻撃ヒット1
 	{ "data/SE/atkhit_02.wav", 0 },			// 通常攻撃ヒット2
 	{ "data/SE/atkhit_03.wav", 0 },			// 通常攻撃ヒット3
 	{ "data/SE/gallery01.wav", 0 },			// 観客1
 	{ "data/SE/gallery02.wav", 0 },			// 観客2
+	{ "data/SE/Inenhance.wav", 0 },			// 強化入場
 
 };	// サウンドの情報
 
@@ -202,6 +200,8 @@ HRESULT CSound::Init(HWND hWnd)
 		// オーディオバッファの登録
 		m_apSourceVoice[nCntSound]->SubmitSourceBuffer(&buffer);
 
+		m_wfx[nCntSound] = wfx;
+
 		// ファイルをクローズ
 		CloseHandle(hFile);
 	}
@@ -252,6 +252,7 @@ void CSound::Uninit()
 //==========================================================================
 HRESULT CSound::PlaySound(LABEL label)
 {
+#if 0
 	XAUDIO2_VOICE_STATE xa2state;
 	XAUDIO2_BUFFER buffer;
 
@@ -261,7 +262,6 @@ HRESULT CSound::PlaySound(LABEL label)
 	buffer.pAudioData = m_apDataAudio[label];
 	buffer.Flags      = XAUDIO2_END_OF_STREAM;
 	buffer.LoopCount  = m_aSoundInfo[label].nCntLoop;
-	//SetVolume.dwFlags = DSBCAPS_CTRLVOLUME;		//音量調整のフラグ
 
 	// 状態取得
 	m_apSourceVoice[label]->GetState(&xa2state);
@@ -283,7 +283,36 @@ HRESULT CSound::PlaySound(LABEL label)
 	// 周波数リセット
 	m_apSourceVoice[label]->SetFrequencyRatio(1.0f);
 
+#else
+	XAUDIO2_BUFFER buffer;
+
+	// バッファの値設定
+	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
+	buffer.AudioBytes = m_aSizeAudio[label];
+	buffer.pAudioData = m_apDataAudio[label];
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	buffer.LoopCount = m_aSoundInfo[label].nCntLoop;
+
+	// ソースボイスを新しく作成して再生
+	HRESULT hr = m_pXAudio2->CreateSourceVoice(&m_apSourceVoice[label], &(m_wfx[label].Format));
+	if (FAILED(hr))
+	{
+		MessageBox(GetWnd(), "ソースボイスの生成に失敗！", "警告！", MB_ICONWARNING);
+		return S_FALSE;
+	}
+
+	// オーディオバッファの登録
+	m_apSourceVoice[label]->SubmitSourceBuffer(&buffer);
+
+	// 再生
+	m_apSourceVoice[label]->Start(0);
+
+	// 周波数リセット
+	m_apSourceVoice[label]->SetFrequencyRatio(1.0f);
+
+#endif
 	return S_OK;
+
 }
 
 //==========================================================================
@@ -292,6 +321,11 @@ HRESULT CSound::PlaySound(LABEL label)
 void CSound::StopSound(LABEL label)
 {
 	XAUDIO2_VOICE_STATE xa2state;
+
+	if (m_apSourceVoice[label] == nullptr)
+	{
+		return;
+	}
 
 	// 状態取得
 	m_apSourceVoice[label]->GetState(&xa2state);
@@ -306,6 +340,14 @@ void CSound::StopSound(LABEL label)
 
 		// 周波数リセット
 		m_apSourceVoice[label]->SetFrequencyRatio(1.0f);
+	}
+
+	if (m_apSourceVoice[label] != nullptr)
+	{
+		m_apSourceVoice[label]->Stop(0);
+		m_apSourceVoice[label]->FlushSourceBuffers();
+		m_apSourceVoice[label]->DestroyVoice();
+		m_apSourceVoice[label] = nullptr;
 	}
 }
 
@@ -324,6 +366,14 @@ void CSound::StopSound()
 
 			// 周波数リセット
 			m_apSourceVoice[nCntSound]->SetFrequencyRatio(1.0f);
+		}
+
+		if (m_apSourceVoice[nCntSound] != nullptr)
+		{
+			m_apSourceVoice[nCntSound]->Stop(0);
+			m_apSourceVoice[nCntSound]->FlushSourceBuffers();
+			m_apSourceVoice[nCntSound]->DestroyVoice();
+			m_apSourceVoice[nCntSound] = nullptr;
 		}
 	}
 }

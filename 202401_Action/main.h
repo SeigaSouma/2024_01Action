@@ -68,6 +68,7 @@ typedef struct
 // プロトタイプ宣言
 //==========================================================================
 int GetFPS();
+HWND GetWnd();
 
 class CMyEffekseer;
 class CLoadManager;
