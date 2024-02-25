@@ -138,6 +138,8 @@ HRESULT CBattleResult::Init()
 	CreateDamage();		// ”íƒ_ƒ[ƒW¶¬
 	CreateDead();		// Ž€–S‰ñ”¶¬
 	
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT);
+
 	return S_OK;
 }
 
@@ -557,6 +559,7 @@ void CBattleResult::StateRankIn()
 	if (m_fStateTimer >= TIME_RANKIN)
 	{
 		m_state = STATE::STATE_RETURNWAIT;
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_RANK);
 
 		for (int i = 0; i < CGameRating::RATINGTYPE::RATINGTYPE_MAX; i++)
 		{
@@ -628,6 +631,7 @@ void CBattleResult::StateReturnWait()
 		m_fStateTimer = 0.0f;
 		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SceneType::SCENE_MAINCLEAR);
 		CGame::GetInstance()->GetGameManager()->GameClearSettings();
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_END);
 	}
 }
 

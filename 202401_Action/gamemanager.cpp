@@ -164,14 +164,17 @@ void CGameManager::Update()
 
 	case CGameManager::SceneType::SCENE_MAINCLEAR:
 		m_bControll = true;
+		UpdateGalleryVolume();
 		break;
 
 	case SceneType::SCENE_MAINRESULT:
 		m_bControll = true;
+		UpdateGalleryVolume();
 		break;
 
 	case SceneType::SCENE_DURING_MAINRESULT:
 		m_bControll = false;
+		UpdateGalleryVolume();
 		break;
 
 	case SceneType::SCENE_BEFOREBATTLE:
@@ -283,6 +286,29 @@ void CGameManager::GameResultSettings()
 	while (galleryList.ListLoop(&pGallery))
 	{
 		pGallery->SetState(CGallery::STATE_CLEARHEAT);
+	}
+}
+
+//==========================================================================
+// 観客音量更新
+//==========================================================================
+void CGameManager::UpdateGalleryVolume()
+{
+	// プレイヤー取得
+	CListManager<CPlayer> playerList = CPlayer::GetListObj();
+	CPlayer* pPlayer = nullptr;
+
+	// リストループ
+	while (playerList.ListLoop(&pPlayer))
+	{
+		pPlayer->SetEnableTouchBeacon(false);
+		MyLib::Vector3 playerPos = pPlayer->GetPosition();
+
+		float ratio = playerPos.DistanceXZ(0.0f) / 2000.0f;
+		if (ratio <= 0.4f) {
+			ratio = 0.4f;
+		}
+		CManager::GetInstance()->GetSound()->VolumeChange(CSound::LABEL::LABEL_BGM_GALLERY, ratio);
 	}
 }
 

@@ -185,6 +185,7 @@ void CStageClearText::StateScaleDOWN()
 
 		// U“®
 		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_CLEAR);
 		return;
 	}
 

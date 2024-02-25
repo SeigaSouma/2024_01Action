@@ -85,6 +85,8 @@ private:
 	void SetEnemy();
 	void SetBoss();
 
+	void UpdateGalleryVolume();	// 観客音量更新
+
 	// メンバ変数
 	CSkillTree_Ability* m_pSkilltreeAbillity;	// スキルツリー能力のポインタ
 	SceneType m_SceneType;	// シーンの種類

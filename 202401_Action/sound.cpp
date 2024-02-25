@@ -41,6 +41,10 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/SE/skilltreeStart.wav", 0 },		// スキルツリー起動
 	{ "data/SE/skillget.wav", 0 },				// スキル獲得
 	{ "data/SE/skilltree_wait.wav", -1 },		// スキルツリー起動待ち
+	{ "data/SE/gameclear.wav", 0 },				// クリア
+	{ "data/SE/battleresult.wav", 0 },			// 戦果表示
+	{ "data/SE/battleresult_end.wav", 0 },		// 戦果表示閉じ
+	{ "data/SE/battleresult_rank.wav", 0 },		// 戦果ランク
 
 };	// サウンドの情報
 
