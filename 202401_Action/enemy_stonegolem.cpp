@@ -73,11 +73,11 @@ HRESULT CEnemyGolem::Init()
 //==========================================================================
 void CEnemyGolem::Uninit()
 {
-	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	/*for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
 	{
 		delete m_pAtkPattern[i];
 		m_pAtkPattern[i] = nullptr;
-	}
+	}*/
 
 	// èIóπèàóù
 	CEnemy::Uninit();
@@ -88,11 +88,11 @@ void CEnemyGolem::Uninit()
 //==========================================================================
 void CEnemyGolem::Kill()
 {
-	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	/*for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
 	{
 		delete m_pAtkPattern[i];
 		m_pAtkPattern[i] = nullptr;
-	}
+	}*/
 
 	// éÄñSèàóù
 	CEnemy::Kill();

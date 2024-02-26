@@ -75,11 +75,11 @@ HRESULT CEnemyGobelin::Init()
 //==========================================================================
 void CEnemyGobelin::Uninit()
 {
-	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	/*for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
 	{
 		delete m_pAtkPattern[i];
 		m_pAtkPattern[i] = nullptr;
-	}
+	}*/
 
 	// èIóπèàóù
 	CEnemy::Uninit();
@@ -90,11 +90,11 @@ void CEnemyGobelin::Uninit()
 //==========================================================================
 void CEnemyGobelin::Kill()
 {
-	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	/*for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
 	{
 		delete m_pAtkPattern[i];
 		m_pAtkPattern[i] = nullptr;
-	}
+	}*/
 
 	// éÄñSèàóù
 	CEnemy::Kill();

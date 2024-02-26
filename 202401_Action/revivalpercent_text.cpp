@@ -18,7 +18,7 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\dead\\respawn_01.png";
-	const char* NUMBER_TEXTURE = "data\\TEXTURE\\number\\number_blackclover_01.png";
+	const char* NUMBER_TEXTURE = "data\\TEXTURE\\number\\number_oradano02.png";
 }
 
 //==========================================================================
@@ -91,7 +91,7 @@ HRESULT CRevivalPercentText::Init()
 
 	// サイズ設定
 	D3DXVECTOR2 setsize = CTexture::GetInstance()->GetImageSize(nIdx);
-	setsize = UtilFunc::Transformation::AdjustSizeByWidth(setsize, 320.0f);
+	setsize = UtilFunc::Transformation::AdjustSizeByWidth(setsize, 250.0f);
 	SetSize(setsize);
 	SetSizeOrigin(GetSize());
 
@@ -118,8 +118,9 @@ HRESULT CRevivalPercentText::Init()
 void CRevivalPercentText::SetNumberObj(int number)
 {
 	MyLib::Vector3 spawnpos = GetPosition();
-	spawnpos.x += 100.0f;
+	spawnpos.x += 70.0f;
 	m_apNumber = CMultiNumber::Create(spawnpos, D3DXVECTOR2(35.0f, 35.0f), 3, CNumber::OBJECTTYPE_2D, NUMBER_TEXTURE, true);	// 数字のオブジェクト
+	m_apNumber->SetAlignmentType(CMultiNumber::AlignmentType::ALIGNMENT_RIGHT);
 	m_apNumber->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 	m_apNumber->SetValue(number);
 }

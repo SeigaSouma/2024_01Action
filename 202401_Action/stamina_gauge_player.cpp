@@ -345,7 +345,7 @@ void CStaminaGauge_Player::UpgradeMaxValue(int addvalue)
 
 	for (const auto& gauge : m_pObj2DGauge)
 	{
-		SetPosition(gauge->UpgradeMaxValue(addvalue));
+		SetPosition(gauge->UpgradeMaxValue(addvalue, true));
 	}
 }
 

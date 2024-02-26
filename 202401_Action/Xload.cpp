@@ -71,7 +71,7 @@ HRESULT CXLoad::Init()
 //==========================================================================
 HRESULT CXLoad::LoadAll()
 {
-#if 1
+#ifndef _DEBUG
 
 	// ëSåüçı
 	SearchAllXModel(MAINFOLODER);

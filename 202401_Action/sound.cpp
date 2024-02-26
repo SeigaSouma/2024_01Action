@@ -25,6 +25,8 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/SE/dash01.wav", 0 },			// ダッシュ1
 	{ "data/SE/dash02.wav", 0 },			// ダッシュ2
 	{ "data/SE/jump.wav", 0 },				// ジャンプ
+	{ "data/SE/avoid.wav", 0 },				// 回避
+	{ "data/SE/knockback_passive.wav", 0 },	// 受け身
 	{ "data/SE/atkswing_01.wav", 0 },		// 通常攻撃スイング1
 	{ "data/SE/atkswing_02.wav", 0 },		// 通常攻撃スイング2
 	{ "data/SE/atkswing_03.wav", 0 },		// 通常攻撃スイング3

@@ -157,7 +157,6 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_pControlAvoid = nullptr;						// 回避操作
 	m_pGuard = nullptr;								// ガード
 
-	m_pWeaponHandle = nullptr;		// エフェクトの武器ハンドル
 }
 
 //==========================================================================
@@ -235,7 +234,7 @@ HRESULT CPlayer::Init()
 	m_pSkillPoint = CSkillPoint::Create();
 
 	// HPゲージ生成
-	m_pHPGauge = CHP_GaugePlayer::Create({200.0f, 630.0f, 0.0f}, GetLifeOrigin());
+	m_pHPGauge = CHP_GaugePlayer::Create({640.0f, 630.0f, 0.0f}, GetLifeOrigin());
 
 	// スタミナゲージ生成
 	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
@@ -469,14 +468,8 @@ void CPlayer::Update()
 	// モーションの設定処理
 	MotionSet();
 
-	// モーション別の状態設定
-	MotionBySetState();
-
-	// ダメージ受付時間更新
-	UpdateDamageReciveTimer();
-
 	// 状態更新
-	(this->*(m_StateFunc[m_state]))();
+	UpdateState();
 
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
@@ -966,6 +959,8 @@ void CPlayer::Controll()
 	if (pInputKeyboard->GetRepeat(DIK_RIGHT, 4) == true){
 		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT2);
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_TURN, false);
+
+		CPlayer::Hit(10000, CGameManager::AttackType::ATTACK_NORMAL);
 	}
 
 
@@ -1015,19 +1010,19 @@ void CPlayer::Controll()
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
 	}
 
-	if (m_pWeaponHandle != nullptr)
-	{
+	//if (m_pWeaponHandle != nullptr)
+	//{
 
-		// 武器の位置
-		MyLib::Vector3 weponpos = UtilFunc::Transformation::WorldMtxChangeToPosition(GetModel()[16]->GetWorldMtx());
+	//	// 武器の位置
+	//	MyLib::Vector3 weponpos = UtilFunc::Transformation::WorldMtxChangeToPosition(GetModel()[16]->GetWorldMtx());
 
-		// 武器のマトリックス取得
-		D3DXMATRIX weaponWorldMatrix = GetModel()[16]->GetWorldMtx();
+	//	// 武器のマトリックス取得
+	//	D3DXMATRIX weaponWorldMatrix = GetModel()[16]->GetWorldMtx();
 
-		// 軌跡のマトリックス設定
-		CMyEffekseer::GetInstance()->SetMatrix(*m_pWeaponHandle, weaponWorldMatrix);
-		CMyEffekseer::GetInstance()->SetPosition(*m_pWeaponHandle, weponpos);
-	}
+	//	// 軌跡のマトリックス設定
+	//	CMyEffekseer::GetInstance()->SetMatrix(*m_pWeaponHandle, weaponWorldMatrix);
+	//	CMyEffekseer::GetInstance()->SetPosition(*m_pWeaponHandle, weponpos);
+	//}
 #endif
 }
 
@@ -1446,6 +1441,14 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DASH2);
 		}
+		break;
+
+	case MOTION::MOTION_AVOID:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_AVOID);
+		break;
+
+	case MOTION::MOTION_KNOCKBACK_PASSIVE:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_PASSIVE);
 		break;
 
 	case MOTION_COUNTER_TURN:
@@ -1900,7 +1903,7 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 			// 敵に怯み割り当て
 			pEnemy->GetATKState()->ChangeFlinchAction(pEnemy);
 
-			// カウンター受け付け
+			// カウンター
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_TURN, true);
 		}
 		else
@@ -1910,15 +1913,18 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 
 				// 開始時のフラグコピー
 				m_bLockOnAtStart = pCamera->IsRockOn();
-				if (!pCamera->IsRockOn())
-				{
-					// ロックオン設定
-					//pCamera->SetRockOn(pEnemy->GetPosition(), true);
-					pEnemy->SetEnableRockOn(true);
 
-					// インデックス番号設定
-					m_nIdxRockOn = CEnemy::GetListObj().FindIdx(pEnemy);
+				// 敵のリスト取得
+				CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+				if (enemyList.GetData(m_nIdxRockOn) != nullptr)
+				{
+					// 今までロックオンしてた対象リセット
+					enemyList.GetData(m_nIdxRockOn)->SetEnableRockOn(false);
 				}
+				pEnemy->SetEnableRockOn(true);
+
+				// インデックス番号設定
+				m_nIdxRockOn = CEnemy::GetListObj().FindIdx(pEnemy);
 
 				// 反撃
 				GetMotion()->Set(MOTION_COUNTER_ATTACK);
@@ -2225,6 +2231,31 @@ void CPlayer::DeadSetting(MyLib::HitResult_Character* result)
 }
 
 //==========================================================================
+// 状態更新
+//==========================================================================
+void CPlayer::UpdateState()
+{
+
+	// モーション別の状態設定
+	MotionBySetState();
+
+	// ダメージ受付時間更新
+	UpdateDamageReciveTimer();
+
+	// 状態更新
+	(this->*(m_StateFunc[m_state]))();
+
+	if (m_pEndCounterSetting != nullptr &&
+		m_state != STATE::STATE_COUNTER)
+	{
+		// 終了時の設定
+		delete m_pEndCounterSetting;
+		m_pEndCounterSetting = nullptr;
+		CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
+	}
+}
+
+//==========================================================================
 // ダメージ受付時間更新
 //==========================================================================
 void CPlayer::UpdateDamageReciveTimer()
@@ -2434,6 +2465,7 @@ void CPlayer::StateKnockBack()
 
 		m_pStaminaGauge->SetState(CStaminaGauge_Player::STATE_QUICKHEAL);
 		m_state = STATE_DOWN;
+		//CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_PASSIVE);
 		return;
 	}
 }

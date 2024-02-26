@@ -33,6 +33,8 @@ public:
 		LABEL_SE_DASH1,					// ダッシュ1
 		LABEL_SE_DASH2,					// ダッシュ2
 		LABEL_SE_JUMP,					// ジャンプ
+		LABEL_SE_AVOID,					// 回避
+		LABEL_SE_PASSIVE,				// 受け身
 		LABEL_SE_NORMALATK_SWING1,		// 通常攻撃スイング1
 		LABEL_SE_NORMALATK_SWING2,		// 通常攻撃スイング2
 		LABEL_SE_NORMALATK_SWING3,		// 通常攻撃スイング3

@@ -16,7 +16,7 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\dead\\deadtext_01.png";
+	const char* TEXTURE = "data\\TEXTURE\\dead\\deadtext.png";
 }
 
 //==========================================================================
@@ -87,11 +87,13 @@ HRESULT CDeadText::Init()
 	BindTexture(nIdx);
 
 	// サイズ設定
-	SetSize(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f));
+	D3DXVECTOR2 setsize = CTexture::GetInstance()->GetImageSize(nIdx);
+	setsize = UtilFunc::Transformation::AdjustSizeByWidth(setsize, 320.0f);
+	SetSize(setsize);
 	SetSizeOrigin(GetSize());
 
 	// 位置設定
-	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
+	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, 300.0f, 0.0f));
 
 	// 色設定
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));

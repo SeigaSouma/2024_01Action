@@ -264,6 +264,7 @@ private:
 	// メンバ関数
 	//=============================
 	// 状態関数
+	void UpdateState();		// 状態更新
 	void StateNone();		// なし
 	void StateInvincible();	// 無敵
 	void StateDamage();		// ダメージ
@@ -327,7 +328,6 @@ private:
 	CPlayerControlAvoid* m_pControlAvoid;		// 回避操作
 	CPlayerGuard* m_pGuard;						// ガード
 
-	Effekseer::Handle *m_pWeaponHandle;		// エフェクトの武器ハンドル
 	static CListManager<CPlayer> m_List;	// リスト
 };
 

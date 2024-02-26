@@ -9,23 +9,21 @@
 #include "manager.h"
 #include "renderer.h"
 #include "calculation.h"
+#include "hp_gauge_tip.h"
 
 //==========================================================================
 // 定数定義
 //==========================================================================
 namespace
 {
-	const float DEFAULT_WIDTH = 120.0f;
-	const float DEFAULT_HEIGHT = 15.0f;
+	const float DEFAULT_WIDTH = 150.0f;
+	const float DEFAULT_HEIGHT = 18.0f;
 	const char* TEXTURE[] =		// テクスチャのファイル
 	{
-		/*"data\\TEXTURE\\hpgauge\\gaugeMoto.png",
-	"data\\TEXTURE\\hpgauge\\gauge.png",
-	"data\\TEXTURE\\hpgauge\\Fram.png",*/
-		"",
-		"",
-		"data\\TEXTURE\\hpgauge\\hypnosis_fram.png",
+		"data\\TEXTURE\\hpgauge\\black.png",
+		"data\\TEXTURE\\hpgauge\\hpgauge.png",
 	};
+	const float LENGTH_TEXTUREREPEAT = 18.0f;	// テクスチャがリピートする長さ
 }
 
 //==========================================================================
@@ -42,6 +40,7 @@ CHP_GaugePlayer::CHP_GaugePlayer(int nPriority) : CObject(nPriority)
 	m_nLifeValue = 0;			// 値
 	m_nMaxLifeValue = 0;		// 最大値
 	m_nOriginLifeValue = 0;	// 初期値
+	m_pTip = nullptr;	// ゲージの先端
 }
 
 //==========================================================================
@@ -96,12 +95,6 @@ HRESULT CHP_GaugePlayer::Init()
 	// 最大体力
 	m_nLifeValue = m_nOriginLifeValue;
 
-	D3DXCOLOR col[] =
-	{
-		D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f),
-		D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f),
-		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-	};
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		// 生成処理
@@ -112,9 +105,6 @@ HRESULT CHP_GaugePlayer::Init()
 		}
 
 		m_pObj2DGauge[nCntGauge]->SetOriginPosition(GetPosition());
-
-		// 頂点カラーの設定
-		m_pObj2DGauge[nCntGauge]->SetColor(col[nCntGauge]);
 
 		// 種類の設定
 		m_pObj2DGauge[nCntGauge]->SetType(CObject::TYPE_OBJECT2D);
@@ -133,6 +123,10 @@ HRESULT CHP_GaugePlayer::Init()
 	// 値設定
 	SetLife(m_nMaxLifeValue);
 
+
+	// 先端生成
+	m_pTip = CHPGaugeTip::Create(GetPosition() - MyLib::Vector3(DEFAULT_WIDTH, 0.0f, 0.0f), GetPosition() + MyLib::Vector3(DEFAULT_WIDTH, 0.0f, 0.0f));
+
 	return S_OK;
 }
 
@@ -144,6 +138,12 @@ void CHP_GaugePlayer::Uninit()
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		m_pObj2DGauge[nCntGauge] = nullptr;
+	}
+
+	if (m_pTip != nullptr)
+	{
+		m_pTip->Uninit();
+		m_pTip = nullptr;
 	}
 
 	// 情報削除
@@ -163,6 +163,12 @@ void CHP_GaugePlayer::Kill()
 			m_pObj2DGauge[nCntGauge]->Uninit();
 			m_pObj2DGauge[nCntGauge] = nullptr;
 		}
+	}
+
+	if (m_pTip != nullptr)
+	{
+		m_pTip->Kill();
+		m_pTip = nullptr;
 	}
 
 	// 情報削除
@@ -188,6 +194,34 @@ void CHP_GaugePlayer::Update()
 
 		// 色設定
 		//m_pObj2DGauge[nCntGauge]->SetColor(col);
+	}
+
+
+	for (int i = 0; i < VTXTYPE::VTXTYPE_MAX; i++)
+	{
+		// サイズ取得
+		D3DXVECTOR2 size = m_pObj2DGauge[i]->GetSize();
+
+		D3DXVECTOR2* pTex = m_pObj2DGauge[i]->GetTex();
+
+		float ratio = size.x / LENGTH_TEXTUREREPEAT;
+
+		pTex[1] = D3DXVECTOR2(ratio, 0.0f);
+		pTex[3] = D3DXVECTOR2(ratio, 1.0f);
+
+		SetVtx(i);
+	}
+
+
+	// 先端生成
+	if (m_pTip != nullptr) {
+		MyLib::Vector3 left, right;
+		float maxlen = m_pObj2DGauge[0]->GetMaxWidth();
+
+		left = pos - MyLib::Vector3(maxlen, 0.0f, 0.0f);
+		right = pos + MyLib::Vector3(maxlen, 0.0f, 0.0f);
+		m_pTip->SetLeftPosition(left);
+		m_pTip->SetRightPosition(right);
 	}
 }
 
@@ -272,7 +306,7 @@ int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
 
 	for (const auto& gauge : m_pObj2DGauge)
 	{
-		SetPosition(gauge->UpgradeMaxValue(addvalue));
+		SetPosition(gauge->UpgradeMaxValue(addvalue, false));
 	}
 
 	// 現在の体力設定
@@ -290,4 +324,33 @@ int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
 void CHP_GaugePlayer::Draw()
 {
 
+}
+
+void CHP_GaugePlayer::SetVtx(int nIdx)
+{
+	// 頂点設定
+	m_pObj2DGauge[nIdx]->SetVtx();
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	D3DXVECTOR2* pTex = m_pObj2DGauge[nIdx]->GetTex();
+
+	// 頂点情報へのポインタ
+	VERTEX_2D* pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pObj2DGauge[nIdx]->GetVtxBuff()->Lock(0, 0, (void**)&pVtx, 0);
+
+	// サイズ取得
+	D3DXVECTOR2 size = m_pObj2DGauge[nIdx]->GetSize();
+
+	// 頂点座標の設定
+	pVtx[0].tex = pTex[0];
+	pVtx[1].tex = pTex[1];
+	pVtx[2].tex = pTex[2];
+	pVtx[3].tex = pTex[3];
+
+	// 頂点バッファをアンロックロック
+	m_pObj2DGauge[nIdx]->GetVtxBuff()->Unlock();
 }

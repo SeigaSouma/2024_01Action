@@ -319,6 +319,18 @@ void CEnemy::Uninit()
 		m_pRockOnMarker = nullptr;
 	}
 
+	for (int i = 0; i < static_cast<int>(m_pAtkPattern.size()); i++)
+	{
+		delete m_pAtkPattern[i];
+		m_pAtkPattern[i] = nullptr;
+	}
+
+	if (m_pReturnDown != nullptr)
+	{
+		delete m_pReturnDown;
+		m_pReturnDown = nullptr;
+	}
+
 	// ƒŠƒXƒg‚©‚çíœ
 	m_List.Delete(this);
 

@@ -29,7 +29,7 @@ public:
 
 
 	// 強化関数
-	MyLib::Vector3 UpgradeMaxValue(int addvalue);	// 最大値のアップグレード
+	MyLib::Vector3 UpgradeMaxValue(int addvalue, bool bChangePos);	// 最大値のアップグレード
 
 	// その他関数
 	void SetValue(int value);				// 値設定

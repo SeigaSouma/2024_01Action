@@ -11,6 +11,8 @@
 #include "object2D.h"
 #include "object2D_gauge.h"
 
+class CHPGaugeTip;
+
 //==========================================================================
 // クラス定義
 //==========================================================================
@@ -45,7 +47,6 @@ private:
 	{
 		VTXTYPE_BLACK = 0,	// 黒ゲージ
 		VTXTYPE_PINK,		// ピンクゲージ
-		VTXTYPE_FRAM,		// 枠
 		VTXTYPE_MAX
 	};
 
@@ -60,12 +61,14 @@ private:
 
 	// メンバ関数
 	void ChangeColor(int nCntGauge);		// 色変更
+	void SetVtx(int nIdx);
 
 	// メンバ変数
 	int m_nLifeValue;			// 値
 	int m_nMaxLifeValue;		// 最大値
 	int m_nOriginLifeValue;	// 初期値
 	CObject2D_Gauge* m_pObj2DGauge[VTXTYPE_MAX];	// HPゲージのオブジェクト
+	CHPGaugeTip* m_pTip;	// ゲージの先端
 };
 
 

@@ -164,6 +164,16 @@ void CObject2D_Gauge::Update()
 	// 減少処理
 	GaugeDecrement();
 
+	// サイズ取得
+	D3DXVECTOR2 size = GetSize();
+
+	D3DXVECTOR2* pTex = GetTex();
+
+	pTex[0] = D3DXVECTOR2(0.0f, 0.0f);
+	pTex[1] = D3DXVECTOR2(size.x / m_fMaxWidth, 0.0f);
+	pTex[2] = D3DXVECTOR2(0.0f, 1.0f);
+	pTex[3] = D3DXVECTOR2(size.x / m_fMaxWidth, 1.0f);
+
 	// 更新処理
 	CObject2D::Update();
 }
@@ -198,7 +208,7 @@ void CObject2D_Gauge::SetValue(int value)
 //==========================================================================
 // 最大値のアップグレード
 //==========================================================================
-MyLib::Vector3 CObject2D_Gauge::UpgradeMaxValue(int addvalue)
+MyLib::Vector3 CObject2D_Gauge::UpgradeMaxValue(int addvalue, bool bChangePos)
 {
 	// 最大値
 	m_nMaxValue = m_nOriginValue + addvalue;
@@ -220,8 +230,12 @@ MyLib::Vector3 CObject2D_Gauge::UpgradeMaxValue(int addvalue)
 
 	// 位置設定
 	MyLib::Vector3 newpos = GetOriginPosition();
-	newpos.x += difflen;
-	SetPosition(newpos);
+
+	if (bChangePos)
+	{
+		newpos.x += difflen;
+		SetPosition(newpos);
+	}
 
 	return newpos;
 }
@@ -253,11 +267,6 @@ void CObject2D_Gauge::SetVtx()
 	pVtx[1].pos = MyLib::Vector3(pos.x + size.x - (m_fMaxWidth - size.x), pos.y + -size.y, 0.0f);
 	pVtx[2].pos = MyLib::Vector3(pos.x + -size.x - (m_fMaxWidth - size.x), pos.y + size.y, 0.0f);
 	pVtx[3].pos = MyLib::Vector3(pos.x + size.x - (m_fMaxWidth - size.x), pos.y + size.y, 0.0f);
-
-	pTex[0] = D3DXVECTOR2(0.0f, 0.0f);
-	pTex[1] = D3DXVECTOR2(size.x / m_fMaxWidth, 0.0f);
-	pTex[2] = D3DXVECTOR2(0.0f, 1.0f);
-	pTex[3] = D3DXVECTOR2(size.x / m_fMaxWidth, 1.0f);
 
 	// 頂点バッファをアンロックロック
 	GetVtxBuff()->Unlock();
