@@ -238,14 +238,20 @@ void CEnemyGobelin::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 	switch (nMotionType)
 	{
 	case MOTION_ATTACK_NORMAL:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_SLOW);
 		break;
 
 	case MOTION_ATTACK_STRONG:
-		m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
-			CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
-			GetCenterPosition(), 0.0f, 0.0f, 20.0f);
+		if (nCntATK == 0) {
+			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
+				GetCenterPosition(), 0.0f, 0.0f, 20.0f);
 
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_STRONGATK);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_STRONGATK);
+		}
+		else {
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_SLOW);
+		}
 		break;
 	}
 }

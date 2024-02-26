@@ -338,7 +338,21 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 	// ƒ‚[ƒVƒ‡ƒ“•Êˆ—
 	switch (nMotionType)
 	{
+	case MOTION::MOTION_OVERHEADATK:
+		if (nCntATK == 0) {
+			// U“®
+			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_STRONG);
+			CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+		}
+		else{
+			// U“®
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_FAST);
+		}
+		break;
+
 	case MOTION_SIDESWIPE:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_SLOW);
 		break;
 
 	case MOTION_LAUNCHBALLAST:
@@ -360,14 +374,21 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 		// U“®
 		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_SHORT);
 	}
 		break;
 
 	case MOTION_HANDSLAP:
-		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+		if (nCntATK == 0 || nCntATK == 1) {
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_SLOW);
+		}
+		else {
+			CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
 
-		// U“®
-		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+			// U“®
+			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_SHORT);
+		}
 		break;
 
 	case MOTION_ROLLING:

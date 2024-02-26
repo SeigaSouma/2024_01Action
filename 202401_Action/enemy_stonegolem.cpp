@@ -191,6 +191,12 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	switch (nMotionType)
 	{
+	case MOTION::MOTION_ATTACK_NORMAL:
+	case MOTION::MOTION_ATTACK_SIDESWIPE2:
+	case MOTION::MOTION_ATTACK_SIDESWIPE:
+	case MOTION::MOTION_ATTACK_UPSWIPE2:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_SLOW);
+		break;
 
 	case MOTION_ATTACK_STRONG:
 		if (nCntATK == 0)
@@ -201,10 +207,15 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_STRONGATK);
 		}
+		else if (nCntATK == 1 || nCntATK == 2)
+		{
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_FAST);
+		}
 		else
 		{
 			// U“®
 			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_STRONG);
 		}
 		break;
 

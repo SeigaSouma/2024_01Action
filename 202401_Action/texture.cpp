@@ -74,7 +74,7 @@ void CTexture::Init()
 //==========================================================================
 HRESULT CTexture::LoadAll()
 {
-#if 0
+#if 1
 
 	// ëSåüçı
 	SearchAllImages(MAINFOLODER);

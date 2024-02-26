@@ -55,6 +55,17 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/SE/surcor_end.wav", 0 },			// ƒJ[ƒ\ƒ‹•Â‚¶
 	{ "data/SE/cancel01.wav", 0 },				// ƒLƒƒƒ“ƒZƒ‹1
 	{ "data/SE/cancel02.wav", 0 },				// ƒLƒƒƒ“ƒZƒ‹2
+	{ "data/SE/counter_normal.wav", 0 },		// ƒJƒEƒ“ƒ^[’ÊíUŒ‚
+	{ "data/SE/counter_strong.wav", 0 },		// ƒJƒEƒ“ƒ^[‹­UŒ‚
+	{ "data/SE/counter_hit4.wav", 0 },			// ƒJƒEƒ“ƒ^[UŒ‚
+	{ "data/SE/playerdmg_01.wav", 0 },			// ’ÊíUŒ‚”í’e
+	{ "data/SE/playerdmg_big.wav", 0 },			// ‹­UŒ‚”í’e
+	{ "data/SE/guard.wav", 0 },					// ƒK[ƒh”í’e
+	{ "data/SE/guardbreak.wav", 0 },			// ƒK[ƒhƒuƒŒƒCƒN
+	{ "data/SE/enemyField_strong.wav", 0 },		// “G’n–Ê(‹­)
+	{ "data/SE/enemyField_short.wav", 0 },		// “G’n–Ê(’Z)
+	{ "data/SE/enemyswing_01.wav", 0 },			// “GUŒ‚ƒXƒCƒ“ƒO(’x)
+	{ "data/SE/enemyswing_02.wav", 0 },			// “GUŒ‚ƒXƒCƒ“ƒO(‘)
 
 };	// ƒTƒEƒ“ƒh‚Ìî•ñ
 
@@ -539,6 +550,10 @@ int CSound::GetVolume()
 void CSound::SetFrequency(LABEL label, float fValue)
 {
 	XAUDIO2_VOICE_STATE state;
+
+	if (m_apSourceVoice[label] == nullptr){
+		return;
+	}
 
 	// ó‘Ôæ“¾
 	m_apSourceVoice[label]->GetState(&state);

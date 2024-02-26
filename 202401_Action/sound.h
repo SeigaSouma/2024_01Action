@@ -63,6 +63,17 @@ public:
 		LABEL_SE_CURSOR_END,			// カーソル閉じ
 		LABEL_SE_CANCEL1,				// キャンセル1
 		LABEL_SE_CANCEL2,				// キャンセル2
+		LABEL_SE_COUNTER_TURN,			// カウンター受け流し
+		LABEL_SE_COUNTER_ATTACK,		// カウンター反撃
+		LABEL_SE_COUNTER_HIT,			// カウンター攻撃
+		LABEL_SE_PLAYERDMG_NORMAL,		// 通常攻撃被弾
+		LABEL_SE_PLAYERDMG_STRONG,		// 強攻撃被弾
+		LABEL_SE_GUARD_DMG,				// ガード被弾
+		LABEL_SE_GUARD_BREAK,			// ガードブレイク
+		LABEL_SE_ENEMY_FIELD_STRONG,	// 敵地面(強)
+		LABEL_SE_ENEMY_FIELD_SHORT,		// 敵地面(短)
+		LABEL_SE_ENEMY_SWING_SLOW,		// 敵攻撃スイング1
+		LABEL_SE_ENEMY_SWING_FAST,		// 敵攻撃スイング1
 		LABEL_MAX,
 	};
 

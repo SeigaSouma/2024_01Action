@@ -963,9 +963,9 @@ void CPlayer::Controll()
 	{
 		CCollisionObject::Create(GetPosition(), mylib_const::DEFAULT_VECTOR3, 100000.0f, 3, 10000, CCollisionObject::TAG_PLAYER);
 	}
-	if (pInputKeyboard->GetRepeat(DIK_RIGHT, 4) == true)
-	{
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT2);
+	if (pInputKeyboard->GetRepeat(DIK_RIGHT, 4) == true){
+		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT2);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_TURN, false);
 	}
 
 
@@ -1481,6 +1481,7 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		else if (nCntATK != 0)
 		{
 			CManager::GetInstance()->GetCamera()->SetLenDest(200.0f, 3, 4.0f, 0.3f);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_HIT);
 
 			// 敵へダウン状態
 			CEnemy* pEnemy = CEnemy::GetListObj().GetData(m_nIdxRockOn);
@@ -1829,6 +1830,9 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 
 			// 受け流しの設定
 			m_pEndCounterSetting = DEBUG_NEW CEndTurn;
+
+			// カウンター受け付け
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_TURN);
 		}
 		else
 		{
@@ -1844,6 +1848,9 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 
 				// 攻撃の設定
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
+
+				// カウンター受け付け
+				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_ATTACK);
 			}
 		}
 
@@ -1892,6 +1899,9 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 
 			// 敵に怯み割り当て
 			pEnemy->GetATKState()->ChangeFlinchAction(pEnemy);
+
+			// カウンター受け付け
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_TURN, true);
 		}
 		else
 		{
@@ -1917,6 +1927,9 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 
 				// 攻撃の設定
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
+
+				// カウンター受け付け
+				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_ATTACK);
 			}
 		}
 
@@ -1958,6 +1971,7 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 
 			// 死亡時の設定
 			DeadSetting(&hitresult);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_PLAYERDMG_STRONG);
 			return hitresult;
 		}
 
@@ -1969,8 +1983,10 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 		{
 			// ダウン時の設定
 			DownSetting(pEnemy->GetPosition());
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_GUARD_BREAK);
 			return hitresult;
 		}
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_GUARD_DMG);
 		return hitresult;
 	}
 
@@ -2044,7 +2060,9 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 			m_state = STATE_KNOCKBACK;
 
 			DeadSetting(&hitresult);
-			//m_KnokBackMove.y += 18.0f;
+
+			// ダメージ音
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_PLAYERDMG_STRONG);
 			return hitresult;
 		}
 
@@ -2053,9 +2071,6 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 
 		// 色設定
 		m_mMatcol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-
-		// 遷移カウンター設定
-		//m_nCntState = 0;
 
 		// ノックバックの位置更新
 		MyLib::Vector3 pos = GetPosition();
@@ -2082,6 +2097,9 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 		{
 			// ダウン時の設定
 			DownSetting(hitpos);
+
+			// ダメージ音
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_PLAYERDMG_STRONG);
 			return hitresult;
 		}
 		else
@@ -2102,6 +2120,9 @@ MyLib::HitResult_Character CPlayer::ProcessHit(const int nValue, const MyLib::Ve
 				m_state = STATE_DMG;
 
 				GetMotion()->Set(MOTION_DMG);
+
+				// ダメージ音
+				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_PLAYERDMG_NORMAL);
 			}
 		}
 
@@ -2837,7 +2858,7 @@ void CPlayer::ResetEnhance()
 	}
 
 	// 操作関連
-	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack_Level1());
+	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack());
 	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence());
 	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid());
 	ChangeGuardGrade(DEBUG_NEW CPlayerGuard());
