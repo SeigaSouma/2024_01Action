@@ -20,31 +20,31 @@ public:
 	// 列挙型定義
 	enum LABEL
 	{
-		LABEL_BGM_TITLE = 0,		// タイトル
-		LABEL_BGM_GAME,				// ゲーム
-		LABEL_BGM_GAMECLEAR,		// クリア
-		LABEL_BGM_ENHANCE,			// 強化
-		LABEL_BGM_ENHANCE_WIND,		// 強化の風
-		LABEL_BGM_BOSS,				// ボス
-		LABEL_BGM_RESULT,			// リザルト
-		LABEL_BGM_GALLERY,			// 観客
-		LABEL_SE_WALK1,				// 歩行1
-		LABEL_SE_WALK2,				// 歩行2
-		LABEL_SE_DASH1,				// ダッシュ1
-		LABEL_SE_DASH2,				// ダッシュ2
-		LABEL_SE_JUMP,				// ジャンプ
-		LABEL_SE_NORMALATK_SWING1,	// 通常攻撃スイング1
-		LABEL_SE_NORMALATK_SWING2,	// 通常攻撃スイング2
-		LABEL_SE_NORMALATK_SWING3,	// 通常攻撃スイング3
-		LABEL_SE_DASHATK_SWING2,	// ダッシュ攻撃スイング2
-		LABEL_SE_NORMALATK_HIT1,	// 通常攻撃ヒット1
-		LABEL_SE_NORMALATK_HIT2,	// 通常攻撃ヒット2
-		LABEL_SE_NORMALATK_HIT3,	// 通常攻撃ヒット3
-		LABEL_SE_GALLERY1,			// 観客1
-		LABEL_SE_GALLERY2,			// 観客2
-		LABEL_SE_IN_ENHANCE,		// 強化入場
-		LABEL_SE_BATTLESTART,		// 戦闘開始
-		LABEL_SE_BATTLESTART_START,	// 戦闘開始開始
+		LABEL_BGM_TITLE = 0,			// タイトル
+		LABEL_BGM_GAME,					// ゲーム
+		LABEL_BGM_GAMECLEAR,			// クリア
+		LABEL_BGM_ENHANCE,				// 強化
+		LABEL_BGM_ENHANCE_WIND,			// 強化の風
+		LABEL_BGM_BOSS,					// ボス
+		LABEL_BGM_RESULT,				// リザルト
+		LABEL_BGM_GALLERY,				// 観客
+		LABEL_SE_WALK1,					// 歩行1
+		LABEL_SE_WALK2,					// 歩行2
+		LABEL_SE_DASH1,					// ダッシュ1
+		LABEL_SE_DASH2,					// ダッシュ2
+		LABEL_SE_JUMP,					// ジャンプ
+		LABEL_SE_NORMALATK_SWING1,		// 通常攻撃スイング1
+		LABEL_SE_NORMALATK_SWING2,		// 通常攻撃スイング2
+		LABEL_SE_NORMALATK_SWING3,		// 通常攻撃スイング3
+		LABEL_SE_DASHATK_SWING2,		// ダッシュ攻撃スイング2
+		LABEL_SE_NORMALATK_HIT1,		// 通常攻撃ヒット1
+		LABEL_SE_NORMALATK_HIT2,		// 通常攻撃ヒット2
+		LABEL_SE_NORMALATK_HIT3,		// 通常攻撃ヒット3
+		LABEL_SE_GALLERY1,				// 観客1
+		LABEL_SE_GALLERY2,				// 観客2
+		LABEL_SE_IN_ENHANCE,			// 強化入場
+		LABEL_SE_BATTLESTART,			// 戦闘開始
+		LABEL_SE_BATTLESTART_START,		// 戦闘開始開始
 		LABEL_SE_BATTLESTART_CHARGE,	// 戦闘開始溜め
 		LABEL_SE_SKILLTREE_START,		// スキルツリー起動
 		LABEL_SE_SKILLTREE_GET,			// スキル獲得
@@ -53,6 +53,16 @@ public:
 		LABEL_SE_BATTLERESULT,			// 戦果表示
 		LABEL_SE_BATTLERESULT_END,		// 戦果表示閉じ
 		LABEL_SE_BATTLERESULT_RANK,		// 戦果ランク
+		LABEL_SE_STRONGATK,				// 強攻撃発生
+		LABEL_SE_CHARGEATK_START,		// チャージ攻撃開始
+		LABEL_SE_CHARGEATK_COMPLETE,	// チャージ攻撃完了
+		LABEL_SE_CHARGEATK_ENDRESS,		// チャージし続ける
+		LABEL_SE_CHARGEATK_MOVE,		// チャージ攻撃移動
+		LABEL_SE_CHARGEATK_HIT,			// チャージ攻撃ヒット
+		LABEL_SE_CURSOR_MOVE,			// カーソル移動
+		LABEL_SE_CURSOR_END,			// カーソル閉じ
+		LABEL_SE_CANCEL1,				// キャンセル1
+		LABEL_SE_CANCEL2,				// キャンセル2
 		LABEL_MAX,
 	};
 
@@ -67,7 +77,7 @@ public:
 
 	HRESULT Init(HWND hWnd);
 	void Uninit();
-	HRESULT PlaySound(LABEL label);
+	HRESULT PlaySound(LABEL label, bool stop = false);
 	void StopSound();
 	void StopSound(LABEL label);
 	void VolumeChange(LABEL label, float volume);	// 音量設定

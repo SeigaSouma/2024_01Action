@@ -100,8 +100,7 @@ HRESULT CSkillTree_ResetImpossible::Init()
 	// ˆÊ’uÝ’è
 	SetPosition(MyLib::Vector3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
 
-	// FÝ’è
-	//SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CANCEL1);
 
 	return S_OK;
 }

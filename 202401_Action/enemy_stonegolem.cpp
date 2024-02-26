@@ -198,6 +198,8 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
 				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
 				GetCenterPosition(), 0.0f, 0.0f, 20.0f);
+
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_STRONGATK);
 		}
 		else
 		{

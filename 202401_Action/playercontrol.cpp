@@ -124,7 +124,9 @@ void CPlayerControlAttack_Level1::Attack(CPlayer* player)
 
 	// ‘€ì•â•
 	CControlAssist* pAssist = CControlAssist::GetInstance();
-	pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
+	if (pAssist != nullptr) {
+		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
+	}
 
 	// –Ú•W‚ÌŒü‚«Žæ“¾
 	float fRotDest = player->GetRotDest();

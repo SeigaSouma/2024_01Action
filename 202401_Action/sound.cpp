@@ -45,6 +45,16 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[LABEL_MAX] =
 	{ "data/SE/battleresult.wav", 0 },			// 戦果表示
 	{ "data/SE/battleresult_end.wav", 0 },		// 戦果表示閉じ
 	{ "data/SE/battleresult_rank.wav", 0 },		// 戦果ランク
+	{ "data/SE/strongATK.wav", 0 },				// 強攻撃発生
+	{ "data/SE/charge_start.wav", 0 },			// チャージ攻撃開始
+	{ "data/SE/charge_complete.wav", 0 },		// チャージ攻撃完了
+	{ "data/SE/charge_endress.wav", -1 },		// チャージ続け
+	{ "data/SE/charge_move.wav", 0 },			// チャージ攻撃移動
+	{ "data/SE/chargeatk_hit.wav", 0 },			// チャージ攻撃ヒット
+	{ "data/SE/cursor_move.wav", 0 },			// カーソル移動
+	{ "data/SE/surcor_end.wav", 0 },			// カーソル閉じ
+	{ "data/SE/cancel01.wav", 0 },				// キャンセル1
+	{ "data/SE/cancel02.wav", 0 },				// キャンセル2
 
 };	// サウンドの情報
 
@@ -254,7 +264,7 @@ void CSound::Uninit()
 //==========================================================================
 // セグメント再生(再生中なら停止)
 //==========================================================================
-HRESULT CSound::PlaySound(LABEL label)
+HRESULT CSound::PlaySound(LABEL label, bool stop)
 {
 #if 0
 	XAUDIO2_VOICE_STATE xa2state;
@@ -296,6 +306,22 @@ HRESULT CSound::PlaySound(LABEL label)
 	buffer.pAudioData = m_apDataAudio[label];
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
 	buffer.LoopCount = m_aSoundInfo[label].nCntLoop;
+
+	if (m_apSourceVoice[label] != nullptr)
+	{
+		// 状態取得
+		XAUDIO2_VOICE_STATE xa2state;
+		m_apSourceVoice[label]->GetState(&xa2state);
+		if (xa2state.BuffersQueued != 0 &&
+			(buffer.LoopCount == -1 || stop))
+		{// 再生中
+			// 一時停止
+			m_apSourceVoice[label]->Stop(0);
+
+			// オーディオバッファの削除
+			m_apSourceVoice[label]->FlushSourceBuffers();
+		}
+	}
 
 	// ソースボイスを新しく作成して再生
 	HRESULT hr = m_pXAudio2->CreateSourceVoice(&m_apSourceVoice[label], &(m_wfx[label].Format));

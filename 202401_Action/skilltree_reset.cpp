@@ -113,6 +113,7 @@ HRESULT CSkillTree_Reset::Init()
 
 	// 選択肢生成
 	CreateSelect();
+	CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_END);
 
 	return S_OK;
 }
@@ -244,7 +245,7 @@ void CSkillTree_Reset::UpdateSelect()
 		m_nSelect = (m_nSelect + (SELECT_MAX - 1)) % SELECT_MAX;
 
 		// サウンド再生
-		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_MOVE);
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_A) ||
 		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_LEFT, 0) ||
@@ -255,7 +256,7 @@ void CSkillTree_Reset::UpdateSelect()
 		m_nSelect = (m_nSelect + 1) % SELECT_MAX;
 
 		// サウンド再生
-		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_MOVE);
 	}
 
 	// 決定
@@ -266,6 +267,7 @@ void CSkillTree_Reset::UpdateSelect()
 		{
 		case SELECT_CANCEL:
 			CSkillTree::GetInstance()->OutReset();
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_END);
 			return;
 			break;
 
@@ -338,6 +340,7 @@ void CSkillTree_Reset::UpdateSelect()
 		pInputKeyboard->GetTrigger(DIK_BACK))
 	{
 		CSkillTree::GetInstance()->OutReset();
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_END);
 		return;
 	}
 }

@@ -1419,7 +1419,11 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 		break;
 
 	case MOTION::MOTION_ATK4:
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING1);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CHARGEATK_START);
+		break;
+
+	case MOTION::MOTION_ATK4_FINISH:
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CHARGEATK_MOVE);
 		break;
 
 	case MOTION::MOTION_WALK:
@@ -1617,6 +1621,10 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 
 					case MOTION::MOTION_ATK3:
 						CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_NORMALATK_HIT3);
+						break;
+
+					case MOTION::MOTION_ATK4_FINISH:
+						CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CHARGEATK_HIT);
 						break;
 					}
 					break;
@@ -2670,6 +2678,7 @@ void CPlayer::StateCharge()
 	if (pMotion == nullptr)
 	{
 		m_nComboStage = 0;
+		CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_CHARGEATK_ENDRESS);
 		return;
 	}
 	int nType = pMotion->GetType();
@@ -2682,6 +2691,7 @@ void CPlayer::StateCharge()
 		m_nComboStage = 0;
 		m_fChargeTime = 0.0f;
 		m_bChargeCompletion = false;
+		CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_CHARGEATK_ENDRESS);
 	}
 
 
@@ -2706,6 +2716,8 @@ void CPlayer::StateCharge()
 
 		// チャージ完了フラグ
 		m_bChargeCompletion = true;
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CHARGEATK_COMPLETE);
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CHARGEATK_ENDRESS);
 
 		// 情報取得
 		CMotion::Info aInfo = pMotion->GetInfo(pMotion->GetType());
@@ -2748,6 +2760,7 @@ void CPlayer::StateCharge()
 		m_fChargeTime = 0.0f;
 		m_nComboStage = 0;
 		m_state = STATE_NONE;
+		CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_CHARGEATK_ENDRESS);
 	}
 
 	if (nType == MOTION_ATK4_FINISH && pMotion->IsFinish())
@@ -2756,6 +2769,7 @@ void CPlayer::StateCharge()
 		m_nComboStage = 0;
 		m_fChargeTime = 0.0f;
 		m_bChargeCompletion = false;
+		CManager::GetInstance()->GetSound()->StopSound(CSound::LABEL::LABEL_SE_CHARGEATK_ENDRESS);
 	}
 }
 
@@ -2823,7 +2837,7 @@ void CPlayer::ResetEnhance()
 	}
 
 	// 操作関連
-	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack());
+	ChangeAtkControl(DEBUG_NEW CPlayerControlAttack_Level1());
 	ChangeDefenceControl(DEBUG_NEW CPlayerControlDefence());
 	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid());
 	ChangeGuardGrade(DEBUG_NEW CPlayerGuard());

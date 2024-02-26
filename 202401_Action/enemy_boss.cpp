@@ -379,6 +379,9 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 			m_pWeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
 				CMyEffekseer::EFKLABEL_STRONGATK_SIGN,
 				pos, 0.0f, 0.0f, 50.0f);
+
+
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_STRONGATK);
 		}
 		else
 		{

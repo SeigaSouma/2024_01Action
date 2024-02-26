@@ -337,7 +337,7 @@ void CGallery::Draw()
 //==========================================================================
 void CGallery::SetState(STATE state)
 { 
-	if (/*m_State != STATE::STATE_COUNTERHEAT &&*/
+	if (m_List.GetData(0) == this &&
 		state == STATE::STATE_COUNTERHEAT)
 	{
 		if (UtilFunc::Transformation::Random(0, 1) == 0) {
