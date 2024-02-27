@@ -9,6 +9,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "calculation.h"
+#include "hp_gauge_tip.h"
 
 //==========================================================================
 // 定数定義
@@ -16,16 +17,16 @@
 namespace
 {
 	const float DEFAULT_AUTOHEAL = 0.15f;	// デフォルトの自動回復
-	const float DEFAULT_WIDTH = 120.0f;		// デフォルトの幅
-	const float DEFAULT_HEIGHT = 15.0f;		// デフォルトの高さ
+	const float DEFAULT_WIDTH = 150.0f;		// デフォルトの幅
+	const float DEFAULT_HEIGHT = 18.0;		// デフォルトの高さ
 	const float TIME_QUICKHEAL = 2.6f;		// 急速回復の時間
 	const float TIME_STATESUB = static_cast<float>(50) / static_cast<float>(mylib_const::DEFAULT_FPS);		// 減算状態の時間
 	const char* TEXTURE[] =		// テクスチャのファイル
 	{
-		"",
-		"",
-		"data\\TEXTURE\\hpgauge\\hypnosis_fram.png",
+		"data\\TEXTURE\\hpgauge\\black.png",
+		"data\\TEXTURE\\hpgauge\\staminagauhge.png",
 	};
+	const float LENGTH_TEXTUREREPEAT = 18.0f;	// テクスチャがリピートする長さ
 }
 
 //==========================================================================
@@ -44,16 +45,14 @@ CStaminaGauge_Player::STATE_FUNC CStaminaGauge_Player::m_StateFunc[] =
 CStaminaGauge_Player::CStaminaGauge_Player(int nPriority) : CObject(nPriority)
 {
 	// 値のクリア
-	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
-	{
-		m_pObj2DGauge[nCntGauge] = nullptr;	// 2Dゲージのオブジェクト
-	}
+	memset(m_pObj2DGauge, 0, sizeof(m_pObj2DGauge));	// 2Dゲージのオブジェクト
 	m_state = STATE_NORMAL;		// 状態
 	m_fStateTime = 0.0f;		// 状態のカウンター
 	m_fStaminaValue = 0.0f;		// スタミナの値
 	m_fMaxStaminaValue = 0.0f;	// スタミナの最大値
 	m_fOriginStaminaValue = 0.0f;	// スタミナの初期値
 	m_fAutoHeal = 0.0f;			// 自動回復
+	m_pTip = nullptr;	// ゲージの先端
 }
 
 //==========================================================================
@@ -110,25 +109,16 @@ HRESULT CStaminaGauge_Player::Init()
 	// 種類の設定
 	SetType(TYPE_HPGAUGE);
 	
-	D3DXCOLOR col[] =
-	{
-		D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f),
-		D3DXCOLOR(1.0f, 0.7f, 0.3f, 1.0f),
-		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)
-	};
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		// 生成処理
 		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, static_cast<int>(m_fMaxStaminaValue), TEXTURE[nCntGauge]);
 		if (m_pObj2DGauge[nCntGauge] == nullptr)
-		{// nullptrだったら
+		{
 			return E_FAIL;
 		}
 
 		m_pObj2DGauge[nCntGauge]->SetOriginPosition(GetPosition());
-
-		// 頂点カラーの設定
-		m_pObj2DGauge[nCntGauge]->SetColor(col[nCntGauge]);
 		
 		// 種類の設定
 		m_pObj2DGauge[nCntGauge]->SetType(CObject::TYPE_OBJECT2D);
@@ -138,6 +128,9 @@ HRESULT CStaminaGauge_Player::Init()
 
 	// 値設定
 	SetValue(m_fMaxStaminaValue);
+
+	// 先端生成
+	m_pTip = CHPGaugeTip::Create(GetPosition() - MyLib::Vector3(DEFAULT_WIDTH, 0.0f, 0.0f), GetPosition() + MyLib::Vector3(DEFAULT_WIDTH, 0.0f, 0.0f));
 	return S_OK;
 }
 
@@ -149,6 +142,12 @@ void CStaminaGauge_Player::Uninit()
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		m_pObj2DGauge[nCntGauge] = nullptr;
+	}
+
+	if (m_pTip != nullptr)
+	{
+		m_pTip->Uninit();
+		m_pTip = nullptr;
 	}
 
 	// 情報削除
@@ -170,6 +169,12 @@ void CStaminaGauge_Player::Kill()
 		}
 	}
 
+	if (m_pTip != nullptr)
+	{
+		m_pTip->Kill();
+		m_pTip = nullptr;
+	}
+
 	// 情報削除
 	Release();
 }
@@ -185,6 +190,32 @@ void CStaminaGauge_Player::Update()
 	for (const auto& gauge : m_pObj2DGauge)
 	{
 		gauge->SetPosition(pos);
+	}
+
+	for (int i = 0; i < VTXTYPE::VTXTYPE_MAX; i++)
+	{
+		// サイズ取得
+		D3DXVECTOR2 size = m_pObj2DGauge[i]->GetSize();
+
+		D3DXVECTOR2* pTex = m_pObj2DGauge[i]->GetTex();
+
+		float ratio = size.x / LENGTH_TEXTUREREPEAT;
+
+		pTex[1] = D3DXVECTOR2(ratio, 0.0f);
+		pTex[3] = D3DXVECTOR2(ratio, 1.0f);
+
+		SetVtx(i);
+	}
+
+	// 先端生成
+	if (m_pTip != nullptr) {
+		MyLib::Vector3 left, right;
+		float maxlen = m_pObj2DGauge[0]->GetMaxWidth();
+
+		left = pos - MyLib::Vector3(maxlen, 0.0f, 0.0f);
+		right = pos + MyLib::Vector3(maxlen, 0.0f, 0.0f);
+		m_pTip->SetLeftPosition(left);
+		m_pTip->SetRightPosition(right);
 	}
 
 	// 状態更新
@@ -226,9 +257,6 @@ void CStaminaGauge_Player::StateQuickHealing()
 	UtilFunc::Transformation::ValueNormalize(m_fStateTime, TIME_QUICKHEAL, 0.0f);
 
 	SetValue((m_fStateTime / TIME_QUICKHEAL) * m_fMaxStaminaValue);
-
-	//// 自動回復
-	//AddValue(m_fAutoHeal * 8.0f);
 
 	if (m_fMaxStaminaValue == m_fStaminaValue)
 	{
@@ -345,7 +373,7 @@ void CStaminaGauge_Player::UpgradeMaxValue(int addvalue)
 
 	for (const auto& gauge : m_pObj2DGauge)
 	{
-		SetPosition(gauge->UpgradeMaxValue(addvalue, true));
+		SetPosition(gauge->UpgradeMaxValue(addvalue, false));
 	}
 }
 
@@ -383,4 +411,36 @@ void CStaminaGauge_Player::SetState(STATE state)
 { 
 	m_fStateTime = 0.0f;
 	m_state = state;
+}
+
+//==========================================================================
+// 状態設定
+//==========================================================================
+void CStaminaGauge_Player::SetVtx(int nIdx)
+{
+	// 頂点設定
+	m_pObj2DGauge[nIdx]->SetVtx();
+
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	D3DXVECTOR2* pTex = m_pObj2DGauge[nIdx]->GetTex();
+
+	// 頂点情報へのポインタ
+	VERTEX_2D* pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pObj2DGauge[nIdx]->GetVtxBuff()->Lock(0, 0, (void**)&pVtx, 0);
+
+	// サイズ取得
+	D3DXVECTOR2 size = m_pObj2DGauge[nIdx]->GetSize();
+
+	// 頂点座標の設定
+	pVtx[0].tex = pTex[0];
+	pVtx[1].tex = pTex[1];
+	pVtx[2].tex = pTex[2];
+	pVtx[3].tex = pTex[3];
+
+	// 頂点バッファをアンロックロック
+	m_pObj2DGauge[nIdx]->GetVtxBuff()->Unlock();
 }

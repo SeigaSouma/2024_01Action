@@ -32,11 +32,7 @@ namespace
 CHP_GaugePlayer::CHP_GaugePlayer(int nPriority) : CObject(nPriority)
 {
 	// 値のクリア
-	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
-	{
-		m_pObj2DGauge[nCntGauge] = nullptr;
-	}
-
+	memset(m_pObj2DGauge, 0, sizeof(m_pObj2DGauge));	// 2Dゲージのオブジェクト
 	m_nLifeValue = 0;			// 値
 	m_nMaxLifeValue = 0;		// 最大値
 	m_nOriginLifeValue = 0;	// 初期値

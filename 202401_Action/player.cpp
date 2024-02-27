@@ -234,10 +234,10 @@ HRESULT CPlayer::Init()
 	m_pSkillPoint = CSkillPoint::Create();
 
 	// HPゲージ生成
-	m_pHPGauge = CHP_GaugePlayer::Create({640.0f, 630.0f, 0.0f}, GetLifeOrigin());
+	m_pHPGauge = CHP_GaugePlayer::Create(MyLib::Vector3(640.0f, 640.0f, 0.0f), GetLifeOrigin());
 
 	// スタミナゲージ生成
-	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(200.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
+	m_pStaminaGauge = CStaminaGauge_Player::Create(MyLib::Vector3(640.0f, 680.0f, 0.0f), DEFAULT_STAMINA);
 
 	return S_OK;
 }
