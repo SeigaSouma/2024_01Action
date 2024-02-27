@@ -216,6 +216,9 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 			// U“®
 			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_STRONG);
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_ENEMYATK_SAND,
+				weponpos, 0.0f, 0.0f, 20.0f);
 		}
 		break;
 

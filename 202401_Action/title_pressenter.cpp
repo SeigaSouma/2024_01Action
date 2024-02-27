@@ -11,6 +11,7 @@
 #include "calculation.h"
 #include "input.h"
 #include "fade.h"
+#include "tutorial_checkshould.h"
 
 //==========================================================================
 // 定数定義
@@ -28,6 +29,17 @@ CTitle_PressEnter::STATE_FUNC CTitle_PressEnter::m_StateFunc[] =
 	&CTitle_PressEnter::StateNone,		// なし
 	&CTitle_PressEnter::StateFadeIn,	// フェードイン
 };
+
+//==========================================================================
+// コンストラクタ
+//==========================================================================
+CTitle_PressEnter::CTitle_PressEnter(float fadetime, int nPriority) : m_fFadeOutTime(fadetime), CObject2D(nPriority)
+{
+	// 値のクリア
+	m_state = eState::STATE_NONE;		// 状態
+	m_fStateTime = 0.0f;			// 状態カウンター
+	m_pTutorialCheck = nullptr;		// チュートリアルやるか確認
+}
 
 //==========================================================================
 // 生成処理
@@ -110,9 +122,14 @@ void CTitle_PressEnter::Update()
 		pInputKeyboard->GetTrigger(DIK_BACKSPACE)
 		)
 	{
+		// チュートリアル確認クラス生成
+		if (m_pTutorialCheck == nullptr)
+		{
+			m_pTutorialCheck = CTutorialCheckShould::Create();
+		}
+
 		//CTitle::GetInstance()->SetSceneType(CTitle::SCENETYPE::SCENETYPE_FADEOUT_LOGO);
-		// モード設定
-		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_GAME);
+		
 	}
 
 	// 更新処理

@@ -40,11 +40,12 @@ public:
 
 	enum EFKLABEL
 	{
-		EFKLABEL_SAMPLE_LASER = 0,		// サンプルのレーザー
-		EFKLABEL_COUNTERLINE,	// カウンターの線
+		EFKLABEL_SAMPLE_LASER = 0,	// サンプルのレーザー
+		EFKLABEL_COUNTERLINE,		// カウンターの線
 		EFKLABEL_COUNTERLINE2,		// カウンターの線2
 		EFKLABEL_COUNTER_KRKR,		// カウンターのキラキラ
-		EFKLABEL_BGFIRE,		// 背景の炎
+		EFKLABEL_COUNTER_BREAK,		// カウンターブレイク
+		EFKLABEL_BGFIRE,			// 背景の炎
 		EFKLABEL_HITMARK_RED,		// ヒットマーク[赤]
 		EFKLABEL_STRONGATK_SIGN,		// 強攻撃のサイン
 		EFKLABEL_BOSS_ROLLING,		// ボスのローリング
@@ -54,6 +55,7 @@ public:
 		EFKLABEL_CHARGEFINISH,			// チャージ完了
 		EFKLABEL_CHARGE,			// チャージ完了後
 		EFKLABEL_TITLEBLUR,			// タイトルの光
+		EFKLABEL_ENEMYATK_SAND,			// 敵攻撃の煙
 		EFKLABEL_MAX
 	};
 

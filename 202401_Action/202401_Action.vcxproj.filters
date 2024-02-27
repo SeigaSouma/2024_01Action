@@ -558,6 +558,9 @@
     <ClCompile Include="hp_gauge_tip.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="tutorial_checkshould.cpp">
+      <Filter>ソース ファイル\mode\title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -991,6 +994,9 @@
     </ClInclude>
     <ClInclude Include="hp_gauge_tip.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial_checkshould.h">
+      <Filter>ソース ファイル\mode\title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

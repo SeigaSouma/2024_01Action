@@ -21,6 +21,7 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/CounterParticle_01.efkefc",	// カウンターの線
 	"data/Effekseer/counter2.efkefc",			// カウンターの線2
 	"data/Effekseer/CounterParticle_02.efkefc",	// カウンターのキラキラ
+	"data/Effekseer/CounterBreak.efkefc",		// カウンターブレイク
 	"data/Effekseer/BackgroundFire.efkefc",		// 背景の炎
 	"data/Effekseer/HitParticle_Red_01.efkefc",	// ヒットマーク[赤]
 	"data/Effekseer/strongATK.efkefc",			// 強攻撃のサイン
@@ -31,6 +32,7 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/chargeatk_01.efkefc",		// チャージ完了
 	"data/Effekseer/powerloop.efkefc",		// チャージ完了
 	"data/Effekseer/titlelight.efkefc",		// タイトルの光
+	"data/Effekseer/enemyatk_sand.efkefc",		// 敵攻撃の煙
 };
 CMyEffekseer* CMyEffekseer::m_pMyEffekseer = nullptr;	// 自身のポインタ
 

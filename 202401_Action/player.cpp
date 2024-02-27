@@ -975,10 +975,6 @@ void CPlayer::Controll()
 		//	&m_pWeaponHandle,
 		//	"data/Effekseer/debugline_green.efkefc",
 		//	weponpos, rot, 0.0f, 40.0f, true);
-
-		// デバッグ表示
-		CManager::GetInstance()->GetDebugProc()->Print(
-			"わああああああああああああああああああああああああああああああああああああああああああああ\n");
 	}
 
 	if (pInputKeyboard->GetRepeat(DIK_O, 4) == true)
@@ -1488,6 +1484,12 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 			// 敵へダウン状態
 			CEnemy* pEnemy = CEnemy::GetListObj().GetData(m_nIdxRockOn);
+
+			float angle = pEnemy->GetPosition().AngleXZ(GetPosition());
+
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_COUNTER_BREAK,
+				pEnemy->GetCenterPosition(), MyLib::Vector3(0.0f, D3DX_PI + angle, 0.0f), 0.0f, 40.0f);
 
 			if (pEnemy != nullptr)
 			{

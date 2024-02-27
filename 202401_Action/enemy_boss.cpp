@@ -344,9 +344,12 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_STRONG);
 			CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_ENEMYATK_SAND,
+				weponpos, 0.0f, 0.0f, 20.0f);
 		}
 		else{
-			// U“®
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_SWING_FAST);
 		}
 		break;
@@ -388,6 +391,10 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 			// U“®
 			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_SHORT);
+
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_ENEMYATK_SAND,
+				weponpos, 0.0f, 0.0f, 20.0f);
 		}
 		break;
 

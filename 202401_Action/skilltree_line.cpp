@@ -19,8 +19,9 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\line_01.png";
+	const char* TEXTURE = "data\\TEXTURE\\skilltree\\skilltree_line.png";
 	const float SIZE_HEIGHT = 15.0f;
+	const float LENGTH_TEXTUREREPEAT = SIZE_HEIGHT;	// テクスチャがリピートする長さ
 }
 CListManager<CSkillTree_Line> CSkillTree_Line::m_List = {};	// リスト
 
@@ -109,6 +110,16 @@ HRESULT CSkillTree_Line::Init()
 
 	// 色設定
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+
+	// サイズ取得
+	D3DXVECTOR2 size = GetSize();
+
+	D3DXVECTOR2* pTex = GetTex();
+
+	float ratio = size.x / LENGTH_TEXTUREREPEAT;
+
+	pTex[1] = D3DXVECTOR2(ratio, 0.0f);
+	pTex[3] = D3DXVECTOR2(ratio, 1.0f);
 
 	// 追加
 	m_List.Regist(this);

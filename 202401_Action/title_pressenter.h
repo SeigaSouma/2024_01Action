@@ -9,6 +9,7 @@
 #define _TITLE_PRESSENTER_H_		// 二重インクルード防止のマクロを定義する
 
 #include "object2D.h"
+class CTutorialCheckShould;
 
 //==========================================================================
 // クラス定義
@@ -18,7 +19,7 @@ class CTitle_PressEnter : public CObject2D
 {
 public:
 
-	CTitle_PressEnter(float fadetime, int nPriority = 8) : m_fFadeOutTime(fadetime), CObject2D(nPriority) {}
+	CTitle_PressEnter(float fadetime, int nPriority = 8);
 	~CTitle_PressEnter() {}
 	
 	//  オーバーライドされた関数
@@ -57,7 +58,7 @@ private:
 	eState m_state;		// 状態
 	float m_fStateTime;	// 状態カウンター
 	const float m_fFadeOutTime;	// フェードにかかる時間
-
+	CTutorialCheckShould* m_pTutorialCheck;	// チュートリアルやるか確認
 };
 
 #endif

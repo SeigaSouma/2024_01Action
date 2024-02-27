@@ -10,6 +10,7 @@
 
 #include "constans.h"
 #include "skilltree_icon.h"
+#include "instantfade.h"
 
 class CSkillTree_Ability;
 class CGameRating;
@@ -79,7 +80,7 @@ public:
 private:
 
 	// ƒƒ“ƒoŠÖ”
-	void SceneTransition();	// ‘JˆÚ’†
+	void SceneTransition(CInstantFade::STATE fadestate);	// ‘JˆÚ’†
 	void SceneEnhance();
 	void SceneReaspawn();	// •œŠˆ
 	void SetEnemy();

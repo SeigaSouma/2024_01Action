@@ -298,6 +298,7 @@
     <ClCompile Include="torch.cpp" />
     <ClCompile Include="transferBeacon.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="tutorial_checkshould.cpp" />
     <ClCompile Include="tutorial_screen.cpp" />
     <ClCompile Include="Xload.cpp" />
   </ItemGroup>
@@ -444,6 +445,7 @@
     <ClInclude Include="torch.h" />
     <ClInclude Include="transferBeacon.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="tutorial_checkshould.h" />
     <ClInclude Include="tutorial_screen.h" />
     <ClInclude Include="Xload.h" />
   </ItemGroup>

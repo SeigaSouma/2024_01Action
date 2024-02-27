@@ -9,7 +9,6 @@
 #include "debugproc.h"
 #include "manager.h"
 #include "renderer.h"
-#include "instantfade.h"
 #include "player.h"
 #include "enemy.h"
 #include "camera.h"
@@ -113,7 +112,7 @@ HRESULT CGameManager::Init()
 	m_nNowStage = 0;			// 現在のステージ
 #endif
 
-	m_SceneType = SCENE_TRANSITION;	// シーンの種類
+	m_SceneType = SceneType::SCENE_TRANSITION;	// シーンの種類 
 
 	// ゲーム評価追加
 	m_pGameRating.clear();
@@ -153,6 +152,9 @@ void CGameManager::Update()
 			pAssist->SetDefaultText();
 		}
 	}
+
+	// 遷移なしフェードの状態取得
+	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
 
 	// 操作状態
 	switch (m_SceneType)
@@ -204,7 +206,7 @@ void CGameManager::Update()
 
 	case CGameManager::SceneType::SCENE_TRANSITION:
 		m_bControll = false;
-		SceneTransition();
+		SceneTransition(fadestate);
 		break;
 
 	case CGameManager::SceneType::SCENE_REASPAWN:		// 復活
@@ -315,12 +317,9 @@ void CGameManager::UpdateGalleryVolume()
 //==========================================================================
 // メイン遷移中
 //==========================================================================
-void CGameManager::SceneTransition()
+void CGameManager::SceneTransition(CInstantFade::STATE fadestate)
 {
-	// 遷移なしフェードの状態取得
-	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
-
-	if (fadestate == CInstantFade::STATE_FADECOMPLETION || 
+	if (fadestate == CInstantFade::STATE_FADECOMPLETION ||
 		!m_bGameStart)
 	{// 完了した瞬間
 
@@ -376,8 +375,11 @@ void CGameManager::SceneTransition()
 		CPlayer* pPlayer = playerList.GetData(0);
 
 		// クリアポイント追加
-		CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
-		pSkillPoint->SetState(CSkillPoint::STATE_WAIT);
+		if (pPlayer != nullptr)
+		{
+			CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
+			pSkillPoint->SetState(CSkillPoint::STATE_WAIT);
+		}
 
 		// 操作補助生成
 		CControlAssist* pAssist = CControlAssist::Create();
@@ -404,7 +406,8 @@ void CGameManager::SceneEnhance()
 	// 遷移なしフェードの状態取得
 	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
 
-	if (fadestate != CInstantFade::STATE_FADECOMPLETION)
+	if (fadestate != CInstantFade::STATE_FADECOMPLETION &&
+		m_bGameStart)
 	{// 完了してない
 		return;
 	}
@@ -444,13 +447,17 @@ void CGameManager::SceneEnhance()
 	}
 
 	// ステージ加算
-	AddNowStage();
-	if (m_bEndNormalStage)
+	if (m_bGameStart)
 	{
-		//CManager::GetInstance()->GetFade()->SetFade(CScene::MODE::MODE_TITLE);
-		//CManager::GetInstance()->SetMode(CScene::MODE::MODE_TITLE);
-		return;
+		AddNowStage();
+		if (m_bEndNormalStage)
+		{
+			return;
+		}
 	}
+
+	// ゲーム開始時のフラグ
+	m_bGameStart = true;
 
 
 	// BGMストップ
@@ -559,13 +566,11 @@ void CGameManager::SceneReaspawn()
 	// 前回のポイント+お情けポイント0設定
 	pPlayer->GetSkillPoint()->SetPoint(m_nPrevPoint + 2);
 
+	// 復活回数加算
 	if (m_pGameRating[m_nNowStage] != nullptr)
 	{
 		m_pGameRating[m_nNowStage]->AddNumDead();
 	}
-
-	// 復活回数加算
-	m_pGameRating[m_nNowStage]->AddNumDead();
 
 	// クリアタイムリセット
 	m_pGameRating[m_nNowStage]->SetClearTime(0.0f);
