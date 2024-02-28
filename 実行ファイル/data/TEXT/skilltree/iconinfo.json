@@ -16,7 +16,7 @@
         },
         {
             "ID": 1,
-            "needpoint": 2,
+            "needpoint": 1,
             "parentID": 0,
             "pos": {
                 "x": 0.0,
@@ -142,7 +142,7 @@
         },
         {
             "ID": 10,
-            "needpoint": 3,
+            "needpoint": 2,
             "parentID": 3,
             "pos": {
                 "x": 150.0,
@@ -156,7 +156,7 @@
         },
         {
             "ID": 11,
-            "needpoint": 1,
+            "needpoint": 2,
             "parentID": 0,
             "pos": {
                 "x": -225.0,
@@ -184,7 +184,7 @@
         },
         {
             "ID": 13,
-            "needpoint": 3,
+            "needpoint": 4,
             "parentID": 11,
             "pos": {
                 "x": -400.0,
@@ -534,7 +534,7 @@
         },
         {
             "ID": 38,
-            "needpoint": 2,
+            "needpoint": 1,
             "parentID": 15,
             "pos": {
                 "x": 340.0,
@@ -548,7 +548,7 @@
         },
         {
             "ID": 39,
-            "needpoint": 3,
+            "needpoint": 2,
             "parentID": 38,
             "pos": {
                 "x": 490.0,
@@ -562,7 +562,7 @@
         },
         {
             "ID": 40,
-            "needpoint": 4,
+            "needpoint": 3,
             "parentID": 39,
             "pos": {
                 "x": 640.0,
@@ -576,7 +576,7 @@
         },
         {
             "ID": 41,
-            "needpoint": 1,
+            "needpoint": 2,
             "parentID": 17,
             "pos": {
                 "x": -360.0,
@@ -604,7 +604,7 @@
         },
         {
             "ID": 43,
-            "needpoint": 2,
+            "needpoint": 4,
             "parentID": 42,
             "pos": {
                 "x": -670.0,
@@ -640,13 +640,13 @@
                 "z": 0.0
             },
             "skillcategory": 0,
-            "skillstage": 3,
+            "skillstage": 2,
             "skilltype": 5,
             "texID": 31
         },
         {
             "ID": 46,
-            "needpoint": 2,
+            "needpoint": 4,
             "parentID": 45,
             "pos": {
                 "x": -625.0,

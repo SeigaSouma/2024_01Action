@@ -141,6 +141,7 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 	m_bMotionAutoSet = false;						// モーションの自動設定
+	//m_pWeaponHandle = nullptr;
 
 	m_PlayerStatus = sPlayerStatus();				// プレイヤーステータス
 	m_sDamageInfo = sDamageInfo();					// ダメージ情報
@@ -951,6 +952,19 @@ void CPlayer::Controll()
 		}
 	}
 
+	//if (m_pWeaponHandle != nullptr)
+	{
+		// 武器の位置
+		MyLib::Vector3 weponpos = UtilFunc::Transformation::WorldMtxChangeToPosition(GetModel()[16]->GetWorldMtx());
+
+		// 武器のマトリックス取得
+		D3DXMATRIX weaponWorldMatrix = GetModel()[16]->GetWorldMtx();
+
+		// 軌跡のマトリックス設定
+		CMyEffekseer::GetInstance()->SetMatrix(m_WeaponHandle, weaponWorldMatrix);
+		CMyEffekseer::GetInstance()->SetPosition(m_WeaponHandle, weponpos);
+	}
+
 #if _DEBUG
 	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
 	{
@@ -1005,20 +1019,6 @@ void CPlayer::Controll()
 		fff -= 0.1f;
 		CManager::GetInstance()->GetSound()->SetFrequency(CSound::LABEL_BGM_GAME, fff);
 	}
-
-	//if (m_pWeaponHandle != nullptr)
-	//{
-
-	//	// 武器の位置
-	//	MyLib::Vector3 weponpos = UtilFunc::Transformation::WorldMtxChangeToPosition(GetModel()[16]->GetWorldMtx());
-
-	//	// 武器のマトリックス取得
-	//	D3DXMATRIX weaponWorldMatrix = GetModel()[16]->GetWorldMtx();
-
-	//	// 軌跡のマトリックス設定
-	//	CMyEffekseer::GetInstance()->SetMatrix(*m_pWeaponHandle, weaponWorldMatrix);
-	//	CMyEffekseer::GetInstance()->SetPosition(*m_pWeaponHandle, weponpos);
-	//}
 #endif
 }
 
@@ -1175,6 +1175,11 @@ void CPlayer::MotionBySetState()
 	case MOTION_ATK4_FINISH:
 	case MOTION_DASHATK:
 		m_bAttacking = true;
+
+		if (pMotion->IsGetCombiable() && m_WeaponHandle != 0)
+		{
+			CMyEffekseer::GetInstance()->SetTrigger(m_WeaponHandle, 0);
+		}
 		break;
 
 	case MOTION_COUNTER_TURN:
@@ -1389,24 +1394,43 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	// 武器の位置
 	MyLib::Vector3 weponpos = pMotion->GetAttackPosition(GetModel(), ATKInfo);
+	MyLib::Vector3 pos = GetPosition();
 	MyLib::Vector3 rot = GetRotation();
 
 	switch (nType)
 	{
 	case MOTION::MOTION_ATK:
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING1);
+
+		m_WeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL::EFKLABEL_NORMALATK,
+			weponpos, rot, 0.0f, 15.0f, true);
 		break;
 
 	case MOTION::MOTION_ATK2:
+	{
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING2);
+
+		m_WeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL::EFKLABEL_NORMALATK,
+			weponpos, rot, 0.0f, 15.0f, true);
+	}
 		break;
 
 	case MOTION::MOTION_DASHATK:
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_DASHATK_SWING2);
+
+		m_WeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL::EFKLABEL_NORMALATK,
+			weponpos, rot, 0.0f, 15.0f, true);
 		break;
 
 	case MOTION::MOTION_ATK3:
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_NORMALATK_SWING3);
+
+		m_WeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL::EFKLABEL_NORMALATK,
+			weponpos, rot, 0.0f, 15.0f, true);
 		break;
 
 	case MOTION::MOTION_ATK4:
@@ -1415,6 +1439,18 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	case MOTION::MOTION_ATK4_FINISH:
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CHARGEATK_MOVE);
+
+		m_WeaponHandle = CMyEffekseer::GetInstance()->SetEffect(
+			CMyEffekseer::EFKLABEL::EFKLABEL_NORMALATK,
+			weponpos, rot, 0.0f, 15.0f, true);
+
+		if (m_bChargeCompletion)
+		{
+			pos.y += 100.0f;
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_CHARGEATK,
+				pos, MyLib::Vector3(0.0f, D3DX_PI + rot.y, 0.0f), 0.0f, 80.0f, true);
+		}
 		break;
 
 	case MOTION::MOTION_WALK:

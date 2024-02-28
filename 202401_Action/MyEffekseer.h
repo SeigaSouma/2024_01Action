@@ -56,6 +56,10 @@ public:
 		EFKLABEL_CHARGE,			// チャージ完了後
 		EFKLABEL_TITLEBLUR,			// タイトルの光
 		EFKLABEL_ENEMYATK_SAND,			// 敵攻撃の煙
+		EFKLABEL_NORMALATK_LEFT,		// 通常攻撃左振り
+		EFKLABEL_NORMALATK_RIGHT,		// 通常攻撃右振り
+		EFKLABEL_NORMALATK,		// 通常攻撃
+		EFKLABEL_CHARGEATK,		// チャージ攻撃
 		EFKLABEL_MAX
 	};
 
@@ -90,6 +94,7 @@ public:
 	bool IsDeath(Effekseer::Handle handle);	// 死亡フラグ
 	void StopAll();	// 全て停止
 	void Stop(Effekseer::Handle handle);	// 停止
+	void SetTrigger(Effekseer::Handle handle, int idx);
 
 	static CMyEffekseer* GetInstance() { return m_pMyEffekseer; }	// インスタンス取得
 	static CMyEffekseer* Create();								// インスタンス生成

@@ -33,6 +33,10 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/powerloop.efkefc",		// チャージ完了
 	"data/Effekseer/titlelight.efkefc",		// タイトルの光
 	"data/Effekseer/enemyatk_sand.efkefc",		// 敵攻撃の煙
+	"data/Effekseer/normalATK_left.efkefc",		// 通常攻撃左振り
+	"data/Effekseer/normalATK_right.efkefc",		// 通常攻撃右振り
+	"data/Effekseer/normalATK.efkefc",		// 通常攻撃
+	"data/Effekseer/chargeatk.efkefc",		// チャージ攻撃
 };
 CMyEffekseer* CMyEffekseer::m_pMyEffekseer = nullptr;	// 自身のポインタ
 
@@ -346,6 +350,17 @@ void CMyEffekseer::Update()
 		time++;
 	}
 }
+
+void CMyEffekseer::SetTrigger(Effekseer::Handle handle, int idx)
+{
+	if (!efkManager->Exists(handle))
+	{// 再生終了
+		return;
+	}
+
+	efkManager->SendTrigger(handle, idx);
+}
+
 
 //==========================================================================
 // 位置更新

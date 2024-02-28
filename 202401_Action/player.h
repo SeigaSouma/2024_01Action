@@ -313,6 +313,7 @@ private:
 	int m_nRespawnPercent;			// リスポーン確率
 	bool m_bTouchBeacon;			// ビーコンに触れてる判定
 	bool m_bMotionAutoSet;			// モーションの自動設定
+	Effekseer::Handle m_WeaponHandle;
 
 	sPlayerStatus m_PlayerStatus;	// プレイヤーステータス
 	sDamageInfo m_sDamageInfo;		// ダメージ情報
