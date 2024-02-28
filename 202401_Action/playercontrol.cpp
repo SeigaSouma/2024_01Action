@@ -184,7 +184,12 @@ void CPlayerControlDefence::Defence(CPlayer* player)
 	MyLib::Vector3 Camerarot = pCamera->GetRotation();
 
 	// ƒK[ƒh
-	if ((pMotion->IsGetCombiable() || pMotion->IsGetCancelable()) &&
+	if (
+		(
+			(pMotion->IsGetCombiable() &&
+		(pMotion->GetType() == CPlayer::MOTION::MOTION_COUNTER_TURN || pMotion->GetType() == CPlayer::MOTION::MOTION_COUNTER_ATTACK)) ||
+		pMotion->IsGetCancelable()
+			) &&
 		!player->IsJump() &&
 		pInputGamepad->GetPress(CInputGamepad::BUTTON_RB, player->GetMyPlayerIdx()))
 	{

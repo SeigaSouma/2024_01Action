@@ -16,7 +16,6 @@
 namespace
 {
 	const char* LOADTEXT = "data\\TEXT\\skilltree\\descriptiontexture.txt";
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\skilltree_window3.png";
 }
 
 //==========================================================================
@@ -88,12 +87,12 @@ HRESULT CSkillTree_Description::Init()
 
 	// サイズ設定
 	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(m_nTexIdx[0]);
-	size = UtilFunc::Transformation::AdjustSizeByWidth(size, 150.0f);
+	size = UtilFunc::Transformation::AdjustSizeByWidth(size, 160.0f);
 	SetSize(size);
 	SetSizeOrigin(GetSize());
 
 	// 位置設定
-	SetPosition(MyLib::Vector3(1050.0f, 500.0f, 0.0f));
+	SetPosition(MyLib::Vector3(1050.0f, 430.0f, 0.0f));
 
 	// 色設定
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));

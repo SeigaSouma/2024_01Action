@@ -92,8 +92,8 @@ class CAbillityAttack : public CEnhance
 	//=============================
 	// ’iŠK•Ê
 	void AddPower01() { m_pPlayer->SetAttackMultiply(1.15f); }
-	void ShorterChargeTime01() { m_pPlayer->SetChargeTime(0.7f); }
-	void ShorterChargeTime02() { m_pPlayer->SetChargeTime(0.3f); }
+	void ShorterChargeTime01() { m_pPlayer->SetChargeTime(0.8f); }
+	void ShorterChargeTime02() { m_pPlayer->SetChargeTime(0.7f); }
 	void NotFlinch() { m_pPlayer->SetToggleFlinch(false); }
 	void AddPower02() { m_pPlayer->SetAttackMultiply(1.3f); }
 	void AddPower03() { m_pPlayer->SetAttackMultiply(1.5f); }
