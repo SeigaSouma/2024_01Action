@@ -38,8 +38,8 @@ namespace
 	const float TIME_LOAD = 2.0f;	// ロード時間
 
 #if _DEBUG
-	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
-	//const CScene::MODE STARTMODE = CScene::MODE_GAME;
+	//const CScene::MODE STARTMODE = CScene::MODE_TITLE;
+	const CScene::MODE STARTMODE = CScene::MODE_GAME;
 #else
 	//const CScene::MODE STARTMODE = CScene::MODE_GAME;
 	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
@@ -409,7 +409,7 @@ void CManager::Load()
 	//**********************************
 	// ポーズ
 	//**********************************
-	m_pPause = CPause::Create();
+	m_pPause = CPause::Create(STARTMODE);
 	if (m_pPause == nullptr)
 	{
 		return;
@@ -514,6 +514,8 @@ void CManager::Reset(CScene::MODE mode)
 	// ポーズ状況入れ替え
 	if (m_pPause != nullptr)
 	{
+		ChangePauseMode(mode);
+
 		if (m_pPause->IsPause() == true)
 		{// ポーズ中だったら
 			m_pPause->SetPause();
@@ -877,11 +879,11 @@ void CManager::Update()
 
 		if ((pInputKeyboard->GetTrigger(DIK_P) == true || m_pInputGamepad->GetTrigger(CInputGamepad::BUTTON_START, 0) == true) &&
 			m_pFade->GetState() == CFade::STATE_NONE &&
-			GetMode() == CScene::MODE_GAME)
+			(GetMode() == CScene::MODE_GAME || GetMode() == CScene::MODE::MODE_GAMETUTORIAL))
 		{// フェード中じゃないとき
 
 			// サウンド再生
-			//GetSound()->PlaySound(CSound::LABEL_SE_TUTORIALWINDOW);
+			m_pSound->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_END);
 			m_pPause->SetPause();
 		}
 
@@ -1022,9 +1024,18 @@ void CManager::ChangePauseMode(CScene::MODE mode)
 	switch (mode)
 	{
 	case CScene::MODE::MODE_GAME:
-		break;
-
 	case CScene::MODE::MODE_GAMETUTORIAL:
+
+		// 削除
+		if (m_pPause!= nullptr)
+		{
+			m_pPause->Kill();
+			delete m_pPause;
+			m_pPause = nullptr;
+		}
+
+		// 再生成
+		m_pPause = CPause::Create(mode);
 		break;
 
 	default:

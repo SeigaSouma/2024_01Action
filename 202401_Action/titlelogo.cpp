@@ -11,6 +11,7 @@
 #include "sound.h"
 #include "calculation.h"
 #include "deadmanager.h"
+#include "fade.h"
 
 //==========================================================================
 // 定数定義
@@ -120,6 +121,11 @@ void CTitleLogo::Uninit()
 //==========================================================================
 void CTitleLogo::Update()
 {
+	if (CManager::GetInstance()->GetFade()->GetState() != CFade::STATE_NONE)
+	{// フェード中は抜ける
+		return;
+	}
+
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
 	if (IsDeath())

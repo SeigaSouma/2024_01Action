@@ -10,6 +10,8 @@
 #include "input.h"
 #include "calculation.h"
 #include "fade.h"
+#include "title.h"
+#include "title_pressenter.h"
 
 //==========================================================================
 // マクロ定義
@@ -191,28 +193,44 @@ void CTutorialCheckShould::Update()
 
 	m_fFlashTime += CManager::GetInstance()->GetDeltaTime();	// 点滅時間
 
-	// 選択肢更新
-	UpdateSelect();
 	if (IsDeath())
 	{
 		return;
 	}
 
-	for (int i = 0; i < SELECT_MAX; i++)
+	if (CManager::GetInstance()->GetFade()->GetState() != CFade::STATE_NONE)
+	{// フェード中は抜ける
+		return;
+	}
+
+	if (CTitle::GetInstance()->GetTitlePressEnter()->GetState() == CTitle_PressEnter::STATE::STATE_NONE)
 	{
-		D3DXCOLOR col = m_pSelectObj[i]->GetColor();
-		if (m_nSelect == i)
+		// 選択肢更新
+		UpdateSelect();
+
+		for (int i = 0; i < SELECT_MAX; i++)
 		{
-			col = UtilFunc::Transformation::HSVtoRGB(0.0f, 0.0f, 0.7f + fabsf(sinf(D3DX_PI * (m_fFlashTime / 1.0f)) * 0.3f));
-			m_pSelectObj[i]->BindTexture(m_nTexIdx[i] + 2);
+			D3DXCOLOR col = m_pSelectObj[i]->GetColor();
+			if (m_nSelect == i)
+			{
+				col = UtilFunc::Transformation::HSVtoRGB(0.0f, 0.0f, 0.7f + fabsf(sinf(D3DX_PI * (m_fFlashTime / 1.0f)) * 0.3f));
+				m_pSelectObj[i]->BindTexture(m_nTexIdx[i + 2]);
+			}
+			else
+			{
+				// 黒っぽくする
+				col = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
+				m_pSelectObj[i]->BindTexture(m_nTexIdx[i]);
+			}
+			m_pSelectObj[i]->SetColor(col);
 		}
-		else
+	}
+	else
+	{
+		for (int i = 0; i < SELECT_MAX; i++)
 		{
-			// 黒っぽくする
-			col = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
-			m_pSelectObj[i]->BindTexture(m_nTexIdx[i]);
+			m_pSelectObj[i]->SetAlpha(GetAlpha());
 		}
-		m_pSelectObj[i]->SetColor(col);
 	}
 
 	// 更新処理
@@ -279,7 +297,7 @@ void CTutorialCheckShould::UpdateSelect()
 	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON_B, 0) ||
 		pInputKeyboard->GetTrigger(DIK_BACK))
 	{
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_END);
+		CTitle::GetInstance()->GetTitlePressEnter()->SetState(CTitle_PressEnter::STATE::STATE_TUTORIAL_FADEOUT);
 		return;
 	}
 }

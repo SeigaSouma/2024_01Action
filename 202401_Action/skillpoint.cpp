@@ -292,6 +292,7 @@ void CSkillPoint::AddPoint()
 void CSkillPoint::AddPoint(int nValue)
 {
 	m_nPoint += nValue;
+	UtilFunc::Transformation::ValueNormalize(m_nPoint, MAX_POINT, MIN_POINT);
 }
 
 //==========================================================================

@@ -52,6 +52,7 @@ public:
 	void SubValue(float value);	// 値減算
 	void SetValue(float value);	// 値設定
 	float GetValue();			// 値取得
+	float GetMaxValue() { return m_fMaxStaminaValue; }	// 最大値取得
 	float GetAutoHealValue() { return m_fAutoHeal; }	// 自然回復量取得
 
 	void SetState(STATE state);

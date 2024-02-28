@@ -30,8 +30,10 @@ public:
 	//=============================
 	enum SCENETYPE
 	{
-		SCENETYPE_NONE = 0,		// なにもなし
-		SCENETYPE_FADEOUT_LOGO,	// ロゴフェードアウト
+		SCENETYPE_NONE = 0,			// なにもなし
+		SCENETYPE_FADEIN,			// フェードイン
+		SCENETYPE_FADEOUT_LOGO,		// ロゴフェードアウト
+		SCENETYPE_SHOULDTUTORIAL,	// チュートリアル確認
 		SCENETYPE_MAX
 	};
 
@@ -47,6 +49,9 @@ public:
 	// シーンの種類
 	void SetSceneType(SCENETYPE type) { m_SceneType = type; }
 	SCENETYPE GetSceneType() { return m_SceneType; }
+
+	// その他
+	CTitle_PressEnter* GetTitlePressEnter() { return m_pPressEnter; }
 
 	// 静的関数
 	static CTitle* GetInstance();	// インスタンス取得
@@ -64,6 +69,7 @@ private:
 	// メンバ関数
 	//=============================
 	void SceneNone();			// なにもなし
+	void SceneFadeInLogo();		// ロゴフェードイン
 	void SceneFadeOutLoGo();		// ロゴフェードアウト
 
 	//=============================

@@ -62,6 +62,7 @@ CGameManager::CGameManager()
 	m_nNowStage = 0;			// 現在のステージ
 	m_nNumStage = 0;			// ステージの総数
 	m_nPrevPoint = 0;			// 前回のポイント
+	m_nAddClearPoint = 0;		// 加算するクリアポイント
 	m_pSkilltreeAbillity = nullptr;	// スキルツリー能力のポインタ
 	m_PrevSkillIconMastering.clear();	// 前回のスキルアイコンの習得状況
 	m_p_PrevSkillIcon.clear();			// 前回のスキルアイコン
@@ -268,7 +269,7 @@ void CGameManager::GameClearSettings()
 
 	// クリアポイント追加
 	CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
-	pSkillPoint->AddPoint(POINT_WAVECLEAR);
+	pSkillPoint->AddPoint(m_nAddClearPoint);
 	pSkillPoint->SetSlideIn();
 
 	// 前回のポイント保存
@@ -300,6 +301,16 @@ void CGameManager::GameResultSettings()
 	{
 		pGallery->SetState(CGallery::STATE_CLEARHEAT);
 	}
+
+
+	// 今回の評価情報取得
+	CGameRating::sRating ratingInfo = m_pGameRating[m_nNowStage]->GetRatingInfo();
+	CGameRating::RATING timerating = m_pGameRating[m_nNowStage]->CalculateClearTimeRank(ratingInfo.clearTime);
+	CGameRating::RATING dmgrating = m_pGameRating[m_nNowStage]->CalculateRecieveDamageRank(ratingInfo.receiveDamage);
+	CGameRating::RATING deadrating = m_pGameRating[m_nNowStage]->CalculateNumDeadRank(ratingInfo.numDead);
+
+	CGameRating::RATING ratingall = m_pGameRating[m_nNowStage]->CalculateRank(timerating, dmgrating, deadrating);
+	m_nAddClearPoint = m_pGameRating[m_nNowStage]->CalculateOverrallRankPoint(ratingall);
 }
 
 //==========================================================================
@@ -497,6 +508,8 @@ void CGameManager::SceneEnhance()
 	{
 		pPlayer->SetPosition(0.0f);
 		pPlayer->GetSkillPoint()->SetState(CSkillPoint::STATE_ENHANCE);
+		pPlayer->SetLife(pPlayer->GetLifeOrigin());
+		pPlayer->GetStaminaGauge()->SetValue(pPlayer->GetStaminaGauge()->GetMaxValue());
 	}
 
 	// エフェクト全て停止
@@ -697,6 +710,7 @@ void CGameManager::SetEnemy()
 		pPlayer->SetPosition(MyLib::Vector3(0.0f, 0.0f, -1000.0f));
 		pPlayer->SetRotation(MyLib::Vector3(0.0f, D3DX_PI, 0.0f));
 		pPlayer->SetRotDest(D3DX_PI);
+		pPlayer->GetStaminaGauge()->SetValue(pPlayer->GetStaminaGauge()->GetMaxValue());
 	}
 
 	// カメラの情報取得

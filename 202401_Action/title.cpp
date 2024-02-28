@@ -38,6 +38,7 @@ CTitle* CTitle::m_pThisPtr = nullptr;	// 自身のポインタ
 CTitle::SCENE_FUNC CTitle::m_SceneFunc[] =
 {
 	&CTitle::SceneNone,			// なにもなし
+	&CTitle::SceneFadeInLogo,	// ロゴフェードイン
 	&CTitle::SceneFadeOutLoGo,	// ロゴフェードアウト
 };
 
@@ -118,10 +119,10 @@ HRESULT CTitle::Init()
 	//CTitleScreen::Create();
 
 	// タイトルロゴ生成
-	m_pLogo = CTitleLogo::Create(2.0f);
+	m_pLogo = CTitleLogo::Create(1.0f);
 
 	// プレスエンター
-	m_pPressEnter = CTitle_PressEnter::Create(2.0f);
+	m_pPressEnter = CTitle_PressEnter::Create(1.0f);
 
 	// 塵
 	CMyEffekseer::GetInstance()->SetEffect(
@@ -167,12 +168,6 @@ void CTitle::Update()
 
 	// 状態別更新処理
 	(this->*(m_SceneFunc[m_SceneType]))();
-
-	//if (pInputKeyboard->GetTrigger(DIK_RETURN) || pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0) == true)
-	//{
-	//	// モード設定
-	//	CManager::GetInstance()->GetFade()->SetFade(CScene::MODE::MODE_GAME);
-	//}
 }
 
 //==========================================================================
@@ -182,6 +177,14 @@ void CTitle::SceneNone()
 {
 	// シーンカウンター
 	m_fSceneTime = TIME_FADELOGO;
+}
+
+//==========================================================================
+// ロゴフェードイン
+//==========================================================================
+void CTitle::SceneFadeInLogo()
+{
+
 }
 
 //==========================================================================

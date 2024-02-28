@@ -69,6 +69,7 @@ public:
 	int GetNowStage();	// 現在のステージ取得
 	void SetNumStage(int nStage);				// ステージの総数設定
 	int GetNumStage() { return m_nNumStage; }	// ステージの総数取得
+	int GetAddClearPoint() { return m_nAddClearPoint; }
 
 	void SetPrevEnhance();	// 前回の強化内容設定
 
@@ -99,6 +100,7 @@ protected:
 	int m_nNowStage;		// 現在のステージ
 	int m_nNumStage;		// ステージの総数
 	int m_nPrevPoint;		// 前回のポイント
+	int m_nAddClearPoint;	// 加算するクリアポイント
 	std::vector<CSkillTree_Icon::eMastering> m_PrevSkillIconMastering;	// 前回のスキルアイコンの習得状況
 	std::vector<CSkillTree_Icon*> m_p_PrevSkillIcon;	// 前回のスキルアイコン
 	std::vector<CGameRating*> m_pGameRating;			// ゲーム評価

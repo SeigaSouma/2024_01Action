@@ -161,6 +161,7 @@
     <ClCompile Include="afterrespawn_text.cpp" />
     <ClCompile Include="ballast.cpp" />
     <ClCompile Include="battleresult.cpp" />
+    <ClCompile Include="battleresult_Overall.cpp" />
     <ClCompile Include="battlestart.cpp" />
     <ClCompile Include="battlestart_effect.cpp" />
     <ClCompile Include="beam.cpp" />
@@ -254,6 +255,8 @@
     <ClCompile Include="object_circlegauge2D.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="pause.cpp" />
+    <ClCompile Include="pause_game.cpp" />
+    <ClCompile Include="pause_tutorial.cpp" />
     <ClCompile Include="pickupguide.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playercontrol.cpp" />
@@ -313,6 +316,7 @@
     <ClInclude Include="afterrespawn_text.h" />
     <ClInclude Include="ballast.h" />
     <ClInclude Include="battleresult.h" />
+    <ClInclude Include="battleresult_Overall.h" />
     <ClInclude Include="battlestart.h" />
     <ClInclude Include="battlestart_effect.h" />
     <ClInclude Include="beam.h" />
@@ -409,6 +413,8 @@
     <ClInclude Include="object_circlegauge2D.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="pause.h" />
+    <ClInclude Include="pause_game.h" />
+    <ClInclude Include="pause_tutorial.h" />
     <ClInclude Include="pickupguide.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playercontrol.h" />

@@ -67,7 +67,8 @@ public:
 	RATING GetRating() { return m_RatingInfo.rating; }							// 評価取得
 	sRating GetRatingInfo() { return m_RatingInfo; }							// 評価情報取得
 
-	RATING CalculateRank(const sRating& result, const std::map<std::string, sRating>& rankStandards);
+	int CalculateOverrallRankPoint(RATING allRank);	// 総合ランクポイント割り出し
+	RATING CalculateRank(RATING timeRank, RATING dmgRank, RATING deadRank);
 	RATING CalculateClearTimeRank(const float time);		// 時間のランク割り出し
 	RATING CalculateRecieveDamageRank(const int damage);	// 被ダメージのランク割り出し
 	RATING CalculateNumDeadRank(const int dead);			// 死亡回数のランク割り出し

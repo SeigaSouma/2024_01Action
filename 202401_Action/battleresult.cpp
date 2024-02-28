@@ -11,6 +11,9 @@
 #include "input.h"
 #include "battlestart.h"
 #include "2D_effect.h"
+#include "battleresult_Overall.h"
+#include "player.h"
+#include "skillpoint.h"
 
 //==========================================================================
 // 定数定義
@@ -60,11 +63,12 @@ namespace
 //==========================================================================
 CBattleResult::STATE_FUNC CBattleResult::m_StateFuncList[] =
 {
-	&CBattleResult::StateFadeIn,		// フェードイン
-	&CBattleResult::StateRankWait,		// ランク入場待ち
-	&CBattleResult::StateRankIn,		// ランク入場
-	&CBattleResult::StateReturnWait,	// 押下待機
-	&CBattleResult::StateFadeOut,		// フェードアウト
+	&CBattleResult::StateFadeIn,			// フェードイン
+	&CBattleResult::StateRankWait,			// ランク入場待ち
+	&CBattleResult::StateRankIn,			// ランク入場
+	&CBattleResult::StateRankIn_OverAll,	// 総合ランク入場
+	&CBattleResult::StateReturnWait,		// 押下待機
+	&CBattleResult::StateFadeOut,			// フェードアウト
 };
 
 //==========================================================================
@@ -75,12 +79,17 @@ CBattleResult::CBattleResult(int nPriority) : CObject2D(nPriority)
 	// 値のクリア
 	memset(m_RankInfo, 0, sizeof(m_RankInfo));		// 種類ごとのランク
 	memset(m_pRank, 0, sizeof(m_pRank));		// 種類ごとのランク
-
 	memset(m_pClearTime, 0, sizeof(m_pClearTime));		// 種類ごとの数字
+
+	m_pOverall = nullptr;	// 総合
+
+
 	m_pDamage = nullptr;			// 種類ごとの数字
 	m_pDead = nullptr;				// 種類ごとの数字
 	m_state = STATE::STATE_FADEIN;	// 状態
 	m_fStateTimer = 0.0f;			// 状態タイマー
+	m_fSurvivalTimer = 0.0f;		// 生存タイマー
+	m_bCompleteStaging = false;		// 演出完了フラグ
 }
 
 //==========================================================================
@@ -197,55 +206,22 @@ void CBattleResult::CreateRank()
 
 }
 
-#if 0
 //==========================================================================
-// 数字生成
+// 総合ランク生成
 //==========================================================================
-void CBattleResult::CreateNumber()
+void CBattleResult::CreateRankOverall(int prevPoint)
 {
-
-	// 今回の評価情報取得
+	// 総合戦果
 	CGameRating* pRating = CGame::GetInstance()->GetGameManager()->GetGameRating();
-	CGameRating::sRating ratingInfo = pRating->GetRatingInfo();
+	CGameRating::RATING rating = pRating->CalculateRank(
+		m_RankInfo[CGameRating::RATINGTYPE::RATINGTYPE_TIME].rating,
+		m_RankInfo[CGameRating::RATINGTYPE::RATINGTYPE_DMG].rating,
+		m_RankInfo[CGameRating::RATINGTYPE::RATINGTYPE_DEAD].rating);
 
-	for (int i = 0; i < CGameRating::RATINGTYPE::RATINGTYPE_MAX; i++)
-	{
-		// 生成
-		m_pNumber[i] = CMultiNumber::Create(
-			POSITION_SCORE[i],
-			D3DXVECTOR2(25.0f, 25.0f),
-			DIGIT_NUMBER[i],
-			CNumber::EObjectType::OBJECTTYPE_2D,
-			TEXTURE_NUMBER, true, GetPriority());
-		if (m_pNumber[i] == nullptr)
-		{
-			continue;
-		}
-		CMultiNumber* pNumber = m_pNumber[i];
+	// 生成
+	m_pOverall = CBattleResult_Overall::Create(rating, prevPoint, prevPoint + pRating->CalculateOverrallRankPoint(rating));
 
-		// 位置設定
-		pNumber->SetPosition(POSITION_SCORE[i]);
-
-		// 右寄せに設定
-		pNumber->SetAlignmentType(CMultiNumber::AlignmentType::ALIGNMENT_RIGHT);
-
-		switch (i)
-		{
-		case CGameRating::RATINGTYPE::RATINGTYPE_TIME:
-			pNumber->SetValue(ratingInfo.clearTime);
-			break;
-
-		case CGameRating::RATINGTYPE::RATINGTYPE_DMG:
-			pNumber->SetValue(ratingInfo.numDead);
-			break;
-
-		case CGameRating::RATINGTYPE::RATINGTYPE_DEAD:
-			pNumber->SetValue(ratingInfo.numDead);
-			break;
-		}
-	}
 }
-#endif
 
 //==========================================================================
 // クリアタイム生成
@@ -399,6 +375,12 @@ void CBattleResult::Uninit()
 		m_pDead = nullptr;
 	}
 
+	/*if (m_pOverall != nullptr)
+	{
+		m_pOverall->Uninit();
+		m_pOverall = nullptr;
+	}*/
+
 	CObject2D::Uninit();
 }
 
@@ -434,6 +416,12 @@ void CBattleResult::Kill()
 		m_pDead = nullptr;
 	}
 
+	/*if (m_pOverall != nullptr)
+	{
+		m_pOverall->Kill();
+		m_pOverall = nullptr;
+	}*/
+
 	CObject2D::Uninit();
 }
 
@@ -442,8 +430,9 @@ void CBattleResult::Kill()
 //==========================================================================
 void CBattleResult::Update()
 {
-	// 状態タイマー加算
+	// タイマー加算
 	m_fStateTimer += CManager::GetInstance()->GetDeltaTime();
+	m_fSurvivalTimer += CManager::GetInstance()->GetDeltaTime();
 
 	// 状態別処理
 	(this->*(m_StateFuncList[m_state]))();
@@ -451,9 +440,33 @@ void CBattleResult::Update()
 		return;
 	}
 
+	if (m_fSurvivalTimer >= 0.3f && !m_bCompleteStaging)
+	{
+		// 入力情報取得
+		CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+		CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+		if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_A, 0) ||
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_B, 0) ||
+			pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_START, 0) ||
+			pInputKeyboard->GetTrigger(DIK_RETURN) ||
+			pInputKeyboard->GetTrigger(DIK_SPACE) ||
+			pInputKeyboard->GetTrigger(DIK_BACKSPACE)
+			)
+		{
+			AllSetting();
+		}
+	}
+
 	// 今回の評価情報取得
 	CGameRating* pRating = CGame::GetInstance()->GetGameManager()->GetGameRating();
 	CGameRating::sRating ratingInfo = pRating->GetRatingInfo();
+
+	// タイマーを分、秒、ミリ秒に変換
+	int minutes = static_cast<int>(ratingInfo.clearTime / 60);
+	int seconds = static_cast<int>(ratingInfo.clearTime) % 60;
+	int milliseconds = static_cast<int>((ratingInfo.clearTime - static_cast<int>(ratingInfo.clearTime)) * 1000);
+	milliseconds /= 10;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -462,18 +475,20 @@ void CBattleResult::Update()
 			continue;
 		}
 
+		int time = 0;
+
 		switch (i)
 		{
 		case 0:
-			m_pClearTime[i]->SetValue(static_cast<int>(ratingInfo.clearTime) % 1000);
+			m_pClearTime[i]->SetValue(milliseconds);
 			break;
 
 		case 1:
-			m_pClearTime[i]->SetValue(static_cast<int>(ratingInfo.clearTime) % (60));
+			m_pClearTime[i]->SetValue(seconds);
 			break;
 
 		case 2:
-			m_pClearTime[i]->SetValue(static_cast<int>(ratingInfo.clearTime) / (60));
+			m_pClearTime[i]->SetValue(minutes);
 			break;
 		}
 
@@ -497,6 +512,45 @@ void CBattleResult::Update()
 
 	// 更新処理
 	CObject2D::Update();
+}
+
+//==========================================================================
+// 全て設定
+//==========================================================================
+void CBattleResult::AllSetting()
+{
+
+
+	// 不透明度設定
+	SetAlpha(1.0f);
+
+	for (int i = 0; i < CGameRating::RATINGTYPE::RATINGTYPE_MAX; i++)
+	{
+		if (m_RankInfo[i].pObj2D == nullptr)
+		{
+			continue;
+		}
+		CObject2D* pRank = m_RankInfo[i].pObj2D;
+		pRank->SetSize(SIZE_RANK);
+		pRank->SetAlpha(1.0f);
+	}
+
+	if (m_pOverall == nullptr)
+	{
+		// 前回ポイント取得
+		CListManager<CPlayer> playerList = CPlayer::GetListObj();
+		CPlayer* pPlayer = playerList.GetData(0);
+		CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
+
+		// 総合戦果生成
+		CreateRankOverall(pSkillPoint->GetPoint());
+	}
+	m_pOverall->AllSetting();
+
+	// 演出完了フラグ
+	m_bCompleteStaging = true;
+	m_state = STATE::STATE_RETURNWAIT;
+	m_fStateTimer = 0.0f;
 }
 
 //==========================================================================
@@ -558,7 +612,7 @@ void CBattleResult::StateRankIn()
 
 	if (m_fStateTimer >= TIME_RANKIN)
 	{
-		m_state = STATE::STATE_RETURNWAIT;
+		m_state = STATE::STATE_RANKIN_OVERALL;
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_RANK);
 
 		for (int i = 0; i < CGameRating::RATINGTYPE::RATINGTYPE_MAX; i++)
@@ -572,6 +626,25 @@ void CBattleResult::StateRankIn()
 			pRank->SetAlpha(1.0f);
 		}
 		return;
+	}
+}
+
+//==========================================================================
+// 総合ランク入場
+//==========================================================================
+void CBattleResult::StateRankIn_OverAll()
+{
+	if (m_fStateTimer >= 0.5f)
+	{
+		// 前回ポイント取得
+		CListManager<CPlayer> playerList = CPlayer::GetListObj();
+		CPlayer* pPlayer = playerList.GetData(0);
+		CSkillPoint* pSkillPoint = pPlayer->GetSkillPoint();
+
+		// 総合戦果生成
+		CreateRankOverall(pSkillPoint->GetPoint());
+		m_state = STATE::STATE_RETURNWAIT;
+		m_fStateTimer = 0.0f;
 	}
 }
 
@@ -619,19 +692,28 @@ void CBattleResult::StateReturnWait()
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-	if (pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_A, 0) ||
+	if (m_bCompleteStaging &&
+		(pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_A, 0) ||
 		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_B, 0) ||
 		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_START, 0) ||
 		pInputKeyboard->GetTrigger(DIK_RETURN) ||
 		pInputKeyboard->GetTrigger(DIK_SPACE) ||
 		pInputKeyboard->GetTrigger(DIK_BACKSPACE)
-		)
+		))
 	{
 		m_state = STATE::STATE_FADEOUT;
 		m_fStateTimer = 0.0f;
+
+		m_pOverall->SetState(CBattleResult_Overall::STATE::STATE_FADEOUT);
+
 		CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SceneType::SCENE_MAINCLEAR);
 		CGame::GetInstance()->GetGameManager()->GameClearSettings();
 		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_END);
+	}
+
+	if (m_pOverall->IsCompleteStaging())
+	{
+		m_bCompleteStaging = true;
 	}
 }
 

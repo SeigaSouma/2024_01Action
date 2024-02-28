@@ -1,0 +1,155 @@
+#====================================================================================================
+#
+# 『階層モデル』スクリプトファイル [setup_practice.txt]
+# Author : 相馬 靜雅
+#
+#====================================================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#==============================================================================
+#
+# セットアップ情報
+#
+#==============================================================================
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 9
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/enemy/practice/bow.x		# [0]棒
+MODEL_FILENAME = data/MODEL/enemy/practice/waist.x		# [1]腰
+MODEL_FILENAME = data/MODEL/enemy/practice/bodyDW.x		# [2]体下
+MODEL_FILENAME = data/MODEL/enemy/practice/bodyUP.x		# [3]体上
+MODEL_FILENAME = data/MODEL/enemy/practice/head.x		# [4]頭
+MODEL_FILENAME = data/MODEL/enemy/practice/RarmUP.x		# [5]右腕
+MODEL_FILENAME = data/MODEL/enemy/practice/RarmDW.x		# [6]右手首
+MODEL_FILENAME = data/MODEL/enemy/practice/LarmUP.x		# [7]左腕
+MODEL_FILENAME = data/MODEL/enemy/practice/LarmDW.x		# [8]左手首
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+
+	CENTERSET
+		PARTS = 3		# 中心にするパーツ
+		OFFSET = 0.00 21.00 0.00		# オフセット位置
+	END_CENTERSET
+	
+	VELOCITY = 2.00		
+	JUMP = 0.00		
+	RADIUS = 80.00		
+	HEIGHT = 250.00		
+	LIFE = 30		
+
+	PARTSSET
+		INDEX = 0
+		PARENT = -1
+		POS = 0.00 -26.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 1
+		PARENT = 0
+		POS = 0.00 98.13 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 2
+		PARENT = 1
+		POS = 0.25 19.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 3
+		PARENT = 2
+		POS = 1.38 17.38 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 4
+		PARENT = 3
+		POS = 0.00 29.38 -2.38
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 5
+		PARENT = 3
+		POS = -14.25 23.13 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 6
+		PARENT = 5
+		POS = -11.63 0.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 7
+		PARENT = 3
+		POS = 14.25 23.13 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 8
+		PARENT = 7
+		POS = 11.63 0.00 0.00
+		ROT = 0.00 0.00 0.00
+		START = 1
+	END_PARTSSET
+	
+END_CHARACTERSET
+
+
+#==============================================================================
+#
+# コライダー情報
+#
+#==============================================================================
+COLLIDER_FILENAME = data/TEXT/character/enemy/practice/sphere_collider.json
+
+#==============================================================================
+#
+# モーション情報
+#
+#==============================================================================
+#------------------------------------------------------------------------------
+# モーション数
+#------------------------------------------------------------------------------
+NUM_MOTION = 10
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_def.txt			# [0]デフォルト
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_walk.txt			# [1]歩き
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_attack.txt		# [2]攻撃
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_strongattack.txt		# [2]強攻撃
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_dmg.txt			# [3]ダメージ
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_down.txt			# [3]ダウン
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_returndown.txt			# [3]ダウン
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_knockback.txt	# [4]ノックバック
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_fadeout.txt		# [5]フェードアウト
+MOTION_FILENAME = data/TEXT/character/enemy/practice/motion_flinch_attack.txt		# [2]攻撃の怯み
+
+
+END_SCRIPT		# この行は絶対消さないこと！

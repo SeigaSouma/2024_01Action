@@ -10,10 +10,7 @@
 
 #include "main.h"
 #include "object2D.h"
-
-//==========================================================================
-// 前方宣言
-//==========================================================================
+#include "manager.h"
 
 //==========================================================================
 // クラス定義
@@ -27,17 +24,18 @@ public:
 	~CPause();
 
 	// メンバ関数
-	HRESULT Init();
-	void Uninit();
-	void Update();
-	void Draw();
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
 
+	void Kill();	// 削除
 	void SetPause();	// 使用状況変更
 	bool IsPause();		// 使用状況取得
 
-	static CPause *Create();	// 生成
+	static CPause *Create(CScene::MODE mode);	// 生成
 
-private:
+protected:
 
 	// 列挙型定義
 	enum VTX
@@ -60,13 +58,14 @@ private:
 	};
 
 	void UpdateSelect();	// 選択肢の更新
+	void UpdateColor();		// 色更新
+	void Decide();			// 決定処理
+	virtual void DecideByMode() = 0;	// モード別決定処理
 
-	CObject2D *m_aObject2D[VTX_MAX];				// オブジェクト2Dのオブジェクト
+	CObject2D* m_aObject2D[VTX_MAX];				// オブジェクト2Dのオブジェクト
 	bool m_bPause;									// ポーズの判定
-	D3DXCOLOR m_col;								// ポーズのカラー
 	int m_nSelect;									// 選択肢
-	float m_fFlashTime;			// 点滅時間
-	static const char *m_apTextureFile[VTX_MAX];	// テクスチャのファイル
+	float m_fFlashTime;								// 点滅時間
 };
 
 #endif

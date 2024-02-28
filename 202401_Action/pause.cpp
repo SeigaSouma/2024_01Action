@@ -5,20 +5,15 @@
 // 
 //=============================================================================
 #include "pause.h"
-#include "manager.h"
-#include "renderer.h"
 #include "object2D.h"
 #include "input.h"
-#include "texture.h"
 #include "fade.h"
 #include "sound.h"
 #include "calculation.h"
 
-//==========================================================================
-// マクロ定義
-//==========================================================================
-#define DIS_POSY	(130.0f)	// 選択肢の間隔
-
+// 派生クラス
+#include "pause_game.h"
+#include "pause_tutorial.h"
 
 //==========================================================================
 // 定数定義
@@ -33,6 +28,7 @@ namespace
 		"data\\TEXTURE\\pause\\retry.png",
 		"data\\TEXTURE\\pause\\title.png",
 	};
+	const float DIS_POSY = 130.0f;	// 選択肢の間隔
 }
 
 //==========================================================================
@@ -43,10 +39,9 @@ CPause::CPause()
 	// 値のクリア
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
 	{
-		m_aObject2D[nCntVtx] = NULL;	// オブジェクト2Dのオブジェクト
+		m_aObject2D[nCntVtx] = nullptr;	// オブジェクト2Dのオブジェクト
 	}
 	m_bPause = false;	// ポーズの判定
-	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// ポーズのカラー
 	m_nSelect = 0;									// 選択肢
 	m_fFlashTime = 0.0f;	// 点滅時間
 }
@@ -62,17 +57,32 @@ CPause::~CPause()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CPause* CPause::Create()
+CPause* CPause::Create(CScene::MODE mode)
 {
-	// メモリの確保
-	CPause* pFade = DEBUG_NEW CPause;
+	// メモリ確保
+	CPause* pFade = nullptr;
 
-	if (pFade != NULL)
+	switch (mode)
+	{
+	case CScene::MODE_GAME:
+		pFade = DEBUG_NEW CPause_Game;
+		break;
+
+	case CScene::MODE_GAMETUTORIAL:
+		pFade = DEBUG_NEW CPause_Tutorial;
+		break;
+
+	default:
+		pFade = DEBUG_NEW CPause_Game;
+		break;
+	}
+
+	if (pFade != nullptr)
 	{
 		// 初期化処理
 		if (FAILED(pFade->Init()))
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -90,7 +100,7 @@ HRESULT CPause::Init()
 		// 生成処理
 		m_aObject2D[nCntVtx] = CObject2D::Create(7);
 
-		if (m_aObject2D[nCntVtx] == NULL)
+		if (m_aObject2D[nCntVtx] == nullptr)
 		{// 失敗していたら
 			return E_FAIL;
 		}
@@ -116,9 +126,11 @@ HRESULT CPause::Init()
 		}
 		else
 		{// 選択肢
-			m_aObject2D[nCntVtx]->SetSize(CTexture::GetInstance()->GetImageSize(nTexIdx) * 0.45f);	// サイズ
+
+			D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nTexIdx);
+			size = UtilFunc::Transformation::AdjustSizeByWidth(size, 240.0f);
+			m_aObject2D[nCntVtx]->SetSize(size);	// サイズ
 			m_aObject2D[nCntVtx]->SetPosition(MyLib::Vector3(640.0f, 430.0f + ((nCntVtx - VTX_RETRY) * DIS_POSY), 0.0f));	// 位置
-			m_aObject2D[nCntVtx]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 色設定
 		}
 	}
 
@@ -132,12 +144,28 @@ void CPause::Uninit()
 {
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
 	{
-		if (m_aObject2D[nCntVtx] != NULL)
+		if (m_aObject2D[nCntVtx] != nullptr)
 		{
 			// 終了処理
 			m_aObject2D[nCntVtx]->Uninit();
 			delete m_aObject2D[nCntVtx];
-			m_aObject2D[nCntVtx] = NULL;
+			m_aObject2D[nCntVtx] = nullptr;
+		}
+	}
+}
+
+//==========================================================================
+// 削除
+//==========================================================================
+void CPause::Kill()
+{
+	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
+	{
+		if (m_aObject2D[nCntVtx] != nullptr)
+		{
+			// 終了処理
+			m_aObject2D[nCntVtx]->Uninit();
+			m_aObject2D[nCntVtx] = nullptr;
 		}
 	}
 }
@@ -160,78 +188,17 @@ void CPause::Update()
 	// 点滅時間更新
 	m_fFlashTime += CManager::GetInstance()->GetDeltaTime();
 
-	// 選択肢の更新処理
+	// 色更新
+	UpdateColor();
+
+	// 選択肢更新
 	UpdateSelect();
-
-	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	// ゲームパッド情報取得
-	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
-
-	if (pInputKeyboard->GetTrigger(DIK_W) == true || 
-		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_UP, 0) ||
-		(pInputGamepad->GetLStickTrigger(CInputGamepad::STICK::STICK_Y) && pInputGamepad->GetStickMoveL(0).y > 0))
-	{// 上系が押された
-
-		// パターンNo.を更新
-		m_nSelect = (m_nSelect + (MENU_MAX - 1)) % MENU_MAX;
-
-		// サウンド再生
-		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
-	}
-	else if (pInputKeyboard->GetTrigger(DIK_S) == true || 
-		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_DOWN, 0) ||
-		(pInputGamepad->GetLStickTrigger(CInputGamepad::STICK::STICK_Y) && pInputGamepad->GetStickMoveL(0).y < 0))
-	{// 下系が押された
-
-		// パターンNo.を更新
-		m_nSelect = (m_nSelect + 1) % MENU_MAX;
-
-		// サウンド再生
-		//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_CURSOR);
-	}
-
-
-	if (pInputKeyboard->GetTrigger(DIK_RETURN) == true || pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0))
-	{// 決定が押された
-
-		switch (m_nSelect)
-		{
-		case MENU_RETURNGAME:
-			SetPause();
-			break;
-
-		case MENU_RETRY:
-
-			// サウンド再生
-			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DONE);
-
-			// ゲームをリトライする
-			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_GAME);
-			return;
-			break;
-
-		case MENU_RETURNTITLE:
-
-			// サウンド再生
-			//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_SE_DONE);
-
-			// タイトルに戻る
-			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TITLE);
-			return;
-			break;
-		}
-	}
-
-
 
 	// 更新処理
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
 	{
-		if (m_aObject2D[nCntVtx] != NULL)
-		{// NULLじゃなかったら
-
+		if (m_aObject2D[nCntVtx] != nullptr)
+		{
 			// 更新処理
 			m_aObject2D[nCntVtx]->Update();
 
@@ -241,16 +208,13 @@ void CPause::Update()
 	}
 }
 
-
 //==========================================================================
-//ポーズ中の選択肢更新
+// 色更新
 //==========================================================================
-void CPause::UpdateSelect()
+void CPause::UpdateColor()
 {
-	
 	for (int i = VTX_CONTINUE; i < VTX_MAX; i++)
 	{
-
 		D3DXCOLOR col = m_aObject2D[i]->GetColor();
 		if (m_nSelect + VTX_CONTINUE == i)
 		{
@@ -262,6 +226,79 @@ void CPause::UpdateSelect()
 			col = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
 		}
 		m_aObject2D[i]->SetColor(col);
+	}
+}
+
+//==========================================================================
+// 選択肢更新
+//==========================================================================
+void CPause::UpdateSelect()
+{
+	// キーボード情報取得
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+
+	// ゲームパッド情報取得
+	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+
+	if (pInputKeyboard->GetTrigger(DIK_W) == true ||
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON::BUTTON_UP, 0) ||
+		(pInputGamepad->GetLStickTrigger(CInputGamepad::STICK::STICK_Y) && pInputGamepad->GetStickMoveL(0).y > 0))
+	{// 上系が押された
+
+		// パターンNo.を更新
+		m_nSelect = (m_nSelect + (MENU_MAX - 1)) % MENU_MAX;
+
+		// サウンド再生
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_MOVE);
+	}
+	else if (pInputKeyboard->GetTrigger(DIK_S) == true ||
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_DOWN, 0) ||
+		(pInputGamepad->GetLStickTrigger(CInputGamepad::STICK::STICK_Y) && pInputGamepad->GetStickMoveL(0).y < 0))
+	{// 下系が押された
+
+		// パターンNo.を更新
+		m_nSelect = (m_nSelect + 1) % MENU_MAX;
+
+		// サウンド再生
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_MOVE);
+	}
+
+
+	if (pInputKeyboard->GetTrigger(DIK_RETURN) == true || 
+		pInputGamepad->GetTrigger(CInputGamepad::BUTTON_A, 0))
+	{// 決定が押された
+
+		Decide();
+	}
+	
+}
+
+//==========================================================================
+// 決定処理
+//==========================================================================
+void CPause::Decide()
+{
+	switch (m_nSelect)
+	{
+	case MENU_RETURNGAME:
+		SetPause();
+		break;
+
+	case MENU_RETRY:
+
+		// モード別決定処理
+		DecideByMode();
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_END);
+		break;
+
+	case MENU_RETURNTITLE:
+
+		// サウンド再生
+		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_BATTLERESULT_END);
+
+		// タイトルに戻る
+		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TITLE);
+		break;
 	}
 }
 
@@ -278,9 +315,8 @@ void CPause::Draw()
 	// 描画処理
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
 	{
-		if (m_aObject2D[nCntVtx] != NULL)
-		{// NULLじゃなかったら
-
+		if (m_aObject2D[nCntVtx] != nullptr)
+		{
 			// 描画処理
 			m_aObject2D[nCntVtx]->Draw();
 		}
@@ -294,7 +330,6 @@ void CPause::SetPause()
 {
 	// 使用状況変更
 	m_bPause = m_bPause ? false : true;
-	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// ポーズのカラー
 	m_nSelect = 0;									// 選択肢
 }
 

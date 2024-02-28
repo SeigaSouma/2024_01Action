@@ -22,6 +22,12 @@ namespace
 		{"RankA", 2}, // Aランクの優先順位
 		{"RankB", 1}  // Bランクの優先順位
 	};
+	const int POINT_RANK[] =
+	{
+		5, 6, 7
+	};
+	const int CONDITION_S = 7;	// Sランク条件
+	const int CONDITION_A = 5;	// Aランク条件
 }
 
 //==========================================================================
@@ -152,22 +158,29 @@ void CGameRating::ReadText()
 }
 
 //==========================================================================
+// 総合ランクポイント割り出し
+//==========================================================================
+int CGameRating::CalculateOverrallRankPoint(RATING allRank)
+{
+	return POINT_RANK[allRank];
+}
+
+//==========================================================================
 // ステージ毎のランク割り出し
 //==========================================================================
-CGameRating::RATING CGameRating::CalculateRank(const sRating& result, const std::map<std::string, sRating>& rankStandards)
+CGameRating::RATING CGameRating::CalculateRank(RATING timeRank, RATING dmgRank, RATING deadRank)
 {
-	for (const auto& rankInfo : rankStandards) 
+	int allpoint = static_cast<int>(timeRank + dmgRank + deadRank + RATINGTYPE_MAX);
+
+	if (allpoint >= CONDITION_S)
 	{
-		const sRating& standard = rankInfo.second;
-		
-		// 基準チェック
-		if (result.receiveDamage <= standard.receiveDamage &&
-			result.numDead <= standard.numDead &&
-			result.clearTime <= standard.clearTime)
-		{
-			return standard.rating;
-		}
+		return RATING::RATING_S;
 	}
+	if (allpoint >= CONDITION_A)
+	{
+		return RATING::RATING_A;
+	}
+
 	return RATING::RATING_B;
 }
 

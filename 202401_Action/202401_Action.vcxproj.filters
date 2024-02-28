@@ -133,6 +133,15 @@
     <Filter Include="ソース ファイル\battleresult">
       <UniqueIdentifier>{d3657a34-2ac1-4c98-8f10-fe90c8424faf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\pause">
+      <UniqueIdentifier>{e33bd55d-7ba9-4cc6-b20a-bd8673ce0b82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\battleresult">
+      <UniqueIdentifier>{f20f444c-27b3-4de0-a56d-122bee20089d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\pause">
+      <UniqueIdentifier>{fca400fa-0c59-4288-b7ee-b12826a8787c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
@@ -187,12 +196,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="motion.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="particle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="pause.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="precompile.cpp">
@@ -377,9 +380,6 @@
     </ClCompile>
     <ClCompile Include="objectHierarchy.cpp">
       <Filter>ソース ファイル\object</Filter>
-    </ClCompile>
-    <ClCompile Include="MyEffekseer.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="mylib.cpp">
       <Filter>ソース ファイル</Filter>
@@ -576,6 +576,24 @@
     <ClCompile Include="enemy_practice_SA.cpp">
       <Filter>ソース ファイル\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>ソース ファイル\pause</Filter>
+    </ClCompile>
+    <ClCompile Include="pause_game.cpp">
+      <Filter>ソース ファイル\pause</Filter>
+    </ClCompile>
+    <ClCompile Include="pause_tutorial.cpp">
+      <Filter>ソース ファイル\pause</Filter>
+    </ClCompile>
+    <ClCompile Include="battleresult_Overall.cpp">
+      <Filter>ソース ファイル\battleresult</Filter>
+    </ClCompile>
+    <ClCompile Include="MyEffekseer.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -636,12 +654,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="motion.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="particle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="pause.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="precompile.h">
@@ -830,9 +842,6 @@
     <ClInclude Include="objectHierarchy.h">
       <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="MyEffekseer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="mylib.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -1001,9 +1010,6 @@
     <ClInclude Include="afterrespawn_text.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="battleresult.h">
-      <Filter>ソース ファイル\battleresult</Filter>
-    </ClInclude>
     <ClInclude Include="hp_gauge_tip.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -1019,14 +1025,35 @@
     <ClInclude Include="game_tutorial.h">
       <Filter>ヘッダー ファイル\mode\game</Filter>
     </ClInclude>
-    <ClInclude Include="enemy_practice.h">
-      <Filter>ソース ファイル\enemy</Filter>
+    <ClInclude Include="battleresult.h">
+      <Filter>ヘッダー ファイル\battleresult</Filter>
     </ClInclude>
-    <ClInclude Include="enemy_practice_attack.h">
-      <Filter>ソース ファイル\enemy</Filter>
+    <ClInclude Include="battleresult_Overall.h">
+      <Filter>ヘッダー ファイル\battleresult</Filter>
     </ClInclude>
     <ClInclude Include="enemy_practice_SA.h">
-      <Filter>ソース ファイル\enemy</Filter>
+      <Filter>ヘッダー ファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_practice_attack.h">
+      <Filter>ヘッダー ファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_practice.h">
+      <Filter>ヘッダー ファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="pause_game.h">
+      <Filter>ヘッダー ファイル\pause</Filter>
+    </ClInclude>
+    <ClInclude Include="pause_tutorial.h">
+      <Filter>ヘッダー ファイル\pause</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
+      <Filter>ヘッダー ファイル\pause</Filter>
+    </ClInclude>
+    <ClInclude Include="MyEffekseer.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

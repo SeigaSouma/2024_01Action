@@ -19,6 +19,7 @@
 namespace
 {
 	const char* TEXTURE = "data\\TEXTURE\\title\\title_pressbutton.png";
+	const float TIME_TUTORIAL_FADEOUT = 0.3f;	// チュートリアル確認のフェードアウト
 }
 
 //==========================================================================
@@ -28,6 +29,7 @@ CTitle_PressEnter::STATE_FUNC CTitle_PressEnter::m_StateFunc[] =
 {
 	&CTitle_PressEnter::StateNone,		// なし
 	&CTitle_PressEnter::StateFadeIn,	// フェードイン
+	&CTitle_PressEnter::StateTutorial_FadeOut,		// チュートリアル確認のフェードアウト
 };
 
 //==========================================================================
@@ -36,7 +38,7 @@ CTitle_PressEnter::STATE_FUNC CTitle_PressEnter::m_StateFunc[] =
 CTitle_PressEnter::CTitle_PressEnter(float fadetime, int nPriority) : m_fFadeOutTime(fadetime), CObject2D(nPriority)
 {
 	// 値のクリア
-	m_state = eState::STATE_NONE;		// 状態
+	m_state = STATE::STATE_NONE;		// 状態
 	m_fStateTime = 0.0f;			// 状態カウンター
 	m_pTutorialCheck = nullptr;		// チュートリアルやるか確認
 }
@@ -101,6 +103,11 @@ HRESULT CTitle_PressEnter::Init()
 //==========================================================================
 void CTitle_PressEnter::Update()
 {
+	if (CManager::GetInstance()->GetFade()->GetState() != CFade::STATE_NONE)
+	{// フェード中は抜ける
+		return;
+	}
+
 	// 状態別更新処理
 	(this->*(m_StateFunc[m_state]))();
 	if (IsDeath())
@@ -108,6 +115,15 @@ void CTitle_PressEnter::Update()
 		return;
 	}
 
+	// 更新処理
+	CObject2D::Update();
+}
+
+//==========================================================================
+// なにもなし
+//==========================================================================
+void CTitle_PressEnter::StateNone()
+{
 	// 入力情報取得
 	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
@@ -127,21 +143,7 @@ void CTitle_PressEnter::Update()
 		{
 			m_pTutorialCheck = CTutorialCheckShould::Create();
 		}
-
-		//CTitle::GetInstance()->SetSceneType(CTitle::SCENETYPE::SCENETYPE_FADEOUT_LOGO);
-		
 	}
-
-	// 更新処理
-	CObject2D::Update();
-}
-
-//==========================================================================
-// なにもなし
-//==========================================================================
-void CTitle_PressEnter::StateNone()
-{
-
 }
 
 //==========================================================================
@@ -165,4 +167,39 @@ void CTitle_PressEnter::StateFadeIn()
 		SetAlpha(1.0f);
 		return;
 	}
+}
+
+//==========================================================================
+// チュートリアル確認のフェードアウト
+//==========================================================================
+void CTitle_PressEnter::StateTutorial_FadeOut()
+{
+	// 状態遷移カウンター加算
+	m_fStateTime += CManager::GetInstance()->GetDeltaTime();
+
+	if (m_pTutorialCheck == nullptr)
+	{
+		return;
+	}
+
+	float alpha = UtilFunc::Correction::EasingLinear(1.0f, 0.0f, 0.0f, TIME_TUTORIAL_FADEOUT, m_fStateTime);
+
+	m_pTutorialCheck->SetAlpha(alpha);
+
+	if (m_fStateTime >= TIME_TUTORIAL_FADEOUT)
+	{
+		m_fStateTime = 0.0f;
+		m_pTutorialCheck->Kill();
+		m_pTutorialCheck = nullptr;
+		m_state = STATE_NONE;
+	}
+}
+
+//==========================================================================
+// 状態設定
+//==========================================================================
+void CTitle_PressEnter::SetState(STATE state)
+{
+	m_state = state;
+	m_fStateTime = 0.0f;
 }

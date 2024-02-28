@@ -399,6 +399,11 @@ protected:
 	// ˜A‘±UŒ‚İ’è
 	void SetChainAttack(CEnemyAttack* pAttack)
 	{
+		if (m_pChainAttackPtr != nullptr)
+		{
+			delete m_pChainAttackPtr;
+		}
+
 		m_bChainAttack = true;
 		m_pChainAttackPtr = pAttack;
 	}

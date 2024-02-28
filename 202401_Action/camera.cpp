@@ -300,8 +300,12 @@ void CCamera::MoveCameraInput()
 //==========================================================================
 void CCamera::MoveCameraStick(int nIdx)
 {
-	// 操作処理
-	m_pControlState->MoveCamera(this);
+	if (CManager::GetInstance()->GetMode() == CScene::MODE::MODE_GAME ||
+		CManager::GetInstance()->GetMode() == CScene::MODE::MODE_GAMETUTORIAL)
+	{
+		// 操作処理
+		m_pControlState->MoveCamera(this);
+	}
 
 	// 角度の正規化
 	UtilFunc::Transformation::RotNormalize(m_rot);
@@ -315,79 +319,83 @@ void CCamera::MoveCameraStick(int nIdx)
 //==========================================================================
 void CCamera::MoveCameraMouse()
 {
-	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	if (CManager::GetInstance()->GetMode() == CScene::MODE::MODE_GAME ||
+		CManager::GetInstance()->GetMode() == CScene::MODE::MODE_GAMETUTORIAL)
+	{
+		// キーボード情報取得
+		CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
-	// キーボード情報取得
-	CInputMouse *pInputMouse = CManager::GetInstance()->GetInputMouse();
+		// キーボード情報取得
+		CInputMouse* pInputMouse = CManager::GetInstance()->GetInputMouse();
 
-	if (pInputMouse->GetPress(CInputMouse::BUTTON_LEFT) == true &&
-		pInputMouse->GetPress(CInputMouse::BUTTON_RIGHT) == true)
-	{// 左右同時押し
+		if (pInputMouse->GetPress(CInputMouse::BUTTON_LEFT) == true &&
+			pInputMouse->GetPress(CInputMouse::BUTTON_RIGHT) == true)
+		{// 左右同時押し
 
-//#if _DEBUG
-		m_move.x += (pInputMouse->GetMouseMove().x * sinf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE) -
-			(pInputMouse->GetMouseMove().y * cosf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE);
+	//#if _DEBUG
+			m_move.x += (pInputMouse->GetMouseMove().x * sinf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE) -
+				(pInputMouse->GetMouseMove().y * cosf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE);
 
-		m_move.z += (pInputMouse->GetMouseMove().x * cosf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE) +
-			(pInputMouse->GetMouseMove().y * sinf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE);
-//#endif
+			m_move.z += (pInputMouse->GetMouseMove().x * cosf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE) +
+				(pInputMouse->GetMouseMove().y * sinf(-D3DX_PI * MOVE_LR + m_rot.y) * MOVE);
+			//#endif
 
-		// 移動量補正
-		MoveCameraVR();
+					// 移動量補正
+			MoveCameraVR();
 
-		// 角度の正規化
-		UtilFunc::Transformation::RotNormalize(m_rot.y);
-		UtilFunc::Transformation::RotNormalize(m_rot.z);
+			// 角度の正規化
+			UtilFunc::Transformation::RotNormalize(m_rot.y);
+			UtilFunc::Transformation::RotNormalize(m_rot.z);
 
-		// 注視点設定
-		SetCameraR();
+			// 注視点設定
+			SetCameraR();
+		}
+		else if (pInputMouse->GetPress(CInputMouse::BUTTON_LEFT) == true)
+		{// 左クリックしてるとき,視点回転
+
+			m_rot.y += pInputMouse->GetMouseMove().x * ROT_MOVE_MOUSE;
+
+			//#if _DEBUG
+
+			m_rot.z += pInputMouse->GetMouseMove().y * ROT_MOVE_MOUSE;
+			//#endif
+
+					// 角度の正規化
+			UtilFunc::Transformation::RotNormalize(m_rot.y);
+			UtilFunc::Transformation::RotNormalize(m_rot.z);
+
+			// 値の正規化
+			UtilFunc::Transformation::ValueNormalize(m_rot.z, MAX_ROT, MIN_ROT);
+
+			// 視点の代入処理
+			SetCameraV();
+
+		}
+		else if (pInputMouse->GetPress(CInputMouse::BUTTON_RIGHT) == true)
+		{// 右クリックしてるとき,注視点回転
+
+			m_rot.y += pInputMouse->GetMouseMove().x * ROT_MOVE_MOUSE;
+
+			//#if _DEBUG
+			m_rot.z += pInputMouse->GetMouseMove().y * ROT_MOVE_MOUSE;
+			//#endif
+
+					// 角度の正規化
+			UtilFunc::Transformation::RotNormalize(m_rot.y);
+			UtilFunc::Transformation::RotNormalize(m_rot.z);
+
+			// 値の正規化
+			UtilFunc::Transformation::ValueNormalize(m_rot.z, MAX_ROT, MIN_ROT);
+
+			// 注視点の位置更新
+			SetCameraR();
+		}
+
+		// マウスホイールで距離調整
+		m_fDistance += pInputMouse->GetMouseMove().z * (MOVE * 0.3f);
+		m_fDestDistance += pInputMouse->GetMouseMove().z * (MOVE * 0.3f);
+		m_fOriginDistance += pInputMouse->GetMouseMove().z * (MOVE * 0.3f);
 	}
-	else if (pInputMouse->GetPress(CInputMouse::BUTTON_LEFT) == true)
-	{// 左クリックしてるとき,視点回転
-
-		m_rot.y += pInputMouse->GetMouseMove().x * ROT_MOVE_MOUSE;
-
-//#if _DEBUG
-
-		m_rot.z += pInputMouse->GetMouseMove().y * ROT_MOVE_MOUSE;	
-//#endif
-
-		// 角度の正規化
-		UtilFunc::Transformation::RotNormalize(m_rot.y);
-		UtilFunc::Transformation::RotNormalize(m_rot.z);
-
-		// 値の正規化
-		UtilFunc::Transformation::ValueNormalize(m_rot.z, MAX_ROT, MIN_ROT);
-
-		// 視点の代入処理
-		SetCameraV();
-
-	}
-	else if (pInputMouse->GetPress(CInputMouse::BUTTON_RIGHT) == true)
-	{// 右クリックしてるとき,注視点回転
-
-		m_rot.y += pInputMouse->GetMouseMove().x * ROT_MOVE_MOUSE;
-
-//#if _DEBUG
-		m_rot.z += pInputMouse->GetMouseMove().y * ROT_MOVE_MOUSE;
-//#endif
-
-		// 角度の正規化
-		UtilFunc::Transformation::RotNormalize(m_rot.y);
-		UtilFunc::Transformation::RotNormalize(m_rot.z);
-
-		// 値の正規化
-		UtilFunc::Transformation::ValueNormalize(m_rot.z, MAX_ROT, MIN_ROT);
-
-		// 注視点の位置更新
-		SetCameraR();
-	}
-
-	// マウスホイールで距離調整
-	m_fDistance += pInputMouse->GetMouseMove().z * (MOVE * 0.3f);
-	m_fDestDistance += pInputMouse->GetMouseMove().z * (MOVE * 0.3f);
-	m_fOriginDistance += pInputMouse->GetMouseMove().z * (MOVE * 0.3f);
 
 	// 視点の代入処理
 	SetCameraV();
@@ -707,53 +715,6 @@ void CCamera::SetCameraVTitle()
 		m_posVDest.x = m_posR.x + cosf(m_rot.z) * sinf(m_rot.y) * -m_fDistance;
 		m_posVDest.z = m_posR.z + cosf(m_rot.z) * cosf(m_rot.y) * -m_fDistance;
 		m_posVDest.y = m_posR.y + sinf(m_rot.z) * -m_fDistance;
-#if 0
-		float fDistance = 0.0f;
-		m_fHeightMaxDest = m_posVDest.y;
-		// 目標の角度を求める
-		float fRotDest = atan2f((m_posVDest.x - m_posR.x), (m_posVDest.z - m_posR.z));
-		while (1)
-		{
-			
-			// 仮想の弾の位置
-			float fPosBulletX = m_TargetPos.x + cosf(m_rot.z) * sinf(m_rot.y) * -fDistance;
-			float fPosBulletZ = m_TargetPos.z + cosf(m_rot.z) * cosf(m_rot.y) * -fDistance;
-
-			// 高さ取得
-			bool bLand = false;
-			float fHeight = CGame::GetInstance()->GetElevation()->GetHeight(MyLib::Vector3(fPosBulletX, 0.0f, fPosBulletZ), &bLand);
-
-			if (m_fHeightMaxDest <= fHeight)
-			{// 最大の高さを更新したら
-
-				// 距離の応じた割合保存
-				float fDistanceRatio = fDistance / (m_fDistance);
-
-				// 目標の最大高さ保存
-				m_fHeightMaxDest = fHeight * (fDistanceRatio + 1.0f);
-			}
-
-			// 長さ加算
-			fDistance += 10.0f;
-
-			if (fDistance >= m_fDistance)
-			{// 長さを超えたら終わり
-				break;
-			}
-		}
-
-		// 目標の視点更新
-		if (m_fHeightMaxDest > m_posVDest.y)
-		{
-			// 最大の高さ補正
-			m_fHeightMax += (m_fHeightMaxDest - m_fHeightMax) * 0.08f;
-
-			m_posVDest.y = m_fHeightMax;
-
-			// 高さの差分
-			m_fDiffHeightSave += m_fHeightMax - m_posV.y;
-		}
-#endif
 
 		// 補正する
 		m_posV += (m_posVDest - m_posV) * 0.12f;
