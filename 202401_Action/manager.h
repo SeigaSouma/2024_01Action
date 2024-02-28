@@ -83,7 +83,8 @@ public:
 	float GetDeltaTime();								// 経過時間取得
 	void SetMode(CScene::MODE mode);					// 次のモード設定
 	CScene::MODE GetMode();							// 現在のモード取得
-	void SetEnableHitStop(int nCntHitStop);				// ヒットストップの設定
+	void SetEnableHitStop(int nCntHitStop);			// ヒットストップの設定
+	void ChangePauseMode(CScene::MODE mode);		// ポーズの種類切り替え
 	bool IsWireframe() { return m_bWireframe; }		// ワイヤーフレーム
 	bool IsHitStop() { return m_bHitStop; }			// ワイヤーフレーム
 	CScene::MODE GetOldMode() { return m_OldMode; }	// 前回のモード取得

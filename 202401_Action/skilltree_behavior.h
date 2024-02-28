@@ -128,8 +128,8 @@ class CAbillityStamina : public CEnhance
 	void Add03() { m_pPlayer->UpgradeMaxStamina(60); }
 	void CounterHeal01() { m_pPlayer->SetCounterHealValue(10.0f); }
 	void CounterHeal02() { m_pPlayer->SetCounterHealValue(20.0f); }
-	void SubGuard01() { m_pPlayer->SetGuardSubValue(45.0f); }
-	void SubGuard02() { m_pPlayer->SetGuardSubValue(30.0f); }
+	void SubGuard01() { m_pPlayer->SetGuardSubValue(20.0f); }
+	void SubGuard02() { m_pPlayer->SetGuardSubValue(10.0f); }
 
 };
 

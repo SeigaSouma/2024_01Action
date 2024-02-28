@@ -6,6 +6,7 @@
 //=============================================================================
 #include "manager.h"
 #include "game.h"
+#include "game_tutorial.h"
 #include "renderer.h"
 #include "calculation.h"
 #include "debugproc.h"
@@ -73,13 +74,22 @@ CGame::~CGame()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CGame* CGame::Create()
+CGame* CGame::Create(CScene::MODE mode)
 {
 	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
 
 		// インスタンス生成
-		m_pThisPtr = DEBUG_NEW CGame;
+		switch (mode)
+		{
+		case CScene::MODE_GAME:
+			m_pThisPtr = DEBUG_NEW CGame;
+			break;
+
+		case CScene::MODE::MODE_GAMETUTORIAL:
+			m_pThisPtr = DEBUG_NEW CGameTutorial;
+			break;
+		}
 	}
 
 	return m_pThisPtr;
@@ -116,25 +126,11 @@ HRESULT CGame::Init()
 	//**********************************
 	// ゲームマネージャ
 	//**********************************
-	m_pGameManager = CGameManager::Create();
+	m_pGameManager = CGameManager::Create(GetMode());
 
-	//**********************************
-	// 敵の拠点
-	//**********************************
-	m_pEnemyBase = CEnemyBase::Create("data\\TEXT\\enemydata\\base.txt");
-	if (m_pEnemyBase == nullptr)
-	{// nullptrだったら
-		return E_FAIL;
-	}
+	// モード別初期化処理
+	InitByMode();
 
-	//**********************************
-	// 敵マネージャ
-	//**********************************
-	m_pEnemyManager = CEnemyManager::Create("data\\TEXT\\enemydata\\manager.txt");
-	if (m_pEnemyManager == nullptr)
-	{// nullptrだったら
-		return E_FAIL;
-	}
 
 	//**********************************
 	// プレイヤー
@@ -166,17 +162,6 @@ HRESULT CGame::Init()
 
 	CManager::GetInstance()->GetCamera()->Reset(CScene::MODE_GAME);
 
-	// BGM再生
-	//CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
-
-	/*CLimitArea::sLimitEreaInfo info;
-	info.fMaxX = 13000.0f;
-	info.fMaxZ = 1200.0f;
-	info.fMinX = -1200.0f;
-	info.fMinZ = -1200.0f;
-	m_pLimitArea = CLimitArea::Create(info);
-	m_pLimitArea->SetEnableDisp(false);*/
-
 	// スキルツリー生成
 	CSkillTree::Create();
 	m_pGameManager->SetPrevEnhance();
@@ -184,12 +169,36 @@ HRESULT CGame::Init()
 	// クリアの判定
 	SetEnableClear(true);
 
-	// 評価基準読み込み
-	CGameRating::ReadText();
-
-
 	// 成功
 	return S_OK;
+}
+
+//==========================================================================
+// モード別初期化
+//==========================================================================
+void CGame::InitByMode()
+{
+
+	//**********************************
+	// 敵の拠点
+	//**********************************
+	m_pEnemyBase = CEnemyBase::Create("data\\TEXT\\enemydata\\base.txt");
+	if (m_pEnemyBase == nullptr)
+	{
+		return;
+	}
+
+	//**********************************
+	// 敵マネージャ
+	//**********************************
+	m_pEnemyManager = CEnemyManager::Create("data\\TEXT\\enemydata\\manager.txt");
+	if (m_pEnemyManager == nullptr)
+	{
+		return;
+	}
+
+	// 評価基準読み込み
+	CGameRating::ReadText();
 }
 
 //==========================================================================

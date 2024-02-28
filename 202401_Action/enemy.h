@@ -40,6 +40,9 @@ public:
 		TYPE_BOSS = 0,		// ボス
 		TYPE_STONEGOLEM,	// ストーンゴーレム
 		TYPE_GOBELIN,		// ゴブリン
+		TYPE_PRACTICE,		// 練習
+		TYPE_PRACTICE_A,	// 練習(攻撃)
+		TYPE_PRACTICE_SA,	// 練習(強攻撃)
 		TYPE_MAX
 	};
 

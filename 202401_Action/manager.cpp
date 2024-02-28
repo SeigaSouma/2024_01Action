@@ -1015,6 +1015,24 @@ void CManager::SetNumPlayer(int nNum)
 }
 
 //==========================================================================
+// ポーズの種類切り替え
+//==========================================================================
+void CManager::ChangePauseMode(CScene::MODE mode)
+{
+	switch (mode)
+	{
+	case CScene::MODE::MODE_GAME:
+		break;
+
+	case CScene::MODE::MODE_GAMETUTORIAL:
+		break;
+
+	default:
+		break;
+	}
+}
+
+//==========================================================================
 // 経過時間取得
 //==========================================================================
 float CManager::GetDeltaTime()

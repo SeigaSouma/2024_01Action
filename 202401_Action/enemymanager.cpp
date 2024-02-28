@@ -101,30 +101,6 @@ HRESULT CEnemyManager::Init()
 	// ステージ変更中にする
 	m_bChangeStage = false;
 
-	// 遷移状態に変更
-	//CGame::GetInstance()->GetGameManager()->SetType(CGameManager::SCENE_TRANSITION);
-#if 0
-	// 敵拠点データ取得
-	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-
-	if (pEnemyBase == NULL)
-	{
-		return E_FAIL;
-	}
-
-	// 拠点の数取得
-	int nNumBase = pEnemyBase->GetNumBase(0);
-
-	for (int i = 0; i < nNumBase; i++)
-	{
-		// 拠点ごとのデータ取得
-		CEnemyBase::sInfo sEnemyBaseInfo = pEnemyBase->GetEnemyBaseInfo(0, i);
-
-		// 敵の配置
-		SetEnemy(sEnemyBaseInfo.pos, sEnemyBaseInfo.rot, sEnemyBaseInfo.nPattern);
-	}
-#endif
-
 	// 変更中じゃなくする
 	SetEnableChangeStage(true);
 

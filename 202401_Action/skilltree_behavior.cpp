@@ -109,6 +109,7 @@ CAbillityGuard::STAGE_FUNC CAbillityGuard::m_StageFunc[] =
 	&CAbillityGuard::DamageMitigation01,
 	&CAbillityGuard::DamageMitigation02,
 	&CAbillityGuard::DamageMitigation03,
+	&CAbillityGuard::KnockbackMitigation02,
 };
 
 

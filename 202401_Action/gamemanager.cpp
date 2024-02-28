@@ -38,6 +38,7 @@
 #include "gamerating.h"
 #include "battleresult.h"
 
+#include "tutorialmanager.h"
 
 //==========================================================================
 // 定数定義
@@ -78,10 +79,22 @@ CGameManager::~CGameManager()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CGameManager* CGameManager::Create()
+CGameManager* CGameManager::Create(CScene::MODE mode)
 {
 	// メモリ確保
-	CGameManager* pManager = DEBUG_NEW CGameManager;
+	CGameManager* pManager = nullptr;
+
+	// インスタンス生成
+	switch (mode)
+	{
+	case CScene::MODE_GAME:
+		pManager = DEBUG_NEW CGameManager;
+		break;
+
+	case CScene::MODE::MODE_GAMETUTORIAL:
+		pManager = DEBUG_NEW CTutorialManager;
+		break;
+	}
 
 	if (pManager != NULL)
 	{// メモリの確保が出来ていたら
@@ -105,6 +118,7 @@ HRESULT CGameManager::Init()
 {
 	m_bControll = true;			// 操作できるか
 	m_bEndNormalStage = false;	// 通常ステージが終了したか
+	m_bGameStart = false;		// ゲーム開始時のフラグ
 
 #if _DEBUG
 	m_nNowStage = 0;			// 現在のステージ
@@ -152,9 +166,6 @@ void CGameManager::Update()
 			pAssist->SetDefaultText();
 		}
 	}
-
-	// 遷移なしフェードの状態取得
-	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
 
 	// 操作状態
 	switch (m_SceneType)
@@ -206,7 +217,7 @@ void CGameManager::Update()
 
 	case CGameManager::SceneType::SCENE_TRANSITION:
 		m_bControll = false;
-		SceneTransition(fadestate);
+		SceneTransition();
 		break;
 
 	case CGameManager::SceneType::SCENE_REASPAWN:		// 復活
@@ -317,8 +328,11 @@ void CGameManager::UpdateGalleryVolume()
 //==========================================================================
 // メイン遷移中
 //==========================================================================
-void CGameManager::SceneTransition(CInstantFade::STATE fadestate)
+void CGameManager::SceneTransition()
 {
+	// 遷移なしフェードの状態取得
+	CInstantFade::STATE fadestate = CManager::GetInstance()->GetInstantFade()->GetState();
+
 	if (fadestate == CInstantFade::STATE_FADECOMPLETION ||
 		!m_bGameStart)
 	{// 完了した瞬間

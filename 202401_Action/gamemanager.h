@@ -11,6 +11,7 @@
 #include "constans.h"
 #include "skilltree_icon.h"
 #include "instantfade.h"
+#include "scene.h"
 
 class CSkillTree_Ability;
 class CGameRating;
@@ -53,9 +54,9 @@ public:
 	CGameManager();
 	~CGameManager();
 
-	HRESULT Init();
-	void Uninit();
-	void Update();
+	virtual HRESULT Init();
+	virtual void Uninit();
+	virtual void Update();
 
 	void SetType(SceneType type);	// シーンの種類設定
 	SceneType GetType();		// シーンの種類取得
@@ -75,17 +76,17 @@ public:
 
 	void GameClearSettings();	// ゲームクリア時の設定
 	void GameResultSettings();	// ゲームリザルトの設定
-	static CGameManager *Create();	// 生成処理
+	static CGameManager *Create(CScene::MODE mode);	// 生成処理
 
-private:
+
+protected:
 
 	// メンバ関数
-	void SceneTransition(CInstantFade::STATE fadestate);	// 遷移中
-	void SceneEnhance();
-	void SceneReaspawn();	// 復活
-	void SetEnemy();
-	void SetBoss();
-
+	virtual void SceneTransition();	// 遷移中
+	virtual void SceneEnhance();
+	virtual void SceneReaspawn();	// 復活
+	virtual void SetEnemy();
+	virtual void SetBoss();
 	void UpdateGalleryVolume();	// 観客音量更新
 
 	// メンバ変数

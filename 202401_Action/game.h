@@ -46,10 +46,10 @@ public:
 	~CGame();
 
 	// オーバーライドされた関数
-	HRESULT Init() override;
-	void Uninit() override;
-	void Update() override;
-	void Draw() override;
+	virtual HRESULT Init() override;
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override;
 
 	void ResetBeforeBoss();
 	EEditType GetEditType() { return m_EditType; }
@@ -66,9 +66,12 @@ public:
 
 	// 静的関数
 	static CGame* GetInstance();	// インスタンス取得
-	static CGame* Create();		// 生成処理
+	static CGame* Create(CScene::MODE mode);		// 生成処理
 
-private:
+protected:
+
+	virtual void InitByMode();	// モード別初期化
+
 
 	//=============================
 	// メンバ関数

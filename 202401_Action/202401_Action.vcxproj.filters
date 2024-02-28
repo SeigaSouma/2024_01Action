@@ -561,6 +561,21 @@
     <ClCompile Include="tutorial_checkshould.cpp">
       <Filter>ソース ファイル\mode\title</Filter>
     </ClCompile>
+    <ClCompile Include="game_tutorial.cpp">
+      <Filter>ソース ファイル\mode\game</Filter>
+    </ClCompile>
+    <ClCompile Include="tutorialmanager.cpp">
+      <Filter>ソース ファイル\mode\game</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_practice.cpp">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_practice_attack.cpp">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_practice_SA.cpp">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -986,9 +1001,6 @@
     <ClInclude Include="afterrespawn_text.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="gamerating.h">
-      <Filter>ソース ファイル\mode\game</Filter>
-    </ClInclude>
     <ClInclude Include="battleresult.h">
       <Filter>ソース ファイル\battleresult</Filter>
     </ClInclude>
@@ -997,6 +1009,24 @@
     </ClInclude>
     <ClInclude Include="tutorial_checkshould.h">
       <Filter>ソース ファイル\mode\title</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorialmanager.h">
+      <Filter>ヘッダー ファイル\mode\game</Filter>
+    </ClInclude>
+    <ClInclude Include="gamerating.h">
+      <Filter>ヘッダー ファイル\mode\game</Filter>
+    </ClInclude>
+    <ClInclude Include="game_tutorial.h">
+      <Filter>ヘッダー ファイル\mode\game</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_practice.h">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_practice_attack.h">
+      <Filter>ソース ファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_practice_SA.h">
+      <Filter>ソース ファイル\enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

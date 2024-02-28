@@ -29,7 +29,8 @@ namespace
 	const MyLib::Vector3 DISTANCE_NUMBER = MyLib::Vector3(150.0f, 0.0f, 0.0f);
 	const MyLib::Vector3 DESTPOSITION_SLIDEIN = MyLib::Vector3(SCREEN_WIDTH - WIDTH_FRAME, 80.0f, 0.0f);	// スライドインの目標位置
 	const MyLib::Vector3 DESTPOSITION_SLIDEOUT = MyLib::Vector3(SCREEN_WIDTH + WIDTH_FRAME, 80.0f, 0.0f);	// スライドアウトの目標位置
-
+	const int MAX_POINT = 99;
+	const int MIN_POINT = 0;
 }
 
 //==========================================================================
@@ -273,10 +274,7 @@ void CSkillPoint::StateEnhance()
 void CSkillPoint::SetPoint(int nValue)
 {
 	m_nPoint = nValue;
-	if (m_nPoint <= 0)
-	{
-		m_nPoint = 0;
-	}
+	UtilFunc::Transformation::ValueNormalize(m_nPoint, MAX_POINT, MIN_POINT);
 }
 
 //==========================================================================
@@ -285,6 +283,7 @@ void CSkillPoint::SetPoint(int nValue)
 void CSkillPoint::AddPoint()
 {
 	m_nPoint++;
+	UtilFunc::Transformation::ValueNormalize(m_nPoint, MAX_POINT, MIN_POINT);
 }
 
 //==========================================================================
@@ -301,11 +300,7 @@ void CSkillPoint::AddPoint(int nValue)
 void CSkillPoint::SubPoint()
 {
 	m_nPoint--;
-
-	if (m_nPoint <= 0)
-	{
-		m_nPoint = 0;
-	}
+	UtilFunc::Transformation::ValueNormalize(m_nPoint, MAX_POINT, MIN_POINT);
 }
 
 //==========================================================================
@@ -314,10 +309,7 @@ void CSkillPoint::SubPoint()
 void CSkillPoint::SubPoint(int nValue)
 {
 	m_nPoint -= nValue;
-	if (m_nPoint <= 0)
-	{
-		m_nPoint = 0;
-	}
+	UtilFunc::Transformation::ValueNormalize(m_nPoint, MAX_POINT, MIN_POINT);
 }
 
 //==========================================================================

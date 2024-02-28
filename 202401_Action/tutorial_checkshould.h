@@ -37,8 +37,8 @@ private:
 	//=============================
 	enum SELECT
 	{
-		SELECT_CANCEL = 0,	// キャンセル
-		SELECT_OK,			// OK
+		SELECT_NO = 0,	// そのままゲーム
+		SELECT_OK,		// 練習ステージ
 		SELECT_MAX
 	};
 

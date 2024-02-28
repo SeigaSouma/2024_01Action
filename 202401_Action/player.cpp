@@ -65,7 +65,7 @@ namespace
 
 	// ステータス
 	const float DEFAULT_RESPAWNHEAL = 0.3f;				// リスポーン時の回復割合
-	const float DEFAULT_SUBVALUE_GUARD = 60.0f;			// ガードのスタミナ減算量
+	const float DEFAULT_SUBVALUE_GUARD = 30.0f;			// ガードのスタミナ減算量
 	const float DEFAULT_SUBVALUE_COUNTER = 5.0f;		// カウンターのスタミナ減算量
 	const float DEFAULT_COUNTERHEAL = 0.0f;				// カウンターのスタミナ回復量
 	const float DEFAULT_MULTIPLY_ATTACK = 1.0f;			// 攻撃倍率

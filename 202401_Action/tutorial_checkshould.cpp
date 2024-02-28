@@ -16,13 +16,13 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\skilltree\\resetwindow.png";
+	const char* TEXTURE = "data\\TEXTURE\\shouldtutorial\\window.png";
 	const char* SELECT_TEXTURE[] =
 	{
-		"data\\TEXTURE\\skilltree\\reset_select01.png",
-		"data\\TEXTURE\\skilltree\\reset_select02.png",
-		"data\\TEXTURE\\skilltree\\reset_select03.png",
-		"data\\TEXTURE\\skilltree\\reset_select04.png",
+		"data\\TEXTURE\\shouldtutorial\\select_no.png",
+		"data\\TEXTURE\\shouldtutorial\\select_yes.png",
+		"data\\TEXTURE\\shouldtutorial\\select_no2.png",
+		"data\\TEXTURE\\shouldtutorial\\select_yes2.png",
 	};
 	const float DISTANCE = 140.0f;
 }
@@ -137,7 +137,7 @@ void CTutorialCheckShould::CreateSelect()
 		m_pSelectObj[i]->SetPosition(MyLib::Vector3((SCREEN_WIDTH * 0.5f) - DISTANCE + (DISTANCE * i) * 2.0f, 410.0f, 0.0f));
 	}
 
-	int selectIdx = static_cast<int>(SELECT_CANCEL);
+	int selectIdx = static_cast<int>(SELECT_NO);
 	m_pSelectObj[selectIdx]->BindTexture(m_nTexIdx[selectIdx] + 2);
 
 }
@@ -259,7 +259,7 @@ void CTutorialCheckShould::UpdateSelect()
 	{
 		switch (m_nSelect)
 		{
-		case SELECT_CANCEL:
+		case SELECT_NO:
 			
 			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_CURSOR_END);
 
@@ -269,6 +269,8 @@ void CTutorialCheckShould::UpdateSelect()
 
 		case SELECT_OK:
 
+			// ƒ‚[ƒhÝ’è
+			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_GAMETUTORIAL);
 			break;
 		}
 	}

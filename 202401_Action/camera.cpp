@@ -667,6 +667,7 @@ void CCamera::SetCameraV()
 		break;
 
 	case CScene::MODE_GAME:
+	case CScene::MODE_GAMETUTORIAL:
 		SetCameraVGame();
 		break;
 
@@ -887,6 +888,7 @@ void CCamera::SetCameraR()
 		break;
 
 	case CScene::MODE_GAME:
+	case CScene::MODE_GAMETUTORIAL:
 		SetCameraRGame();
 		break;
 
@@ -1233,6 +1235,7 @@ void CCamera::Reset(CScene::MODE mode)
 		break;
 
 	case CScene::MODE_GAME:
+	case CScene::MODE_GAMETUTORIAL:
 		ResetGame();
 		break;
 

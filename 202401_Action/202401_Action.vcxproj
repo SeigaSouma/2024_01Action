@@ -185,6 +185,9 @@
     <ClCompile Include="enemymanager.cpp" />
     <ClCompile Include="enemy_boss.cpp" />
     <ClCompile Include="enemy_gobelin.cpp" />
+    <ClCompile Include="enemy_practice.cpp" />
+    <ClCompile Include="enemy_practice_attack.cpp" />
+    <ClCompile Include="enemy_practice_SA.cpp" />
     <ClCompile Include="enemy_stonegolem.cpp" />
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
@@ -193,6 +196,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="gamerating.cpp" />
+    <ClCompile Include="game_tutorial.cpp" />
     <ClCompile Include="hp_gauge.cpp" />
     <ClCompile Include="hp_gauge_boss.cpp" />
     <ClCompile Include="hp_gauge_player.cpp" />
@@ -298,6 +302,7 @@
     <ClCompile Include="torch.cpp" />
     <ClCompile Include="transferBeacon.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="tutorialmanager.cpp" />
     <ClCompile Include="tutorial_checkshould.cpp" />
     <ClCompile Include="tutorial_screen.cpp" />
     <ClCompile Include="Xload.cpp" />
@@ -334,6 +339,9 @@
     <ClInclude Include="enemymanager.h" />
     <ClInclude Include="enemy_boss.h" />
     <ClInclude Include="enemy_gobelin.h" />
+    <ClInclude Include="enemy_practice.h" />
+    <ClInclude Include="enemy_practice_attack.h" />
+    <ClInclude Include="enemy_practice_SA.h" />
     <ClInclude Include="enemy_stonegolem.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
@@ -342,6 +350,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="gamerating.h" />
+    <ClInclude Include="game_tutorial.h" />
     <ClInclude Include="hp_gauge.h" />
     <ClInclude Include="hp_gauge_boss.h" />
     <ClInclude Include="hp_gauge_player.h" />
@@ -445,6 +454,7 @@
     <ClInclude Include="torch.h" />
     <ClInclude Include="transferBeacon.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="tutorialmanager.h" />
     <ClInclude Include="tutorial_checkshould.h" />
     <ClInclude Include="tutorial_screen.h" />
     <ClInclude Include="Xload.h" />

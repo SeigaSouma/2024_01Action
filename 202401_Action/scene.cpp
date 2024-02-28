@@ -76,7 +76,8 @@ CScene *CScene::Create(CScene::MODE mode)
 			break;
 
 		case CScene::MODE_GAME:
-			pScene = CGame::Create();
+		case CScene::MODE::MODE_GAMETUTORIAL:
+			pScene = CGame::Create(mode);
 			break;
 
 		case CScene::MODE_RESULT:

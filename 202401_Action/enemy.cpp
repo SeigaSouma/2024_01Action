@@ -31,6 +31,9 @@
 #include "enemy_boss.h"
 #include "enemy_gobelin.h"
 #include "enemy_stonegolem.h"
+#include "enemy_practice.h"
+#include "enemy_practice_attack.h"
+#include "enemy_practice_SA.h"
 
 //==========================================================================
 // 定数定義
@@ -151,6 +154,18 @@ CEnemy* CEnemy::Create(const char* pFileName, MyLib::Vector3 pos, TYPE type)
 		pEnemy = DEBUG_NEW CEnemyGobelin;
 		break;
 
+	case TYPE_PRACTICE:
+		pEnemy = DEBUG_NEW CEnemyPractice;
+		break;
+
+	case TYPE_PRACTICE_A:
+		pEnemy = DEBUG_NEW CEnemyPractice_Attack;
+		break;
+
+	case TYPE_PRACTICE_SA:
+		pEnemy = DEBUG_NEW CEnemyPractice_SA;
+		break;
+
 	default:
 		return nullptr;
 		break;
@@ -164,7 +179,7 @@ CEnemy* CEnemy::Create(const char* pFileName, MyLib::Vector3 pos, TYPE type)
 
 		// 位置設定
 		pEnemy->SetPosition(pos);
-		pEnemy->SetOriginPosition(pos);
+		pEnemy->CObject::SetOriginPosition(pos);
 
 		// テキスト読み込み
 		HRESULT hr = pEnemy->RoadText(pFileName);
