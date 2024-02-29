@@ -58,6 +58,7 @@ public:
 		STATE_WAIT,			// 待機
 		STATE_DOWN,			// ダウン
 		STATE_STRONGATK,	// 強攻撃
+		STATE_DOWNWAIT,		// ダウン待機
 		STATE_MAX
 	};
 
@@ -77,7 +78,7 @@ public:
 		MOTION_ATTACK_STRONG,	// 強攻撃
 		MOTION_DMG,				// ダメージ
 		MOTION_DOWN,			// ダウン
-		MOTION_RETURNDOWN,			// ダウン
+		MOTION_RETURNDOWN,		// ダウン
 		MOTION_KNOCKBACK,		// やられ
 		MOTION_FADEOUT,			// フェードアウト
 		MOTION_MAX
@@ -172,6 +173,7 @@ protected:
 	virtual void StateWait();		// 待機処理
 	virtual void StateDown();		// ダウン状態
 	virtual void StateStrongAtk();	// 強攻撃
+	virtual void StateDownWait();	// ダウン待機状態
 
 	// その他関数
 	virtual void ProcessLanding();	// 着地時処理

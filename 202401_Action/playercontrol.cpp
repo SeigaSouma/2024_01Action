@@ -144,8 +144,9 @@ void CPlayerControlAttack_Level1::Attack(CPlayer* player)
 		pAssist->SetText(CControlAssist::CONTROLTYPE_ATTACK_CHARGE);
 	}
 
-	// 目標の向き取得
+	// 情報取得
 	float fRotDest = player->GetRotDest();
+	MyLib::Vector3 pos = player->GetPosition();
 
 	if (IsAttack(player) &&
 		pInputGamepad->GetPress(CInputGamepad::BUTTON_Y, player->GetMyPlayerIdx()))
@@ -153,6 +154,20 @@ void CPlayerControlAttack_Level1::Attack(CPlayer* player)
 		if (pInputGamepad->IsTipStick())
 		{// 左スティックが倒れてる場合
 			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
+		}
+
+		// 敵確認
+		CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+		CEnemy* pEnemy = nullptr;
+		while (enemyList.ListLoop(&pEnemy))
+		{
+			MyLib::Vector3 enemypos = pEnemy->GetPosition();
+			if (UtilFunc::Collision::CollisionViewRange3D(pos, enemypos, fRotDest, 150.0f) &&
+				UtilFunc::Collision::CircleRange3D(pos, enemypos, LENGTH_AUTOFACE, pEnemy->GetRadius()))
+			{
+				fRotDest = pos.AngleXZ(enemypos);
+				break;
+			}
 		}
 
 		// コンボ段階分考慮

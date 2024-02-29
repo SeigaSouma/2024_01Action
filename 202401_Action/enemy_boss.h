@@ -36,6 +36,7 @@ public:
 		MOTION_HANDSLAP,		// ハンドスラップ
 		MOTION_LAUNCHBALLAST,	// 瓦礫飛ばし
 		MOTION_ROLLING,			// ローリング
+		MOTION_DOWNWAIT,		// ダウン待機
 		MOTION_DOWN,			// ダウン
 		MOTION_RETURNDOWN,		// ダウン復帰
 		MOTION_BACKSTEP,		// バックステップ
@@ -61,16 +62,7 @@ public:
 
 	bool SmallStep();	// 小ステップ
 
-	
-
-	/*CEnemyState* GetATKState() { return m_pATKState; }
-	CEnemyState* GetNextATKState() { return m_pNextATKState; }*/
 private:
-
-
-	//=============================
-	// 関数リスト
-	//=============================
 
 	//=============================
 	// メンバ関数
@@ -79,6 +71,7 @@ private:
 	virtual void StateDown() override;		// ダウン状態
 	virtual void StateDead() override;		// 死亡
 	virtual void StateFadeOut() override;	// フェードアウト
+	virtual void StateDownWait() override;	// ダウン待機状態
 
 	// その他関数
 	void MotionSet() override;	// モーションの設定

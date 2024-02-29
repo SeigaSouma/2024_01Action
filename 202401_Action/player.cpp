@@ -64,7 +64,7 @@ namespace
 	const float SUBVALUE_AVOID = 25.0f;			// 回避の減算量
 
 	// ステータス
-	const float DEFAULT_RESPAWNHEAL = 0.3f;				// リスポーン時の回復割合
+	const float DEFAULT_RESPAWNHEAL = 0.45f;				// リスポーン時の回復割合
 	const float DEFAULT_SUBVALUE_GUARD = 30.0f;			// ガードのスタミナ減算量
 	const float DEFAULT_SUBVALUE_COUNTER = 5.0f;		// カウンターのスタミナ減算量
 	const float DEFAULT_COUNTERHEAL = 0.0f;				// カウンターのスタミナ回復量
@@ -1535,7 +1535,7 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 			CMyEffekseer::GetInstance()->SetEffect(
 				CMyEffekseer::EFKLABEL::EFKLABEL_COUNTER_BREAK,
-				pEnemy->GetCenterPosition(), MyLib::Vector3(0.0f, D3DX_PI + angle, 0.0f), 0.0f, 40.0f);
+				weponpos, MyLib::Vector3(0.0f, D3DX_PI + angle, 0.0f), 0.0f, 40.0f);
 
 			if (pEnemy != nullptr)
 			{
@@ -1913,8 +1913,8 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 
 				// 反撃
 				GetMotion()->Set(MOTION_COUNTER_ATTACK);
-				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
-				m_pSkillPoint->AddPoint();
+				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER, 0.0f);
+				//m_pSkillPoint->AddPoint();
 
 				// 攻撃の設定
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
@@ -1990,16 +1990,26 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 				}
 				pEnemy->SetEnableRockOn(true);
 
+				// 反撃位置に設定
+				MyLib::Vector3 setpos = GetPosition();
+				MyLib::Vector3 setrot = GetRotation();
+				setpos.x += sinf(D3DX_PI + setrot.y) * pEnemy->GetRadius();
+				setpos.z += cosf(D3DX_PI + setrot.y) * pEnemy->GetRadius();
+				pEnemy->SetPosition(setpos);
+
 				// インデックス番号設定
 				m_nIdxRockOn = CEnemy::GetListObj().FindIdx(pEnemy);
 
 				// 反撃
 				GetMotion()->Set(MOTION_COUNTER_ATTACK);
-				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER);
-				m_pSkillPoint->AddPoint();
+				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER, pEnemy->GetHeight());
+				//m_pSkillPoint->AddPoint();
 
 				// 攻撃の設定
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
+
+				// 敵に怯み割り当て
+				pEnemy->SetState(CEnemy::STATE::STATE_DOWNWAIT);
 
 				// カウンター受け付け
 				CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_COUNTER_ATTACK);
@@ -2318,7 +2328,7 @@ void CPlayer::UpdateState()
 		// 終了時の設定
 		delete m_pEndCounterSetting;
 		m_pEndCounterSetting = nullptr;
-		CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
+		CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL, 0.0f);
 	}
 }
 
@@ -3046,7 +3056,7 @@ void CPlayer::AddRespawnPercent(int value)
 void CEndCounterSetting::EndSetting(CPlayer* player)
 {
 	player->SetState(CPlayer::STATE_NONE);
-	CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL);
+	CManager::GetInstance()->GetCamera()->SetRockOnState(CCamera::RockOnState::ROCKON_NORMAL, 0.0f);
 }
 
 //==========================================================================

@@ -571,6 +571,30 @@ void CEnemyBoss::StateFadeOut()
 }
 
 //==========================================================================
+// ダウン待機状態
+//==========================================================================
+void CEnemyBoss::StateDownWait()
+{
+	// ダウン待機状態
+	CEnemy::StateDownWait();
+
+	// モーション取得
+	CMotion* pMotion = GetMotion();
+	if (pMotion == nullptr)
+	{
+		return;
+	}
+
+	int nType = pMotion->GetType();
+	if (nType != MOTION_DOWNWAIT)
+	{
+		// ダウン待機モーション設定
+		pMotion->Set(MOTION_DOWNWAIT);
+	}
+
+}
+
+//==========================================================================
 // 攻撃前処理
 //==========================================================================
 void CBossSideSwipeCombo::BeforeAttack(CEnemy* enemy)

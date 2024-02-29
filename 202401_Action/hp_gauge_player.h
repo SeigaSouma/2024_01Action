@@ -21,7 +21,7 @@ class CHP_GaugePlayer : public CObject
 {
 public:
 
-	CHP_GaugePlayer(int nPriority = 7);
+	CHP_GaugePlayer(int nPriority = 11);
 	~CHP_GaugePlayer();
 
 

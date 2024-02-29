@@ -18,7 +18,7 @@ namespace mylib_const
 {
 	const int DEFAULT_FPS = 60;			// 通常のFPS
 	const int MAX_OBJ = 1600;			// オブジェクトの最大数
-	const int PRIORITY_NUM = 11;			// 優先順位の最大数
+	const int PRIORITY_NUM = 12;			// 優先順位の最大数
 	const int PRIORITY_DEFAULT = 3;		// 優先順位のデフォルト
 	const int PRIORITY_DEF2D = 4;		// 優先順位の2Dデフォルト
 	const int PRIORITY_ZSORT = 10;		// Zソート専用の優先順位

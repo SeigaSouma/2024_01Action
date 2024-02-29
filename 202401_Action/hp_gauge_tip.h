@@ -28,7 +28,7 @@ public:
 		TYPE_MAX
 	};
 
-	CHPGaugeTip(int nPriority = 7);
+	CHPGaugeTip(int nPriority = 11);
 	~CHPGaugeTip();
 
 

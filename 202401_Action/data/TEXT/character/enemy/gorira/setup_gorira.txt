@@ -217,7 +217,7 @@ COLLIDER_FILENAME = data/TEXT/character/enemy/gorira/sphere_collider.json
 #------------------------------------------------------------------------------
 # ƒ‚[ƒVƒ‡ƒ“”
 #------------------------------------------------------------------------------
-NUM_MOTION = 15
+NUM_MOTION = 16
 
 #------------------------------------------------------------------------------
 # ƒ‚ƒfƒ‹ƒtƒ@ƒCƒ‹–¼
@@ -229,6 +229,7 @@ MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_sideswipe.txt			# [3]‰
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_handslap.txt		# [4]ƒnƒ“ƒhƒXƒ‰ƒbƒv
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_launchballast.txt		# [5]Š¢âI”ò‚Î‚µ
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_rolling.txt		# [6]ƒ[ƒŠƒ“ƒO
+MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_downwait.txt			# [7]ƒ_ƒEƒ“
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_down.txt			# [7]ƒ_ƒEƒ“
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_returndown.txt			# [7]ƒ_ƒEƒ“•œ‹A
 MOTION_FILENAME = data/TEXT/character/enemy/gorira/motion_backstep.txt			# [8]ƒoƒbƒNƒXƒeƒbƒv

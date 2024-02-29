@@ -104,7 +104,7 @@ public:
 	// 関数リスト
 	typedef void(CCamera::* ROCKON_STATE_FUNC)();
 	static ROCKON_STATE_FUNC m_RockOnStateFunc[];
-	void SetRockOnState(RockOnState state);	// ロックオン状態設定
+	void SetRockOnState(RockOnState state, float height);	// ロックオン状態設定
 	CCamera::RockOnState GetRockOnState() { return m_stateRockOn; }	// ロックオン状態取得
 
 	MyLib::Vector3 GetTargetRotation();			// 追従目標の向き取得

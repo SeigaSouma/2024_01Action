@@ -1586,7 +1586,7 @@ bool CCamera::IsFollow()
 //==========================================================================
 // ロックオン状態設定
 //==========================================================================
-void CCamera::SetRockOnState(RockOnState state)
+void CCamera::SetRockOnState(RockOnState state, float height)
 {
 	if (state == ROCKON_COUNTER)
 	{
@@ -1597,18 +1597,27 @@ void CCamera::SetRockOnState(RockOnState state)
 			((ROTDISTANCE_ROCKON * 2.0f) * (m_RockOnDir - 1)) + ROTDISTANCE_ROCKON;
 		UtilFunc::Transformation::RotNormalize(m_rotDest);
 		
-		m_rotDest.y -= ROTDISTANCE_COUNTER.y + UtilFunc::Transformation::Random(-140, 0) * 0.001f;
-		m_rotDest.z = UtilFunc::Transformation::Random(-100, 80) * 0.001f;
-		m_fOriginDistance = LENGTH_COUNTER;	// 元の距離
+		m_rotDest.y -= ROTDISTANCE_COUNTER.y;
+		m_rotDest.z = D3DX_PI * 0.02f;
+
+		height -= 200.0f;
+		if (height <= 0.0f) {
+			height = 0.0f;
+		}
+
+		float len = LENGTH_COUNTER + height;
+
+		m_fOriginDistance = len;	// 元の距離
 
 		// 目標の長さ設定
-		SetLenDest(LENGTH_COUNTER, 48, 4.0f, 0.25f);
+		SetLenDest(len, 48, 4.0f, 0.25f);
 	}
 	else
 	{
 		m_rotDest.z = DEFAULT_GAMEROT.z;
 		m_fOriginDistance = START_CAMERALEN;	// 元の距離
 	}
+	UtilFunc::Transformation::RotNormalize(m_rotDest);
 
 	m_stateRockOn = state;
 }

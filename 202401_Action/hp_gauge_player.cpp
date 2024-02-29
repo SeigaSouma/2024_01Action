@@ -94,7 +94,7 @@ HRESULT CHP_GaugePlayer::Init()
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		// ¶¬ˆ—
-		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, m_nMaxLifeValue, TEXTURE[nCntGauge]);
+		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, m_nMaxLifeValue, TEXTURE[nCntGauge], 11);
 		if (m_pObj2DGauge[nCntGauge] == nullptr)
 		{
 			return E_FAIL;

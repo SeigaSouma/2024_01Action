@@ -156,9 +156,9 @@ class CAbillityLife : public CEnhance
 	// ’iŠK•Ê
 	void Add01() { m_pPlayer->UpgradeLife(20); }
 	void Add02() { m_pPlayer->UpgradeLife(40); }
-	void Reapawn01() { m_pPlayer->SetRespawnHeal(0.4f); }
-	void Reapawn02() { m_pPlayer->SetRespawnHeal(0.5f); }
-	void Reapawn03() { m_pPlayer->SetRespawnHeal(0.8f); }
+	void Reapawn01() { m_pPlayer->SetRespawnHeal(0.6f); }
+	void Reapawn02() { m_pPlayer->SetRespawnHeal(0.75f); }
+	void Reapawn03() { m_pPlayer->SetRespawnHeal(1.0f); }
 
 };
 

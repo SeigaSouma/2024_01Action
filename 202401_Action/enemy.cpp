@@ -64,13 +64,14 @@ CEnemy::STATE_FUNC CEnemy::m_StateFunc[] =
 	&CEnemy::StateWait,		// 待機
 	&CEnemy::StateDown,		// ダウン
 	&CEnemy::StateStrongAtk,// 強攻撃
+	&CEnemy::StateDownWait,	// ダウン待機状態
 };
 
 // 行動関数
 CEnemy::ACT_FUNC CEnemy::m_ActFuncList[] =
 {
-	&CEnemy::ActDefault,			// 通常行動
-	&CEnemy::ActWait,				// 待機行動
+	&CEnemy::ActDefault,	// 通常行動
+	&CEnemy::ActWait,		// 待機行動
 };
 
 //==========================================================================
@@ -1255,6 +1256,17 @@ void CEnemy::StateStrongAtk()
 {
 	// 行動可能判定
 	m_bActionable = true;
+}
+
+//==========================================================================
+// ダウン待機状態
+//==========================================================================
+void CEnemy::StateDownWait()
+{
+	// 行動可能判定
+	m_bActionable = false;
+	m_sMotionFrag.bMove = false;	// 移動判定OFF
+	m_sMotionFrag.bATK = false;		// 攻撃判定OFF
 }
 
 //==========================================================================
