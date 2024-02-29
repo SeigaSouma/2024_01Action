@@ -202,6 +202,7 @@
     <ClCompile Include="hp_gauge_boss.cpp" />
     <ClCompile Include="hp_gauge_player.cpp" />
     <ClCompile Include="hp_gauge_tip.cpp" />
+    <ClCompile Include="hp_gauge_tip_billboard.cpp" />
     <ClCompile Include="Imguimanager.cpp" />
     <ClCompile Include="impactwave.cpp" />
     <ClCompile Include="input.cpp" />
@@ -359,6 +360,7 @@
     <ClInclude Include="hp_gauge_boss.h" />
     <ClInclude Include="hp_gauge_player.h" />
     <ClInclude Include="hp_gauge_tip.h" />
+    <ClInclude Include="hp_gauge_tip_billboard.h" />
     <ClInclude Include="Imguimanager.h" />
     <ClInclude Include="impactwave.h" />
     <ClInclude Include="input.h" />

@@ -37,6 +37,8 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/normalATK_right.efkefc",		// 通常攻撃右振り
 	"data/Effekseer/normalATK.efkefc",		// 通常攻撃
 	"data/Effekseer/chargeatk.efkefc",		// チャージ攻撃
+	"data/Effekseer/respawn_start.efkefc",		// 復活開始
+	"data/Effekseer/respawn_wind.efkefc",		// 復活開始
 };
 CMyEffekseer* CMyEffekseer::m_pMyEffekseer = nullptr;	// 自身のポインタ
 

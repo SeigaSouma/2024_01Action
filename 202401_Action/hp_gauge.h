@@ -8,8 +8,9 @@
 #ifndef _HP_GAUGE_H_
 #define _HP_GAUGE_H_	// 二重インクルード防止
 
-#include "main.h"
 #include "objectBillboard.h"
+
+class CHPGaugeTip;
 
 //==========================================================================
 // クラス定義
@@ -32,8 +33,8 @@ public:
 	void SetVtx();
 	void SetVtx(int nCntGauge);
 
+	void Kill();
 	void UpdatePosition(MyLib::Vector3 pos, int nLife);
-	static int GetNumAll();
 
 private:
 
@@ -42,7 +43,6 @@ private:
 	{
 		VTXTYPE_BLACK = 0,	// 黒ゲージ
 		VTXTYPE_PINK,		// ピンクゲージ
-		VTXTYPE_FRAM,		// 枠
 		VTXTYPE_MAX
 	}VTXTYPE;
 
@@ -65,6 +65,7 @@ private:
 	int m_nLife;							// 体力
 	int m_nMaxLife;							// 最大体力
 	int m_nTexIdx[VTXTYPE_MAX];				// テクスチャのインデックス番号
+	CHPGaugeTip* m_pTip;	// ゲージの先端
 };
 
 

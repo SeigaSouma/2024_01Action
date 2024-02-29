@@ -58,8 +58,10 @@ public:
 		EFKLABEL_ENEMYATK_SAND,			// 敵攻撃の煙
 		EFKLABEL_NORMALATK_LEFT,		// 通常攻撃左振り
 		EFKLABEL_NORMALATK_RIGHT,		// 通常攻撃右振り
-		EFKLABEL_NORMALATK,		// 通常攻撃
-		EFKLABEL_CHARGEATK,		// チャージ攻撃
+		EFKLABEL_NORMALATK,				// 通常攻撃
+		EFKLABEL_CHARGEATK,				// チャージ攻撃
+		EFKLABEL_RESPAWN_START,			// 復活開始
+		EFKLABEL_RESPAWN_WIND,			// 復活インパクト
 		EFKLABEL_MAX
 	};
 

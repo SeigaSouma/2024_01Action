@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "calculation.h"
 #include "game.h"
+#include "hp_gauge_tip_billboard.h"
 
 //==========================================================================
 // ’è”’è‹`
@@ -37,10 +38,25 @@ CHPGaugeTip::~CHPGaugeTip()
 //==========================================================================
 // ¶¬ˆ—
 //==========================================================================
-CHPGaugeTip* CHPGaugeTip::Create(const MyLib::Vector3& leftpos, const MyLib::Vector3& rightpos)
+CHPGaugeTip* CHPGaugeTip::Create(const MyLib::Vector3& leftpos, const MyLib::Vector3& rightpos, TYPE type)
 {
 	// ƒƒ‚ƒŠ‚ÌŠm•Û
-	CHPGaugeTip* pMarker = DEBUG_NEW CHPGaugeTip;
+	CHPGaugeTip* pMarker = nullptr;
+
+	switch (type)
+	{
+	case CHPGaugeTip::TYPE_2D:
+		pMarker = DEBUG_NEW CHPGaugeTip;
+		break;
+
+	case CHPGaugeTip::TYPE_BILLBOARD:
+		pMarker = DEBUG_NEW CHPGaugeTip_Billboard;
+		break;
+
+	default:
+		return pMarker;
+		break;
+	}
 
 	if (pMarker != nullptr)
 	{
@@ -61,6 +77,16 @@ HRESULT CHPGaugeTip::Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& r
 
 	int nTexIdx = CTexture::GetInstance()->Regist(TEXTURE);
 
+	CreateTip(nTexIdx);
+
+	return S_OK;
+}
+
+//==========================================================================
+// æ’[¶¬
+//==========================================================================
+void CHPGaugeTip::CreateTip(int nTexIdx)
+{
 	D3DXVECTOR2 size = CTexture::GetInstance()->GetImageSize(nTexIdx);
 	size = UtilFunc::Transformation::AdjustSizeByWidth(size, 15.0f);
 
@@ -70,7 +96,7 @@ HRESULT CHPGaugeTip::Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& r
 		m_pObj2D[i] = CObject2D::Create(GetPriority());
 		if (m_pObj2D[i] == nullptr)
 		{
-			return E_FAIL;
+			return;
 		}
 		CObject2D* pObj = m_pObj2D[i];
 
@@ -79,10 +105,11 @@ HRESULT CHPGaugeTip::Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& r
 
 		// î•ñÝ’è
 		pObj->SetSize(size);
+		pObj->SetSizeOrigin(size);
 
 		float angle = 0.0f;
 
-		MyLib::Vector3 pos = leftpos;
+		//MyLib::Vector3 pos = leftpos;
 		switch (i)
 		{
 		case VTXTYPE::VTXTYPE_LEFT:
@@ -90,7 +117,7 @@ HRESULT CHPGaugeTip::Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& r
 
 		case VTXTYPE::VTXTYPE_RIGHT:
 			angle = D3DX_PI;
-			pos = rightpos;
+			//pos = rightpos;
 			break;
 		}
 
@@ -98,12 +125,9 @@ HRESULT CHPGaugeTip::Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& r
 		pObj->SetRotation(MyLib::Vector3(0.0f, 0.0f, angle));
 		pObj->SetOriginRotation(pObj->GetRotation());
 
-		pObj->SetPosition(pos);
+		//pObj->SetPosition(pos);
 		pObj->SetOriginPosition(pObj->GetPosition());
 	}
-
-
-	return S_OK;
 }
 
 //==========================================================================

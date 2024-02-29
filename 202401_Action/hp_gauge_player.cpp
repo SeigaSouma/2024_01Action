@@ -209,7 +209,7 @@ void CHP_GaugePlayer::Update()
 	}
 
 
-	// æ’[¶¬
+	// æ’[
 	if (m_pTip != nullptr) {
 		MyLib::Vector3 left, right;
 		float maxlen = m_pObj2DGauge[0]->GetMaxWidth();
@@ -229,6 +229,17 @@ void CHP_GaugePlayer::SetLife(int nLife)
 	// Œ»Ý‚Ì‘Ì—ÍÝ’è
 	m_nLifeValue = nLife;
 	m_pObj2DGauge[VTXTYPE_PINK]->SetValue(m_nLifeValue);
+
+	float ratio = ((float)m_nLifeValue / (float)m_nMaxLifeValue);
+	if (ratio <= 0.3f &&
+		m_pObj2DGauge[VTXTYPE_PINK] != nullptr)
+	{
+		m_pObj2DGauge[VTXTYPE_PINK]->SetColor(D3DXCOLOR(1.0f, 0.2f, 0.2f, 1.0f));
+	}
+	else
+	{
+		m_pObj2DGauge[VTXTYPE_PINK]->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }
 
 //==========================================================================

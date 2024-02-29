@@ -10,10 +10,12 @@
 #include "input.h"
 #include "camera.h"
 #include "controlassist.h"
+#include "enemy.h"
 
 namespace
 {
 	const float STAMINA_AVOID = 30.0f;	// 回避のスタミナ消費量
+	const float LENGTH_AUTOFACE = 200.0f;	// 自動で向く長さ
 }
 
 //==========================================================================
@@ -56,10 +58,10 @@ void CPlayerControlAttack::Attack(CPlayer* player)
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
 	MyLib::Vector3 Camerarot = pCamera->GetRotation();
 
-	//if (!player->IsAttacking())
-	{
-		m_bAttackReserved = false;
-	}
+	MyLib::Vector3 pos = player->GetPosition();
+
+	// 予約フラグオフ
+	m_bAttackReserved = false;
 
 	// 攻撃
 	if (IsAttack(player) &&
@@ -75,6 +77,20 @@ void CPlayerControlAttack::Attack(CPlayer* player)
 		if (pInputGamepad->IsTipStick())
 		{// 左スティックが倒れてる場合
 			fRotDest = D3DX_PI + pInputGamepad->GetStickRotL(player->GetMyPlayerIdx()) + Camerarot.y;
+		}
+
+		// 敵確認
+		CListManager<CEnemy> enemyList = CEnemy::GetListObj();
+		CEnemy* pEnemy = nullptr;
+		while (enemyList.ListLoop(&pEnemy))
+		{
+			MyLib::Vector3 enemypos = pEnemy->GetPosition();
+			if (UtilFunc::Collision::CollisionViewRange3D(pos, enemypos, fRotDest, 150.0f) &&
+				UtilFunc::Collision::CircleRange3D(pos, enemypos, LENGTH_AUTOFACE, pEnemy->GetRadius()))
+			{
+				fRotDest = pos.AngleXZ(enemypos);
+				break;
+			}
 		}
 
 		if (player->IsReadyDashAtk() && combostage == 0)

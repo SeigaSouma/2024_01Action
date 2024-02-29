@@ -594,6 +594,9 @@
     <ClCompile Include="particle.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
+    <ClCompile Include="hp_gauge_tip_billboard.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
@@ -1054,6 +1057,9 @@
     </ClInclude>
     <ClInclude Include="particle.h">
       <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="hp_gauge_tip_billboard.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

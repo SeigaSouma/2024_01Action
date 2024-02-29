@@ -360,24 +360,28 @@ void CEnemyBoss::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	case MOTION_LAUNCHBALLAST:
 	{
-		if (weponpos.y <= 0.0f)
+		// ƒvƒŒƒCƒ„[Žæ“¾
+		CListManager<CPlayer> playerList = CPlayer::GetListObj();
+		CPlayer* pPlayer = playerList.GetData(0);
+		if (pPlayer != nullptr)
 		{
-			weponpos.y = 0.0f;
+			if (weponpos.y <= 0.0f)
+			{
+				weponpos.y = 0.0f;
+			}
+
+			MyLib::Vector3 playerpos = pPlayer->GetPosition();
+
+			float angle = weponpos.AngleXZ(playerpos);
+			CBulletObstacle::Create(weponpos, 
+				MyLib::Vector3(0.0f, angle, 0.0f), 
+				D3DXVECTOR2(60.0f, 15.0f), 150.0f);
+			CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
+
+			// U“®
+			CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
+			CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_SHORT);
 		}
-
-		MyLib::Vector3 spawnpos = pos;
-		MyLib::Vector3 spawnrot;
-		spawnpos.x = sinf(D3DX_PI + rot.y) * 600.0f;
-		spawnpos.z = cosf(D3DX_PI + rot.y) * 600.0f;
-
-		spawnrot.y = weponpos.AngleXZ(spawnpos);
-
-		CBulletObstacle::Create(weponpos, rot, D3DXVECTOR2(40.0f, 15.0f), 150.0f);
-		CBallast::Create(weponpos, MyLib::Vector3(5.0f, 12.0f, 5.0f), 20, 3.0f);
-
-		// U“®
-		CManager::GetInstance()->GetCamera()->SetShake(8, 25.0f, 0.0f);
-		CManager::GetInstance()->GetSound()->PlaySound(CSound::LABEL::LABEL_SE_ENEMY_FIELD_SHORT);
 	}
 		break;
 

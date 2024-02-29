@@ -201,7 +201,7 @@ COLLIDER_FILENAME = data/TEXT/character/player/tyuuni/sphere_collider.json
 #------------------------------------------------------------------------------
 # モーション数
 #------------------------------------------------------------------------------
-NUM_MOTION = 25
+NUM_MOTION = 26
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -220,6 +220,7 @@ MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dmg.txt	# [8]ダメージ
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback.txt	# [8]ノックバック
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_knockback_passive.txt	# [8]ノックバック受け身
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_down.txt			# [9]ダウン
+MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_deadwait.txt			# [9]死亡
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_dead.txt			# [9]死亡
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_respawn.txt		# [9]復活
 MOTION_FILENAME = data/TEXT/character/player/tyuuni/motion_prayer.txt		# [9]祈り

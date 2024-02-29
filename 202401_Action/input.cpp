@@ -381,8 +381,7 @@ void CInputGamepad::Update()
 		}
 		
 		if (m_VibrationState[nCntPlayer] != VIBRATION_STATE_NONE)
-		{// ダメージの時
-
+		{
 			if (m_VibrationState[nCntPlayer] == VIBRATION_STATE_ITEM)
 			{// アイテムの時は増えていく
 
@@ -569,6 +568,13 @@ void CInputGamepad::SetVibration(VIBRATION_STATE VibState, int nCntPlayer)
 			m_nMaxCntVibration[nCntPlayer] = m_nCntVibration[nCntPlayer];
 			m_aGamepadStateVib[nCntPlayer].wLeftMotorSpeed = (USHRT_MAX * (short)0.00001f);
 			m_aGamepadStateVib[nCntPlayer].wRightMotorSpeed = (USHRT_MAX * (short)0.00001f);
+			break;
+
+		case VIBRATION_STATE_RESPAWN:
+			m_nCntVibration[nCntPlayer] = 120;
+			m_nMaxCntVibration[nCntPlayer] = m_nCntVibration[nCntPlayer];
+			m_aGamepadStateVib[nCntPlayer].wLeftMotorSpeed = USHRT_MAX;
+			m_aGamepadStateVib[nCntPlayer].wRightMotorSpeed = USHRT_MAX;
 			break;
 		}
 

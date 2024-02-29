@@ -74,7 +74,7 @@ namespace
 	const float  DEFAULT_MULTIPLY_GUARD = 0.4f;			// カードの軽減
 	const float DEFAULT_TIME_ADDDOWN = 3.0f;			// ダウン時間付与
 	const bool DEFAULT_IS_CHARGEFLINCH = true;			// チャージ時怯みフラグ
-	const int DEFAULT_RESPAWN_PERCENT = 20;				// 復活確率
+	const int DEFAULT_RESPAWN_PERCENT = 20;			// 復活確率
 	const float MULTIPLY_CHARGEATK = 2.0f;				// チャージ攻撃の倍率
 }
 
@@ -597,7 +597,10 @@ void CPlayer::Controll()
 	{// 行動できるとき
 
 		// 操作関数
-		if (m_state != STATE_KNOCKBACK)
+		if (m_state != STATE_KNOCKBACK &&
+			m_state != STATE_DEAD &&
+			m_state != STATE_DEADWAIT &&
+			m_state != STATE_FADEOUT)
 		{
 			m_pControlAtk->Attack(this);		// 攻撃操作
 			m_pControlDefence->Defence(this);	// 防御操作
@@ -628,6 +631,7 @@ void CPlayer::Controll()
 			//!m_sMotionFrag.bATK &&
 			m_state != STATE_KNOCKBACK &&
 			m_state != STATE_DEAD &&
+			m_state != STATE_DEADWAIT &&
 			m_state != STATE_FADEOUT)
 		{// 移動可能モーションの時
 
@@ -1058,6 +1062,7 @@ void CPlayer::MotionSet()
 		m_state == STATE_DEADWAIT ||
 		m_state == STATE_DOWN ||
 		m_state == STATE_CHARGE ||
+		m_state == STATE_FADEOUT ||
 		m_state == STATE_KNOCKBACK ||
 		m_state == STATE_PRAYER)
 	{
@@ -1189,6 +1194,11 @@ void CPlayer::MotionBySetState()
 		break;
 
 	default:
+		if (m_WeaponHandle != 0)
+		{
+			CMyEffekseer::GetInstance()->SetTrigger(m_WeaponHandle, 0);
+		}
+
 		// チャージ完了フラグ
 		m_bChargeCompletion = false;
 
@@ -1537,6 +1547,25 @@ void CPlayer::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 
 	case MOTION_PRAYER:
 		CSkillTree_Obj::GetInstance()->StartUp();
+		break;
+
+	case MOTION::MOTION_RESPAWN:
+
+		if (nCntATK == 0)
+		{
+			// ゲームパッド情報取得
+			CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
+			pInputGamepad->SetVibration(CInputGamepad::VIBRATION_STATE::VIBRATION_STATE_RESPAWN, 0);
+
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_RESPAWN_START,
+				weponpos, MyLib::Vector3(0.0f, D3DX_PI + GetRotation().y, 0.0f), 0.0f, 40.0f);
+		}
+		else {
+			CMyEffekseer::GetInstance()->SetEffect(
+				CMyEffekseer::EFKLABEL::EFKLABEL_RESPAWN_WIND,
+				weponpos, MyLib::Vector3(0.0f, D3DX_PI + GetRotation().y, 0.0f), 0.0f, 40.0f);
+		}
 		break;
 
 	default:
@@ -2610,7 +2639,7 @@ void CPlayer::StateDead()
 void CPlayer::StateDeadWait()
 {
 	// ぶっ倒れモーション
-	GetMotion()->Set(MOTION_DEAD);
+	GetMotion()->Set(MOTION_DEADWAIT);
 }
 
 //==========================================================================
@@ -2654,7 +2683,8 @@ void CPlayer::StateRespawn()
 	int nType = pMotion->GetType();
 	if (nType != MOTION_RESPAWN)
 	{// 復活が終了
-		m_state = STATE_NONE;
+		m_state = STATE::STATE_INVINCIBLE;
+		m_nCntState = 60;
 		m_sMotionFrag.bDead = false;
 		return;
 	}

@@ -5,9 +5,9 @@
 // 
 //=============================================================================
 #include "hp_gauge.h"
-#include "texture.h"
 #include "manager.h"
-#include "renderer.h"
+#include "hp_gauge_tip.h"
+#include "camera.h"
 
 //==========================================================================
 // マクロ定義
@@ -20,9 +20,8 @@
 //==========================================================================
 const char *CHP_Gauge::m_apTextureFile[] =					// テクスチャのファイル
 {
-	"",
-	"",
-	"data\\TEXTURE\\hpgauge\\hypnosis_fram.png",
+	"data\\TEXTURE\\hpgauge\\black.png",
+	"data\\TEXTURE\\hpgauge\\hpgauge.png",
 };
 int CHP_Gauge::m_nNumAll = 0;	// 総数
 
@@ -117,29 +116,6 @@ HRESULT CHP_Gauge::Init()
 		m_HPGauge[nCntGauge].fMaxWidth = m_HPGauge[nCntGauge].pObjBillboard->GetSize().x;		// 幅の最大値
 		m_HPGauge[nCntGauge].fMaxHeight = m_HPGauge[nCntGauge].pObjBillboard->GetSize().y;		// 高さの最大値
 
-		// 頂点カラーの設定
-		switch (nCntGauge)
-		{
-		case VTXTYPE_BLACK:		//下地
-
-			// 色設定
-			m_HPGauge[nCntGauge].pObjBillboard->SetColor(D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f));
-			break;
-
-		case VTXTYPE_PINK:		//変動するゲージ
-
-			// 色設定
-			m_HPGauge[nCntGauge].pObjBillboard->SetColor(D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
-			break;
-
-		case VTXTYPE_FRAM:		//フレーム
-
-			// 色設定
-			m_HPGauge[nCntGauge].pObjBillboard->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			break;
-		}
-
-
 		// テクスチャの割り当て
 		m_nTexIdx[nCntGauge] = CTexture::GetInstance()->Regist(m_apTextureFile[nCntGauge]);
 
@@ -147,6 +123,8 @@ HRESULT CHP_Gauge::Init()
 		m_HPGauge[nCntGauge].pObjBillboard->BindTexture(m_nTexIdx[nCntGauge]);
 	}
 
+	// 先端生成
+	m_pTip = CHPGaugeTip::Create(GetPosition() - MyLib::Vector3(WIDTH, 0.0f, 0.0f), GetPosition() + MyLib::Vector3(WIDTH, 0.0f, 0.0f), CHPGaugeTip::TYPE::TYPE_BILLBOARD);
 	return S_OK;
 }
 
@@ -163,8 +141,13 @@ void CHP_Gauge::Uninit()
 			// 終了処理
 			m_HPGauge[nCntGauge].pObjBillboard->Uninit();
 			m_HPGauge[nCntGauge].pObjBillboard = NULL;
-			m_HPGauge[nCntGauge] = {};
 		}
+	}
+
+	if (m_pTip != nullptr)
+	{
+		m_pTip->Uninit();
+		m_pTip = nullptr;
 	}
 
 	// 情報削除
@@ -177,7 +160,45 @@ void CHP_Gauge::Uninit()
 
 			// 終了処理
 			m_HPGauge[nCntGauge].pObjBillboard = NULL;
-			m_HPGauge[nCntGauge] = {};
+		}
+	}
+
+	m_nNumAll--;
+}
+
+
+//==========================================================================
+// 終了処理
+//==========================================================================
+void CHP_Gauge::Kill()
+{
+	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
+	{
+		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
+		{// NULLじゃなかったら
+
+			// 終了処理
+			m_HPGauge[nCntGauge].pObjBillboard->Uninit();
+			m_HPGauge[nCntGauge].pObjBillboard = NULL;
+		}
+	}
+
+	if (m_pTip != nullptr)
+	{
+		m_pTip->Kill();
+		m_pTip = nullptr;
+	}
+
+	// 情報削除
+	Release();
+
+	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
+	{
+		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
+		{// NULLじゃなかったら
+
+			// 終了処理
+			m_HPGauge[nCntGauge].pObjBillboard = NULL;
 		}
 	}
 
@@ -207,6 +228,29 @@ void CHP_Gauge::Update()
 		}
 	}
 
+	// 位置取得
+	MyLib::Vector3 pos = GetPosition();
+
+	MyLib::Vector3 cameraRot = CManager::GetInstance()->GetCamera()->GetRotation();
+
+	// 先端
+	if (m_pTip != nullptr) {
+		MyLib::Vector3 left = pos, right = pos;
+		float maxlen = m_HPGauge[0].fMaxWidth;
+
+		left.x = pos.x - sinf(D3DX_PI * 0.5f + cameraRot.y) * maxlen;
+		left.z = pos.z - cosf(D3DX_PI * 0.5f + cameraRot.y) * maxlen;
+		left.x -= sinf(cameraRot.y) * 3.0f;
+		left.z -= cosf(cameraRot.y) * 3.0f;
+
+		right.x = pos.x + sinf(D3DX_PI * 0.5f + cameraRot.y) * maxlen;
+		right.z = pos.z + cosf(D3DX_PI * 0.5f + cameraRot.y) * maxlen;
+		right.x -= sinf(cameraRot.y) * 3.0f;
+		right.z -= cosf(cameraRot.y) * 3.0f;
+
+		m_pTip->SetLeftPosition(left);
+		m_pTip->SetRightPosition(right);
+	}
 }
 
 //==========================================================================
@@ -233,6 +277,7 @@ void CHP_Gauge::UpdatePosition(MyLib::Vector3 pos, int nLife)
 				m_HPGauge[nCntGauge].fMaxWidth * ((float)m_nLife / (float)m_nMaxLife);
 		}
 	}
+	SetPosition(pos);
 }
 
 //==========================================================================

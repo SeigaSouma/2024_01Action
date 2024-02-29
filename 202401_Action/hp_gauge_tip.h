@@ -18,22 +18,36 @@ class CHPGaugeTip : public CObject
 {
 public:
 
+	//=============================
+	// 列挙型定義
+	//=============================
+	enum TYPE
+	{
+		TYPE_2D = 0,
+		TYPE_BILLBOARD,
+		TYPE_MAX
+	};
+
 	CHPGaugeTip(int nPriority = 7);
 	~CHPGaugeTip();
 
 
 	// オーバーライドされた関数
-	HRESULT Init() override { return S_OK; }
-	HRESULT Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& rightpos);
-	void Uninit() override;
-	void Update() override;
-	void Draw() override {}
+	virtual HRESULT Init() override { return S_OK; }
+	virtual HRESULT Init(const MyLib::Vector3& leftpos, const MyLib::Vector3& rightpos);
+	virtual void Uninit() override;
+	virtual void Update() override;
+	virtual void Draw() override {}
 
-	void Kill();
+	virtual void Kill();
 
-	void SetLeftPosition(const MyLib::Vector3& pos);
-	void SetRightPosition(const MyLib::Vector3& pos);
-	static CHPGaugeTip* Create(const MyLib::Vector3& leftpos, const MyLib::Vector3& rightpos);
+	virtual void SetLeftPosition(const MyLib::Vector3& pos);
+	virtual void SetRightPosition(const MyLib::Vector3& pos);
+	static CHPGaugeTip* Create(const MyLib::Vector3& leftpos, const MyLib::Vector3& rightpos, TYPE type = TYPE::TYPE_2D);
+
+protected:
+
+	virtual void CreateTip(int nTexIdx);
 
 private:
 

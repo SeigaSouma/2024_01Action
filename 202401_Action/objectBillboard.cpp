@@ -60,10 +60,10 @@ void CObjectBillboard::BindTexture(int nIdx)
 //==========================================================================
 // ¶¬ˆ—
 //==========================================================================
-CObjectBillboard* CObjectBillboard::Create()
+CObjectBillboard* CObjectBillboard::Create(int nPriority)
 {
 	// ƒƒ‚ƒŠ‚ÌŠm•Û
-	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard;
+	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard(nPriority);
 
 	if (pObjBillBoard != NULL)
 	{// ƒƒ‚ƒŠ‚ÌŠm•Û‚ªo—ˆ‚Ä‚¢‚½‚ç

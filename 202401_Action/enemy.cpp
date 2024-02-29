@@ -379,7 +379,7 @@ void CEnemy::Kill()
 	// HPƒQ[ƒW‚ðÁ‚·
 	if (m_pHPGauge != nullptr)
 	{
-		m_pHPGauge->Uninit();
+		m_pHPGauge->Kill();
 		m_pHPGauge = nullptr;
 	}
 

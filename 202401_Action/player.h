@@ -51,6 +51,7 @@ public:
 		MOTION_KNOCKBACK,			// ノックバック
 		MOTION_KNOCKBACK_PASSIVE,	// ノックバック受け身
 		MOTION_DOWN,				// ダウン
+		MOTION_DEADWAIT,			// 死亡待機
 		MOTION_DEAD,				// 死亡
 		MOTION_RESPAWN,				// 復活
 		MOTION_PRAYER,				// 祈り
