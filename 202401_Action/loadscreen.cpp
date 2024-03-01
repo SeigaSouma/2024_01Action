@@ -15,7 +15,7 @@
 //==========================================================================
 namespace
 {
-	const char* TEXTURE = "data\\TEXTURE\\load\\runningman102.png";
+	const char* TEXTURE = "data\\TEXTURE\\load\\loadscreen.jpg";
 }
 
 
@@ -76,7 +76,7 @@ CLoadScreen *CLoadScreen::Create()
 HRESULT CLoadScreen::Init()
 {
 	// ê∂ê¨èàóù
-	m_aObject2D = CObject2D_Anim::Create(0.0f, 5, 2, 2, false);
+	m_aObject2D = CObject2D_Anim::Create(0.0f, 5, 9, 2, false);
 	if (m_aObject2D == NULL)
 	{// é∏îsÇµÇƒÇ¢ÇΩÇÁ
 		return E_FAIL;
