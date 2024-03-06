@@ -124,7 +124,7 @@ HRESULT CGameManager::Init()
 #if _DEBUG
 	m_nNowStage = 0;			// 現在のステージ
 #else
-	m_nNowStage = 3;			// 現在のステージ
+	m_nNowStage = 0;			// 現在のステージ
 #endif
 
 	m_SceneType = SceneType::SCENE_TRANSITION;	// シーンの種類 
