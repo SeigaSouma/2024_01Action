@@ -513,7 +513,6 @@ MyLib::Vector3 *CObject2D::GetVtxPos()
 //==========================================================================
 void CObject2D::SetVtxPos(MyLib::Vector3 *pos)
 {
-	//&m_VtxPos[0] = *pos;
 	memcpy(&m_VtxPos[0], pos, sizeof(m_VtxPos));
 }
 

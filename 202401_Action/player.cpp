@@ -936,6 +936,16 @@ void CPlayer::Controll()
 
 		CPlayer::Hit(10000, CGameManager::AttackType::ATTACK_NORMAL);
 	}
+	if (pInputKeyboard->GetTrigger(DIK_UP) == true)
+	{
+		// ŠÏO‚ÌƒŠƒXƒgæ“¾
+		CListManager<CGallery> galleryList = CGallery::GetList();
+		CGallery* pGallery = nullptr;
+		while (galleryList.ListLoop(&pGallery))
+		{
+			pGallery->SetState(CGallery::STATE_CLEARHEAT);
+		}
+	}
 
 
 
