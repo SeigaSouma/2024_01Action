@@ -6,30 +6,15 @@
 //=============================================================================
 #include "object2D.h"
 #include "manager.h"
-#include "renderer.h"
-#include "player.h"
-#include "enemy.h"
-#include "bg.h"
-#include "texture.h"
 #include "pause.h"
 
 //==========================================================================
-// マクロ定義
+// 定数定義
 //==========================================================================
-#define TEXTURE_NAME	"data\\TEXTURE\\titlelog_00.png"	// テクスチャ名
-#define POLYGON_TOP		(4)								// ポリゴンの頂点数
-#define WIDTH			(80.0f)							// 横幅
-#define HEIGHT			(60.0f)							// 縦幅
-#define ANIM_SPEED		(10)							// 読み込み間隔
-#define MAX_PATTERN_U	(5)								// Uの分割数
-#define MAX_PATTERN_V	(2)								// Vの分割数
-#define MAX_PATTERN		(MAX_PATTERN_U * MAX_PATTERN_V)
-#define MOVE_U			(1.0f / (float)MAX_PATTERN_U)	// U座標移動量
-#define MOVE_V			(1.0f / (float)MAX_PATTERN_V)	// V座標移動量
-
-//==========================================================================
-// 静的メンバ変数宣言
-//==========================================================================
+namespace
+{
+	const int POLYGON_TOP = 4;	// ポリゴンの頂点数
+}
 
 //==========================================================================
 // コンストラクタ
@@ -78,8 +63,7 @@ CObject2D *CObject2D::Create()
 	CObject2D* pObject2D = DEBUG_NEW CObject2D;
 
 	if (pObject2D != nullptr)
-	{// メモリの確保が出来ていたら
-
+	{
 		// 初期化処理
 		pObject2D->Init();
 	}
@@ -96,8 +80,7 @@ CObject2D* CObject2D::Create(int nPriority)
 	CObject2D* pObject2D = DEBUG_NEW CObject2D(nPriority);
 
 	if (pObject2D != nullptr)
-	{// メモリの確保が出来ていたら
-
+	{
 		// 初期化処理
 		pObject2D->Init();
 	}
@@ -108,28 +91,20 @@ CObject2D* CObject2D::Create(int nPriority)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject2D *CObject2D::Create(int nPriority, int nNumVtx)
+CObject2D* CObject2D::Create(int nPriority, int nNumVtx)
 {
-	// 生成用のオブジェクト
-	CObject2D *pObject2D = nullptr;
 
-	if (pObject2D == nullptr)
-	{// nullptrだったら
+	// メモリの確保
+	CObject2D* pObject2D = DEBUG_NEW CObject2D(nPriority);
 
-		// メモリの確保
-		pObject2D = DEBUG_NEW CObject2D(nPriority);
+	if (pObject2D != nullptr)
+	{// メモリの確保が出来ていたら
 
-		if (pObject2D != nullptr)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObject2D->Init(nNumVtx);
-		}
-
-		return pObject2D;
+		// 初期化処理
+		pObject2D->Init(nNumVtx);
 	}
 
-	return nullptr;
+	return pObject2D;
 }
 
 //==========================================================================
@@ -273,6 +248,9 @@ void CObject2D::Draw()
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
+//==========================================================================
+// 描画処理(マルチテクスチャ)
+//==========================================================================
 void CObject2D::Draw(LPDIRECT3DTEXTURE9 mutitex)
 {
 	// デバイスの取得

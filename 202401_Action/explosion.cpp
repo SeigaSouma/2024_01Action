@@ -75,15 +75,15 @@ CExplosion::~CExplosion()
 CExplosion *CExplosion::Create(TYPE type, const MyLib::Vector3 pos, const float fSize)
 {
 	// 生成用のオブジェクト
-	CExplosion *pBullet = NULL;
+	CExplosion *pBullet = nullptr;
 
-	if (pBullet == NULL)
-	{// NULLだったら
+	if (pBullet == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pBullet = DEBUG_NEW CExplosion;
 
-		if (pBullet != NULL)
+		if (pBullet != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 種類設定
@@ -106,7 +106,7 @@ CExplosion *CExplosion::Create(TYPE type, const MyLib::Vector3 pos, const float 
 		return pBullet;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

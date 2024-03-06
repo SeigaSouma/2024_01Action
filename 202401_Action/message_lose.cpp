@@ -106,7 +106,7 @@ CMessageLose* CMessageLose::Create()
 	// インスタンス生成
 	CMessageLose* pLose = DEBUG_NEW CMessageLose;
 
-	// NULLチェック
+	// nullptrチェック
 	if (pLose == nullptr) { return nullptr; }
 
 	// 初期化処理

@@ -124,11 +124,11 @@ HRESULT CObjectChara::Init()
 //==========================================================================
 void CObjectChara::Uninit()
 {
-	if (m_pMotion != NULL)
+	if (m_pMotion != nullptr)
 	{
 		m_pMotion->Uninit();
 		delete m_pMotion;
-		m_pMotion = NULL;
+		m_pMotion = nullptr;
 	}
 
 	// 終了処理
@@ -245,11 +245,11 @@ void CObjectChara::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 //==========================================================================
 void CObjectChara::ChangeMotion(const char* pMotionFile)
 {
-	if (m_pMotion != NULL)
+	if (m_pMotion != nullptr)
 	{
 		m_pMotion->Uninit();
 		delete m_pMotion;
-		m_pMotion = NULL;
+		m_pMotion = nullptr;
 	}
 
 	// モーションの生成処理
@@ -358,7 +358,7 @@ void CObjectChara::LoadSphereColliders(const std::string textfile)
 {
 	// ファイルを開く
 	FILE* pFile = fopen(textfile.c_str(), "r");
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けなかった場合
 		return;
 	}

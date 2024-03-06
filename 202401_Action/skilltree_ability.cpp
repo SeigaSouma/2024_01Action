@@ -47,7 +47,7 @@ CSkillTree_Ability::~CSkillTree_Ability()
 CSkillTree_Ability* CSkillTree_Ability::Create()
 {
 
-	if (m_pThisPtr == NULL)
+	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
 
 		// インスタンス生成

@@ -29,7 +29,7 @@ namespace
 CRockOnMarker::CRockOnMarker(int nPriority) : CObjectBillboard(nPriority)
 {
 	// ’l‚ÌƒNƒŠƒA
-	memset(m_RockOnInfo, NULL, sizeof(m_RockOnInfo));
+	memset(m_RockOnInfo, 0, sizeof(m_RockOnInfo));
 }
 
 //==========================================================================

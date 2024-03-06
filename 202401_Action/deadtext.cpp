@@ -53,12 +53,12 @@ CDeadText::~CDeadText()
 CDeadText* CDeadText::Create(const float fadein, const float fadeout)
 {
 	// 生成用のオブジェクト
-	CDeadText* pScreen = NULL;
+	CDeadText* pScreen = nullptr;
 
 	// メモリの確保
 	pScreen = DEBUG_NEW CDeadText(fadein, fadeout);
 
-	if (pScreen != NULL)
+	if (pScreen != nullptr)
 	{
 		// 初期化処理
 		pScreen->Init();

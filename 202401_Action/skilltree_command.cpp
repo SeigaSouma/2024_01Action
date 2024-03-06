@@ -48,7 +48,7 @@ CSkillTree_Command* CSkillTree_Command::Create()
 	// ƒƒ‚ƒŠ‚ÌŠm•Û
 	CSkillTree_Command* pEffect = DEBUG_NEW CSkillTree_Command;
 
-	if (pEffect != NULL)
+	if (pEffect != nullptr)
 	{// ƒƒ‚ƒŠ‚ÌŠm•Û‚ªo—ˆ‚Ä‚¢‚½‚ç
 
 		// ‰Šú‰»ˆ—

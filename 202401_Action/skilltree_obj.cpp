@@ -28,9 +28,9 @@ namespace
 {
 	const char* BAGMODEL = "data\\MODEL\\enhance\\stoneplane.x";
 	const MyLib::Vector3 POSITION = MyLib::Vector3(0.0f, 0.0f, 1100.0f);	// 半径
-	const float RADIUS = 100.0f;	// 半径
-	const float TIME_STARTUP = 1.0f;		// 起動時間
-	const float MAX_DISTANCE_VOLUME = 700.0f;		// 音が聞こえる最大距離
+	const float RADIUS = 100.0f;				// 半径
+	const float TIME_STARTUP = 1.0f;			// 起動時間
+	const float MAX_DISTANCE_VOLUME = 700.0f;	// 音が聞こえる最大距離
 }
 CSkillTree_Obj* CSkillTree_Obj::m_pThisPtr = nullptr;		// 自身のポインタ
 

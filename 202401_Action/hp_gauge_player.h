@@ -21,7 +21,7 @@ class CHP_GaugePlayer : public CObject
 {
 public:
 
-	CHP_GaugePlayer(int nPriority = 11);
+	CHP_GaugePlayer(int nPriority = 6);
 	~CHP_GaugePlayer();
 
 
@@ -29,7 +29,7 @@ public:
 	HRESULT Init() override;
 	void Uninit() override;
 	void Update() override;
-	void Draw() override;
+	void Draw() override {}
 
 
 	// 強化関数
@@ -60,7 +60,6 @@ private:
 	};
 
 	// メンバ関数
-	void ChangeColor(int nCntGauge);		// 色変更
 	void SetVtx(int nIdx);
 
 	// メンバ変数

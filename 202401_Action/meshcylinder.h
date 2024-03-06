@@ -29,7 +29,7 @@ public:
 	void SetVtx();
 
 	static CMeshCylinder *Create();
-	static CMeshCylinder *Create(const char *aFileName = NULL);
+	static CMeshCylinder *Create(const char *aFileName = nullptr);
 	CMeshCylinder *GetMyObject();
 
 private:

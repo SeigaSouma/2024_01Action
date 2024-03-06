@@ -47,10 +47,10 @@ CTargetPoint::~CTargetPoint()
 CTargetPoint *CTargetPoint::Create(MyLib::Vector3 pos, float fWidthLen, float fHeightLen)
 {
 	// 生成用のオブジェクト
-	CTargetPoint *pObjMeshCylinder = NULL;
+	CTargetPoint *pObjMeshCylinder = nullptr;
 
-	if (pObjMeshCylinder == NULL)
-	{// NULLだったら
+	if (pObjMeshCylinder == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshCylinder = DEBUG_NEW CTargetPoint;
@@ -59,10 +59,10 @@ CTargetPoint *CTargetPoint::Create(MyLib::Vector3 pos, float fWidthLen, float fH
 		//{// メモリ確保に失敗していたら
 
 		//	delete pObjMeshCylinder;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pObjMeshCylinder != NULL)
+		if (pObjMeshCylinder != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -85,7 +85,7 @@ CTargetPoint *CTargetPoint::Create(MyLib::Vector3 pos, float fWidthLen, float fH
 		return pObjMeshCylinder;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

@@ -33,7 +33,7 @@ CHP_Gauge::CHP_Gauge(int nPriority) : CObject(nPriority)
 	// 値のクリア
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		m_HPGauge[nCntGauge].pObjBillboard = NULL;
+		m_HPGauge[nCntGauge].pObjBillboard = nullptr;
 		m_HPGauge[nCntGauge].fMaxWidth = 0.0f;		// 幅の最大値
 		m_HPGauge[nCntGauge].fMaxHeight = 0.0f;		// 高さの最大値
 		m_HPGauge[nCntGauge].fWidthDest = 0.0f;		// 幅の差分
@@ -61,12 +61,12 @@ CHP_Gauge::~CHP_Gauge()
 CHP_Gauge* CHP_Gauge::Create(float fPosLen, int nMaxLife, float fSizeBuff)
 {
 	// 生成用のオブジェクト
-	CHP_Gauge* pHPGauge = NULL;
+	CHP_Gauge* pHPGauge = nullptr;
 
 	// メモリの確保
 	pHPGauge = DEBUG_NEW CHP_Gauge;
 
-	if (pHPGauge != NULL)
+	if (pHPGauge != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 原点からの長さを渡す
@@ -81,10 +81,10 @@ CHP_Gauge* CHP_Gauge::Create(float fPosLen, int nMaxLife, float fSizeBuff)
 			pHPGauge->m_HPGauge[nCntGauge].pObjBillboard =
 				pHPGauge->m_HPGauge[nCntGauge].pObjBillboard->Create();
 
-			if (pHPGauge->m_HPGauge[nCntGauge].pObjBillboard == NULL)
-			{// NULLだったら
+			if (pHPGauge->m_HPGauge[nCntGauge].pObjBillboard == nullptr)
+			{// nullptrだったら
 				pHPGauge->Uninit();
-				return NULL;
+				return nullptr;
 			}
 
 			pHPGauge->m_HPGauge[nCntGauge].pObjBillboard->SetSize(
@@ -135,12 +135,12 @@ void CHP_Gauge::Uninit()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
-		{// NULLじゃなかったら
+		if (m_HPGauge[nCntGauge].pObjBillboard != nullptr)
+		{// nullptrじゃなかったら
 
 			// 終了処理
 			m_HPGauge[nCntGauge].pObjBillboard->Uninit();
-			m_HPGauge[nCntGauge].pObjBillboard = NULL;
+			m_HPGauge[nCntGauge].pObjBillboard = nullptr;
 		}
 	}
 
@@ -155,11 +155,11 @@ void CHP_Gauge::Uninit()
 
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
-		{// NULLじゃなかったら
+		if (m_HPGauge[nCntGauge].pObjBillboard != nullptr)
+		{// nullptrじゃなかったら
 
 			// 終了処理
-			m_HPGauge[nCntGauge].pObjBillboard = NULL;
+			m_HPGauge[nCntGauge].pObjBillboard = nullptr;
 		}
 	}
 
@@ -174,12 +174,12 @@ void CHP_Gauge::Kill()
 {
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
-		{// NULLじゃなかったら
+		if (m_HPGauge[nCntGauge].pObjBillboard != nullptr)
+		{// nullptrじゃなかったら
 
 			// 終了処理
 			m_HPGauge[nCntGauge].pObjBillboard->Uninit();
-			m_HPGauge[nCntGauge].pObjBillboard = NULL;
+			m_HPGauge[nCntGauge].pObjBillboard = nullptr;
 		}
 	}
 
@@ -194,11 +194,11 @@ void CHP_Gauge::Kill()
 
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
-		{// NULLじゃなかったら
+		if (m_HPGauge[nCntGauge].pObjBillboard != nullptr)
+		{// nullptrじゃなかったら
 
 			// 終了処理
-			m_HPGauge[nCntGauge].pObjBillboard = NULL;
+			m_HPGauge[nCntGauge].pObjBillboard = nullptr;
 		}
 	}
 
@@ -213,8 +213,8 @@ void CHP_Gauge::Update()
 
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
-		{// NULLじゃなかったら
+		if (m_HPGauge[nCntGauge].pObjBillboard != nullptr)
+		{// nullptrじゃなかったら
 
 			if (nCntGauge == VTXTYPE_PINK)
 			{// ゲージ部分だけ　
@@ -263,8 +263,8 @@ void CHP_Gauge::UpdatePosition(MyLib::Vector3 pos, int nLife)
 
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
-		if (m_HPGauge[nCntGauge].pObjBillboard != NULL)
-		{// NULLじゃなかったら
+		if (m_HPGauge[nCntGauge].pObjBillboard != nullptr)
+		{// nullptrじゃなかったら
 
 			// 位置設定
 			m_HPGauge[nCntGauge].pObjBillboard->SetPosition(pos);

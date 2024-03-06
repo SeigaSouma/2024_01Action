@@ -42,8 +42,8 @@ CEditEnemyBase::CEditEnemyBase()
 	m_nIdxMapPoint = 0;			// マップポイントのインデックス番号
 	m_fPointRatio = 0.0f;		// 移動割合
 	m_fMoveValue = 0.0f;		// 移動量
-	memset(&m_pEnemy[0], NULL, sizeof(m_pEnemy));	// 敵へのポインタ
-	m_apObjX = NULL;			// オブジェクトX
+	memset(&m_pEnemy[0], 0, sizeof(m_pEnemy));	// 敵へのポインタ
+	m_apObjX = nullptr;			// オブジェクトX
 	m_nStage = 0;				// ステージ
 	m_nRush = 0;				// ラッシュ用かどうか
 }
@@ -62,29 +62,29 @@ CEditEnemyBase::~CEditEnemyBase()
 CEditEnemyBase *CEditEnemyBase::Create()
 {
 	// 生成用のオブジェクト
-	CEditEnemyBase *pObjBase = NULL;
+	CEditEnemyBase *pObjBase = nullptr;
 
-	if (pObjBase == NULL)
-	{// NULLだったら
+	if (pObjBase == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjBase = DEBUG_NEW CEditEnemyBase;
 
-		if (pObjBase != NULL)
+		if (pObjBase != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
 			HRESULT hr = pObjBase->Init();
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pObjBase;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -111,10 +111,10 @@ void CEditEnemyBase::Uninit()
 //==========================================================================
 void CEditEnemyBase::Release()
 {
-	if (m_apObjX != NULL)
+	if (m_apObjX != nullptr)
 	{
 		m_apObjX->Uninit();
-		m_apObjX = NULL;
+		m_apObjX = nullptr;
 	}
 }
 
@@ -135,8 +135,8 @@ void CEditEnemyBase::Update()
 
 	for (int nCntEnemy = 0; nCntEnemy < mylib_const::MAX_PATTEN_ENEMY; nCntEnemy++)
 	{
-		if (m_pEnemy[nCntEnemy] != NULL)
-		{// NULLじゃなかったら
+		if (m_pEnemy[nCntEnemy] != nullptr)
+		{// nullptrじゃなかったら
 			m_pEnemy[nCntEnemy]->SetPosition(m_pos);
 		}
 	}
@@ -152,7 +152,7 @@ void CEditEnemyBase::Update()
 
 		// 敵の拠点の取得
 		CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-		if (pEnemyBase == NULL)
+		if (pEnemyBase == nullptr)
 		{
 			return;
 		}
@@ -170,7 +170,7 @@ void CEditEnemyBase::Update()
 
 		// 敵の拠点の取得
 		CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-		if (pEnemyBase == NULL)
+		if (pEnemyBase == nullptr)
 		{
 			return;
 		}
@@ -386,11 +386,11 @@ void CEditEnemyBase::ChangeType()
 	{
 		for (int nCntEnemy = 0; nCntEnemy < mylib_const::MAX_PATTEN_ENEMY; nCntEnemy++)
 		{
-			if (m_pEnemy[nCntEnemy] != NULL)
-			{// NULLにする
+			if (m_pEnemy[nCntEnemy] != nullptr)
+			{// nullptrにする
 				m_pEnemy[nCntEnemy]->Kill();
 				m_pEnemy[nCntEnemy]->Uninit();
-				m_pEnemy[nCntEnemy] = NULL;
+				m_pEnemy[nCntEnemy] = nullptr;
 			}
 		}
 
@@ -401,7 +401,7 @@ void CEditEnemyBase::ChangeType()
 
 		for (int nCntEnemy = 0; nCntEnemy < mylib_const::MAX_PATTEN_ENEMY; nCntEnemy++)
 		{
-			if (ppEnemy[nCntEnemy] != NULL)
+			if (ppEnemy[nCntEnemy] != nullptr)
 			{
 				m_pEnemy[nCntEnemy] = ppEnemy[nCntEnemy];
 			}
@@ -421,7 +421,7 @@ void CEditEnemyBase::Grab()
 
 	// 敵の拠点の取得
 	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-	if (pEnemyBase == NULL)
+	if (pEnemyBase == nullptr)
 	{
 		return;
 	}
@@ -457,7 +457,7 @@ void CEditEnemyBase::Delete()
 
 	// 敵の拠点の取得
 	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-	if (pEnemyBase == NULL)
+	if (pEnemyBase == nullptr)
 	{
 		return;
 	}

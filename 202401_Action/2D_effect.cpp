@@ -73,10 +73,10 @@ CEffect2D::~CEffect2D()
 CEffect2D *CEffect2D::Create()
 {
 	// 生成用のオブジェクト
-	CEffect2D *pEffect = NULL;
+	CEffect2D *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CEffect2D;
@@ -85,10 +85,10 @@ CEffect2D *CEffect2D::Create()
 		//{// メモリ確保に失敗していたら
 
 		//	delete pEffect;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -98,7 +98,7 @@ CEffect2D *CEffect2D::Create()
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -107,15 +107,15 @@ CEffect2D *CEffect2D::Create()
 CEffect2D *CEffect2D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type)
 {
 	// 生成用のオブジェクト
-	CEffect2D *pEffect = NULL;
+	CEffect2D *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CEffect2D;
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -125,7 +125,7 @@ CEffect2D *CEffect2D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -135,15 +135,15 @@ CEffect2D *CEffect2D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move
 CEffect2D *CEffect2D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const MyLib::Vector3 rot, const D3DXCOLOR col, const float fRadius, const int nLife, const int moveType, const TYPE type)
 {
 	// 生成用のオブジェクト
-	CEffect2D *pEffect = NULL;
+	CEffect2D *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CEffect2D;
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -154,7 +154,7 @@ CEffect2D *CEffect2D::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

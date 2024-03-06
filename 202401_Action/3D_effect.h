@@ -40,7 +40,7 @@ public:
 		TYPE_JUJI,			// 十字エフェクト
 		TYPE_JUJI2,			// 十字エフェクト
 		TYPE_THUNDER,		// 雷エフェクト
-		TYPE_NULL,			// NULLエフェクト
+		TYPE_nullptr,			// nullptrエフェクト
 		TYPE_MAX
 	}TYPE;
 

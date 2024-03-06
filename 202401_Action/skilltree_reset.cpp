@@ -42,7 +42,7 @@ CSkillTree_Reset::CSkillTree_Reset(int nPriority) : CObject2D(nPriority)
 	// 値のクリア
 	m_nSelect = 0;	// 選択肢
 	m_fFlashTime = 0.0f;	// 点滅時間
-	memset(m_pSelectObj, NULL, sizeof(m_pSelectObj));	// 選択肢のオブジェクト
+	memset(m_pSelectObj, 0, sizeof(m_pSelectObj));	// 選択肢のオブジェクト
 }
 
 //==========================================================================

@@ -33,7 +33,7 @@
 CScore::CScore(int nPriority)
 {
 	// 値のクリア
-	m_apNumber = NULL;
+	m_apNumber = nullptr;
 	m_nNum = 0;		// 値
 	m_nTexIdx = 0;		// テクスチャのインデックス番号
 }
@@ -52,15 +52,15 @@ CScore::~CScore()
 CScore *CScore::Create()
 {
 	// 生成用のオブジェクト
-	CScore *pScore = NULL;
+	CScore *pScore = nullptr;
 
-	if (pScore == NULL)
-	{// NULLだったら
+	if (pScore == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pScore = DEBUG_NEW CScore;
 
-		if (pScore != NULL)
+		if (pScore != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -70,7 +70,7 @@ CScore *CScore::Create()
 		return pScore;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -79,15 +79,15 @@ CScore *CScore::Create()
 CScore *CScore::Create(MyLib::Vector3 pos)
 {
 	// 生成用のオブジェクト
-	CScore *pScore = NULL;
+	CScore *pScore = nullptr;
 
-	if (pScore == NULL)
-	{// NULLだったら
+	if (pScore == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pScore = DEBUG_NEW CScore;
 
-		if (pScore != NULL)
+		if (pScore != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -97,7 +97,7 @@ CScore *CScore::Create(MyLib::Vector3 pos)
 		return pScore;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -125,10 +125,10 @@ HRESULT CScore::Init(MyLib::Vector3 pos)
 void CScore::Uninit()
 {
 	// 数字のオブジェクトの終了処理
-	if (m_apNumber != NULL)
+	if (m_apNumber != nullptr)
 	{
 		m_apNumber->Uninit();
-		m_apNumber = NULL;
+		m_apNumber = nullptr;
 	}
 }
 

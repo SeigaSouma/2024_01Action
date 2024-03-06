@@ -23,9 +23,9 @@ class CEnemy;
 class CEndCounterSetting;
 
 class CPlayerControlAttack;	// 攻撃
-class CPlayerControlDefence;	// 防御
+class CPlayerControlDefence;// 防御
 class CPlayerControlAvoid;	// 回避
-class CPlayerGuard;	// ガード
+class CPlayerGuard;			// ガード
 
 //==========================================================================
 // クラス定義
@@ -34,7 +34,10 @@ class CPlayerGuard;	// ガード
 class CPlayer : public CObjectChara
 {
 public:
+	//=============================
 	// 列挙型定義
+	//=============================
+	// モーション列挙
 	enum MOTION
 	{
 		MOTION_DEF = 0,				// ニュートラルモーション

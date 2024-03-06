@@ -35,8 +35,8 @@
 CEnemyManager::CEnemyManager()
 {
 	// 値のクリア
-	m_pBoss = NULL;										// ボス
-	memset(&m_aPattern[0], NULL, sizeof(m_aPattern));	// 配置の種類
+	m_pBoss = nullptr;										// ボス
+	memset(&m_aPattern[0], 0, sizeof(m_aPattern));	// 配置の種類
 	m_state = STATE_NONE;	// 状態
 	m_nPatternNum = 0;		// 出現パターン数
 	m_nNumChara = 0;		// 敵の種類の総数
@@ -57,22 +57,22 @@ CEnemyManager::~CEnemyManager()
 CEnemyManager *CEnemyManager::Create(const std::string pTextFile)
 {
 	// 生成用のオブジェクト
-	CEnemyManager *pModel = NULL;
+	CEnemyManager *pModel = nullptr;
 
-	if (pModel == NULL)
-	{// NULLだったら
+	if (pModel == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pModel = DEBUG_NEW CEnemyManager;
 
-		if (pModel != NULL)
+		if (pModel != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
 			HRESULT hr = pModel->ReadText(pTextFile);
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 初期化処理
@@ -82,14 +82,14 @@ CEnemyManager *CEnemyManager::Create(const std::string pTextFile)
 			{// 失敗していたら
 				pModel->Uninit();
 				pModel = nullptr;
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pModel;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -146,7 +146,7 @@ void CEnemyManager::SetStageEnemy()
 	// ゲームマネージャ取得
 	CGameManager* pGameManager = CGame::GetInstance()->GetGameManager();
 
-	if (pGameManager == NULL)
+	if (pGameManager == nullptr)
 	{
 		return;
 	}
@@ -167,7 +167,7 @@ void CEnemyManager::SetStageEnemy()
 
 	// 敵拠点データ取得
 	CEnemyBase* pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-	if (pEnemyBase == NULL)
+	if (pEnemyBase == nullptr)
 	{
 		return;
 	}
@@ -195,7 +195,7 @@ void CEnemyManager::SetStageBoss()
 {
 	// 敵拠点データ取得
 	CEnemyBase *pEnemyBase = CGame::GetInstance()->GetEnemyBase();
-	if (pEnemyBase == NULL)
+	if (pEnemyBase == nullptr)
 	{
 		return;
 	}
@@ -222,7 +222,7 @@ CEnemy **CEnemyManager::SetEnemy(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPa
 	int nCntStart = 0;
 	Pattern NowPattern = m_aPattern[nPattern];
 	CEnemy *pEnemy[mylib_const::MAX_PATTEN_ENEMY];
-	memset(&pEnemy[0], NULL, sizeof(pEnemy));
+	memset(&pEnemy[0], 0, sizeof(pEnemy));
 
 	for (int nCntEnemy = 0; nCntEnemy < nNumSpawn; nCntEnemy++)
 	{
@@ -254,16 +254,16 @@ CEnemy **CEnemyManager::SetEnemy(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPa
 			spawnPos,						// 位置
 			(CEnemy::TYPE)nType);			// 種類
 
-		if (pEnemy[nCntEnemy] == NULL)
+		if (pEnemy[nCntEnemy] == nullptr)
 		{// 失敗していたら
 
 			delete pEnemy[nCntEnemy];
-			pEnemy[nCntEnemy] = NULL;
+			pEnemy[nCntEnemy] = nullptr;
 			break;
 		}
 
 		// ボスの場合コピー
-		if (nType == 0 && m_pBoss == NULL)
+		if (nType == 0 && m_pBoss == nullptr)
 		{
 			m_pBoss = (CEnemyBoss*)pEnemy[nCntEnemy];
 		}
@@ -298,11 +298,11 @@ CEnemyManager::Pattern CEnemyManager::GetPattern(int nPattern)
 HRESULT CEnemyManager::ReadText(const std::string pTextFile)
 {
 
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen(pTextFile.c_str(), "r");
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -312,7 +312,7 @@ HRESULT CEnemyManager::ReadText(const std::string pTextFile)
 	int nCntPatten = 0;			// パターンのカウント
 	int nCntFileName = 0;
 
-	memset(&m_aPattern[0], NULL, sizeof(m_aPattern));	// 読み込みデータ
+	memset(&m_aPattern[0], 0, sizeof(m_aPattern));	// 読み込みデータ
 	m_nNumChara = 0;
 
 	while (1)

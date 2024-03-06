@@ -59,8 +59,8 @@ HRESULT MyMap::Create(const char *pTextFile)
 	mapdate::nNumObjXAll = 0;
 	mapdate::nNumObj3DMeshAll = 0;
 
-	memset(&mapdate::pObjX[0], NULL, sizeof(mapdate::pObjX));
-	memset(&mapdate::pObj3DMesh[0], NULL, sizeof(mapdate::pObj3DMesh));	// オブジェクト3Dメッシュ
+	memset(&mapdate::pObjX[0], 0, sizeof(mapdate::pObjX));
+	memset(&mapdate::pObj3DMesh[0], 0, sizeof(mapdate::pObj3DMesh));	// オブジェクト3Dメッシュ
 	ModelIdx.clear();
 	ModelFile.clear();		// モデルファイル名
 
@@ -82,16 +82,16 @@ void MyMap::Release()
 {
 	for (int nCntObj = 0; nCntObj < mylib_const::MAX_OBJ; nCntObj++)
 	{
-		if (mapdate::pObjX[nCntObj] != NULL)
+		if (mapdate::pObjX[nCntObj] != nullptr)
 		{
 			mapdate::pObjX[nCntObj]->Kill();
-			mapdate::pObjX[nCntObj] = NULL;
+			mapdate::pObjX[nCntObj] = nullptr;
 		}
 
-		if (mapdate::pObj3DMesh[nCntObj] != NULL)
+		if (mapdate::pObj3DMesh[nCntObj] != nullptr)
 		{
 			mapdate::pObj3DMesh[nCntObj]->Uninit();
-			mapdate::pObj3DMesh[nCntObj] = NULL;
+			mapdate::pObj3DMesh[nCntObj] = nullptr;
 		}
 	}
 
@@ -118,12 +118,12 @@ void MyMap::ChangeMap(const char* pTextFile)
 HRESULT MyMap::SaveText()
 {
 #if TOPCUR
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen("data\\TEXT\\map\\save_info.txt", "w");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{// ファイルが開けなかった場合
 		return E_FAIL;
 	}
@@ -180,8 +180,8 @@ HRESULT MyMap::SaveText()
 		// 先頭を保存
 		CObject *pObj = CObject::GetTop(nCntPriority);
 
-		while (pObj != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObj != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObj->GetNext();
@@ -197,7 +197,7 @@ HRESULT MyMap::SaveText()
 
 				// テクスチャのインデックス番号
 				int nType = pObjMesh->GetIdxTex();	// 種類
-				nType--;	// NULL分
+				nType--;	// nullptr分
 
 				// 出力
 				fprintf(pFile,
@@ -228,8 +228,8 @@ HRESULT MyMap::SaveText()
 		// 先頭を保存
 		CObject *pObj = CObject::GetTop(nCntPriority);
 
-		while (pObj != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObj != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObj->GetNext();
@@ -245,7 +245,7 @@ HRESULT MyMap::SaveText()
 
 				// テクスチャのインデックス番号
 				int nType = pObjMesh->GetIdxTex();	// 種類
-				nType--;	// NULL分
+				nType--;	// nullptr分
 
 				// 出力
 				fprintf(pFile,
@@ -274,8 +274,8 @@ HRESULT MyMap::SaveText()
 		// 先頭を保存
 		CObject *pObj = CObject::GetTop(nCntPriority);
 
-		while (pObj != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObj != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObj->GetNext();
@@ -298,7 +298,7 @@ HRESULT MyMap::SaveText()
 				int nHeight = pObjMesh->GetHeightBlock();		// 縦分割数
 				float fWidthLen = pObjMesh->GetWidthLen();		// 横長さ
 				float fHeightLen = pObjMesh->GetHeightLen();	// 縦長さ
-				nType--;	// NULL分
+				nType--;	// nullptr分
 
 				// 出力
 				fprintf(pFile,
@@ -365,8 +365,8 @@ HRESULT MyMap::SaveText()
 	//	// 先頭を保存
 	//	CObject *pObj = CObject::GetTop(nCntPriority);
 
-	//	while (pObj != NULL)
-	//	{// NULLが来るまで無限ループ
+	//	while (pObj != nullptr)
+	//	{// nullptrが来るまで無限ループ
 
 	//		// 次のオブジェクトを一時保存
 	//		CObject *pObjNext = pObj->GetNext();
@@ -425,7 +425,7 @@ HRESULT MyMap::ReadTexture()
 	int nCntTexture = 0;				// テクスチャ読み込みカウント
 
 	// ファイルポインタ
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 
 	//ファイルを開く
 	pFile = fopen("data\\TEXT\\map\\info.txt", "r");
@@ -458,7 +458,7 @@ HRESULT MyMap::ReadTexture()
 		break;
 	}*/
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -526,12 +526,12 @@ HRESULT MyMap::ReadXFile(const char *pTextFile)
 	int nCntTexture = 0;				// テクスチャ読み込みカウント
 
 	// ファイルポインタ
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 
 	//ファイルを開く
 	pFile = fopen(pTextFile, "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -600,7 +600,7 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 	int nCntTexture = 0;				// テクスチャ読み込みカウント
 
 	// ファイルポインタ
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 
 	//ファイルを開く
 	switch (CManager::GetInstance()->GetMode())
@@ -638,7 +638,7 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 	// マップファイルを開く
 	pFile = fopen(FileName.c_str(), "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -714,8 +714,8 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 				g_Map.nWidth, g_Map.nHeight,
 				(CMeshField::TYPE)g_Map.nType, &TextureFile[g_Map.nType][0]);
 
-			if (mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] == NULL)
-			{// NULLだったら
+			if (mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] == nullptr)
+			{// nullptrだったら
 				return E_FAIL;
 			}
 
@@ -747,8 +747,8 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 			 //**********************************
 			mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] = CMeshCylinder::Create(&TextureFile[g_Map.nType][0]);
 
-			if (mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] == NULL)
-			{// NULLだったら
+			if (mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] == nullptr)
+			{// nullptrだったら
 				return E_FAIL;
 			}
 
@@ -786,8 +786,8 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 			//**********************************
 			mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] = CMeshDome::Create(g_Map.fMove, &TextureFile[g_Map.nType][0]);
 
-			if (mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] == NULL)
-			{// NULLだったら
+			if (mapdate::pObj3DMesh[mapdate::nNumObj3DMeshAll] == nullptr)
+			{// nullptrだったら
 				return E_FAIL;
 			}
 
@@ -851,7 +851,7 @@ HRESULT MyMap::ReadText(const char *pTextFile)
 			}
 			ModelIdx.push_back(g_Map.nType);
 
-			if (mapdate::pObjX[mapdate::nNumObjXAll] == NULL)
+			if (mapdate::pObjX[mapdate::nNumObjXAll] == nullptr)
 			{// 失敗していたら
 				return E_FAIL;
 			}

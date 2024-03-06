@@ -6,17 +6,14 @@
 //=============================================================================
 #include "objectBillboard.h"
 #include "manager.h"
-#include "renderer.h"
-#include "texture.h"
 
 //==========================================================================
-// マクロ定義
+// 定数定義
 //==========================================================================
-#define POLYGON_TOP		(4)		// ポリゴンの頂点数
-
-//==========================================================================
-// 静的メンバ変数宣言
-//==========================================================================
+namespace
+{
+	const int POLYGON_TOP = 4;	// ポリゴンの頂点数
+}
 
 //==========================================================================
 // コンストラクタ
@@ -30,7 +27,7 @@ CObjectBillboard::CObjectBillboard(int nPriority) : CObject(nPriority)
 	m_fLength = 0.0f;							// 対角線の長さ
 	m_fAngle = 0.0f;							// 対角線の向き
 	m_nTexIdx = 0;	// テクスチャのインデックス番号
-	m_pVtxBuff = NULL;		// 頂点バッファ
+	m_pVtxBuff = nullptr;		// 頂点バッファ
 
 	for (int nCntVtx = 0; nCntVtx < 32; nCntVtx++)
 	{
@@ -65,9 +62,8 @@ CObjectBillboard* CObjectBillboard::Create(int nPriority)
 	// メモリの確保
 	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard(nPriority);
 
-	if (pObjBillBoard != NULL)
-	{// メモリの確保が出来ていたら
-
+	if (pObjBillBoard != nullptr)
+	{
 		// 初期化処理
 		pObjBillBoard->Init();
 	}
@@ -83,7 +79,7 @@ CObjectBillboard* CObjectBillboard::Create(MyLib::Vector3 pos, MyLib::Vector3 ro
 	// メモリの確保
 	CObjectBillboard* pObjBillBoard = DEBUG_NEW CObjectBillboard;
 
-	if (pObjBillBoard != NULL)
+	if (pObjBillBoard != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -108,7 +104,7 @@ HRESULT CObjectBillboard::Init()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 既に情報が入ってる場合
 
 		return E_FAIL;
@@ -119,7 +115,7 @@ HRESULT CObjectBillboard::Init()
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗したとき
@@ -143,10 +139,10 @@ HRESULT CObjectBillboard::Init()
 void CObjectBillboard::Uninit()
 {
 	// 頂点バッファの破棄
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// オブジェクトの破棄
@@ -187,7 +183,7 @@ void CObjectBillboard::Draw()
 	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 	// ポリゴンをカメラに対して正面に向ける
-	D3DXMatrixInverse(&m_mtxWorld, NULL, &mtxView);	// 逆配列を求める
+	D3DXMatrixInverse(&m_mtxWorld, nullptr, &mtxView);	// 逆配列を求める
 
 #if 0
 

@@ -11,7 +11,6 @@
 #include "texture.h"
 #include "Xload.h"
 
-#include "bg.h"
 #include "player.h"
 #include "enemy.h"
 #include "explosion.h"
@@ -21,7 +20,7 @@
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-LPD3DXFONT CDebugProc::m_pFont = NULL;	// フォントのポインタ
+LPD3DXFONT CDebugProc::m_pFont = nullptr;	// フォントのポインタ
 
 //==========================================================================
 // マクロ定義
@@ -35,8 +34,8 @@ CDebugProc::CDebugProc()
 {
 	// デバッグ表示情報のクリア
 	m_bDisp = false;
-	m_pFont = NULL;
-	memset(&m_aStr[0], NULL, sizeof(m_aStr));
+	m_pFont = nullptr;
+	memset(&m_aStr[0], 0, sizeof(m_aStr));
 }
 
 //==========================================================================
@@ -91,10 +90,10 @@ HRESULT CDebugProc::Init(HINSTANCE hInstance, HWND hWnd)
 void CDebugProc::Uninit()
 {
 	// フォントの破棄
-	if (m_pFont != NULL)
+	if (m_pFont != nullptr)
 	{
 		m_pFont->Release();
-		m_pFont = NULL;
+		m_pFont = nullptr;
 	}
 }
 
@@ -127,11 +126,11 @@ void CDebugProc::Draw()
 	{// デバックモードがオンの時
 
 		// テキストの描画
-		m_pFont->DrawText(NULL, &m_aStr[0], -1, &rect, DT_LEFT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_pFont->DrawText(nullptr, &m_aStr[0], -1, &rect, DT_LEFT, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	// デバッグ表示情報のクリア
-	memset(&m_aStr[0], NULL, sizeof(m_aStr));
+	memset(&m_aStr[0], 0, sizeof(m_aStr));
 }
 
 //==========================================================================

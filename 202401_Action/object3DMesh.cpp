@@ -7,42 +7,37 @@
 #include "object3DMesh.h"
 #include "calculation.h"
 #include "manager.h"
-#include "renderer.h"
-#include "texture.h"
 #include "debugproc.h"
 #include "input.h"
 
 //==========================================================================
-// マクロ定義
+// 定数定義
 //==========================================================================
-#define CAL_VTX		(1280)		// 計算用の頂点数
-#define MAX_MOVE	(8.0f)		// 移動量
-#define MAX_RANGE	(200.0f)	// 範囲
-#define MOVE_LEN	(1.0f)
-
-//==========================================================================
-// 静的メンバ変数宣言
-//==========================================================================
-int nInit = 0;
-int nUniit = 0;
+namespace
+{
+	const int CAL_VTX = 1280;		// 計算用の頂点数
+	const float MAX_MOVE = 8.0f;	// 移動量
+	const float MAX_RANGE = 200.0f;	// 範囲
+	const float MOVE_LEN = 1.0f;
+}
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
 CObject3DMesh::CObject3DMesh(int nPriority) : CObject3D(nPriority)
 {
-	m_pVtxPos = NULL;		// 頂点座標
-	m_pVtxNor = NULL;		// 頂点法線
-	m_pVtxCol = NULL;		// 頂点カラー
-	m_pVtxTex = NULL;		// 頂点テクスチャ座標
+	m_pVtxPos = nullptr;	// 頂点座標
+	m_pVtxNor = nullptr;	// 頂点法線
+	m_pVtxCol = nullptr;	// 頂点カラー
+	m_pVtxTex = nullptr;	// 頂点テクスチャ座標
 	m_nNumIndex = 0;		// インデックス数
 	m_nNumVertex = 0;		// 頂点数
 	m_nWidth = 0;			// 横分割数
 	m_nHeight = 0;			// 縦分割数
 	m_fWidthLen = 0.0f;		// 横の長さ
 	m_fHeightLen = 0.0f;	// 縦の長さ
-	m_pVtxBuff = NULL;		// 頂点バッファへのポインタ
-	m_pIdxBuff = NULL;		// インデックスバッファへのポインタ
+	m_pVtxBuff = nullptr;	// 頂点バッファへのポインタ
+	m_pIdxBuff = nullptr;	// インデックスバッファへのポインタ
 	m_nTexIdx = 0;			// テクスチャのインデックス番号
 	m_type = TYPE_FIELD;	// メッシュのタイプ
 }
@@ -67,105 +62,77 @@ void CObject3DMesh::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject3DMesh *CObject3DMesh::Create()
+CObject3DMesh* CObject3DMesh::Create()
 {
-	// 生成用のオブジェクト
-	CObject3DMesh *pObject3D = NULL;
+	// メモリの確保
+	CObject3DMesh* pObject3D = DEBUG_NEW CObject3DMesh;
 
-	if (pObject3D == NULL)
-	{// NULLだったら
-
-		// メモリの確保
-		pObject3D = DEBUG_NEW CObject3DMesh;
-
-		if (pObject3D != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObject3D->Init();
-		}
-
-		return pObject3D;
+	if (pObject3D != nullptr)
+	{
+		// 初期化処理
+		pObject3D->Init();
 	}
 
-	return NULL;
+	return pObject3D;
 }
 
 //==========================================================================
 // 生成処理(オーバーロード)
 //==========================================================================
-CObject3DMesh *CObject3DMesh::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPriority)
+CObject3DMesh* CObject3DMesh::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, int nPriority)
 {
-	// 生成用のオブジェクト
-	CObject3DMesh *pObject3D = NULL;
+	// メモリの確保
+	CObject3DMesh* pObject3D = DEBUG_NEW CObject3DMesh(nPriority);
 
-	if (pObject3D == NULL)
-	{// NULLだったら
+	if (pObject3D != nullptr)
+	{
+		// 初期化処理
+		pObject3D->Init();
 
-		// メモリの確保
-		pObject3D = DEBUG_NEW CObject3DMesh(nPriority);
-
-		if (pObject3D != NULL)
-		{// メモリの確保が出来ていたら
-
-			// 初期化処理
-			pObject3D->Init();
-
-			// 位置・向き
-			pObject3D->SetPosition(pos);
-			pObject3D->SetOriginPosition(pos);
-			pObject3D->SetRotation(rot);
-		}
-
-		return pObject3D;
+		// 位置・向き
+		pObject3D->SetPosition(pos);
+		pObject3D->SetOriginPosition(pos);
+		pObject3D->SetRotation(rot);
 	}
 
-	return NULL;
+	return pObject3D;
 }
 
 //==========================================================================
 // 生成処理(オーバーロード)
 //==========================================================================
-CObject3DMesh *CObject3DMesh::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth, int nHeight, TYPE type, const char *pFileName, int nPriority)
+CObject3DMesh* CObject3DMesh::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth, int nHeight, TYPE type, const char* pFileName, int nPriority)
 {
-	// 生成用のオブジェクト
-	CObject3DMesh *pObject3D = NULL;
 
-	if (pObject3D == NULL)
-	{// NULLだったら
+	// メモリの確保
+	CObject3DMesh* pObject3D = DEBUG_NEW CObject3DMesh(nPriority);
 
-		// メモリの確保
-		pObject3D = DEBUG_NEW CObject3DMesh(nPriority);
+	if (pObject3D != nullptr)
+	{// メモリの確保が出来ていたら
 
-		if (pObject3D != NULL)
-		{// メモリの確保が出来ていたら
+		// 引数の情報を渡す
+		pObject3D->m_fWidthLen = fWidthLen;
+		pObject3D->m_fHeightLen = fHeightLen;
+		pObject3D->m_nWidth = nWidth;
+		pObject3D->m_nHeight = nHeight;
+		pObject3D->m_type = type;
 
-			// 引数の情報を渡す
-			pObject3D->m_fWidthLen = fWidthLen;
-			pObject3D->m_fHeightLen = fHeightLen;
-			pObject3D->m_nWidth = nWidth;
-			pObject3D->m_nHeight = nHeight;
-			pObject3D->m_type = type;
-
-			// テクスチャの割り当て
-			if (pFileName != NULL)
-			{// NULLじゃなかったら
-				pObject3D->m_nTexIdx = CTexture::GetInstance()->Regist(pFileName);
-			}
-
-			// 位置・向き
-			pObject3D->SetPosition(pos);
-			pObject3D->SetOriginPosition(pos);
-			pObject3D->SetRotation(rot);
-
-			// 初期化処理
-			pObject3D->Init(type);
+		// テクスチャの割り当て
+		if (pFileName != nullptr)
+		{
+			pObject3D->m_nTexIdx = CTexture::GetInstance()->Regist(pFileName);
 		}
 
-		return pObject3D;
+		// 位置・向き
+		pObject3D->SetPosition(pos);
+		pObject3D->SetOriginPosition(pos);
+		pObject3D->SetRotation(rot);
+
+		// 初期化処理
+		pObject3D->Init(type);
 	}
 
-	return NULL;
+	return pObject3D;
 }
 
 //==========================================================================
@@ -193,8 +160,6 @@ HRESULT CObject3DMesh::Init()
 
 	m_pVtxTex = DEBUG_NEW D3DXVECTOR2[m_nNumVertex];	// 頂点テクスチャ座標
 	memset(m_pVtxCol, 0, sizeof(D3DXVECTOR2) * m_nNumVertex);
-
-	nInit++;
 
 	 // 頂点座標設定
 	hr = CreateVertex();
@@ -241,8 +206,6 @@ HRESULT CObject3DMesh::Init(TYPE type)
 
 	m_pVtxTex = DEBUG_NEW D3DXVECTOR2[m_nNumVertex];	// 頂点テクスチャ座標
 	memset(m_pVtxCol, 0, sizeof(D3DXVECTOR2) * m_nNumVertex);
-
-	nInit++;
 
 	// 頂点座標設定
 	hr = CreateVertex();
@@ -358,7 +321,7 @@ HRESULT CObject3DMesh::CreateVertex()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 既に情報が入ってる場合
 		return E_FAIL;
 	}
@@ -369,14 +332,14 @@ HRESULT CObject3DMesh::CreateVertex()
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗していたら
 		return E_FAIL;
 	}
 
-	if (m_pVtxBuff == NULL)
+	if (m_pVtxBuff == nullptr)
 	{// 既に情報が入ってる場合
 		return E_FAIL;
 	}
@@ -487,7 +450,7 @@ HRESULT CObject3DMesh::CreateIndex()
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
 		&m_pIdxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗していたら
@@ -536,45 +499,45 @@ HRESULT CObject3DMesh::CreateIndex()
 void CObject3DMesh::Uninit()
 {
 	// 頂点バッファの破棄
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// インデックスバッファの破棄
-	if (m_pIdxBuff != NULL)
+	if (m_pIdxBuff != nullptr)
 	{
 		m_pIdxBuff->Release();
-		m_pIdxBuff = NULL;
+		m_pIdxBuff = nullptr;
 	}
-	nUniit++;
+
 	// 頂点座標の破棄
-	if (m_pVtxPos != NULL)
+	if (m_pVtxPos != nullptr)
 	{
 		delete[] m_pVtxPos;
-		m_pVtxPos = NULL;
+		m_pVtxPos = nullptr;
 	}
 
 	// 頂点法線の破棄
-	if (m_pVtxNor != NULL)
+	if (m_pVtxNor != nullptr)
 	{
 		delete[] m_pVtxNor;
-		m_pVtxNor = NULL;
+		m_pVtxNor = nullptr;
 	}
 
 	// 頂点法線の破棄
-	if (m_pVtxCol != NULL)
+	if (m_pVtxCol != nullptr)
 	{
 		delete[] m_pVtxCol;
-		m_pVtxCol = NULL;
+		m_pVtxCol = nullptr;
 	}
 
 	// 頂点テクスチャ座標の破棄
-	if (m_pVtxTex != NULL)
+	if (m_pVtxTex != nullptr)
 	{
 		delete[] m_pVtxTex;
-		m_pVtxTex = NULL;
+		m_pVtxTex = nullptr;
 	}
 
 	// 終了処理
@@ -1129,10 +1092,6 @@ void CObject3DMesh::SetVtxSphere()
 			fRotCalH = (float)nCntHeight * fRotHeight;
 			fRotCalW = (float)nCntWidth * fRotWidth;
 
-			// 角度の正規化
-			/*UtilFunc::Transformation::RotNormalize(fRotCalW);
-			UtilFunc::Transformation::RotNormalize(fRotCalH);*/
-
 			// 座標割り出し
 			posVtx[nCntWidth + (nCntHeight * (m_nWidth + 1))].x = cosf(fRotCalH) * sinf(fRotCalW) * m_fWidthLen;
 			posVtx[nCntWidth + (nCntHeight * (m_nWidth + 1))].z = cosf(fRotCalH) * cosf(fRotCalW) * m_fWidthLen;
@@ -1193,7 +1152,7 @@ int CObject3DMesh::GetNumVertex()
 //==========================================================================
 void CObject3DMesh::SetNumVertex(int nWidth, int nHeight)
 {
-	m_nNumVertex = (nHeight + 1) * (nWidth + 1);							// 頂点数
+	m_nNumVertex = (nHeight + 1) * (nWidth + 1);	// 頂点数
 }
 
 //==========================================================================
@@ -1340,6 +1299,9 @@ CObject3DMesh *CObject3DMesh::GetObject3DMesh()
 	return this;
 }
 
+//==========================================================================
+// 頂点バッファ取得
+//==========================================================================
 LPDIRECT3DVERTEXBUFFER9 CObject3DMesh::GetVtxBuff()
 {
 	return m_pVtxBuff;

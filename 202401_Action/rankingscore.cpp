@@ -46,17 +46,17 @@ CRankingScore::CRankingScore(int nPriority)
 {
 	// 値のクリア
 	m_nNumRanking = 0;				// ランキング数
-	memset(&m_nScore[0], NULL, sizeof(m_nScore));	// スコア
+	memset(&m_nScore[0], 0, sizeof(m_nScore));	// スコア
 	m_nNowScore = 0;				// 今回のスコア
-	memset(&m_pObj2D[0], NULL, sizeof(m_pObj2D));	// オブジェクト2Dのオブジェクト
+	memset(&m_pObj2D[0], 0, sizeof(m_pObj2D));	// オブジェクト2Dのオブジェクト
 	memset(&m_nTexIdx[0], 0, sizeof(m_nTexIdx));	// テクスチャのインデックス番号
 	m_nTexIdxNumber = 0;			// 数字テクスチャのインデックス番号
 	m_nIdxNewRecord = 0;			// ニューレコードのインデックス番号
 	m_nCntNewRecord = 0;			// ニューレコードのカウンター
 	memset(&m_fPosDestX[0], 0, sizeof(m_fPosDestX));	// 目標の位置
 	m_bNewRecord = false;			// ニューレコードのフラグ
-	memset(&m_bArrival[0], NULL, sizeof(m_bArrival));	// 到着判定
-	memset(&m_pScore[0], NULL, sizeof(m_pScore));	// 数字のオブジェクト
+	memset(&m_bArrival[0], 0, sizeof(m_bArrival));	// 到着判定
+	memset(&m_pScore[0], 0, sizeof(m_pScore));	// 数字のオブジェクト
 }
 
 //==========================================================================
@@ -73,15 +73,15 @@ CRankingScore::~CRankingScore()
 CRankingScore *CRankingScore::Create()
 {
 	// 生成用のオブジェクト
-	CRankingScore *pScore = NULL;
+	CRankingScore *pScore = nullptr;
 
-	if (pScore == NULL)
-	{// NULLだったら
+	if (pScore == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pScore = DEBUG_NEW CRankingScore;
 
-		if (pScore != NULL)
+		if (pScore != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -91,7 +91,7 @@ CRankingScore *CRankingScore::Create()
 		return pScore;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -185,12 +185,12 @@ void CRankingScore::Uninit()
 	// 終了処理
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
 	{
-		if (m_pObj2D[nCntVtx] != NULL)
+		if (m_pObj2D[nCntVtx] != nullptr)
 		{// メモリの確保がされていたら
 
 			// 終了処理
 			m_pObj2D[nCntVtx]->Uninit();
-			m_pObj2D[nCntVtx] = NULL;
+			m_pObj2D[nCntVtx] = nullptr;
 		}
 	}
 
@@ -199,13 +199,13 @@ void CRankingScore::Uninit()
 		for (int nCntScore = 0; nCntScore < RANKINGSCORE_DIGIT; nCntScore++)
 		{
 			// 終了処理
-			if (m_pScore[nCntRanking][nCntScore] != NULL)
+			if (m_pScore[nCntRanking][nCntScore] != nullptr)
 			{// メモリの確保がされていたら
 
 				// 終了処理
 				m_pScore[nCntRanking][nCntScore]->Uninit();
 				delete m_pScore[nCntRanking][nCntScore];
-				m_pScore[nCntRanking][nCntScore] = NULL;
+				m_pScore[nCntRanking][nCntScore] = nullptr;
 			}
 		}
 	}
@@ -388,8 +388,8 @@ void CRankingScore::SetValue(int nCntRanking)
 
 	for (int nCntScore = 0; nCntScore < RANKINGSCORE_DIGIT; nCntScore++)
 	{
-		if (m_pScore[nCntRanking][nCntScore] != NULL)
-		{// NULLじゃなかったら
+		if (m_pScore[nCntRanking][nCntScore] != nullptr)
+		{// nullptrじゃなかったら
 
 			D3DXVECTOR2 *pTex = m_pScore[nCntRanking][nCntScore]->GetObject2D()->GetTex();
 
@@ -481,7 +481,7 @@ void CRankingScore::Save()
 	// ファイルを開く
 	pFile = fopen(RANKINGFILE, "wb");
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けた場合
 
 		// ファイルに数値を書き出す
@@ -503,7 +503,7 @@ void CRankingScore::Load()
 	// ファイルを開く
 	pFile = fopen(RANKINGFILE, "rb");
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{// ファイルが開けた場合
 
 		// ファイルに数値を読み込む

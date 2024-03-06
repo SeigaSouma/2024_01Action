@@ -25,9 +25,6 @@
     <Filter Include="ソース ファイル\mode\title">
       <UniqueIdentifier>{5c70a065-589b-48da-945c-3974aca2299f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\mode\tutorial">
-      <UniqueIdentifier>{3819c539-147d-4bc2-8e26-53f6c8ddc2e6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\mode\game">
       <UniqueIdentifier>{efaae0f2-9843-418a-8f54-7323f61e1923}</UniqueIdentifier>
     </Filter>
@@ -94,9 +91,6 @@
     <Filter Include="ヘッダー ファイル\mode\ranking">
       <UniqueIdentifier>{2985d6dc-9b21-47be-946d-01945506f6c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\mode\tutorial">
-      <UniqueIdentifier>{7cb52d46-4d78-4529-9290-13e0209144ff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\load">
       <UniqueIdentifier>{3a50271b-b42d-4458-bd8f-e832d6e0090a}</UniqueIdentifier>
     </Filter>
@@ -142,24 +136,21 @@
     <Filter Include="ヘッダー ファイル\pause">
       <UniqueIdentifier>{fca400fa-0c59-4288-b7ee-b12826a8787c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\hpgauge">
+      <UniqueIdentifier>{2cded425-dde9-4297-a68f-3a77c6ecb9e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\hpgauge">
+      <UniqueIdentifier>{671b3c1e-ed45-4b4a-9eed-2d5074d9284d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ballast.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="beam.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="bg.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="blackframe.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="camera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="collisionobject.cpp">
@@ -172,12 +163,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="hp_gauge.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="hp_gauge_boss.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="instantfade.cpp">
@@ -196,9 +181,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="motion.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="precompile.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="score.cpp">
@@ -297,12 +279,6 @@
     <ClCompile Include="title.cpp">
       <Filter>ソース ファイル\mode\title</Filter>
     </ClCompile>
-    <ClCompile Include="tutorial.cpp">
-      <Filter>ソース ファイル\mode\tutorial</Filter>
-    </ClCompile>
-    <ClCompile Include="tutorial_screen.cpp">
-      <Filter>ソース ファイル\mode\tutorial</Filter>
-    </ClCompile>
     <ClCompile Include="resultscore.cpp">
       <Filter>ソース ファイル\mode\result</Filter>
     </ClCompile>
@@ -381,9 +357,6 @@
     <ClCompile Include="objectHierarchy.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="mylib.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="transferBeacon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -395,9 +368,6 @@
     </ClCompile>
     <ClCompile Include="hp_gauge_player.cpp">
       <Filter>ソース ファイル\player</Filter>
-    </ClCompile>
-    <ClCompile Include="object2D_Multi.cpp">
-      <Filter>ソース ファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="damagepoint.cpp">
       <Filter>ソース ファイル</Filter>
@@ -495,9 +465,6 @@
     <ClCompile Include="rockon_marker.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="fog.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="skilltree_reset.cpp">
       <Filter>ソース ファイル\skilltree</Filter>
     </ClCompile>
@@ -555,9 +522,6 @@
     <ClCompile Include="battleresult.cpp">
       <Filter>ソース ファイル\battleresult</Filter>
     </ClCompile>
-    <ClCompile Include="hp_gauge_tip.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="tutorial_checkshould.cpp">
       <Filter>ソース ファイル\mode\title</Filter>
     </ClCompile>
@@ -594,18 +558,30 @@
     <ClCompile Include="particle.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
+    <ClCompile Include="hp_gauge.cpp">
+      <Filter>ソース ファイル\hpgauge</Filter>
+    </ClCompile>
+    <ClCompile Include="hp_gauge_boss.cpp">
+      <Filter>ソース ファイル\hpgauge</Filter>
+    </ClCompile>
+    <ClCompile Include="hp_gauge_tip.cpp">
+      <Filter>ソース ファイル\hpgauge</Filter>
+    </ClCompile>
     <ClCompile Include="hp_gauge_tip_billboard.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\hpgauge</Filter>
+    </ClCompile>
+    <ClCompile Include="fog.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="precompile.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="mylib.cpp">
+      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ballast.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="beam.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="bg.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="blackframe.h">
@@ -615,9 +591,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="collision.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="collisionobject.h">
@@ -633,12 +606,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="hp_gauge.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="hp_gauge_boss.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="instantfade.h">
@@ -657,9 +624,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="motion.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="precompile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="score.h">
@@ -797,12 +761,6 @@
     <ClInclude Include="title.h">
       <Filter>ヘッダー ファイル\mode\title</Filter>
     </ClInclude>
-    <ClInclude Include="tutorial.h">
-      <Filter>ヘッダー ファイル\mode\tutorial</Filter>
-    </ClInclude>
-    <ClInclude Include="tutorial_screen.h">
-      <Filter>ヘッダー ファイル\mode\tutorial</Filter>
-    </ClInclude>
     <ClInclude Include="ranking.h">
       <Filter>ヘッダー ファイル\mode\ranking</Filter>
     </ClInclude>
@@ -845,9 +803,6 @@
     <ClInclude Include="objectHierarchy.h">
       <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="mylib.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="transferBeacon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -859,9 +814,6 @@
     </ClInclude>
     <ClInclude Include="hp_gauge_player.h">
       <Filter>ヘッダー ファイル\player</Filter>
-    </ClInclude>
-    <ClInclude Include="object2D_Multi.h">
-      <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="damagepoint.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -962,9 +914,6 @@
     <ClInclude Include="rockon_marker.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="fog.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="skilltree_reset.h">
       <Filter>ヘッダー ファイル\skilltree</Filter>
     </ClInclude>
@@ -1013,9 +962,6 @@
     <ClInclude Include="afterrespawn_text.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="hp_gauge_tip.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="tutorial_checkshould.h">
       <Filter>ソース ファイル\mode\title</Filter>
     </ClInclude>
@@ -1058,8 +1004,26 @@
     <ClInclude Include="particle.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
+    <ClInclude Include="hp_gauge.h">
+      <Filter>ヘッダー ファイル\hpgauge</Filter>
+    </ClInclude>
+    <ClInclude Include="hp_gauge_boss.h">
+      <Filter>ヘッダー ファイル\hpgauge</Filter>
+    </ClInclude>
+    <ClInclude Include="hp_gauge_tip.h">
+      <Filter>ヘッダー ファイル\hpgauge</Filter>
+    </ClInclude>
     <ClInclude Include="hp_gauge_tip_billboard.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ヘッダー ファイル\hpgauge</Filter>
+    </ClInclude>
+    <ClInclude Include="fog.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="precompile.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="mylib.h">
+      <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

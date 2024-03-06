@@ -35,9 +35,9 @@ CObjectX::CObjectX(int nPriority) : CObject(nPriority)
 	SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	// 色
 	SetSize(MyLib::Vector3(0.0f, 0.0f, 0.0f));			// サイズ
 	m_bShadow = false;								// 影を使っているかどうか
-	m_nIdxTexure = NULL;							// テクスチャのインデックス番号
+	m_nIdxTexure = 0;							// テクスチャのインデックス番号
 	m_nIdxXFile = 0;								// Xファイルのインデックス番号
-	m_pShadow = NULL;								// 影の情報
+	m_pShadow = nullptr;								// 影の情報
 	m_nNumAll++;									// 総数加算
 }
 
@@ -73,15 +73,15 @@ void CObjectX::BindXData(int nIdxXFile)
 CObjectX *CObjectX::Create()
 {
 	// 生成用のオブジェクト
-	CObjectX *pObjectX = NULL;
+	CObjectX *pObjectX = nullptr;
 
-	if (pObjectX == NULL)
-	{// NULLだったら
+	if (pObjectX == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjectX = DEBUG_NEW CObjectX;
 
-		if (pObjectX != NULL)
+		if (pObjectX != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -91,7 +91,7 @@ CObjectX *CObjectX::Create()
 		return pObjectX;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -100,15 +100,15 @@ CObjectX *CObjectX::Create()
 CObjectX *CObjectX::Create(const char *pFileName)
 {
 	// 生成用のオブジェクト
-	CObjectX *pObjectX = NULL;
+	CObjectX *pObjectX = nullptr;
 
-	if (pObjectX == NULL)
-	{// NULLだったら
+	if (pObjectX == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjectX = DEBUG_NEW CObjectX;
 
-		if (pObjectX != NULL)
+		if (pObjectX != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -116,7 +116,7 @@ CObjectX *CObjectX::Create(const char *pFileName)
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 種類設定
@@ -126,7 +126,7 @@ CObjectX *CObjectX::Create(const char *pFileName)
 		return pObjectX;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -135,15 +135,15 @@ CObjectX *CObjectX::Create(const char *pFileName)
 CObjectX *CObjectX::Create(const char *pFileName, const MyLib::Vector3& pos, const MyLib::Vector3& rot, bool bShadow)
 {
 	// 生成用のオブジェクト
-	CObjectX *pObjectX = NULL;
+	CObjectX *pObjectX = nullptr;
 
-	if (pObjectX == NULL)
-	{// NULLだったら
+	if (pObjectX == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjectX = DEBUG_NEW CObjectX;
 
-		if (pObjectX != NULL)
+		if (pObjectX != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -151,7 +151,7 @@ CObjectX *CObjectX::Create(const char *pFileName, const MyLib::Vector3& pos, con
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 位置・向き
@@ -170,7 +170,7 @@ CObjectX *CObjectX::Create(const char *pFileName, const MyLib::Vector3& pos, con
 		return pObjectX;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -179,15 +179,15 @@ CObjectX *CObjectX::Create(const char *pFileName, const MyLib::Vector3& pos, con
 CObjectX *CObjectX::Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib::Vector3& rot, bool bShadow)
 {
 	// 生成用のオブジェクト
-	CObjectX *pObjectX = NULL;
+	CObjectX *pObjectX = nullptr;
 
-	if (pObjectX == NULL)
-	{// NULLだったら
+	if (pObjectX == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjectX = DEBUG_NEW CObjectX;
 
-		if (pObjectX != NULL)
+		if (pObjectX != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -195,7 +195,7 @@ CObjectX *CObjectX::Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 種類設定
@@ -217,7 +217,7 @@ CObjectX *CObjectX::Create(int nIdxXFile, const MyLib::Vector3& pos, const MyLib
 		return pObjectX;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -301,13 +301,13 @@ HRESULT CObjectX::Init(int nIdxXFile)
 void CObjectX::Uninit()
 {
 	// 影を消す
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		//m_pShadow->Uninit();
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
-	m_nIdxTexure = NULL;
+	m_nIdxTexure = 0;
 
 	// オブジェクトの破棄
 	Release();
@@ -321,10 +321,10 @@ void CObjectX::Uninit()
 void CObjectX::Kill()
 {
 	// 影を消す
-	if (m_pShadow != NULL)
+	if (m_pShadow != nullptr)
 	{
 		m_pShadow->Uninit();
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
 	// 終了処理
@@ -366,8 +366,8 @@ float CObjectX::GetHeight(MyLib::Vector3 pos, bool &bLand)
 	// Xファイルのデータ取得
 	CXLoad::SXFile *pXData = CXLoad::GetInstance()->GetMyObject(m_nIdxXFile);
 
-	if (pXData == NULL)
-	{// NULLだったら
+	if (pXData == nullptr)
+	{// nullptrだったら
 		return 0.0f;
 	}
 

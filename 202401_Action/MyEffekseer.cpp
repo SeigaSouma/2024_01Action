@@ -17,7 +17,7 @@
 //==========================================================================
 std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェクトのファイル名
 {
-	"data/Effekseer/Laser01.efkefc",	// サンプルのレーザー
+	"data/Effekseer/Laser01.efkefc",			// サンプルのレーザー
 	"data/Effekseer/CounterParticle_01.efkefc",	// カウンターの線
 	"data/Effekseer/counter2.efkefc",			// カウンターの線2
 	"data/Effekseer/CounterParticle_02.efkefc",	// カウンターのキラキラ
@@ -26,17 +26,17 @@ std::string CMyEffekseer::m_EffectName[CMyEffekseer::EFKLABEL_MAX] =	// エフェク
 	"data/Effekseer/HitParticle_Red_01.efkefc",	// ヒットマーク[赤]
 	"data/Effekseer/strongATK.efkefc",			// 強攻撃のサイン
 	"data/Effekseer/SonicBoom.efkefc",			// ボスのローリング
-	"data/Effekseer/stonebase_light.efkefc",			// 石板の光
-	"data/Effekseer/stonebase_begin.efkefc",			// 石板起動
+	"data/Effekseer/stonebase_light.efkefc",	// 石板の光
+	"data/Effekseer/stonebase_begin.efkefc",	// 石板起動
 	"data/Effekseer/transfer.efkefc",			// 石板起動
 	"data/Effekseer/chargeatk_01.efkefc",		// チャージ完了
-	"data/Effekseer/powerloop.efkefc",		// チャージ完了
-	"data/Effekseer/titlelight.efkefc",		// タイトルの光
+	"data/Effekseer/powerloop.efkefc",			// チャージ完了
+	"data/Effekseer/titlelight.efkefc",			// タイトルの光
 	"data/Effekseer/enemyatk_sand.efkefc",		// 敵攻撃の煙
 	"data/Effekseer/normalATK_left.efkefc",		// 通常攻撃左振り
-	"data/Effekseer/normalATK_right.efkefc",		// 通常攻撃右振り
-	"data/Effekseer/normalATK.efkefc",		// 通常攻撃
-	"data/Effekseer/chargeatk.efkefc",		// チャージ攻撃
+	"data/Effekseer/normalATK_right.efkefc",	// 通常攻撃右振り
+	"data/Effekseer/normalATK.efkefc",			// 通常攻撃
+	"data/Effekseer/chargeatk.efkefc",			// チャージ攻撃
 	"data/Effekseer/respawn_start.efkefc",		// 復活開始
 	"data/Effekseer/respawn_wind.efkefc",		// 復活開始
 };
@@ -66,7 +66,7 @@ CMyEffekseer::~CMyEffekseer()
 //==========================================================================
 CMyEffekseer* CMyEffekseer::Create()
 {
-	if (m_pMyEffekseer == NULL)
+	if (m_pMyEffekseer == nullptr)
 	{// まだ生成していなかったら
 
 		// インスタンス生成
@@ -254,7 +254,6 @@ void CMyEffekseer::StopAll()
 {
 	// 全て停止
 	efkManager->StopAllEffects();
-	efkManager->StopAllEffects();
 
 	for (int i = 0; i < static_cast<int>(m_EffectObj.size()); i++)
 	{
@@ -266,11 +265,9 @@ void CMyEffekseer::StopAll()
 	for (int i = 0; i < size; i++)
 	{
 		m_EffectObj[i].bAutoDeath = true;
-		/*m_EffectObj.erase(m_EffectObj.begin() + i);
-		m_Handle.erase(m_Handle.begin() + i);*/
 	}
 	m_EffectObj.clear();
-		m_Handle.clear();
+	m_Handle.clear();
 }
 
 //==========================================================================
@@ -353,6 +350,9 @@ void CMyEffekseer::Update()
 	}
 }
 
+//==========================================================================
+// トリガー送信
+//==========================================================================
 void CMyEffekseer::SetTrigger(Effekseer::Handle handle, int idx)
 {
 	if (!efkManager->Exists(handle))
@@ -362,7 +362,6 @@ void CMyEffekseer::SetTrigger(Effekseer::Handle handle, int idx)
 
 	efkManager->SendTrigger(handle, idx);
 }
-
 
 //==========================================================================
 // 位置更新
@@ -420,7 +419,6 @@ void CMyEffekseer::SetMatrix(Effekseer::Handle handle, D3DXMATRIX mtx)
 		}
 	}
 
-
 	// エフェクトのインスタンスに変換行列を設定
 	efkManager->SetMatrix(handle, efcmtx);
 
@@ -466,6 +464,9 @@ void CMyEffekseer::SetTransform(Effekseer::Handle handle, MyLib::Vector3 pos, My
 	efkManager->SetMatrix(handle, Weapon);
 }
 
+//==========================================================================
+// 終了フラグ取得
+//==========================================================================
 bool CMyEffekseer::IsDeath(Effekseer::Handle handle)
 {
 	return !efkManager->Exists(handle);
@@ -515,76 +516,6 @@ void CMyEffekseer::Draw()
 	efkRenderer->EndRendering();
 }
 
-#if 0
-void CMyEffekseer::ClearScreen()
-{
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-
-	pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
-	pDevice->BeginScene();
-}
-
-void CMyEffekseer::PresentDevice()
-{
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
-	pDevice->EndScene();
-
-	{
-		HRESULT hr;
-		hr = pDevice->Present(NULL, NULL, NULL, NULL);
-
-		switch (hr)
-		{
-		case D3DERR_DEVICELOST:
-			while (FAILED(hr = pDevice->TestCooperativeLevel()))
-			{
-				switch (hr)
-				{
-				case D3DERR_DEVICELOST:
-					::SleepEx(1000, true);
-					break;
-
-				case D3DERR_DEVICENOTRESET:
-
-					// Call it before device lost
-					// デバイスロストの処理を行う前に実行する
-					if (onLostDevice)
-					{
-						onLostDevice();
-					}
-
-					efkRenderer->OnLostDevice();
-
-					D3DPRESENT_PARAMETERS d3dpParams{};
-					d3dpParams.BackBufferWidth = SCREEN_WIDTH;
-					d3dpParams.BackBufferHeight = SCREEN_HEIGHT;
-					d3dpParams.BackBufferFormat = D3DFMT_X8R8G8B8;
-					d3dpParams.BackBufferCount = 1;
-					d3dpParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
-					d3dpParams.Windowed = TRUE;
-					//d3dpParams.hDeviceWindow = (HWND)window->GetNativePtr(0);
-					d3dpParams.EnableAutoDepthStencil = TRUE;
-					d3dpParams.AutoDepthStencilFormat = D3DFMT_D16;
-					pDevice->Reset(&d3dpParams);
-
-					// Call it after device lost
-					// デバイスロストの処理の後に実行する
-					efkRenderer->OnResetDevice();
-
-					if (onResetDevice)
-					{
-						onResetDevice();
-					}
-
-					break;
-				}
-			}
-			break;
-		}
-	}
-}
-#endif
-
 //==========================================================================
 // モジュールのセットアップ
 //==========================================================================
@@ -611,18 +542,4 @@ void CMyEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 	efkManager->SetModelLoader(efkRenderer->CreateModelLoader());
 	efkManager->SetMaterialLoader(efkRenderer->CreateMaterialLoader());
 	efkManager->SetCurveLoader(Effekseer::MakeRefPtr<Effekseer::CurveLoader>());
-
-	//// Specify sound modules
-	//// サウンドモジュールの設定
-	//efkSound = ::EffekseerSound::Sound::Create(GetIXAudio2(), 16, 16);
-
-	//// Specify a metho to play sound from an instance of efkSound
-	//// 音再生用インスタンスから再生機能を指定
-	//efkManager->SetSoundPlayer(efkSound->CreateSoundPlayer());
-
-	//// Specify a sound data loader
-	//// It can be extended by yourself. It is loaded from a file on now.
-	//// サウンドデータの読込機能を設定する。
-	//// ユーザーが独自で拡張できる。現在はファイルから読み込んでいる。
-	//efkManager->SetSoundLoader(efkSound->CreateSoundLoader());
 }

@@ -121,7 +121,7 @@ CEnemy::CEnemy(int nPriority) : CObjectChara(nPriority)
 	m_pRockOnMarker = nullptr;		// ロックオンマーカー
 
 
-	memset(&m_pChild[0], NULL, sizeof(m_pChild));	// 子のポインタ
+	memset(&m_pChild[0], 0, sizeof(m_pChild));	// 子のポインタ
 }
 
 //==========================================================================
@@ -1296,13 +1296,13 @@ void CEnemy::LimitArea()
 	SetPosition(pos);
 
 
-	float fLength = sqrtf(pos.x * pos.x + pos.z * pos.z);
+	float fLength = sqrtf(pos.x * pos.x + pos.z * pos.z) + GetRadius();
 
 	if (fLength > mylib_const::RADIUS_STAGE)
 	{// 補正
 		D3DXVec3Normalize(&pos, &pos);
 
-		pos *= mylib_const::RADIUS_STAGE;
+		pos *= mylib_const::RADIUS_STAGE - GetRadius();
 
 		SetPosition(pos);
 	}

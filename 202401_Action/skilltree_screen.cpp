@@ -44,12 +44,12 @@ CSkillTree_Screen::~CSkillTree_Screen()
 CSkillTree_Screen* CSkillTree_Screen::Create()
 {
 	// 生成用のオブジェクト
-	CSkillTree_Screen* pEffect = NULL;
+	CSkillTree_Screen* pEffect = nullptr;
 
 	// メモリの確保
 	pEffect = DEBUG_NEW CSkillTree_Screen;
 
-	if (pEffect != NULL)
+	if (pEffect != nullptr)
 	{
 		// 初期化処理
 		pEffect->Init();

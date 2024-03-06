@@ -25,7 +25,7 @@
 CNumberBillboard::CNumberBillboard(int nPriority) : CNumber(nPriority)
 {
 	// 値のクリア
-	m_pObjBillboard = NULL;		// オブジェクトビルボードのオブジェクト
+	m_pObjBillboard = nullptr;		// オブジェクトビルボードのオブジェクト
 }
 
 //==========================================================================
@@ -53,9 +53,9 @@ HRESULT CNumberBillboard::Init(int nPriority)
 void CNumberBillboard::Uninit()
 {
 	// 終了処理
-	if (m_pObjBillboard != NULL)
-	{// NULLじゃなかったら
-		m_pObjBillboard = NULL;
+	if (m_pObjBillboard != nullptr)
+	{// nullptrじゃなかったら
+		m_pObjBillboard = nullptr;
 	}
 }
 
@@ -64,10 +64,10 @@ void CNumberBillboard::Uninit()
 //==========================================================================
 void CNumberBillboard::Release()
 {
-	if (m_pObjBillboard != NULL)
-	{// NULLじゃなかったら
+	if (m_pObjBillboard != nullptr)
+	{// nullptrじゃなかったら
 		m_pObjBillboard->Uninit();
-		m_pObjBillboard = NULL;
+		m_pObjBillboard = nullptr;
 	}
 }
 
@@ -77,7 +77,7 @@ void CNumberBillboard::Release()
 void CNumberBillboard::Update()
 {
 	// 更新処理
-	if (m_pObjBillboard != NULL)
+	if (m_pObjBillboard != nullptr)
 	{
 		m_pObjBillboard->Update();
 	}
@@ -100,8 +100,8 @@ void CNumberBillboard::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
 
 	// 描画処理
-	if (m_pObjBillboard != NULL)
-	{// NULLじゃなかったら
+	if (m_pObjBillboard != nullptr)
+	{// nullptrじゃなかったら
 		m_pObjBillboard->Draw();
 	}
 

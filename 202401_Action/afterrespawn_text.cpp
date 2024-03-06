@@ -84,7 +84,6 @@ CAfterRespawn_Text* CAfterRespawn_Text::Create()
 //==========================================================================
 HRESULT CAfterRespawn_Text::Init()
 {
-	HRESULT hr;
 
 	// éÌóﬁÇÃê›íË
 	SetType(TYPE_OBJECT2D);

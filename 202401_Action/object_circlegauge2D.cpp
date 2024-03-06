@@ -27,7 +27,7 @@ CObjectCircleGauge2D::CObjectCircleGauge2D(int nPriority) : CObject(nPriority)
 	m_fSize = 0.0f;		// サイズ
 	m_nNumVertex = 0;	// 頂点数
 	m_nTexIdx = 0;						// テクスチャのインデックス番号
-	m_pVtxBuff = NULL;					// 頂点バッファ
+	m_pVtxBuff = nullptr;					// 頂点バッファ
 
 }
 
@@ -54,20 +54,20 @@ void CObjectCircleGauge2D::BindTexture(int nIdx)
 CObjectCircleGauge2D *CObjectCircleGauge2D::Create(int nPolygon, float fSize)
 {
 	// 生成用のオブジェクト
-	CObjectCircleGauge2D *pObject2D = NULL;
+	CObjectCircleGauge2D *pObject2D = nullptr;
 
-	if (pObject2D == NULL)
-	{// NULLだったら
+	if (pObject2D == nullptr)
+	{// nullptrだったら
 
 		if (nPolygon < MIN_POLYGON)
 		{// 四角形未満は円にならないから抜ける
-			return NULL;
+			return nullptr;
 		}
 
 		// メモリの確保
 		pObject2D = DEBUG_NEW CObjectCircleGauge2D;
 
-		if (pObject2D != NULL)
+		if (pObject2D != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 頂点数
@@ -83,7 +83,7 @@ CObjectCircleGauge2D *CObjectCircleGauge2D::Create(int nPolygon, float fSize)
 		return pObject2D;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -97,7 +97,7 @@ HRESULT CObjectCircleGauge2D::Init()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 既に情報が入ってる場合
 		return E_FAIL;
 	}
@@ -107,7 +107,7 @@ HRESULT CObjectCircleGauge2D::Init()
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗したとき
@@ -126,10 +126,10 @@ HRESULT CObjectCircleGauge2D::Init()
 void CObjectCircleGauge2D::Uninit()
 {
 	// 頂点バッファの破棄
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// オブジェクトの破棄

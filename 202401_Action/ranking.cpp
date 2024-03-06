@@ -17,7 +17,7 @@
 // 静的メンバ変数宣言
 //==========================================================================
 int CRanking::m_nRandStage = 0;	// ステージのランダムインデックス番号
-CRankingScore *CRanking::m_pRankingScore = NULL;	// ランキングスコアのオブジェクト
+CRankingScore *CRanking::m_pRankingScore = nullptr;	// ランキングスコアのオブジェクト
 bool CRanking::m_bAllArrival = false;		// 全て到着した判定
 
 //==========================================================================
@@ -25,7 +25,7 @@ bool CRanking::m_bAllArrival = false;		// 全て到着した判定
 //==========================================================================
 CRanking::CRanking()
 {
-	m_pRankingScore = NULL;	// ランキングスコアのオブジェクト
+	m_pRankingScore = nullptr;	// ランキングスコアのオブジェクト
 	m_nCntSwitch = 0;		// 切り替えのカウンター
 	m_bAllArrival = false;	// 全て到着した判定
 }
@@ -65,7 +65,7 @@ HRESULT CRanking::Init()
 void CRanking::Uninit()
 {
 	// ランキングスコアのオブジェクト
-	m_pRankingScore = NULL;
+	m_pRankingScore = nullptr;
 
 	// 終了処理
 	CScene::Uninit();

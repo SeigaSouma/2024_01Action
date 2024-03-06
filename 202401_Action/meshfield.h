@@ -45,7 +45,7 @@ public:
 	virtual void SetVtx();
 
 	static CMeshField *Create();
-	static CMeshField *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth = 1, int nHeight = 1, TYPE type = TYPE_CONCREAT, const char *aFileName = NULL, int nPriority = mylib_const::PRIORITY_DEFAULT);
+	static CMeshField *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth = 1, int nHeight = 1, TYPE type = TYPE_CONCREAT, const char *aFileName = nullptr, int nPriority = mylib_const::PRIORITY_DEFAULT);
 	virtual CMeshField *GetMyObject();
 protected:
 

@@ -44,10 +44,10 @@ CMeshDome::~CMeshDome()
 CMeshDome *CMeshDome::Create()
 {
 	// 生成用のオブジェクト
-	CMeshDome *pObjMeshCylinder = NULL;
+	CMeshDome *pObjMeshCylinder = nullptr;
 
-	if (pObjMeshCylinder == NULL)
-	{// NULLだったら
+	if (pObjMeshCylinder == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshCylinder = DEBUG_NEW CMeshDome;
@@ -56,10 +56,10 @@ CMeshDome *CMeshDome::Create()
 		//{// メモリ確保に失敗していたら
 
 		//	delete pObjMeshCylinder;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pObjMeshCylinder != NULL)
+		if (pObjMeshCylinder != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -81,7 +81,7 @@ CMeshDome *CMeshDome::Create()
 		return pObjMeshCylinder;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -90,10 +90,10 @@ CMeshDome *CMeshDome::Create()
 CMeshDome *CMeshDome::Create(const float fMove, const char *aFileName, const int nWidth, const int nHeight, int nPriority)
 {
 	// 生成用のオブジェクト
-	CMeshDome *pObjMeshCylinder = NULL;
+	CMeshDome *pObjMeshCylinder = nullptr;
 
-	if (pObjMeshCylinder == NULL)
-	{// NULLだったら
+	if (pObjMeshCylinder == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshCylinder = DEBUG_NEW CMeshDome(nPriority);
@@ -102,10 +102,10 @@ CMeshDome *CMeshDome::Create(const float fMove, const char *aFileName, const int
 		//{// メモリ確保に失敗していたら
 
 		//	delete pObjMeshCylinder;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pObjMeshCylinder != NULL)
+		if (pObjMeshCylinder != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -115,8 +115,8 @@ CMeshDome *CMeshDome::Create(const float fMove, const char *aFileName, const int
 			pObjMeshCylinder->SetWidthLen(POS_MESHDOME);
 			pObjMeshCylinder->SetHeightLen(POS_MESHDOME_Y);
 
-			if (aFileName == NULL)
-			{// NULLだったら
+			if (aFileName == nullptr)
+			{// nullptrだったら
 
 				// テクスチャの割り当て
 				pObjMeshCylinder->m_nTexIdx = CTexture::GetInstance()->Regist(TEXTURE);
@@ -138,7 +138,7 @@ CMeshDome *CMeshDome::Create(const float fMove, const char *aFileName, const int
 		return pObjMeshCylinder;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

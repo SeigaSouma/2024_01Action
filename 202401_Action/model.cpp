@@ -35,8 +35,8 @@ CModel::CModel(int nPriority)
 	m_rotOrigin = mylib_const::DEFAULT_VECTOR3;		// 向き
 	m_scale = mylib_const::DEFAULT_SCALE;			// スケール
 	m_nIdxXFile = 0;								// Xファイルのインデックス番号
-	m_nIdxTexture = NULL;							// テクスチャのインデックス番号
-	m_pParent = NULL;								// 親モデルのポインタ
+	m_nIdxTexture = nullptr;							// テクスチャのインデックス番号
+	m_pParent = nullptr;								// 親モデルのポインタ
 	m_nNumAll++;									// 総数加算
 }
 
@@ -65,7 +65,7 @@ void CModel::BindXData(int nIdxXFile)
 //==========================================================================
 void CModel::BindTexture()
 {
-	if (m_nIdxTexture != NULL)
+	if (m_nIdxTexture != nullptr)
 	{
 		delete[] m_nIdxTexture;
 	}
@@ -98,23 +98,23 @@ void CModel::SetParent(CModel *pModel)
 CModel *CModel::Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vector3 rot)
 {
 	// 生成用のオブジェクト
-	CModel *pModel = NULL;
+	CModel *pModel = nullptr;
 
-	if (pModel == NULL)
-	{// NULLだったら
+	if (pModel == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pModel = DEBUG_NEW CModel;
 
-		if (pModel == NULL)
-		{// NULLだったら
+		if (pModel == nullptr)
+		{// nullptrだったら
 
 			delete pModel;
-			pModel = NULL;
-			return NULL;
+			pModel = nullptr;
+			return nullptr;
 		}
 
-		if (pModel != NULL)
+		if (pModel != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -122,7 +122,7 @@ CModel *CModel::Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vector3
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 位置・向き
@@ -135,7 +135,7 @@ CModel *CModel::Create(const char *pFileName, MyLib::Vector3 pos, MyLib::Vector3
 		return pModel;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -169,11 +169,11 @@ HRESULT CModel::Init(const char *pFileName)
 void CModel::Uninit()
 {
 	//// 親モデルのポインタ
-	//if (m_pParent != NULL)
+	//if (m_pParent != nullptr)
 	//{
-	//	m_pParent = NULL;
+	//	m_pParent = nullptr;
 	//}
-	if (m_nIdxTexture != NULL)
+	if (m_nIdxTexture != nullptr)
 	{
 		delete[] m_nIdxTexture;
 	}
@@ -231,7 +231,7 @@ void CModel::CalWorldMtx()
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
 	// 親のマトリックスと掛け合わせる
-	if (m_pParent == NULL)
+	if (m_pParent == nullptr)
 	{// 自分が親だった場合
 
 		// 最新のマトリックスを渡す(DirectXが覚えているもの)
@@ -338,7 +338,7 @@ void CModel::DrawShadowMtx()
 		pDevice->SetMaterial(&matNow.MatD3D);
 
 		//テクスチャの設定
-		pDevice->SetTexture(0, NULL);
+		pDevice->SetTexture(0, nullptr);
 
 		// パーツの描画
 		pXData->pMesh->DrawSubset(nCntMat);

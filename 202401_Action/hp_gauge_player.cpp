@@ -94,7 +94,7 @@ HRESULT CHP_GaugePlayer::Init()
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		// 生成処理
-		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, m_nMaxLifeValue, TEXTURE[nCntGauge], 11);
+		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, m_nMaxLifeValue, TEXTURE[nCntGauge], GetPriority());
 		if (m_pObj2DGauge[nCntGauge] == nullptr)
 		{
 			return E_FAIL;
@@ -182,14 +182,6 @@ void CHP_GaugePlayer::Update()
 	for (const auto& gauge : m_pObj2DGauge)
 	{
 		gauge->SetPosition(pos);
-
-		//// 色取得
-		//D3DXCOLOR col = m_pObj2DGauge[nCntGauge]->GetColor();
-
-		//col = UtilFunc::Transformation::HSVtoRGB(0.0f, 0.0f, 1.0f + sinf(D3DX_PI * ((float)m_nCntTkTk / 60.0f)) * 0.3f);
-
-		// 色設定
-		//m_pObj2DGauge[nCntGauge]->SetColor(col);
 	}
 
 
@@ -243,65 +235,6 @@ void CHP_GaugePlayer::SetLife(int nLife)
 }
 
 //==========================================================================
-// 色更新
-//==========================================================================
-void CHP_GaugePlayer::ChangeColor(int nCntGauge)
-{
-
-
-	CObject2D_Gauge* pGauge = m_pObj2DGauge[nCntGauge];
-
-	// サイズ取得
-	D3DXVECTOR2 size = pGauge->GetSize();
-
-	// 色取得
-	D3DXCOLOR col = pGauge->GetColor();
-
-	float maxwidth = pGauge->GetMaxWidth();
-
-
-	if (
-		size.x / maxwidth <= 0.95f &&
-		size.x / maxwidth > 0.6f)
-	{//HPゲージ8割
-
-		col = D3DXCOLOR(0.2f, 0.6f, 0.2f, 1.0f);
-	}
-	else if (
-		size.x / maxwidth <= 0.6f &&
-		size.x / maxwidth > 0.4f)
-	{//HPゲージ6割
-
-		col = D3DXCOLOR(0.8f, 0.7f, 0.2f, 1.0f);
-	}
-	else if (
-		size.x / maxwidth <= 0.4f &&
-		size.x / maxwidth > 0.2f)
-	{//HPゲージ4割
-
-		col = D3DXCOLOR(0.8f, 0.5f, 0.2f, 1.0f);
-	}
-	else if (size.x / maxwidth <= 0.2f)
-	{//危険エリア
-
-		col = D3DXCOLOR(0.8f, 0.2f, 0.2f, 1.0f);
-	}
-	else
-	{//満タン
-
-		col = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
-	}
-
-	// 色設定
-	m_pObj2DGauge[nCntGauge]->SetColor(col);
-
-	// サイズ取得
-	m_pObj2DGauge[nCntGauge]->SetSize(size);
-
-}
-
-
-//==========================================================================
 // 最大値のアップグレード
 //==========================================================================
 int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
@@ -326,13 +259,8 @@ int CHP_GaugePlayer::UpgradeMaxValue(int addvalue)
 }
 
 //==========================================================================
-// 描画処理
+// 頂点情報設定
 //==========================================================================
-void CHP_GaugePlayer::Draw()
-{
-
-}
-
 void CHP_GaugePlayer::SetVtx(int nIdx)
 {
 	// 頂点設定

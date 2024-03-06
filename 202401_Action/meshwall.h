@@ -28,7 +28,7 @@ public:
 	virtual void Draw();
 	virtual void SetVtx();
 
-	static CMeshWall *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth = 1, int nHeight = 1, int nPriority = 1, const char *aFileName = NULL);
+	static CMeshWall *Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth = 1, int nHeight = 1, int nPriority = 1, const char *aFileName = nullptr);
 	virtual CMeshWall *GetMyObject();
 protected:
 

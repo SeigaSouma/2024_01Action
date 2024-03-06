@@ -49,8 +49,8 @@ CResultScore::CResultScore(int nPriority)
 	m_fToatalPosDest_X = 0.0f;	// 最終スコアの目標位置
 	m_bArrivalToatal = false;	// 最終スコアの到着判定
 	m_bSetToatal = false;		// 最終スコアの設定判定
-	m_pToatalObj2D = NULL;		// オブジェクト2Dのオブジェクト
-	m_pToatalScore = NULL;		// 数字のオブジェクト
+	m_pToatalObj2D = nullptr;		// オブジェクト2Dのオブジェクト
+	m_pToatalScore = nullptr;		// 数字のオブジェクト
 }
 
 //==========================================================================
@@ -67,15 +67,15 @@ CResultScore::~CResultScore()
 CResultScore *CResultScore::Create()
 {
 	// 生成用のオブジェクト
-	CResultScore *pScore = NULL;
+	CResultScore *pScore = nullptr;
 
-	if (pScore == NULL)
-	{// NULLだったら
+	if (pScore == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pScore = DEBUG_NEW CResultScore;
 
-		if (pScore != NULL)
+		if (pScore != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -85,7 +85,7 @@ CResultScore *CResultScore::Create()
 		return pScore;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -143,21 +143,21 @@ void CResultScore::Uninit()
 {
 	
 	// 終了処理
-	if (m_pToatalScore != NULL)
+	if (m_pToatalScore != nullptr)
 	{// メモリの確保がされていたら
 
 		// 終了処理
 		m_pToatalScore->Uninit();
-		m_pToatalScore = NULL;
+		m_pToatalScore = nullptr;
 	}
 
 	// 終了処理
-	if (m_pToatalObj2D != NULL)
+	if (m_pToatalObj2D != nullptr)
 	{// メモリの確保がされていたら
 
 		 // 終了処理
 		m_pToatalObj2D->Uninit();
-		m_pToatalObj2D = NULL;
+		m_pToatalObj2D = nullptr;
 	}
 
 	// 情報削除
@@ -181,7 +181,7 @@ void CResultScore::Update()
 //==========================================================================
 void CResultScore::MoveToatalScore()
 {
-	if (m_pToatalObj2D == NULL)
+	if (m_pToatalObj2D == nullptr)
 	{// 最終スコアが生成されていたら
 		return;
 	}
@@ -206,8 +206,8 @@ void CResultScore::MoveToatalScore()
 	// 位置設定
 	m_pToatalObj2D->SetPosition(pos);
 
-	if (m_pToatalScore == NULL)
-	{// NULLだったら
+	if (m_pToatalScore == nullptr)
+	{// nullptrだったら
 		return;
 	}
 
@@ -252,8 +252,8 @@ void CResultScore::MoveToatalScore()
 //==========================================================================
 void CResultScore::SetToatalValue()
 {
-	if (m_pToatalScore == NULL)
-	{// NULLだったら
+	if (m_pToatalScore == nullptr)
+	{// nullptrだったら
 		return;
 	}
 
@@ -281,8 +281,8 @@ void CResultScore::SetAllArrival()
 	// 位置設定
 	m_pToatalObj2D->SetPosition(pos);
 
-	if (m_pToatalScore == NULL)
-	{// NULLだったら
+	if (m_pToatalScore == nullptr)
+	{// nullptrだったら
 		return;
 	}
 

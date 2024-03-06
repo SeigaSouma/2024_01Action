@@ -55,10 +55,8 @@ public:
 private:
 
 	sSkillLine m_SkillLine;	// スキルライン
-
 	CSkillTree_Icon* m_pMyIcon;	// 自分のアイコン
 	CSkillTree_Icon* m_pParentIcon;	// 親のアイコン
-
 	static CListManager<CSkillTree_Line> m_List;	// リスト
 };
 

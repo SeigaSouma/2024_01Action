@@ -42,10 +42,10 @@ CNumber::~CNumber()
 CNumber *CNumber::Create(EObjectType objtype, int nPriority)
 {
 	// 生成用のオブジェクト
-	CNumber *pNumber = NULL;
+	CNumber *pNumber = nullptr;
 
-	if (pNumber == NULL)
-	{// NULLだったら
+	if (pNumber == nullptr)
+	{// nullptrだったら
 
 	 // メモリの確保
 		switch (objtype)
@@ -63,11 +63,11 @@ CNumber *CNumber::Create(EObjectType objtype, int nPriority)
 			break;
 
 		default:
-			return NULL;
+			return nullptr;
 			break;
 		}
 
-		if (pNumber != NULL)
+		if (pNumber != nullptr)
 		{// メモリの確保が出来ていたら
 
 		 // オブジェクトの種類
@@ -79,13 +79,13 @@ CNumber *CNumber::Create(EObjectType objtype, int nPriority)
 		else
 		{
 			delete pNumber;
-			pNumber = NULL;
+			pNumber = nullptr;
 		}
 
 		return pNumber;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -205,7 +205,7 @@ void CNumber::SetTex(D3DXVECTOR2 *tex)
 //==========================================================================
 D3DXVECTOR2 *CNumber::GetTex()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -213,7 +213,7 @@ D3DXVECTOR2 *CNumber::GetTex()
 //==========================================================================
 CObject2D *CNumber::GetObject2D()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -221,7 +221,7 @@ CObject2D *CNumber::GetObject2D()
 //==========================================================================
 CObject3D *CNumber::GetObject3D()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -229,5 +229,5 @@ CObject3D *CNumber::GetObject3D()
 //==========================================================================
 CObjectBillboard *CNumber::GetObjectBillboard()
 {
-	return NULL;
+	return nullptr;
 }

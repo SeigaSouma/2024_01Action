@@ -21,7 +21,6 @@
 #include "blackframe.h"
 #include "light.h"
 #include "camera.h"
-#include "bg.h"
 #include "edit.h"
 #include "resultmanager.h"
 #include "rankingmanager.h"
@@ -38,10 +37,8 @@ namespace
 	const float TIME_LOAD = 2.0f;	// ÉçÅ[Éhéûä‘
 
 #if _DEBUG
-	//const CScene::MODE STARTMODE = CScene::MODE_TITLE;
 	const CScene::MODE STARTMODE = CScene::MODE_GAME;
 #else
-	//const CScene::MODE STARTMODE = CScene::MODE_GAME;
 	const CScene::MODE STARTMODE = CScene::MODE_TITLE;
 #endif
 }

@@ -123,7 +123,7 @@ CMessageWin* CMessageWin::Create()
 	// インスタンス生成
 	CMessageWin* pLose = DEBUG_NEW CMessageWin;
 
-	// NULLチェック
+	// nullptrチェック
 	if (pLose == nullptr) { return nullptr; }
 
 	// 初期化処理

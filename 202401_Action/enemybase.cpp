@@ -33,7 +33,7 @@ namespace
 CEnemyBase::CEnemyBase()
 {
 	// 値のクリア
-	memset(&m_apObjX[0], NULL, sizeof(m_apObjX));	// オブジェクトX
+	memset(&m_apObjX[0], 0, sizeof(m_apObjX));	// オブジェクトX
 	m_nNumAll = 0;		// 総数
 	m_nNumStage = 0;	// ステージの総数
 }
@@ -52,15 +52,15 @@ CEnemyBase::~CEnemyBase()
 CEnemyBase *CEnemyBase::Create(const char *pFileName)
 {
 	// 生成用のオブジェクト
-	CEnemyBase *pModel = NULL;
+	CEnemyBase *pModel = nullptr;
 
-	if (pModel == NULL)
-	{// NULLだったら
+	if (pModel == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pModel = DEBUG_NEW CEnemyBase;
 
-		if (pModel != NULL)
+		if (pModel != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -68,7 +68,7 @@ CEnemyBase *CEnemyBase::Create(const char *pFileName)
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 初期化処理
@@ -76,14 +76,14 @@ CEnemyBase *CEnemyBase::Create(const char *pFileName)
 			if (FAILED(hr))
 			{// 失敗していたら
 				delete pModel;
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pModel;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -185,7 +185,7 @@ void CEnemyBase::Update()
 	{
 		for (int i = 0; i < m_nBaseNum[nCntStage]; i++)
 		{
-			if (m_apObjX[nCntObj] == NULL)
+			if (m_apObjX[nCntObj] == nullptr)
 			{
 				m_apObjX[nCntObj] = CObjectX::Create(MARKOBJ, mylib_const::DEFAULT_VECTOR3, mylib_const::DEFAULT_VECTOR3, false);	// オブジェクトX
 				m_apObjX[nCntObj]->SetType(CObject::TYPE_BALLAST);
@@ -211,12 +211,12 @@ HRESULT CEnemyBase::ReadText(const char *pFileName)
 {
 	char aComment[MAX_COMMENT] = {};	// コメント用
 
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen(pFileName, "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{// ファイルが開けなかった場合
 		return E_FAIL;
 	}
@@ -328,12 +328,12 @@ HRESULT CEnemyBase::ReadText(const char *pFileName)
 void CEnemyBase::Save()
 {
 
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen("data\\TEXT\\enemydata\\base.txt", "w");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{// ファイルが開けなかった場合
 		return;
 	}
@@ -425,7 +425,7 @@ void CEnemyBase::SetSpawnPoint(int nStage, int nIdx, MyLib::Vector3 pos)
 CEnemyBase::sInfo CEnemyBase::GetEnemyBaseInfo(int nStage, int nIdx)
 {
 	sInfo InitInfo;
-	memset(&InitInfo, NULL, sizeof(InitInfo));
+	memset(&InitInfo, 0, sizeof(InitInfo));
 
 	if (m_EnemyBaseInfo.size() <= 0 || (int)m_EnemyBaseInfo[nStage].size() <= nIdx || (int)m_EnemyBaseInfo.size() <= nStage)
 	{// サイズ無し

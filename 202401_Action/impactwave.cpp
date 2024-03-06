@@ -77,15 +77,15 @@ CImpactWave::~CImpactWave()
 CImpactWave *CImpactWave::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, D3DXCOLOR col, float fWidth, float fHeight, float fCenterDistance, int nLife, float fMove, int nTexType, bool bAddBlend)
 {
 	// 生成用のオブジェクト
-	CImpactWave *pObjMeshCylinder = NULL;
+	CImpactWave *pObjMeshCylinder = nullptr;
 
-	if (pObjMeshCylinder == NULL)
-	{// NULLだったら
+	if (pObjMeshCylinder == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshCylinder = DEBUG_NEW CImpactWave;
 
-		if (pObjMeshCylinder != NULL)
+		if (pObjMeshCylinder != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -118,7 +118,7 @@ CImpactWave *CImpactWave::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, D3DXCOL
 		return pObjMeshCylinder;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

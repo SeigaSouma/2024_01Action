@@ -34,7 +34,7 @@ const MyLib::Vector3 CBlackFrame::m_DestPosition[VTX_MAX] =	// 目標の位置
 CBlackFrame::CBlackFrame(int nPriority)
 {
 	// 値のクリア
-	memset(&m_pObj3D[0], NULL, sizeof(m_pObj3D));	// オブジェクト2Dのオブジェクト
+	memset(&m_pObj3D[0], 0, sizeof(m_pObj3D));	// オブジェクト2Dのオブジェクト
 	m_state = STATE_NONE;	// 状態
 	m_nCntMove = 0;	// 移動カウント
 }
@@ -53,15 +53,15 @@ CBlackFrame::~CBlackFrame()
 CBlackFrame *CBlackFrame::Create()
 {
 	// 生成用のオブジェクト
-	CBlackFrame *pTitleScreen = NULL;
+	CBlackFrame *pTitleScreen = nullptr;
 
-	if (pTitleScreen == NULL)
-	{// NULLだったら
+	if (pTitleScreen == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pTitleScreen = DEBUG_NEW CBlackFrame;
 
-		if (pTitleScreen != NULL)
+		if (pTitleScreen != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -71,7 +71,7 @@ CBlackFrame *CBlackFrame::Create()
 		return pTitleScreen;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -124,8 +124,8 @@ void CBlackFrame::Reset()
 
 	for (int nCntVtx = 0; nCntVtx < VTX_MAX; nCntVtx++)
 	{
-		if (m_pObj3D[nCntVtx] != NULL)
-		{// NULLじゃなかったら
+		if (m_pObj3D[nCntVtx] != nullptr)
+		{// nullptrじゃなかったら
 
 			MyLib::Vector3 pos = mylib_const::DEFAULT_VECTOR3;
 			if (nCntVtx == VTX_UP)
@@ -151,13 +151,13 @@ void CBlackFrame::Uninit()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_MAX; nCntSelect++)
 	{
-		if (m_pObj3D[nCntSelect] != NULL)
-		{// NULLじゃなかったら
+		if (m_pObj3D[nCntSelect] != nullptr)
+		{// nullptrじゃなかったら
 
 			// 終了処理
 			m_pObj3D[nCntSelect]->Uninit();
 			delete m_pObj3D[nCntSelect];
-			m_pObj3D[nCntSelect] = NULL;
+			m_pObj3D[nCntSelect] = nullptr;
 		}
 	}
 }
@@ -169,8 +169,8 @@ void CBlackFrame::Update()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_MAX; nCntSelect++)
 	{
-		if (m_pObj3D[nCntSelect] == NULL)
-		{// NULLだったら
+		if (m_pObj3D[nCntSelect] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 
@@ -300,7 +300,7 @@ void CBlackFrame::Draw()
 
 	for (int nCntSelect = 0; nCntSelect < VTX_MAX; nCntSelect++)
 	{
-		if (m_pObj3D[nCntSelect] == NULL)
+		if (m_pObj3D[nCntSelect] == nullptr)
 		{
 			continue;
 		}

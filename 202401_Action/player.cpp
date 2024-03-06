@@ -13,11 +13,8 @@
 #include "input.h"
 #include "enemy.h"
 #include "calculation.h"
-#include "score.h"
-#include "texture.h"
 #include "Xload.h"
 #include "model.h"
-#include "hp_gauge.h"
 #include "hp_gauge_player.h"
 #include "stamina_gauge_player.h"
 #include "elevation.h"
@@ -34,7 +31,6 @@
 #include "listmanager.h"
 #include "collisionobject.h"
 #include "limitarea.h"
-#include "particle.h"
 #include "MyEffekseer.h"
 #include "skillpoint.h"
 #include "damagepoint.h"
@@ -43,6 +39,7 @@
 #include "skilltree_obj.h"
 #include "gamerating.h"
 
+// 使用クラス
 #include "playercontrol.h"
 
 //==========================================================================
@@ -141,7 +138,6 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_nRespawnPercent = 0;							// リスポーン確率
 	m_bTouchBeacon = false;							// ビーコンに触れてる判定
 	m_bMotionAutoSet = false;						// モーションの自動設定
-	//m_pWeaponHandle = nullptr;
 
 	m_PlayerStatus = sPlayerStatus();				// プレイヤーステータス
 	m_sDamageInfo = sDamageInfo();					// ダメージ情報
@@ -157,7 +153,6 @@ CPlayer::CPlayer(int nPriority) : CObjectChara(nPriority)
 	m_pControlDefence = nullptr;					// 防御操作
 	m_pControlAvoid = nullptr;						// 回避操作
 	m_pGuard = nullptr;								// ガード
-
 }
 
 //==========================================================================
@@ -171,31 +166,21 @@ CPlayer::~CPlayer()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CPlayer *CPlayer::Create(int nIdx)
+CPlayer* CPlayer::Create(int nIdx)
 {
-	// 生成用のオブジェクト
-	CPlayer *pPlayer = nullptr;
+	// メモリ確保
+	CPlayer* pPlayer = DEBUG_NEW CPlayer;
 
-	if (pPlayer == nullptr)
-	{// nullptrだったら
+	if (pPlayer != nullptr)
+	{
+		// プレイヤーインデックス番号
+		pPlayer->m_nMyPlayerIdx = nIdx;
 
-		// メモリの確保
-		pPlayer = DEBUG_NEW CPlayer;
-
-		if (pPlayer != nullptr)
-		{// メモリの確保が出来ていたら
-
-			// プレイヤーインデックス番号
-			pPlayer->m_nMyPlayerIdx = nIdx;
-
-			// 初期化処理
-			pPlayer->Init();
-		}
-
-		return pPlayer;
+		// 初期化処理
+		pPlayer->Init();
 	}
 
-	return nullptr;
+	return pPlayer;
 }
 
 //==========================================================================
@@ -221,12 +206,6 @@ HRESULT CPlayer::Init()
 	{// 失敗していたら
 		return E_FAIL;
 	}
-
-	// 位置取得
-	MyLib::Vector3 pos = GetPosition();
-
-	// 影の生成
-	//m_pShadow = CShadow::Create(pos, 50.0f);
 
 	// 割り当て
 	m_List.Regist(this);
@@ -287,7 +266,6 @@ void CPlayer::Uninit()
 	// 影を消す
 	if (m_pShadow != nullptr)
 	{
-		//m_pShadow->Uninit();
 		m_pShadow = nullptr;
 	}
 
@@ -474,10 +452,6 @@ void CPlayer::Update()
 
 	// 位置取得
 	MyLib::Vector3 pos = GetPosition();
-	MyLib::Vector3 posCenter = GetCenterPosition();
-
-	// 移動量取得
-	MyLib::Vector3 move = GetMove();
 
 	// 向き取得
 	MyLib::Vector3 rot = GetRotation();
@@ -492,8 +466,6 @@ void CPlayer::Update()
 	else if(pCamera->GetStateCameraR() == CCamera::POSR_STATE_NORMAL)
 	{
 		MyLib::Vector3 camerapos = pos;
-		//camerapos.y = pCamera->GetTargetPosition().y;
-
 		pCamera->SetTargetPosition(camerapos);
 		pCamera->SetTargetRotation(rot);
 	}
@@ -509,32 +481,14 @@ void CPlayer::Update()
 		m_pHPGauge->SetLife(GetLife());
 	}
 
-
-	int nCntEffect = 0;
-	int nNumEffect = GetEffectParentNum();
-	for (int i = 0; i < mylib_const::MAX_OBJ; i++)
-	{
-		CEffect3D* pEffect = GetEffectParent(i);
-		if (pEffect == nullptr)
-		{// nullptrだったら
-			continue;
-		}
-
-		// エフェクトの位置更新
-		pEffect->UpdatePosition(GetRotation());
-		nCntEffect++;
-		if (nNumEffect <= nCntEffect)
-		{
-			break;
-		}
-	}
-
 	// 位置の制限
 	LimitPos();
 
-	GetCenterPosition();
-
 #if _DEBUG
+
+	// 移動量取得
+	MyLib::Vector3 move = GetMove();
+
 	// デバッグ表示
 	CManager::GetInstance()->GetDebugProc()->Print(
 		"------------------[プレイヤーの操作]------------------\n"
@@ -969,7 +923,9 @@ void CPlayer::Controll()
 		CMyEffekseer::GetInstance()->SetPosition(m_WeaponHandle, weponpos);
 	}
 
+	// デバッグ用
 #if _DEBUG
+
 	if (pInputKeyboard->GetTrigger(DIK_LEFT) == true)
 	{
 		CCollisionObject::Create(GetPosition(), mylib_const::DEFAULT_VECTOR3, 100000.0f, 3, 10000, CCollisionObject::TAG_PLAYER);
@@ -1664,7 +1620,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 					if (!pEnemy->IsActiveSuperArmor())
 					{
 						// ターゲットと敵との向き
-						float fRot = atan2f((enemypos.x - pos.x), (enemypos.z - pos.z));
+						float fRot = enemypos.AngleXZ(pos);
 						UtilFunc::Transformation::RotNormalize(fRot);
 
 						pEnemy->SetMove(MyLib::Vector3(sinf(fRot) * 8.0f, 0.0f, cosf(fRot) * 8.0f));
@@ -1805,7 +1761,7 @@ bool CPlayer::Collision(MyLib::Vector3 &pos, MyLib::Vector3 &move)
 		if (bLand == true && fHeight > pos.y)
 		{// 地面の方が自分より高かったら
 
-		 // 地面の高さに補正
+			// 地面の高さに補正
 			if (pos.y + 50.0f <= fHeight)
 			{// 自分より壁が高すぎる
 				m_bHitWall = true;
@@ -1914,7 +1870,6 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CGameManager::AttackTy
 				// 反撃
 				GetMotion()->Set(MOTION_COUNTER_ATTACK);
 				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER, 0.0f);
-				//m_pSkillPoint->AddPoint();
 
 				// 攻撃の設定
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
@@ -2003,7 +1958,6 @@ MyLib::HitResult_Character CPlayer::Hit(const int nValue, CEnemy* pEnemy, CGameM
 				// 反撃
 				GetMotion()->Set(MOTION_COUNTER_ATTACK);
 				pCamera->SetRockOnState(CCamera::RockOnState::ROCKON_COUNTER, pEnemy->GetHeight());
-				//m_pSkillPoint->AddPoint();
 
 				// 攻撃の設定
 				m_pEndCounterSetting = DEBUG_NEW CEndAttack;
@@ -2735,8 +2689,7 @@ void CPlayer::StateCounter()
 	}
 
 	MyLib::Vector3 enemypos = pEnemy->GetPosition();
-
-	SetRotDest(atan2f((pos.x - enemypos.x), (pos.z - enemypos.z)));
+	SetRotDest(pos.AngleXZ(enemypos));
 
 	int nType = pMotion->GetType();
 	if (nType != MOTION_COUNTER_ACCEPT &&
@@ -2942,7 +2895,6 @@ CPlayer::STATE CPlayer::GetState()
 	return m_state;
 }
 
-
 //==========================================================================
 // 強化リセット
 //==========================================================================
@@ -2973,6 +2925,7 @@ void CPlayer::ResetEnhance()
 	ChangeAvoidControl(DEBUG_NEW CPlayerControlAvoid());
 	ChangeGuardGrade(DEBUG_NEW CPlayerGuard());
 
+	// ステータスリセット
 	m_PlayerStatus = sPlayerStatus(
 		DEFAULT_RESPAWNHEAL, DEFAULT_SUBVALUE_GUARD, DEFAULT_SUBVALUE_COUNTER,
 		DEFAULT_COUNTERHEAL, DEFAULT_MULTIPLY_ATTACK, DEFAULT_CHARGETIME,
@@ -2980,7 +2933,6 @@ void CPlayer::ResetEnhance()
 
 	// ダメージ情報
 	m_sDamageInfo = sDamageInfo();
-
 }
 
 //==========================================================================

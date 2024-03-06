@@ -37,15 +37,15 @@ CObject2D_Anim::~CObject2D_Anim()
 CObject2D_Anim *CObject2D_Anim::Create(MyLib::Vector3 pos, const int nDivisionU, const int nDivisionV, const int nInterval, bool bAutoDeath)
 {
 	// 生成用のオブジェクト
-	CObject2D_Anim *pObject2D = NULL;
+	CObject2D_Anim *pObject2D = nullptr;
 
-	if (pObject2D == NULL)
-	{// NULLだったら
+	if (pObject2D == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObject2D = DEBUG_NEW CObject2D_Anim;
 
-		if (pObject2D != NULL)
+		if (pObject2D != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 引数情報
@@ -63,7 +63,7 @@ CObject2D_Anim *CObject2D_Anim::Create(MyLib::Vector3 pos, const int nDivisionU,
 		return pObject2D;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

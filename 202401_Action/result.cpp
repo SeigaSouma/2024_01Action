@@ -34,7 +34,7 @@ namespace
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-CResultScore *CResult::m_pResultScore = NULL;	// リザルトスクリーンのオブジェクト
+CResultScore *CResult::m_pResultScore = nullptr;	// リザルトスクリーンのオブジェクト
 bool CResult::m_bAllArrival = false;		// 全て到着した判定
 
 //==========================================================================
@@ -102,7 +102,7 @@ HRESULT CResult::Init()
 //==========================================================================
 void CResult::Uninit()
 {
-	m_pResultScore = NULL;
+	m_pResultScore = nullptr;
 
 	// 終了処理
 	CScene::Uninit();
@@ -133,7 +133,7 @@ void CResult::Update()
 		if (CManager::GetInstance()->GetFade()->GetState() == CFade::STATE_NONE)
 		{
 			// 全ての到着処理
-			if (m_pResultScore != NULL)
+			if (m_pResultScore != nullptr)
 			{
 				m_pResultScore->SetAllArrival();
 			}

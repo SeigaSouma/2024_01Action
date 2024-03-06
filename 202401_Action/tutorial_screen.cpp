@@ -39,7 +39,7 @@ const char *CTutorialScreen::m_apTextureFile[VTX_LOGO_MAX] =			// テクスチャのフ
 CTutorialScreen::CTutorialScreen(int nPriority) : CObject(nPriority)
 {
 	// 値のクリア
-	memset(&m_pObj2D[0], NULL, sizeof(m_pObj2D));				// オブジェクト2Dのオブジェクト
+	memset(&m_pObj2D[0], 0, sizeof(m_pObj2D));				// オブジェクト2Dのオブジェクト
 	memset(&m_nTexIdx[0], 0, sizeof(m_nTexIdx));				// テクスチャのインデックス番号
 	m_bStick = false;		// スティックの判定
 }
@@ -58,15 +58,15 @@ CTutorialScreen::~CTutorialScreen()
 CTutorialScreen *CTutorialScreen::Create()
 {
 	// 生成用のオブジェクト
-	CTutorialScreen *pTitleScreen = NULL;
+	CTutorialScreen *pTitleScreen = nullptr;
 
-	if (pTitleScreen == NULL)
-	{// NULLだったら
+	if (pTitleScreen == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pTitleScreen = DEBUG_NEW CTutorialScreen;
 
-		if (pTitleScreen != NULL)
+		if (pTitleScreen != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -76,7 +76,7 @@ CTutorialScreen *CTutorialScreen::Create()
 		return pTitleScreen;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -116,11 +116,11 @@ void CTutorialScreen::Uninit()
 {
 	for (int nCntSelect = 0; nCntSelect < VTX_LOGO_MAX; nCntSelect++)
 	{
-		if (m_pObj2D[nCntSelect] != NULL)
-		{// NULLじゃなかったら
+		if (m_pObj2D[nCntSelect] != nullptr)
+		{// nullptrじゃなかったら
 
 			// 終了処理
-			m_pObj2D[nCntSelect] = NULL;
+			m_pObj2D[nCntSelect] = nullptr;
 		}
 	}
 

@@ -54,15 +54,15 @@ CSkillTree_Cursor::~CSkillTree_Cursor()
 CSkillTree_Cursor *CSkillTree_Cursor::Create(int nIdx)
 {
 	// 生成用のオブジェクト
-	CSkillTree_Cursor *pEffect = NULL;
+	CSkillTree_Cursor *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CSkillTree_Cursor;
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// プレイヤーインデックス
@@ -75,7 +75,7 @@ CSkillTree_Cursor *CSkillTree_Cursor::Create(int nIdx)
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

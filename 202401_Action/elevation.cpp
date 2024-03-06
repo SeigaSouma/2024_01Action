@@ -66,8 +66,8 @@ CElevation::CElevation(int nPriority) : CObject3DMesh(nPriority)
 	m_aInfo.fHeightLength = 0.0f;				// 縦長さ
 	m_aInfo.nWidthBlock = 0;					// 横分割数
 	m_aInfo.nHeightBlock = 0;					// 縦分割数
-	m_aInfo.pVtxPos = NULL;						// 頂点座標
-	m_pTargetP = NULL;							// 目標の地点
+	m_aInfo.pVtxPos = nullptr;						// 頂点座標
+	m_pTargetP = nullptr;							// 目標の地点
 	m_bChange = false;	// 変更のフラグ
 }
 
@@ -85,15 +85,15 @@ CElevation::~CElevation()
 CElevation *CElevation::Create(const char *pText)
 {
 	// 生成用のオブジェクト
-	CElevation *pObjMeshField = NULL;
+	CElevation *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CElevation;
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -103,7 +103,7 @@ CElevation *CElevation::Create(const char *pText)
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -173,17 +173,17 @@ HRESULT CElevation::Init(const char *pText)
 void CElevation::Uninit()
 {
 	// 頂点座標の破棄
-	if (m_aInfo.pVtxPos != NULL)
+	if (m_aInfo.pVtxPos != nullptr)
 	{
 		delete[] m_aInfo.pVtxPos;
-		m_aInfo.pVtxPos = NULL;
+		m_aInfo.pVtxPos = nullptr;
 	}
 
 	// 目標の地点消す
-	if (m_pTargetP != NULL)
+	if (m_pTargetP != nullptr)
 	{
 		m_pTargetP->Uninit();
-		m_pTargetP = NULL;
+		m_pTargetP = nullptr;
 	}
 
 	// 終了処理
@@ -211,13 +211,13 @@ void CElevation::Update()
 		m_bEdit = m_bEdit ? false : true;
 
 		// 目標の地点消す
-		if (m_pTargetP != NULL)
+		if (m_pTargetP != nullptr)
 		{
 			m_pTargetP->Uninit();
-			m_pTargetP = NULL;
+			m_pTargetP = nullptr;
 		}
 		// 目標の地点生成
-		else if (m_pTargetP == NULL)
+		else if (m_pTargetP == nullptr)
 		{
 			m_pTargetP = CTargetPoint::Create(MyLib::Vector3(0.0f, 0.0f, 0.0f), 400.0f, 800.0f);
 		}
@@ -552,7 +552,7 @@ void CElevation::UPVtxField(MyLib::Vector3 pos)
 	SetWidthLen(m_fWidthLen);
 	SetHeightLen(m_fHeightLen);
 
-	if (m_pTargetP != NULL)
+	if (m_pTargetP != nullptr)
 	{
 		// 長さ変更
 		m_pTargetP->SetWidthLen(m_fBrushRange);
@@ -732,7 +732,7 @@ HRESULT CElevation::Load(const char *pText)
 {
 	char aComment[mylib_const::MAX_STRING] = {};	//コメント用
 
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	switch (CManager::GetInstance()->GetMode())
@@ -746,7 +746,7 @@ HRESULT CElevation::Load(const char *pText)
 		break;
 	}
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{// ファイルが開けなかった場合
 		fclose(pFile);
 		return E_FAIL;
@@ -869,12 +869,12 @@ HRESULT CElevation::Load(const char *pText)
 //==========================================================================
 void CElevation::Save()
 {
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen("data\\TEXT\\elevation\\field_save.txt", "w");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{// ファイルが開けなかった場合
 		return;
 	}

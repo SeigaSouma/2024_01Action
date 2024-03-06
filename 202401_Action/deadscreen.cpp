@@ -56,12 +56,12 @@ CDeadScreen::~CDeadScreen()
 CDeadScreen* CDeadScreen::Create(float fadetime)
 {
 	// 生成用のオブジェクト
-	CDeadScreen* pScreen = NULL;
+	CDeadScreen* pScreen = nullptr;
 
 	// メモリの確保
 	pScreen = DEBUG_NEW CDeadScreen(fadetime);
 
-	if (pScreen != NULL)
+	if (pScreen != nullptr)
 	{
 		// 初期化処理
 		pScreen->Init();

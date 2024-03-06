@@ -40,15 +40,15 @@ CRankingManager::~CRankingManager()
 CRankingManager *CRankingManager::Create()
 {
 	// 生成用のオブジェクト
-	CRankingManager *pManager = NULL;
+	CRankingManager *pManager = nullptr;
 
-	if (pManager == NULL)
-	{// NULLだったら
+	if (pManager == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pManager = DEBUG_NEW CRankingManager;
 
-		if (pManager != NULL)
+		if (pManager != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -56,14 +56,14 @@ CRankingManager *CRankingManager::Create()
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pManager;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

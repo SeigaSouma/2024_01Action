@@ -14,11 +14,11 @@
 #include "player.h"
 #include "camera.h"
 #include "MyEffekseer.h"
+#include "fog.h"
 
 // 遷移先
 #include "game.h"
 #include "title.h"
-#include "tutorial.h"
 #include "result.h"
 #include "ranking.h"
 
@@ -71,10 +71,6 @@ CScene *CScene::Create(CScene::MODE mode)
 			pScene = CTitle::Create();
 			break;
 
-		case CScene::MODE_TUTORIAL:
-			pScene = DEBUG_NEW CTutorial;
-			break;
-
 		case CScene::MODE_GAME:
 		case CScene::MODE::MODE_GAMETUTORIAL:
 			pScene = CGame::Create(mode);
@@ -107,27 +103,12 @@ CScene *CScene::Create(CScene::MODE mode)
 //==========================================================================
 HRESULT CScene::Init()
 {
-	HRESULT hr;
 
 	// エフェクト全て停止
 	CMyEffekseer::GetInstance()->StopAll();
 
-#if 0
-	//**********************************
-	// Xファイル
-	//**********************************
-	if (m_pXLoad != nullptr)
-	{// 確保されていたら
-		return E_FAIL;
-	}
-
-	// メモリ確保
-	m_pXLoad = CXLoad::Create();
-	if (m_pXLoad == nullptr)
-	{// メモリの確保が出来ていなかったら
-		return E_FAIL;
-	}
-#endif
+	// フォグリセット
+	MyFog::ToggleFogFrag(false);
 
 	//**********************************
 	// マップの生成

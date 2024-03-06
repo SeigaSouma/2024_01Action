@@ -51,7 +51,7 @@ CBulletObstacle* CBulletObstacle::Create(const MyLib::Vector3& pos, const MyLib:
 	// メモリの確保
 	CBulletObstacle* pBullet = DEBUG_NEW CBulletObstacle;
 
-	if (pBullet != NULL)
+	if (pBullet != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 位置割り当て
@@ -179,8 +179,8 @@ void CBulletObstacle::CollisionPlayer()
 {
 	// プレイヤー情報取得
 	CPlayer* pPlayer = CPlayer::GetListObj().GetData(0);
-	if (pPlayer == NULL)
-	{// NULLだったら
+	if (pPlayer == nullptr)
+	{// nullptrだったら
 		return;
 	}
 

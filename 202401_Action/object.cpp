@@ -37,13 +37,13 @@ CObject::CObject(int nPriority)
 	m_move = 0.0f;		// 移動量
 	m_rotOrigin = 0.0f;	// 元の向き
 
-	m_pPrev = NULL;	// 前のオブジェクトへのポインタ
-	m_pNext = NULL;	// 次のオブジェクトへのポインタ
+	m_pPrev = nullptr;	// 前のオブジェクトへのポインタ
+	m_pNext = nullptr;	// 次のオブジェクトへのポインタ
 	m_nPriority = nPriority;	// 優先順位
 	m_type = TYPE_NONE;			// 種類
 	m_bDeath = false;			// 死亡フラグ
 	m_bDisp = true;			// 描画フラグ
-	memset(&m_pEffect[0], NULL, sizeof(m_pEffect));	// エフェクトのポインタ
+	memset(&m_pEffect[0], 0, sizeof(m_pEffect));	// エフェクトのポインタ
 	m_nNumEffectParent = 0;		// エフェクトの親設定した数
 	m_bHitstopMove = false;		// ヒットストップ時に動くかのフラグ
 	m_nNumAll++;				// 総数加算
@@ -52,7 +52,7 @@ CObject::CObject(int nPriority)
 	// 最後尾を保存
 	CObject *pObjCur = m_pCur[nPriority];
 
-	if (pObjCur != NULL)
+	if (pObjCur != nullptr)
 	{// 最後尾が存在していたら
 
 		pObjCur->m_pNext = this;				// 最後尾の次に自分自身を代入
@@ -66,7 +66,7 @@ CObject::CObject(int nPriority)
 		m_pCur[nPriority] = this;	// 最後尾を自分自身に更新
 	}
 
-	if (m_pTop[nPriority] == NULL)
+	if (m_pTop[nPriority] == nullptr)
 	{// 先頭に何もなかったら
 
 		m_pTop[nPriority] = this;	// 先頭に自分自身のポインタを渡す
@@ -92,8 +92,8 @@ void CObject::ReleaseAll()
 		// 先頭を保存
 		CObject *pObject = m_pTop[nCntPriority];
 
-		while (pObject != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObject != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObject->m_pNext;
@@ -115,8 +115,8 @@ void CObject::ReleaseAll()
 		// 先頭を保存
 		pObject = m_pTop[nCntPriority];
 
-		while (pObject != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObject != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObject->m_pNext;
@@ -143,8 +143,8 @@ void CObject::ReleaseAll()
 		// 先頭を保存
 		CObject *pObject = m_pTop[nCntPriority];
 
-		while (pObject != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObject != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObject->m_pNext;
@@ -184,21 +184,21 @@ void CObject::UpdateAll()
 		// 先頭を保存
 		CObject *pObject = m_pTop[nCntPriority];
 
-		while (pObject != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObject != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObject->m_pNext;
 
 #if _DEBUG
-			if (pObject->m_bDeath == false && pEdit != NULL && (pObject->m_type == TYPE_EDIT || pObject->m_type == TYPE_XFILE || pObject->m_type == TYPE_ELEVATION) &&
+			if (pObject->m_bDeath == false && pEdit != nullptr && (pObject->m_type == TYPE_EDIT || pObject->m_type == TYPE_XFILE || pObject->m_type == TYPE_ELEVATION) &&
 				(pObject->m_bHitstopMove == true || (pObject->m_bHitstopMove == false && bHitstop == false)))
 			{// エディット状態だったらエディットのみ更新
 
 				// 更新処理
 				pObject->Update();
 			}
-			else if (pObject->m_bDeath == false && pEdit == NULL && pObject->m_type != TYPE_NONE &&
+			else if (pObject->m_bDeath == false && pEdit == nullptr && pObject->m_type != TYPE_NONE &&
 				(pObject->m_bHitstopMove == true || (pObject->m_bHitstopMove == false && bHitstop == false)))
 			{// エディット状態じゃない && タイプがNONE以外
 
@@ -225,8 +225,8 @@ void CObject::UpdateAll()
 		// 先頭を保存
 		pObject = m_pTop[nCntPriority];
 
-		while (pObject != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObject != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObject->m_pNext;
@@ -280,8 +280,8 @@ void CObject::DrawNone(int nPriority)
 	// 先頭を保存
 	CObject *pObject = m_pTop[nPriority];
 
-	while (pObject != NULL)
-	{// NULLが来るまで無限ループ
+	while (pObject != nullptr)
+	{// nullptrが来るまで無限ループ
 
 		// 次のオブジェクトを一時保存
 		CObject *pObjNext = pObject->m_pNext;
@@ -310,7 +310,7 @@ void CObject::DrawZSort(int nPriority)
 
 	// リストコピー
 	std::vector<CObject*> pObjectSort;
-	while (pObject != NULL)
+	while (pObject != nullptr)
 	{
 		// 次のオブジェクトを一時保存
 		CObject *pObjNext = pObject->m_pNext;
@@ -384,8 +384,8 @@ int CObject::SetEffectParent(CEffect3D *pEffect3D)
 	int nIdx = 0;
 	for (int nCntEffect = 0; nCntEffect < mylib_const::MAX_OBJ; nCntEffect++)
 	{
-		if (m_pEffect[nCntEffect] != NULL)
-		{// NULLじゃなかったら
+		if (m_pEffect[nCntEffect] != nullptr)
+		{// nullptrじゃなかったら
 			continue;
 		}
 
@@ -422,8 +422,8 @@ CEffect3D *CObject::GetEffectParent(int nIdx)
 //==========================================================================
 void CObject::ReleaseEffect(int nIdx)
 {
-	// エフェクトNULLにする
-	m_pEffect[nIdx] = NULL;
+	// エフェクトnullptrにする
+	m_pEffect[nIdx] = nullptr;
 
 	// エフェクトの親設定した数減算
 	m_nNumEffectParent--;
@@ -436,12 +436,12 @@ void CObject::UninitEffect()
 {
 	for (int nCntEffect = 0; nCntEffect < mylib_const::MAX_OBJ; nCntEffect++)
 	{
-		if (m_pEffect[nCntEffect] == NULL)
-		{// NULLだったら
+		if (m_pEffect[nCntEffect] == nullptr)
+		{// nullptrだったら
 			continue;
 		}
 		m_pEffect[nCntEffect]->UninitParent();
-		m_pEffect[nCntEffect] = NULL;
+		m_pEffect[nCntEffect] = nullptr;
 	}
 }
 
@@ -470,20 +470,20 @@ void CObject::Death()
 	CObject *pObjNext = pObject->m_pNext;
 	CObject *pObjPrev = pObject->m_pPrev;
 
-	if (pObject == NULL)
-	{// NULLだったら
+	if (pObject == nullptr)
+	{// nullptrだったら
 		return;
 	}
 
 	// 前のオブジェクトと次のオブジェクトを繋ぐ
-	if (pObjNext == NULL)
+	if (pObjNext == nullptr)
 	{// 自分が最後尾の時
 
-		if (pObjPrev != NULL)
+		if (pObjPrev != nullptr)
 		{// 前のオブジェクトがあれば
 
-			// 前のオブジェクトの次をNULLにする
-			pObjPrev->m_pNext = NULL;
+			// 前のオブジェクトの次をnullptrにする
+			pObjPrev->m_pNext = nullptr;
 
 			// 最後尾を自分の前のオブジェクトにする
 			m_pCur[nPriority] = pObjPrev;
@@ -491,14 +491,14 @@ void CObject::Death()
 		else
 		{// 前のオブジェクトがない時
 
-			// 最後尾をNULLにする
-			m_pCur[nPriority] = NULL;
+			// 最後尾をnullptrにする
+			m_pCur[nPriority] = nullptr;
 		}
 	}
 	else
 	{// 最後尾じゃないとき
 
-		if (pObjPrev != NULL)
+		if (pObjPrev != nullptr)
 		{// 自分が先頭じゃない時
 
 			// 前のオブジェクトの次を, 自分の次にする
@@ -507,14 +507,14 @@ void CObject::Death()
 
 	}
 
-	if (pObjPrev == NULL)
+	if (pObjPrev == nullptr)
 	{// 自分が先頭の時
 
-		if (pObjNext != NULL)
+		if (pObjNext != nullptr)
 		{// 次のオブジェクトがある時
 
-			// 次のオブジェクトの前をNULLにする
-			pObjNext->m_pPrev = NULL;
+			// 次のオブジェクトの前をnullptrにする
+			pObjNext->m_pPrev = nullptr;
 
 			// 先頭を自分の次のオブジェクトにする
 			m_pTop[nPriority] = pObjNext;
@@ -522,14 +522,14 @@ void CObject::Death()
 		else
 		{// 次のオブジェクトがない時
 
-			// 先頭をNULLにする
-			m_pTop[nPriority] = NULL;
+			// 先頭をnullptrにする
+			m_pTop[nPriority] = nullptr;
 		}
 	}
 	else
 	{// 先頭じゃないとき
 
-		if (pObjNext != NULL)
+		if (pObjNext != nullptr)
 		{// 自分が最後尾じゃない時
 
 			// 次のオブジェクトの前を, 自分の前にする
@@ -544,7 +544,7 @@ void CObject::Death()
 
 	// メモリの開放
 	delete pObject;
-	pObject = NULL;
+	pObject = nullptr;
 
 	// 総数を減らす
 	m_nNumAll--;
@@ -716,7 +716,7 @@ bool CObject::IsDeath()
 //==========================================================================
 CObject2D *CObject::GetObject2D()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -724,7 +724,7 @@ CObject2D *CObject::GetObject2D()
 //==========================================================================
 CObject3D *CObject::GetObject3D()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -732,7 +732,7 @@ CObject3D *CObject::GetObject3D()
 //==========================================================================
 CObject3DMesh *CObject::GetObject3DMesh()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -740,7 +740,7 @@ CObject3DMesh *CObject::GetObject3DMesh()
 //==========================================================================
 CObjectX *CObject::GetObjectX()
 {
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -748,5 +748,5 @@ CObjectX *CObject::GetObjectX()
 //==========================================================================
 CObjectChara *CObject::GetObjectChara()
 {
-	return NULL;
+	return nullptr;
 }

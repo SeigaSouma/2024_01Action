@@ -90,7 +90,7 @@ void CTutorialManager::SceneTransition()
 
 		// カメラ取得
 		CCamera* pCamera = CManager::GetInstance()->GetCamera();
-		if (pCamera != NULL)
+		if (pCamera != nullptr)
 		{
 			pCamera->SetEnableFollow(true);
 		}
@@ -186,7 +186,7 @@ void CTutorialManager::SceneEnhance()
 
 	// カメラリセット
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
-	if (pCamera != NULL)
+	if (pCamera != nullptr)
 	{
 		pCamera->Reset(CScene::MODE_GAME);
 		pCamera->SetStateCameraV(DEBUG_NEW CStateCameraV_Enhance());
@@ -363,7 +363,7 @@ void CTutorialManager::SetEnemy()
 
 	// カメラの情報取得
 	CCamera *pCamera = CManager::GetInstance()->GetCamera();
-	if (pCamera != NULL)
+	if (pCamera != nullptr)
 	{
 		pCamera->Reset(CScene::MODE_GAME);
 	}
@@ -373,7 +373,7 @@ void CTutorialManager::SetEnemy()
 
 	// 敵の再配置
 	CEnemyManager *pEnemyManager = CGame::GetInstance()->GetEnemyManager();
-	if (pEnemyManager != NULL)
+	if (pEnemyManager != nullptr)
 	{
 		// 敵の再配置
 		pEnemyManager->SetStageEnemy();

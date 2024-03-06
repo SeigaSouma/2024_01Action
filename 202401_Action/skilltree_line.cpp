@@ -167,6 +167,9 @@ void CSkillTree_Line::SetVtx()
 	CObject2D::SetVtx();
 }
 
+//==========================================================================
+// 下地線設定
+//==========================================================================
 void CSkillTree_Line::SetSkillLineInfo(const MyLib::Vector3& myposition, const MyLib::Vector3& parentposition)
 {
 	// スキルラインの情報

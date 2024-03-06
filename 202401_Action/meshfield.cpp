@@ -54,15 +54,15 @@ CMeshField::~CMeshField()
 CMeshField *CMeshField::Create()
 {
 	// 生成用のオブジェクト
-	CMeshField *pObjMeshField = NULL;
+	CMeshField *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CMeshField;
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -84,7 +84,7 @@ CMeshField *CMeshField::Create()
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -93,15 +93,15 @@ CMeshField *CMeshField::Create()
 CMeshField *CMeshField::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth, int nHeight, TYPE type, const char *aFileName, int nPriority)
 {
 	// 生成用のオブジェクト
-	CMeshField *pObjMeshField = NULL;
+	CMeshField *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CMeshField(nPriority);
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -113,8 +113,8 @@ CMeshField *CMeshField::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWi
 			pObjMeshField->SetHeightLen(fHeightLen);
 			pObjMeshField->m_type = type;	// 種類
 
-			if (aFileName == NULL)
-			{// NULLだったら
+			if (aFileName == nullptr)
+			{// nullptrだったら
 
 				// テクスチャの割り当て
 				pObjMeshField->m_nTexIdx = CTexture::GetInstance()->Regist(m_apFilename[pObjMeshField->m_type]);
@@ -136,7 +136,7 @@ CMeshField *CMeshField::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWi
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

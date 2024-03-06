@@ -46,28 +46,28 @@ CLoadScreen::~CLoadScreen()
 CLoadScreen *CLoadScreen::Create()
 {
 	// 生成用のオブジェクト
-	CLoadScreen *pFade = NULL;
+	CLoadScreen *pFade = nullptr;
 
-	if (pFade == NULL)
-	{// NULLだったら
+	if (pFade == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pFade = DEBUG_NEW CLoadScreen;
 
-		if (pFade != NULL)
+		if (pFade != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
 			if (FAILED(pFade->Init()))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pFade;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -77,7 +77,7 @@ HRESULT CLoadScreen::Init()
 {
 	// 生成処理
 	m_aObject2D = CObject2D_Anim::Create(0.0f, 5, 9, 2, false);
-	if (m_aObject2D == NULL)
+	if (m_aObject2D == nullptr)
 	{// 失敗していたら
 		return E_FAIL;
 	}
@@ -101,23 +101,23 @@ HRESULT CLoadScreen::Init()
 //==========================================================================
 void CLoadScreen::Uninit()
 {
-	if (m_aObject2D != NULL)
-	{// NULLじゃなかったら
+	if (m_aObject2D != nullptr)
+	{// nullptrじゃなかったら
 
 		// 終了処理
 		m_aObject2D->Uninit();
-		m_aObject2D = NULL;
+		m_aObject2D = nullptr;
 	}
 }
 
 void CLoadScreen::Kill()
 {
-	if (m_aObject2D != NULL)
+	if (m_aObject2D != nullptr)
 	{
 		// 終了処理
 		m_aObject2D->Uninit();
 		delete m_aObject2D;
-		m_aObject2D = NULL;
+		m_aObject2D = nullptr;
 	}
 }
 

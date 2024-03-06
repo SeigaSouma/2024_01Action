@@ -55,12 +55,12 @@ CRevivalPercentText::~CRevivalPercentText()
 CRevivalPercentText* CRevivalPercentText::Create(int respawnpercent, const float fadetime)
 {
 	// 生成用のオブジェクト
-	CRevivalPercentText* pScreen = NULL;
+	CRevivalPercentText* pScreen = nullptr;
 
 	// メモリの確保
 	pScreen = DEBUG_NEW CRevivalPercentText(fadetime);
 
-	if (pScreen != NULL)
+	if (pScreen != nullptr)
 	{
 		// 初期化処理
 		pScreen->Init();

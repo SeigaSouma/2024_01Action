@@ -42,10 +42,10 @@ CMeshCylinder::~CMeshCylinder()
 CMeshCylinder *CMeshCylinder::Create()
 {
 	// 生成用のオブジェクト
-	CMeshCylinder *pObjMeshCylinder = NULL;
+	CMeshCylinder *pObjMeshCylinder = nullptr;
 
-	if (pObjMeshCylinder == NULL)
-	{// NULLだったら
+	if (pObjMeshCylinder == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshCylinder = DEBUG_NEW CMeshCylinder;
@@ -54,10 +54,10 @@ CMeshCylinder *CMeshCylinder::Create()
 		//{// メモリ確保に失敗していたら
 
 		//	delete pObjMeshCylinder;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pObjMeshCylinder != NULL)
+		if (pObjMeshCylinder != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -79,7 +79,7 @@ CMeshCylinder *CMeshCylinder::Create()
 		return pObjMeshCylinder;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -88,10 +88,10 @@ CMeshCylinder *CMeshCylinder::Create()
 CMeshCylinder *CMeshCylinder::Create(const char *aFileName)
 {
 	// 生成用のオブジェクト
-	CMeshCylinder *pObjMeshCylinder = NULL;
+	CMeshCylinder *pObjMeshCylinder = nullptr;
 
-	if (pObjMeshCylinder == NULL)
-	{// NULLだったら
+	if (pObjMeshCylinder == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshCylinder = DEBUG_NEW CMeshCylinder;
@@ -100,10 +100,10 @@ CMeshCylinder *CMeshCylinder::Create(const char *aFileName)
 		//{// メモリ確保に失敗していたら
 
 		//	delete pObjMeshCylinder;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pObjMeshCylinder != NULL)
+		if (pObjMeshCylinder != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -113,8 +113,8 @@ CMeshCylinder *CMeshCylinder::Create(const char *aFileName)
 			pObjMeshCylinder->SetWidthLen(POS_MESHCYLINDER);
 			pObjMeshCylinder->SetHeightLen(POS_MESHCYLINDER_Y);
 
-			if (aFileName == NULL)
-			{// NULLだったら
+			if (aFileName == nullptr)
+			{// nullptrだったら
 
 				// テクスチャの割り当て
 				pObjMeshCylinder->m_nTexIdx = CTexture::GetInstance()->Regist(TEXTURE);
@@ -136,7 +136,7 @@ CMeshCylinder *CMeshCylinder::Create(const char *aFileName)
 		return pObjMeshCylinder;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

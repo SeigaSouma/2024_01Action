@@ -45,12 +45,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		0,									// 0にする(通常は使用しない)
 		0,									// 0にする(通常は使用しない)
 		hInstance,							// インスタンスハンドル
-		LoadIcon(NULL, IDI_APPLICATION),	// タスクバーのアイコン
-		LoadCursor(NULL, IDC_ARROW),		// マウスカーソル
+		LoadIcon(nullptr, IDI_APPLICATION),	// タスクバーのアイコン
+		LoadCursor(nullptr, IDC_ARROW),		// マウスカーソル
 		(HBRUSH)(COLOR_WINDOW + 1),			// クライアント領域の背景色
-		NULL,								// メニューバー
+		nullptr,								// メニューバー
 		CLASS_NAME,							// ウインドウクラスの名前
-		LoadIcon(NULL, IDI_APPLICATION)		// ファイルのアイコン
+		LoadIcon(nullptr, IDI_APPLICATION)		// ファイルのアイコン
 	};
 
 	//HWND hWnd;	// ウインドウハンドル(識別子)
@@ -74,10 +74,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		CW_USEDEFAULT,						// ウインドウの左上Y座標
 		(rect.right - rect.left),			// ウインドウの幅
 		(rect.bottom - rect.top),			// ウインドウの高さ
-		NULL,								// 親ウインドウのハンドル
-		NULL,								// メニューハンドルまたは子ウインドウID
+		nullptr,								// 親ウインドウのハンドル
+		nullptr,								// メニューハンドルまたは子ウインドウID
 		hInstance,							// インスタンスハンドル
-		NULL								// ウインドウ作成データ
+		nullptr								// ウインドウ作成データ
 	);
 
 	DWORD dwCurrentTime;					// 現在時刻
@@ -86,11 +86,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 	DWORD dwFPSLastTime;					// 最後にFPSを計測した時刻
 
 	// マネージャの生成
-	CManager *pManager = NULL;
+	CManager *pManager = nullptr;
 
 	// マネージャの生成
-	if (pManager == NULL)
-	{// NULLだったら
+	if (pManager == nullptr)
+	{// nullptrだったら
 
 		// メモリ確保
 		pManager = CManager::Create();
@@ -106,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 	// ロードマネージャの生成
 	LoadManager = CLoadManager::Create();
 
-	if (pManager != NULL)
+	if (pManager != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -134,7 +134,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 	// メッセージループ
 	while(1)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) != 0)
 		{// Windowの処理
 			if (msg.message == WM_QUIT)
 			{// WM_QUITメッセージを受け取ったらメッセージループを抜ける
@@ -165,12 +165,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 				// 処理開始の時刻[現在時刻]を保存
 				dwExecLastTime = dwCurrentTime;
 
-				/*if (pMyEffekseer != nullptr)
-				{
-					pMyEffekseer->Update();
-				}*/
-
-				if (pManager != NULL)
+				if (pManager != nullptr)
 				{// メモリの確保が出来ていたら
 
 					// 更新処理
@@ -187,7 +182,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 		}
 	}
 
-	if (pManager != NULL)
+	if (pManager != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 終了処理
@@ -195,7 +190,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmbLine
 
 		// メモリの開放
 		delete pManager;
-		pManager = NULL;
+		pManager = nullptr;
 	}
 
 	if (LoadManager != nullptr)

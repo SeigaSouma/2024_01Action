@@ -157,9 +157,6 @@ HRESULT CGame::Init()
 	// ステージ
 	m_pStage = CStage::Create("data\\TEXT\\stage\\info.txt");
 
-	// スコアの生成処理
-	//m_pScore = CScore::Create(MyLib::Vector3(1000.0f, 50.0f, 0.0f));
-
 	CManager::GetInstance()->GetCamera()->Reset(CScene::MODE_GAME);
 
 	// スキルツリー生成
@@ -298,7 +295,6 @@ void CGame::Update()
 	// ゲームパッド情報取得
 	CInputGamepad *pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
-#if 1
 	if (m_pScore != nullptr &&
 		CManager::GetInstance()->GetEdit() == nullptr &&
 		m_pEnemyManager != nullptr)
@@ -306,7 +302,6 @@ void CGame::Update()
 		// スコアの更新処理
 		m_pScore->Update();
 	}
-#endif
 
 #if _DEBUG
 	if (pInputKeyboard->GetTrigger(DIK_F4))

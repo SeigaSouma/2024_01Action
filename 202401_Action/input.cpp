@@ -18,7 +18,7 @@
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-LPDIRECTINPUT8 CInput::m_pInput = NULL;		// DirectInputオブジェクトへのポインタ
+LPDIRECTINPUT8 CInput::m_pInput = nullptr;		// DirectInputオブジェクトへのポインタ
 int CInput::nNumAll = 0;					// デバイスの総数
 
 //==========================================================================
@@ -50,11 +50,11 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 {
 	HRESULT hr;
 
-	if (m_pInput == NULL)
+	if (m_pInput == nullptr)
 	{// まだ生成していなかったら
 
 		// DirectInputオブジェクトの生成
-		hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, NULL);
+		hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pInput, nullptr);
 		if (FAILED(hr))
 		{
 			return E_FAIL;
@@ -70,21 +70,21 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 void CInput::Uninit()
 {
 	// 入力デバイスの破棄
-	if (m_pDevice != NULL)
+	if (m_pDevice != nullptr)
 	{
 		m_pDevice->Unacquire();	// アクセス権を放棄
 		m_pDevice->Release();
-		m_pDevice = NULL;
+		m_pDevice = nullptr;
 	}
 
 	if (nNumAll <= 1)
 	{// 最後のデバイスの時
 
 		// オブジェクトの破棄
-		if (m_pInput != NULL)
+		if (m_pInput != nullptr)
 		{
 			m_pInput->Release();
-			m_pInput = NULL;
+			m_pInput = nullptr;
 		}
 	}
 }
@@ -98,13 +98,13 @@ CInputKeyboard::CInputKeyboard()
 {
 	for (int nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
 	{
-		m_aKeyState[nCntKey] = NULL;		// プレス情報
-		m_aKeyStateTrigger[nCntKey] = NULL;	// トリガー情報
-		m_aKeyStateRelease[nCntKey] = NULL;	// リリース情報
-		m_aKeyStateRepeat[nCntKey] = NULL;	// リピート情報
 		m_nCntKeyRepeat[nCntKey] = 0;		// リピート用カウント
 		m_nPatternRepeat[nCntKey] = 1;		// リピ―トの間隔
 	}
+	memset(m_aKeyState, 0, sizeof(m_aKeyState));				// プレス情報
+	memset(m_aKeyStateTrigger, 0, sizeof(m_aKeyStateTrigger));	// トリガー情報
+	memset(m_aKeyStateRelease, 0, sizeof(m_aKeyStateRelease));	// リリース情報
+	memset(m_aKeyStateRepeat, 0, sizeof(m_aKeyStateRepeat));	// リピート情報
 }
 
 //==========================================================================
@@ -124,7 +124,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 	CInput::Init(hInstance, hWnd);
 
 	// 入力デバイス(キーボード)の生成
-	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, NULL)))
+	if (FAILED(m_pInput->CreateDevice(GUID_SysKeyboard, &m_pDevice, nullptr)))
 	{
 		return E_FAIL;
 	}
@@ -791,7 +791,7 @@ CInputMouse::CInputMouse()
 
 	for (int nCnt = 0; nCnt < 8; nCnt++)
 	{
-		aOldState[nCnt] = NULL;	// 前回の入力情報
+		aOldState[nCnt] = 0;	// 前回の入力情報
 	}
 }
 
@@ -812,7 +812,7 @@ HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
 	CInput::Init(hInstance, hWnd);
 
 	// 入力デバイスの設定
-	if (FAILED(m_pInput->CreateDevice(GUID_SysMouse, &m_pDevice, NULL)))
+	if (FAILED(m_pInput->CreateDevice(GUID_SysMouse, &m_pDevice, nullptr)))
 	{
 		return E_FAIL;
 	}

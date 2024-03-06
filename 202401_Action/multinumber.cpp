@@ -34,7 +34,7 @@ CMultiNumber::CMultiNumber(int nPriority)
 	m_nNumNumber = 0;		// 数字の数
 	m_nTexIdx = 0;			// テクスチャのインデックス番号
 	m_nPriority = 0;		// 優先順位
-	m_ppMultiNumber = NULL;	// 数字のオブジェクト
+	m_ppMultiNumber = nullptr;	// 数字のオブジェクト
 	m_pos = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 位置
 	m_rot = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 位置
 	m_col = mylib_const::DEFAULT_COLOR;		// 色
@@ -59,15 +59,15 @@ CMultiNumber::~CMultiNumber()
 CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNum, CNumber::EObjectType objtype, bool bDigitDraw, int nPriority)
 {
 	// 生成用のオブジェクト
-	CMultiNumber *pNumber = NULL;
+	CMultiNumber *pNumber = nullptr;
 
-	if (pNumber == NULL)
-	{// NULLだったら
+	if (pNumber == nullptr)
+	{// nullptrだったら
 
 	 // メモリの確保
 		pNumber = DEBUG_NEW CMultiNumber;
 
-		if (pNumber != NULL)
+		if (pNumber != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// オブジェクトの種類
@@ -94,13 +94,13 @@ CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNu
 		else
 		{
 			delete pNumber;
-			pNumber = NULL;
+			pNumber = nullptr;
 		}
 
 		return pNumber;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -110,15 +110,15 @@ CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNu
 CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNum, CNumber::EObjectType objtype, const char *pTextureFile, bool bDigitDraw, int nPriority)
 {
 	// 生成用のオブジェクト
-	CMultiNumber *pNumber = NULL;
+	CMultiNumber *pNumber = nullptr;
 
-	if (pNumber == NULL)
-	{// NULLだったら
+	if (pNumber == nullptr)
+	{// nullptrだったら
 
 	 // メモリの確保
 		pNumber = DEBUG_NEW CMultiNumber;
 
-		if (pNumber != NULL)
+		if (pNumber != nullptr)
 		{// メモリの確保が出来ていたら
 
 		 // オブジェクトの種類
@@ -149,13 +149,13 @@ CMultiNumber *CMultiNumber::Create(MyLib::Vector3 pos, D3DXVECTOR2 size, int nNu
 		else
 		{
 			delete pNumber;
-			pNumber = NULL;
+			pNumber = nullptr;
 		}
 
 		return pNumber;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -223,21 +223,21 @@ HRESULT CMultiNumber::Init()
 void CMultiNumber::Uninit()
 {
 	// 終了処理
-	if (m_ppMultiNumber != NULL)
+	if (m_ppMultiNumber != nullptr)
 	{
 
 	 // 各数字オブジェクトの破棄
 		for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 		{
-			if (m_ppMultiNumber[nCntNum] != NULL)
+			if (m_ppMultiNumber[nCntNum] != nullptr)
 			{
 				m_ppMultiNumber[nCntNum]->Uninit();
 				delete m_ppMultiNumber[nCntNum];
-				m_ppMultiNumber[nCntNum] = NULL;
+				m_ppMultiNumber[nCntNum] = nullptr;
 			}
 		}
 		delete[] m_ppMultiNumber;
-		m_ppMultiNumber = NULL;
+		m_ppMultiNumber = nullptr;
 	}
 
 	delete this;
@@ -249,21 +249,21 @@ void CMultiNumber::Uninit()
 void CMultiNumber::Release()
 {
 	// 終了処理
-	if (m_ppMultiNumber != NULL)
+	if (m_ppMultiNumber != nullptr)
 	{
 
 	 // 各数字オブジェクトの破棄
 		for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 		{
-			if (m_ppMultiNumber[nCntNum] != NULL)
+			if (m_ppMultiNumber[nCntNum] != nullptr)
 			{
 				m_ppMultiNumber[nCntNum]->Release();
 				delete m_ppMultiNumber[nCntNum];
-				m_ppMultiNumber[nCntNum] = NULL;
+				m_ppMultiNumber[nCntNum] = nullptr;
 			}
 		}
 		delete m_ppMultiNumber;
-		m_ppMultiNumber = NULL;
+		m_ppMultiNumber = nullptr;
 	}
 	delete this;
 }
@@ -298,7 +298,7 @@ void CMultiNumber::SettingDisp()
 
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
-		if (m_ppMultiNumber[nCntNum] == NULL)
+		if (m_ppMultiNumber[nCntNum] == nullptr)
 		{
 			continue;
 		}
@@ -390,7 +390,7 @@ void CMultiNumber::SetValue()
 {
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
-		if (m_ppMultiNumber[nCntNum] == NULL)
+		if (m_ppMultiNumber[nCntNum] == nullptr)
 		{
 			continue;
 		}
@@ -509,7 +509,7 @@ void CMultiNumber::SetRotation(const MyLib::Vector3 rot)
 	m_rot = rot;
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
-		if (m_ppMultiNumber[nCntNum] != NULL)
+		if (m_ppMultiNumber[nCntNum] != nullptr)
 		{
 			m_ppMultiNumber[nCntNum]->SetRotation(rot);	// 位置
 		}
@@ -533,7 +533,7 @@ void CMultiNumber::SetColor(const D3DXCOLOR col)
 
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
-		if (m_ppMultiNumber[nCntNum] != NULL)
+		if (m_ppMultiNumber[nCntNum] != nullptr)
 		{
 			m_ppMultiNumber[nCntNum]->SetColor(m_col);	// 色
 		}
@@ -557,7 +557,7 @@ void CMultiNumber::SetSize(const D3DXVECTOR2 size)
 
 	for (int nCntNum = 0; nCntNum < m_nNumNumber; nCntNum++)
 	{
-		if (m_ppMultiNumber[nCntNum] != NULL)
+		if (m_ppMultiNumber[nCntNum] != nullptr)
 		{
 			m_ppMultiNumber[nCntNum]->SetSize(m_size);
 		}

@@ -23,8 +23,8 @@
 //==========================================================================
 CRenderer::CRenderer()
 {
-	m_pD3D = NULL;			// Direct3Dオブジェクトへのポインタ
-	m_pD3DDevice = NULL;	// Direct3Dデバイスへのポインタ
+	m_pD3D = nullptr;			// Direct3Dオブジェクトへのポインタ
+	m_pD3DDevice = nullptr;	// Direct3Dデバイスへのポインタ
 }
 
 //==========================================================================
@@ -46,7 +46,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	// Direct3Dオブジェクトの生成
 	m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
-	if (m_pD3D == NULL)
+	if (m_pD3D == nullptr)
 	{// 失敗したとき
 		return E_FAIL;
 	}
@@ -128,17 +128,17 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 void CRenderer::Uninit()
 {
 	// Direct3Dデバイスの破棄
-	if (m_pD3DDevice != NULL)
+	if (m_pD3DDevice != nullptr)
 	{
 		m_pD3DDevice->Release();
-		m_pD3DDevice = NULL;
+		m_pD3DDevice = nullptr;
 	}
 
 	// Direct3Dオブジェクトの破棄
-	if (m_pD3D != NULL)
+	if (m_pD3D != nullptr)
 	{
 		m_pD3D->Release();
-		m_pD3D = NULL;
+		m_pD3D = nullptr;
 	}
 }
 
@@ -170,7 +170,7 @@ void CRenderer::Draw()
 
 	// 画面クリア(バックバッファとZバッファのクリア)
 	m_pD3DDevice->Clear
-	(	0, NULL,
+	(	0, nullptr,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
 		D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f),
 		1.0f,
@@ -248,7 +248,7 @@ void CRenderer::Draw()
 	ImguiMgr::Draw();
 
 	// バックバッファとフロントバッファの入れ替え
-	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 }
 
 //==========================================================================

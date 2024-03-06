@@ -32,7 +32,7 @@ const char *CEffect3D::m_apTextureFile[] =					// ファイル読み込み
 	"data\\TEXTURE\\effect\\effect001.png",		// 十字エフェクト
 	"data\\TEXTURE\\effect\\Star01.png",		// 十字エフェクト
 	"data\\TEXTURE\\effect\\thunder_02.tga",	// 雷エフェクト
-	"",											// NULLエフェクト
+	"",											// nullptrエフェクト
 };
 int CEffect3D::m_nNumAll = 0;	// 総数
 int CEffect3D::m_nTexIdx[TYPE_MAX] = {};	// テクスチャのインデックス番号
@@ -48,7 +48,7 @@ CEffect3D::CEffect3D(int nPriority) : CObjectBillboard(nPriority)
 	m_setupPosition = mylib_const::DEFAULT_VECTOR3;		// セットアップ位置
 	m_posDest = mylib_const::DEFAULT_VECTOR3;			// 目標の位置
 	m_colOrigin = mylib_const::DEFAULT_COLOR;	// 色の元
-	m_pMtxParent = NULL;						// 親マトリックスのポインタ
+	m_pMtxParent = nullptr;						// 親マトリックスのポインタ
 	m_fRadius = 0.0f;							// 半径
 	m_fMaxRadius = 0.0f;						// 最大半径
 	m_fAddSizeValue = 0.0f;						// サイズ変更量
@@ -57,7 +57,7 @@ CEffect3D::CEffect3D(int nPriority) : CObjectBillboard(nPriority)
 	m_nMaxLife = 0;								// 最大寿命(固定)
 	m_moveType = MOVEEFFECT_NONE;				// 移動の種類
 	m_nType = TYPE_NORMAL;						// 種類
-	m_pParent = NULL;							// 親のポインタ
+	m_pParent = nullptr;							// 親のポインタ
 	m_bAddAlpha = true;							// 加算合成の判定
 	m_bZSort = false;							// Zソートのフラグ
 	m_bGravity = false;							// 重力のフラグ
@@ -93,15 +93,15 @@ void CEffect3D::LoadTexture()
 CEffect3D *CEffect3D::Create()
 {
 	// 生成用のオブジェクト
-	CEffect3D *pEffect = NULL;
+	CEffect3D *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CEffect3D;
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -111,7 +111,7 @@ CEffect3D *CEffect3D::Create()
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -122,7 +122,7 @@ CEffect3D* CEffect3D::Create(const MyLib::Vector3& pos, const MyLib::Vector3& mo
 	// メモリの確保
 	CEffect3D* pEffect = DEBUG_NEW CEffect3D;
 
-	if (pEffect != NULL)
+	if (pEffect != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -130,7 +130,7 @@ CEffect3D* CEffect3D::Create(const MyLib::Vector3& pos, const MyLib::Vector3& mo
 		HRESULT hr = pEffect->Init(pos, move, col, fRadius, nLife, moveType, type);
 		if (FAILED(hr))
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -274,11 +274,11 @@ HRESULT CEffect3D::Init(const MyLib::Vector3& pos, const MyLib::Vector3& move, c
 //==========================================================================
 void CEffect3D::Uninit()
 {
-	if (m_pParent != NULL)
+	if (m_pParent != nullptr)
 	{
 		// エフェクトの開放
 		m_pParent->ReleaseEffect(m_nParentIdx);
-		m_pParent = NULL;
+		m_pParent = nullptr;
 	}
 
 	// 総数減算
@@ -293,8 +293,8 @@ void CEffect3D::Uninit()
 //==========================================================================
 void CEffect3D::UninitParent()
 {
-	// 親をNULLにする
-	m_pParent = NULL;
+	// 親をnullptrにする
+	m_pParent = nullptr;
 }
 
 //==========================================================================
@@ -402,7 +402,7 @@ void CEffect3D::UpdateMove()
 void CEffect3D::SetUp(MyLib::Vector3 setup, D3DXMATRIX *pMtxParent, CObject *pObj, int nParentIdx)
 {
 	// 親のポインタ渡す
-	if (m_pParent == NULL)
+	if (m_pParent == nullptr)
 	{
 		m_pParent = pObj;
 	}

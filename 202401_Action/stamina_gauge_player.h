@@ -32,7 +32,7 @@ public:
 		STATE_MAX
 	};
 
-	CStaminaGauge_Player(int nPriority = 7);
+	CStaminaGauge_Player(int nPriority = 6);
 	~CStaminaGauge_Player();
 
 	// オーバーライドされた関数

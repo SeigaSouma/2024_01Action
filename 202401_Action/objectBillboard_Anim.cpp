@@ -37,15 +37,15 @@ CObjectBillboardAnim::~CObjectBillboardAnim()
 CObjectBillboardAnim *CObjectBillboardAnim::Create(MyLib::Vector3 pos, const int nDivisionU, const int nDivisionV, const int nInterval, bool bAutoDeath)
 {
 	// 生成用のオブジェクト
-	CObjectBillboardAnim *pObject3D = NULL;
+	CObjectBillboardAnim *pObject3D = nullptr;
 
-	if (pObject3D == NULL)
-	{// NULLだったら
+	if (pObject3D == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObject3D = DEBUG_NEW CObjectBillboardAnim;
 
-		if (pObject3D != NULL)
+		if (pObject3D != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 引数情報
@@ -63,7 +63,7 @@ CObjectBillboardAnim *CObjectBillboardAnim::Create(MyLib::Vector3 pos, const int
 		return pObject3D;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

@@ -24,7 +24,7 @@
 CFade::CFade()
 {
 	// 値のクリア
-	m_aObject2D = NULL;					// オブジェクト2Dのオブジェクト
+	m_aObject2D = nullptr;					// オブジェクト2Dのオブジェクト
 	m_ModeNext = CScene::MODE_TITLE;	// 次のモード
 	m_state = STATE_NONE;				// 状態
 }
@@ -43,33 +43,33 @@ CFade::~CFade()
 CFade *CFade::Create()
 {
 	// 生成用のオブジェクト
-	CFade *pFade = NULL;
+	CFade *pFade = nullptr;
 
-	if (pFade == NULL)
-	{// NULLだったら
+	if (pFade == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pFade = DEBUG_NEW CFade;
 
-		if (pFade != NULL)
+		if (pFade != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
 			if (FAILED(pFade->Init()))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 		}
 		else
 		{
 			delete pFade;
-			pFade = NULL;
+			pFade = nullptr;
 		}
 
 		return pFade;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -80,7 +80,7 @@ HRESULT CFade::Init()
 	// 生成処理
 	m_aObject2D = CObject2D::Create(8);
 
-	if (m_aObject2D == NULL)
+	if (m_aObject2D == nullptr)
 	{// 失敗していたら
 		return E_FAIL;
 	}
@@ -109,13 +109,13 @@ HRESULT CFade::Init()
 //==========================================================================
 void CFade::Uninit()
 {
-	if (m_aObject2D != NULL)
-	{// NULLじゃなかったら
+	if (m_aObject2D != nullptr)
+	{// nullptrじゃなかったら
 
 		// 終了処理
 		m_aObject2D->Uninit();
 		delete m_aObject2D;
-		m_aObject2D = NULL;
+		m_aObject2D = nullptr;
 	}
 }
 

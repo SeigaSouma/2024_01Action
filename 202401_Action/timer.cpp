@@ -84,15 +84,15 @@ CTimer::~CTimer()
 CTimer *CTimer::Create()
 {
 	// 生成用のオブジェクト
-	CTimer *pScore = NULL;
+	CTimer *pScore = nullptr;
 
-	if (pScore == NULL)
-	{// NULLだったら
+	if (pScore == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pScore = DEBUG_NEW CTimer;
 
-		if (pScore != NULL)
+		if (pScore != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -102,7 +102,7 @@ CTimer *CTimer::Create()
 		return pScore;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -110,13 +110,13 @@ CTimer *CTimer::Create()
 //==========================================================================
 CTimer *CTimer::Create(MyLib::Vector3 pos)
 {
-	if (m_pTimer == NULL)
-	{// NULLだったら
+	if (m_pTimer == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		m_pTimer = DEBUG_NEW CTimer;
 
-		if (m_pTimer != NULL)
+		if (m_pTimer != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -126,7 +126,7 @@ CTimer *CTimer::Create(MyLib::Vector3 pos)
 		return m_pTimer;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

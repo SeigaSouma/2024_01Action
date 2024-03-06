@@ -335,12 +335,12 @@ HRESULT CSkillTree_Icon::ReadTexture()
 	int nCntTexture = 0;				// テクスチャ読み込みカウント
 
 	// ファイルポインタ
-	FILE* pFile = NULL;
+	FILE* pFile = nullptr;
 
 	//ファイルを開く
 	pFile = fopen(LOADTEXT, "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}

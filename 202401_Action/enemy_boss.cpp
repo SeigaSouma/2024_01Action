@@ -8,7 +8,6 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "blackframe.h"
-#include "beam.h"
 #include "particle.h"
 #include "hp_gauge_boss.h"
 #include "camera.h"

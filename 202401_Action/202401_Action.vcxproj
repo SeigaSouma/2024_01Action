@@ -164,13 +164,10 @@
     <ClCompile Include="battleresult_Overall.cpp" />
     <ClCompile Include="battlestart.cpp" />
     <ClCompile Include="battlestart_effect.cpp" />
-    <ClCompile Include="beam.cpp" />
     <ClCompile Include="beforebattle.cpp" />
-    <ClCompile Include="bg.cpp" />
     <ClCompile Include="blackframe.cpp" />
     <ClCompile Include="bullet_obstacle.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="collision.cpp" />
     <ClCompile Include="collisionobject.cpp" />
     <ClCompile Include="controlassist.cpp" />
     <ClCompile Include="damagepoint.cpp" />
@@ -244,7 +241,6 @@
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object2D_Anim.cpp" />
     <ClCompile Include="object2D_gauge.cpp" />
-    <ClCompile Include="object2D_Multi.cpp" />
     <ClCompile Include="object3D.cpp" />
     <ClCompile Include="object3DMesh.cpp" />
     <ClCompile Include="object3D_Anim.cpp" />
@@ -305,10 +301,8 @@
     <ClCompile Include="title_pressenter.cpp" />
     <ClCompile Include="torch.cpp" />
     <ClCompile Include="transferBeacon.cpp" />
-    <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="tutorialmanager.cpp" />
     <ClCompile Include="tutorial_checkshould.cpp" />
-    <ClCompile Include="tutorial_screen.cpp" />
     <ClCompile Include="Xload.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -320,14 +314,11 @@
     <ClInclude Include="battleresult_Overall.h" />
     <ClInclude Include="battlestart.h" />
     <ClInclude Include="battlestart_effect.h" />
-    <ClInclude Include="beam.h" />
     <ClInclude Include="beforebattle.h" />
-    <ClInclude Include="bg.h" />
     <ClInclude Include="blackframe.h" />
     <ClInclude Include="bullet_obstacle.h" />
     <ClInclude Include="calculation.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="collision.h" />
     <ClInclude Include="collisionobject.h" />
     <ClInclude Include="constans.h" />
     <ClInclude Include="controlassist.h" />
@@ -403,7 +394,6 @@
     <ClInclude Include="object2D.h" />
     <ClInclude Include="object2D_Anim.h" />
     <ClInclude Include="object2D_gauge.h" />
-    <ClInclude Include="object2D_Multi.h" />
     <ClInclude Include="object3D.h" />
     <ClInclude Include="object3DMesh.h" />
     <ClInclude Include="object3D_Anim.h" />
@@ -461,10 +451,8 @@
     <ClInclude Include="title_pressenter.h" />
     <ClInclude Include="torch.h" />
     <ClInclude Include="transferBeacon.h" />
-    <ClInclude Include="tutorial.h" />
     <ClInclude Include="tutorialmanager.h" />
     <ClInclude Include="tutorial_checkshould.h" />
-    <ClInclude Include="tutorial_screen.h" />
     <ClInclude Include="Xload.h" />
   </ItemGroup>
   <ItemGroup>

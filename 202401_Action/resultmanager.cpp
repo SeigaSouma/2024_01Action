@@ -41,15 +41,15 @@ CResultManager::~CResultManager()
 CResultManager *CResultManager::Create()
 {
 	// 生成用のオブジェクト
-	CResultManager *pManager = NULL;
+	CResultManager *pManager = nullptr;
 
-	if (pManager == NULL)
-	{// NULLだったら
+	if (pManager == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pManager = DEBUG_NEW CResultManager;
 
-		if (pManager != NULL)
+		if (pManager != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -57,14 +57,14 @@ CResultManager *CResultManager::Create()
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pManager;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

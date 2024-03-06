@@ -341,7 +341,7 @@ void OffSetting()
 			m_col,
 			m_fRadius,
 			m_nLife,
-			CEffect3D::MOVEEFFECT_SUB, CEffect3D::TYPE_NORMAL) == NULL)
+			CEffect3D::MOVEEFFECT_SUB, CEffect3D::TYPE_NORMAL) == nullptr)
 		{
 			return;
 		}

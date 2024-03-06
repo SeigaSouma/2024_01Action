@@ -27,7 +27,7 @@ void ImguiMgr::Init(HWND hwnd, LPDIRECT3DDEVICE9 pd3dDevice)
 	0x0020, 0xfffd,
 	0,
 	};
-	ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 18.0f, NULL, glyph_ranges);*/
+	ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\meiryo.ttc", 18.0f, nullptr, glyph_ranges);*/
 
 	// ディスプレイサイズの設定
 	io = ImGui::GetIO();
@@ -242,7 +242,7 @@ void ImguiMgr::Update()
 
 		// チェックマーク付き
 		static bool option2_checked = false;
-		if (ImGui::MenuItem("Option 2", NULL, &option2_checked))
+		if (ImGui::MenuItem("Option 2", nullptr, &option2_checked))
 		{
 			// Option 2 のチェックが切り替わったときの処理
 		}

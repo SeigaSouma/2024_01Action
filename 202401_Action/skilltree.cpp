@@ -83,7 +83,7 @@ CSkillTree::~CSkillTree()
 //==========================================================================
 CSkillTree *CSkillTree::Create()
 {
-	if (m_pThisPtr == NULL)
+	if (m_pThisPtr == nullptr)
 	{// まだ生成していなかったら
 
 		// インスタンス生成

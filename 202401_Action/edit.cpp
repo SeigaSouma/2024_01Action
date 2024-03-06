@@ -26,7 +26,7 @@
 //==========================================================================
 // 静的メンバ変数宣言
 //==========================================================================
-CObjectX *CEdit::m_pObjX = NULL;
+CObjectX *CEdit::m_pObjX = nullptr;
 int CEdit::m_nNumAll = 0;	// 総数
 int CEdit::m_nType = 0;		// タイプ
 bool CEdit::m_bShadow = false;	// 影を使うかどうか
@@ -57,10 +57,10 @@ CEdit::~CEdit()
 CEdit *CEdit::Create()
 {
 	// 生成用のオブジェクト
-	CEdit *pObjectX = NULL;
+	CEdit *pObjectX = nullptr;
 
-	if (pObjectX == NULL)
-	{// NULLだったら
+	if (pObjectX == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjectX = DEBUG_NEW CEdit;
@@ -69,10 +69,10 @@ CEdit *CEdit::Create()
 		//{// メモリ確保に失敗していたら
 
 		//	delete pObjectX;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pObjectX != NULL)
+		if (pObjectX != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -80,7 +80,7 @@ CEdit *CEdit::Create()
 
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 種類設定
@@ -90,7 +90,7 @@ CEdit *CEdit::Create()
 		return pObjectX;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -105,7 +105,7 @@ HRESULT CEdit::Init()
 	m_pObjX = m_pObjX->Create(CXLoad::GetInstance()->GetMyObject(m_nType)->filename.c_str());
 	m_pObjX->SetType(TYPE_EDIT);
 
-	if (m_pObjX == NULL)
+	if (m_pObjX == nullptr)
 	{// 失敗していたら
 		return E_FAIL;
 	}
@@ -441,8 +441,8 @@ void CEdit::GrabModel()
 		// 先頭を保存
 		CObject *pObj = CObject::GetTop(nCntPriority);
 
-		while (pObj != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObj != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObj->GetNext();

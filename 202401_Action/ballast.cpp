@@ -45,7 +45,7 @@ CBallast::CBallast(int nPriority) : CObject(nPriority)
 	m_nMaxLife = 0;		// 最大寿命
 	m_fScale = 0.0f;
 	m_type =TYPE_STONE;	// 種類
-	memset(&m_pObjX[0], NULL, sizeof(m_pObjX));	// オブジェクトXのポインタ
+	memset(&m_pObjX[0], 0, sizeof(m_pObjX));	// オブジェクトXのポインタ
 }
 
 //==========================================================================
@@ -59,55 +59,47 @@ CBallast::~CBallast()
 //==========================================================================
 // 生成処理
 //==========================================================================
-CBallast *CBallast::Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum, float scale, float fAlpha, TYPE type)
+CBallast* CBallast::Create(MyLib::Vector3 pos, MyLib::Vector3 move, int nNum, float scale, float fAlpha, TYPE type)
 {
-	// 生成用のオブジェクト
-	CBallast *pBallast = NULL;
 
-	if (pBallast == NULL)
-	{// NULLだったら
+	// メモリの確保
+	CBallast* pBallast = DEBUG_NEW CBallast;
 
-		// メモリの確保
-		pBallast = DEBUG_NEW CBallast;
+	if (pBallast != nullptr)
+	{// メモリの確保が出来ていたら
 
-		if (pBallast != NULL)
-		{// メモリの確保が出来ていたら
-
-			if (nNum >= MAX_BALLAST)
-			{
-				nNum = MAX_BALLAST;
-			}
-
-			// 総数設定
-			pBallast->m_nNumAll = nNum;
-
-			// 種類設定
-			pBallast->m_type = type;
-
-			// 位置設定
-			pBallast->m_posOrigin = pos;
-
-			// 移動量設定
-			pBallast->m_moveOrigin = move;
-
-			// 原色設定
-			pBallast->m_colOrigin.a = fAlpha;
-
-			pBallast->m_fScale = scale;
-
-			// 初期化処理
-			HRESULT hr = pBallast->Init();
-
-			if (FAILED(hr))
-			{
-				return NULL;
-			}
+		if (nNum >= MAX_BALLAST)
+		{
+			nNum = MAX_BALLAST;
 		}
 
-		return pBallast;
+		// 総数設定
+		pBallast->m_nNumAll = nNum;
+
+		// 種類設定
+		pBallast->m_type = type;
+
+		// 位置設定
+		pBallast->m_posOrigin = pos;
+
+		// 移動量設定
+		pBallast->m_moveOrigin = move;
+
+		// 原色設定
+		pBallast->m_colOrigin.a = fAlpha;
+
+		pBallast->m_fScale = scale;
+
+		// 初期化処理
+		HRESULT hr = pBallast->Init();
+
+		if (FAILED(hr))
+		{
+			return nullptr;
+		}
 	}
 
-	return NULL;
+	return pBallast;
 }
 
 //==========================================================================
@@ -130,12 +122,12 @@ HRESULT CBallast::Init()
 			MyLib::Vector3(m_posOrigin.x + UtilFunc::Transformation::Random(-20, 20), m_posOrigin.y, m_posOrigin.z + UtilFunc::Transformation::Random(-20, 20)),
 			MyLib::Vector3((float)UtilFunc::Transformation::Random(-314, 314) * 0.01f, (float)UtilFunc::Transformation::Random(-314, 314) * 0.01f, (float)UtilFunc::Transformation::Random(-314, 314) * 0.01f), false);
 
-		if (m_pObjX[nCntBallast] == NULL)
+		if (m_pObjX[nCntBallast] == nullptr)
 		{// 失敗したとき
 
 			// オブジェクトXの終了処理
 			delete m_pObjX[nCntBallast];
-			m_pObjX[nCntBallast] = NULL;
+			m_pObjX[nCntBallast] = nullptr;
 			return E_FAIL;
 		}
 		
@@ -174,12 +166,12 @@ void CBallast::Uninit()
 {
 	for (int nCntBallast = 0; nCntBallast < MAX_BALLAST; nCntBallast++)
 	{
-		if (m_pObjX[nCntBallast] != NULL)
-		{// NULLじゃなかったら
+		if (m_pObjX[nCntBallast] != nullptr)
+		{// nullptrじゃなかったら
 
 			// オブジェクトXの終了処理
 			m_pObjX[nCntBallast]->Uninit();
-			m_pObjX[nCntBallast] = NULL;
+			m_pObjX[nCntBallast] = nullptr;
 		}
 	}
 
@@ -199,8 +191,8 @@ void CBallast::Update()
 
 	for (int nCntBallast = 0; nCntBallast < m_nNumAll; nCntBallast++)
 	{
-		if (m_pObjX[nCntBallast] == NULL)
-		{// NULLだったら
+		if (m_pObjX[nCntBallast] == nullptr)
+		{// nullptrだったら
 
 			// 寿命更新
 			m_nLife = 0;
@@ -276,9 +268,8 @@ void CBallast::Draw()
 
 	for (int nCntBallast = 0; nCntBallast < m_nNumAll; nCntBallast++)
 	{
-		if (m_pObjX[nCntBallast] != NULL)
-		{// NULLじゃなかったら44
-
+		if (m_pObjX[nCntBallast] != nullptr)
+		{
 			// 描画処理
 			m_pObjX[nCntBallast]->Draw(m_col.a);
 		}

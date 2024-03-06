@@ -27,7 +27,7 @@ int CShadow::m_nNumAll = 0;						// 影の総数
 CShadow::CShadow(int nPriority) : CObject3D(nPriority)
 {
 
-	m_pObject = NULL;	// オブジェクトのポインタ
+	m_pObject = nullptr;	// オブジェクトのポインタ
 	m_nNumAll = 0;		// 総数
 	m_nTexIdx = 0;		// テクスチャのインデックス番号
 
@@ -49,10 +49,10 @@ CShadow::~CShadow()
 CShadow *CShadow::Create()
 {
 	// 生成用のオブジェクト
-	CShadow *pShadow = NULL;
+	CShadow *pShadow = nullptr;
 
-	if (pShadow == NULL)
-	{// NULLだったら
+	if (pShadow == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pShadow = DEBUG_NEW CShadow;
@@ -61,10 +61,10 @@ CShadow *CShadow::Create()
 		//{// メモリ確保に失敗していたら
 
 		//	delete pShadow;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pShadow != NULL)
+		if (pShadow != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -74,7 +74,7 @@ CShadow *CShadow::Create()
 		return pShadow;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -83,10 +83,10 @@ CShadow *CShadow::Create()
 CShadow *CShadow::Create(MyLib::Vector3 pos, float size)
 {
 	// 生成用のオブジェクト
-	CShadow *pShadow = NULL;
+	CShadow *pShadow = nullptr;
 
-	if (pShadow == NULL)
-	{// NULLだったら
+	if (pShadow == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pShadow = DEBUG_NEW CShadow;
@@ -95,10 +95,10 @@ CShadow *CShadow::Create(MyLib::Vector3 pos, float size)
 		//{// メモリ確保に失敗していたら
 
 		//	delete pShadow;
-		//	return NULL;
+		//	return nullptr;
 		//}
 
-		if (pShadow != NULL)
+		if (pShadow != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置割り当て
@@ -111,7 +111,7 @@ CShadow *CShadow::Create(MyLib::Vector3 pos, float size)
 		return pShadow;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

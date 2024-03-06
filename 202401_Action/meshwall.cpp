@@ -39,15 +39,15 @@ CMeshWall::~CMeshWall()
 CMeshWall *CMeshWall::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidthLen, float fHeightLen, int nWidth, int nHeight, int nPriority, const char *aFileName)
 {
 	// 生成用のオブジェクト
-	CMeshWall *pObjMeshField = NULL;
+	CMeshWall *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CMeshWall;
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 位置・向き
@@ -59,8 +59,8 @@ CMeshWall *CMeshWall::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidt
 			pObjMeshField->SetWidthLen(fWidthLen);
 			pObjMeshField->SetHeightLen(fHeightLen);
 
-			if (aFileName == NULL)
-			{// NULLだったら
+			if (aFileName == nullptr)
+			{// nullptrだったら
 
 				// テクスチャの割り当て
 				pObjMeshField->m_nTexIdx = CTexture::GetInstance()->Regist(TEXTURE_DEFAULT);
@@ -82,7 +82,7 @@ CMeshWall *CMeshWall::Create(MyLib::Vector3 pos, MyLib::Vector3 rot, float fWidt
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

@@ -205,7 +205,7 @@ HRESULT CTorch::ReadXFile(const char* pTextFile)
 	//ファイルを開く
 	FILE* pFile = fopen(pTextFile, "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -272,7 +272,7 @@ void CTorch::SetTorch()
 	char aComment[MAX_COMMENT] = {};	//コメント用
 
 	// ファイルポインタ
-	FILE* pFile = NULL;
+	FILE* pFile = nullptr;
 
 	//ファイルを開く
 	pFile = fopen(LOADTEXT, "r");

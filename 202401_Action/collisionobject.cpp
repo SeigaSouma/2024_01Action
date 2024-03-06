@@ -46,15 +46,15 @@ CCollisionObject::~CCollisionObject()
 CCollisionObject *CCollisionObject::Create()
 {
 	// 生成用のオブジェクト
-	CCollisionObject *pEffect = NULL;
+	CCollisionObject *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CCollisionObject;
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
@@ -64,7 +64,7 @@ CCollisionObject *CCollisionObject::Create()
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -73,15 +73,15 @@ CCollisionObject *CCollisionObject::Create()
 CCollisionObject *CCollisionObject::Create(const MyLib::Vector3 pos, const MyLib::Vector3 move, const float fRadius, const int nLife, const int nDamage, eMyTag tag)
 {
 	// 生成用のオブジェクト
-	CCollisionObject *pEffect = NULL;
+	CCollisionObject *pEffect = nullptr;
 
-	if (pEffect == NULL)
-	{// NULLだったら
+	if (pEffect == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pEffect = DEBUG_NEW CCollisionObject;
 
-		if (pEffect != NULL)
+		if (pEffect != nullptr)
 		{// メモリの確保が出来ていたら
 
 			pEffect->SetPosition(pos);
@@ -96,14 +96,14 @@ CCollisionObject *CCollisionObject::Create(const MyLib::Vector3 pos, const MyLib
 			HRESULT hr = pEffect->Init();
 			if (FAILED(hr))
 			{
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pEffect;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

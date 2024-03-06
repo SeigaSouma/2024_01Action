@@ -37,15 +37,15 @@ CObject3DAnim::~CObject3DAnim()
 CObject3DAnim *CObject3DAnim::Create(MyLib::Vector3 pos, const int nDivisionU, const int nDivisionV, const int nInterval, bool bAutoDeath)
 {
 	// 生成用のオブジェクト
-	CObject3DAnim *pObject3D = NULL;
+	CObject3DAnim *pObject3D = nullptr;
 
-	if (pObject3D == NULL)
-	{// NULLだったら
+	if (pObject3D == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObject3D = DEBUG_NEW CObject3DAnim;
 
-		if (pObject3D != NULL)
+		if (pObject3D != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 引数情報
@@ -63,7 +63,7 @@ CObject3DAnim *CObject3DAnim::Create(MyLib::Vector3 pos, const int nDivisionU, c
 		return pObject3D;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

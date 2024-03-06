@@ -6,29 +6,15 @@
 //=============================================================================
 #include "object3D.h"
 #include "manager.h"
-#include "renderer.h"
-#include "input.h"
-#include "texture.h"
-#include "debugproc.h"
 #include "calculation.h"
-#include "number.h"
 
 //==========================================================================
-// マクロ定義
+// 定数定義
 //==========================================================================
-#define POLYGON_TOP		(4)								// ポリゴンの頂点数
-#define WIDTH			(80.0f)							// 横幅
-#define HEIGHT			(60.0f)							// 縦幅
-#define ANIM_SPEED		(10)							// 読み込み間隔
-#define MAX_PATTERN_U	(5)								// Uの分割数
-#define MAX_PATTERN_V	(2)								// Vの分割数
-#define MAX_PATTERN		(MAX_PATTERN_U * MAX_PATTERN_V)
-#define MOVE_U			(1.0f / (float)MAX_PATTERN_U)	// U座標移動量
-#define MOVE_V			(1.0f / (float)MAX_PATTERN_V)	// V座標移動量
-
-//==========================================================================
-// 静的メンバ変数宣言
-//==========================================================================
+namespace
+{
+	const int POLYGON_TOP = 4;	// ポリゴンの頂点数
+}
 
 //==========================================================================
 // コンストラクタ
@@ -40,9 +26,8 @@ CObject3D::CObject3D(int nPriority) : CObject(nPriority)
 	m_rotOrigin = MyLib::Vector3(0.0f, 0.0f, 0.0f);	// 元の向き
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// 色
 	m_fSize = MyLib::Vector3(0.0f, 0.0f, 0.0f);		// サイズ
-	m_pVtxBuff = NULL;								// 頂点バッファ
+	m_pVtxBuff = nullptr;							// 頂点バッファ
 	m_nTexIdx = 0;									// テクスチャのインデックス番号
-
 
 	m_fTex[0] = D3DXVECTOR2(0.0f, 0.0f);			// テクスチャ座標
 	m_fTex[1] = D3DXVECTOR2(1.0f, 0.0f);			// テクスチャ座標
@@ -75,60 +60,43 @@ void CObject3D::BindTexture(int nIdx)
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject3D *CObject3D::Create(int nPriority)
+CObject3D* CObject3D::Create(int nPriority)
 {
-	// 生成用のオブジェクト
-	CObject3D *pObject3D = NULL;
+	// メモリの確保
+	CObject3D* pObject3D = DEBUG_NEW CObject3D(nPriority);
 
-	if (pObject3D == NULL)
-	{// NULLだったら
+	if (pObject3D != nullptr)
+	{// メモリの確保が出来ていたら
 
-	 // メモリの確保
-		pObject3D = DEBUG_NEW CObject3D(nPriority);
-
-		if (pObject3D != NULL)
-		{// メモリの確保が出来ていたら
-
-		 // 初期化処理
-			pObject3D->Init();
-		}
-
-		return pObject3D;
+		// 初期化処理
+		pObject3D->Init();
 	}
 
-	return NULL;
+	return pObject3D;
 }
 
 //==========================================================================
 // 生成処理
 //==========================================================================
-CObject3D *CObject3D::Create(MyLib::Vector3 pos, MyLib::Vector3 rot)
+CObject3D* CObject3D::Create(MyLib::Vector3 pos, MyLib::Vector3 rot)
 {
-	// 生成用のオブジェクト
-	CObject3D *pObject3D = NULL;
 
-	if (pObject3D == NULL)
-	{// NULLだったら
+	// メモリの確保
+	CObject3D* pObject3D = DEBUG_NEW CObject3D;
 
-	 // メモリの確保
-		pObject3D = DEBUG_NEW CObject3D;
+	if (pObject3D != nullptr)
+	{// メモリの確保が出来ていたら
 
-		if (pObject3D != NULL)
-		{// メモリの確保が出来ていたら
+		// 初期化処理
+		pObject3D->Init();
 
-		 // 初期化処理
-			pObject3D->Init();
-
-			// 位置・向き
-			pObject3D->SetPosition(pos);
-			pObject3D->SetOriginPosition(pos);
-			pObject3D->SetRotation(rot);
-		}
-
-		return pObject3D;
+		// 位置・向き
+		pObject3D->SetPosition(pos);
+		pObject3D->SetOriginPosition(pos);
+		pObject3D->SetRotation(rot);
 	}
 
-	return NULL;
+	return pObject3D;
 }
 
 //==========================================================================
@@ -142,7 +110,7 @@ HRESULT CObject3D::Init()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 既に情報が入ってる場合
 
 		return E_FAIL;
@@ -153,7 +121,7 @@ HRESULT CObject3D::Init()
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
 		&m_pVtxBuff,
-		NULL);
+		nullptr);
 
 	if (FAILED(hr))
 	{// 失敗したとき
@@ -172,10 +140,10 @@ HRESULT CObject3D::Init()
 void CObject3D::Uninit()
 {
 	// 頂点バッファの破棄
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	// オブジェクトの破棄
@@ -313,12 +281,6 @@ void CObject3D::SetVtx()
 	pVtx[3].col = col;
 
 	// テクスチャ座標の設定
-	/*pVtx[0].tex = m_fTex[0];
-	pVtx[1].tex = m_fTex[1];
-	pVtx[2].tex = m_fTex[2];
-	pVtx[3].tex = m_fTex[3];*/
-
-	// テクスチャ座標の設定
 	pVtx[0].tex = m_fTex[0];
 	pVtx[1].tex = m_fTex[1];
 	pVtx[2].tex = m_fTex[2];
@@ -437,5 +399,5 @@ CObject3D *CObject3D::GetObject3D()
 //==========================================================================
 CObject3DMesh *CObject3D::GetObject3DMesh()
 {
-	return NULL;
+	return nullptr;
 }

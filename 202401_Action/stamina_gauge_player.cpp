@@ -112,7 +112,7 @@ HRESULT CStaminaGauge_Player::Init()
 	for (int nCntGauge = 0; nCntGauge < VTXTYPE_MAX; nCntGauge++)
 	{
 		// ¶¬ˆ—
-		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, static_cast<int>(m_fMaxStaminaValue), TEXTURE[nCntGauge], 11);
+		m_pObj2DGauge[nCntGauge] = CObject2D_Gauge::Create(DEFAULT_WIDTH, DEFAULT_HEIGHT, static_cast<int>(m_fMaxStaminaValue), TEXTURE[nCntGauge], GetPriority());
 		if (m_pObj2DGauge[nCntGauge] == nullptr)
 		{
 			return E_FAIL;

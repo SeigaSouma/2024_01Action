@@ -45,15 +45,15 @@ CObject2D_Gauge::~CObject2D_Gauge()
 CObject2D_Gauge *CObject2D_Gauge::Create(float width, float height, int maxvalue, std::string texturepath, int nPriority)
 {
 	// 生成用のオブジェクト
-	CObject2D_Gauge *pObject2D = NULL;
+	CObject2D_Gauge *pObject2D = nullptr;
 
-	if (pObject2D == NULL)
-	{// NULLだったら
+	if (pObject2D == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObject2D = DEBUG_NEW CObject2D_Gauge(nPriority);
 
-		if (pObject2D != NULL)
+		if (pObject2D != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 引数情報
@@ -82,7 +82,7 @@ CObject2D_Gauge *CObject2D_Gauge::Create(float width, float height, int maxvalue
 		return pObject2D;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

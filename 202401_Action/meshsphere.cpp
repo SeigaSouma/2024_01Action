@@ -48,15 +48,15 @@ CMeshSphere::~CMeshSphere()
 CMeshSphere *CMeshSphere::Create(MyLib::Vector3 pos, float fSize, const char *pFileName, int nPriority)
 {
 	// 生成用のオブジェクト
-	CMeshSphere *pObjMeshField = NULL;
+	CMeshSphere *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CMeshSphere(nPriority);
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// テクスチャの割り当て
@@ -79,7 +79,7 @@ CMeshSphere *CMeshSphere::Create(MyLib::Vector3 pos, float fSize, const char *pF
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -88,15 +88,15 @@ CMeshSphere *CMeshSphere::Create(MyLib::Vector3 pos, float fSize, const char *pF
 CMeshSphere *CMeshSphere::Create(MyLib::Vector3 pos, float fSize, int nTexIdx, int nPriority,int nBlock)
 {
 	// 生成用のオブジェクト
-	CMeshSphere *pObjMeshField = NULL;
+	CMeshSphere *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CMeshSphere(nPriority);
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// テクスチャの割り当て
@@ -119,7 +119,7 @@ CMeshSphere *CMeshSphere::Create(MyLib::Vector3 pos, float fSize, int nTexIdx, i
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================

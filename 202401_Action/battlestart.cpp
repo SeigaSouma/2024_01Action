@@ -53,7 +53,7 @@ CBattleStart::CBattleStart(int nPriority) : CObject2D(nPriority)
 	// 値のクリア
 	m_state = STATE::STATE_GETTOGETHER;		// 状態
 	m_fStateTime = 0.0f;	// 状態タイマー
-	memset(m_RockOnInfo, NULL, sizeof(m_RockOnInfo));
+	memset(m_RockOnInfo, 0, sizeof(m_RockOnInfo));
 }
 
 //==========================================================================

@@ -31,9 +31,6 @@ public:
 		float scale;
 		MyLib::Vector3 move;		// 移動量
 		Effekseer::EffectRef efcRef;
-
-
-
 		Effekseer::Handle handle;	// エフェクトのオブジェクト
 		bool bAutoDeath;			// 自動削除のフラグ
 	};

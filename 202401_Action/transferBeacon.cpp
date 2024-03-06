@@ -72,7 +72,7 @@ CTransferBeacon *CTransferBeacon::Create(eTransType transtype, const MyLib::Vect
 	// ƒƒ‚ƒŠ‚ÌŠm•Û
 	CTransferBeacon* pBag = DEBUG_NEW CTransferBeacon;
 
-	if (pBag != NULL)
+	if (pBag != nullptr)
 	{// ƒƒ‚ƒŠ‚ÌŠm•Û‚ªo—ˆ‚Ä‚¢‚½‚ç
 
 		// “]ˆÚí—Ş

@@ -20,7 +20,7 @@ CStage::CStage()
 	// クリア
 	m_nNumAll = 0;
 	ModelFile.clear();		// モデルファイル名
-	memset(&m_pObjX[0], NULL, sizeof(m_pObjX));	// オブジェクトXのポインタ
+	memset(&m_pObjX[0], 0, sizeof(m_pObjX));	// オブジェクトXのポインタ
 }
 
 //==========================================================================
@@ -37,36 +37,36 @@ CStage::~CStage()
 CStage *CStage::Create(const char *pTextFile)
 {
 	// 生成用のオブジェクト
-	CStage *pObjectX = NULL;
+	CStage *pObjectX = nullptr;
 
-	if (pObjectX == NULL)
-	{// NULLだったら
+	if (pObjectX == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjectX = DEBUG_NEW CStage;
 
-		if (pObjectX != NULL)
+		if (pObjectX != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// 初期化処理
 			HRESULT hr = pObjectX->Init();
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 
 			// 外部テキスト読み込み処理
 			hr = pObjectX->ReadText(pTextFile);
 			if (FAILED(hr))
 			{// 失敗していたら
-				return NULL;
+				return nullptr;
 			}
 		}
 
 		return pObjectX;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -89,9 +89,9 @@ void CStage::Uninit()
 	// 終了処理
 	for (int nCntObj = 0; nCntObj < mylib_const::MAX_STAGE; nCntObj++)
 	{
-		if (m_pObjX[nCntObj] != NULL)
-		{// NULLじゃなかったら
-			m_pObjX[nCntObj] = NULL;
+		if (m_pObjX[nCntObj] != nullptr)
+		{// nullptrじゃなかったら
+			m_pObjX[nCntObj] = nullptr;
 		}
 	}
 
@@ -107,10 +107,10 @@ void CStage::Release()
 	// 終了処理
 	for (int nCntObj = 0; nCntObj < mylib_const::MAX_STAGE; nCntObj++)
 	{
-		if (m_pObjX[nCntObj] != NULL)
-		{// NULLじゃなかったら
+		if (m_pObjX[nCntObj] != nullptr)
+		{// nullptrじゃなかったら
 			m_pObjX[nCntObj]->Uninit();
-			m_pObjX[nCntObj] = NULL;
+			m_pObjX[nCntObj] = nullptr;
 		}
 	}
 
@@ -152,12 +152,12 @@ void CStage::ChangeStage(const char* pTextFile)
 HRESULT CStage::SaveText()
 {
 #if TOPCUR
-	FILE *pFile = NULL;	// ファイルポインタを宣言
+	FILE *pFile = nullptr;	// ファイルポインタを宣言
 
 	// ファイルを開く
 	pFile = fopen("data\\TEXT\\stage_info.txt", "w");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{// ファイルが開けなかった場合
 		return E_FAIL;
 	}
@@ -193,8 +193,8 @@ HRESULT CStage::SaveText()
 		// 先頭を保存
 		CObject *pObj = CObject::GetTop(nCntPriority);
 
-		while (pObj != NULL)
-		{// NULLが来るまで無限ループ
+		while (pObj != nullptr)
+		{// nullptrが来るまで無限ループ
 
 			// 次のオブジェクトを一時保存
 			CObject *pObjNext = pObj->GetNext();
@@ -256,12 +256,12 @@ HRESULT CStage::ReadXFile(const char *pTextFile)
 	int nCntTexture = 0;				// テクスチャ読み込みカウント
 
 	// ファイルポインタ
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 
 	//ファイルを開く
 	pFile = fopen(pTextFile, "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -335,12 +335,12 @@ HRESULT CStage::ReadText(const char *pTextFile)
 	char aComment[MAX_COMMENT] = {};	//コメント用
 
 	// ファイルポインタ
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 
 	//ファイルを開く
 	pFile = fopen(pTextFile, "r");
 
-	if (pFile == NULL)
+	if (pFile == nullptr)
 	{//ファイルが開けた場合
 		return E_FAIL;
 	}
@@ -408,7 +408,7 @@ HRESULT CStage::ReadText(const char *pTextFile)
 			}
 			// タイプの物を生成
 			m_pObjX[m_nNumAll] = CObjectX::Create(ModelFile[nType].c_str(), pos, rot, bShadow);
-			if (m_pObjX[m_nNumAll] == NULL)
+			if (m_pObjX[m_nNumAll] == nullptr)
 			{// 失敗していたら
 				return E_FAIL;
 			}

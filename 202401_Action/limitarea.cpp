@@ -47,8 +47,8 @@ CLimitArea::CLimitArea(int nPriority) : CObject(nPriority)
 {
 	m_state = STATE_NONE;			// 状態
 	m_fTimeState = 0.0f;			// 状態カウンター
-	memset(&m_pMeshWall[0], NULL, sizeof(m_pMeshWall));			// メッシュウォールのオブジェクト
-	memset(&m_sLimitEreaInfo, NULL, sizeof(m_sLimitEreaInfo));	// エリア制限情報
+	memset(&m_pMeshWall[0], 0, sizeof(m_pMeshWall));			// メッシュウォールのオブジェクト
+	memset(&m_sLimitEreaInfo, 0, sizeof(m_sLimitEreaInfo));	// エリア制限情報
 }
 
 //==========================================================================
@@ -65,15 +65,15 @@ CLimitArea::~CLimitArea()
 CLimitArea *CLimitArea::Create(sLimitEreaInfo info)
 {
 	// 生成用のオブジェクト
-	CLimitArea *pObjMeshField = NULL;
+	CLimitArea *pObjMeshField = nullptr;
 
-	if (pObjMeshField == NULL)
-	{// NULLだったら
+	if (pObjMeshField == nullptr)
+	{// nullptrだったら
 
 		// メモリの確保
 		pObjMeshField = DEBUG_NEW CLimitArea;
 
-		if (pObjMeshField != NULL)
+		if (pObjMeshField != nullptr)
 		{// メモリの確保が出来ていたら
 
 			// エリア制限情報
@@ -86,7 +86,7 @@ CLimitArea *CLimitArea::Create(sLimitEreaInfo info)
 		return pObjMeshField;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //==========================================================================
@@ -157,12 +157,12 @@ void CLimitArea::Uninit()
 
 	for (int i = 0; i < mylib_const::SHAPE_LIMITEREA; i++)
 	{
-		if (m_pMeshWall[i] == NULL)
+		if (m_pMeshWall[i] == nullptr)
 		{
 			continue;
 		}
 		m_pMeshWall[i]->Uninit();
-		m_pMeshWall[i] = NULL;
+		m_pMeshWall[i] = nullptr;
 	}
 
 	// 解放処理
@@ -179,12 +179,12 @@ void CLimitArea::Kill()
 
 	for (int i = 0; i < mylib_const::SHAPE_LIMITEREA; i++)
 	{
-		if (m_pMeshWall[i] == NULL)
+		if (m_pMeshWall[i] == nullptr)
 		{
 			continue;
 		}
 		m_pMeshWall[i]->Uninit();
-		m_pMeshWall[i] = NULL;
+		m_pMeshWall[i] = nullptr;
 	}
 
 	// 解放処理
@@ -201,7 +201,7 @@ void CLimitArea::Update()
 
 	for (int i = 0; i < mylib_const::SHAPE_LIMITEREA; i++)
 	{
-		if (m_pMeshWall[i] == NULL)
+		if (m_pMeshWall[i] == nullptr)
 		{
 			continue;
 		}
@@ -232,7 +232,7 @@ void CLimitArea::StateAppearance()
 
 	for (int i = 0; i < mylib_const::SHAPE_LIMITEREA; i++)
 	{
-		if (m_pMeshWall[i] == NULL)
+		if (m_pMeshWall[i] == nullptr)
 		{
 			continue;
 		}
@@ -265,7 +265,7 @@ void CLimitArea::StateFadeout()
 
 	for (int i = 0; i < mylib_const::SHAPE_LIMITEREA; i++)
 	{
-		if (m_pMeshWall[i] == NULL)
+		if (m_pMeshWall[i] == nullptr)
 		{
 			continue;
 		}
@@ -309,7 +309,7 @@ void CLimitArea::Draw()
 	// 描画処理
 	for (int i = 0; i < mylib_const::SHAPE_LIMITEREA; i++)
 	{
-		if (m_pMeshWall[i] == NULL || i == WALL_DOWN)
+		if (m_pMeshWall[i] == nullptr || i == WALL_DOWN)
 		{
 			continue;
 		}

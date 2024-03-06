@@ -140,7 +140,7 @@ void CEnemyGolem::MotionSet()
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -176,7 +176,7 @@ void CEnemyGolem::AttackAction(CMotion::AttackInfo ATKInfo, int nCntATK)
 {
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}
@@ -238,7 +238,7 @@ void CEnemyGolem::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 
 	// モーション取得
 	CMotion* pMotion = GetMotion();
-	if (pMotion == NULL)
+	if (pMotion == nullptr)
 	{
 		return;
 	}

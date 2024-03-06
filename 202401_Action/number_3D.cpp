@@ -26,7 +26,7 @@
 CNumber3D::CNumber3D(int nPriority) : CNumber(nPriority)
 {
 	// 値のクリア
-	m_aObject3D = NULL;			// オブジェクト2Dのオブジェクト
+	m_aObject3D = nullptr;			// オブジェクト2Dのオブジェクト
 	m_bAddAlpha = true;
 }
 
@@ -58,9 +58,9 @@ HRESULT CNumber3D::Init(int nPriority)
 void CNumber3D::Uninit()
 {
 	// 終了処理
-	if (m_aObject3D != NULL)
-	{// NULLじゃなかったら
-		m_aObject3D = NULL;
+	if (m_aObject3D != nullptr)
+	{// nullptrじゃなかったら
+		m_aObject3D = nullptr;
 	}
 }
 
@@ -69,10 +69,10 @@ void CNumber3D::Uninit()
 //==========================================================================
 void CNumber3D::Release()
 {
-	if (m_aObject3D != NULL)
-	{// NULLじゃなかったら
+	if (m_aObject3D != nullptr)
+	{// nullptrじゃなかったら
 		m_aObject3D->Uninit();
-		m_aObject3D = NULL;
+		m_aObject3D = nullptr;
 	}
 }
 
@@ -82,7 +82,7 @@ void CNumber3D::Release()
 void CNumber3D::Update()
 {
 	// 更新処理
-	if (m_aObject3D != NULL)
+	if (m_aObject3D != nullptr)
 	{
 		m_aObject3D->Update();
 	}
@@ -97,7 +97,7 @@ void CNumber3D::Draw()
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// 描画処理
-	if (m_aObject3D != NULL)
+	if (m_aObject3D != nullptr)
 	{
 		// アルファテストを有効にする
 		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);

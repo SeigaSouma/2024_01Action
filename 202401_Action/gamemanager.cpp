@@ -97,7 +97,7 @@ CGameManager* CGameManager::Create(CScene::MODE mode)
 		break;
 	}
 
-	if (pManager != NULL)
+	if (pManager != nullptr)
 	{// メモリの確保が出来ていたら
 
 		// 初期化処理
@@ -105,7 +105,7 @@ CGameManager* CGameManager::Create(CScene::MODE mode)
 
 		if (FAILED(hr))
 		{// 失敗していたら
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -124,7 +124,7 @@ HRESULT CGameManager::Init()
 #if _DEBUG
 	m_nNowStage = 0;			// 現在のステージ
 #else
-	m_nNowStage = 0;			// 現在のステージ
+	m_nNowStage = 3;			// 現在のステージ
 #endif
 
 	m_SceneType = SceneType::SCENE_TRANSITION;	// シーンの種類 
@@ -363,7 +363,7 @@ void CGameManager::SceneTransition()
 
 		// カメラ取得
 		CCamera* pCamera = CManager::GetInstance()->GetCamera();
-		if (pCamera != NULL)
+		if (pCamera != nullptr)
 		{
 			pCamera->SetEnableFollow(true);
 		}
@@ -455,7 +455,7 @@ void CGameManager::SceneEnhance()
 
 	// カメラリセット
 	CCamera* pCamera = CManager::GetInstance()->GetCamera();
-	if (pCamera != NULL)
+	if (pCamera != nullptr)
 	{
 		pCamera->Reset(CScene::MODE_GAME);
 		pCamera->SetStateCameraV(DEBUG_NEW CStateCameraV_Enhance());
@@ -679,7 +679,7 @@ void CGameManager::SetBoss()
 
 	// 敵の再配置
 	CEnemyManager* pEnemyManager = CGame::GetInstance()->GetEnemyManager();
-	if (pEnemyManager != NULL)
+	if (pEnemyManager != nullptr)
 	{
 		// 敵の再配置
 		pEnemyManager->SetStageBoss();
@@ -715,7 +715,7 @@ void CGameManager::SetEnemy()
 
 	// カメラの情報取得
 	CCamera *pCamera = CManager::GetInstance()->GetCamera();
-	if (pCamera != NULL)
+	if (pCamera != nullptr)
 	{
 		pCamera->Reset(CScene::MODE_GAME);
 	}
@@ -725,7 +725,7 @@ void CGameManager::SetEnemy()
 
 	// 敵の再配置
 	CEnemyManager *pEnemyManager = CGame::GetInstance()->GetEnemyManager();
-	if (pEnemyManager != NULL)
+	if (pEnemyManager != nullptr)
 	{
 		// 敵の再配置
 		pEnemyManager->SetStageEnemy();

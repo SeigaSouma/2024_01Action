@@ -26,7 +26,7 @@
 CNumber2D::CNumber2D(int nPriority) : CNumber(nPriority)
 {
 	// 値のクリア
-	m_aObject2D = NULL;			// オブジェクト2Dのオブジェクト
+	m_aObject2D = nullptr;			// オブジェクト2Dのオブジェクト
 }
 
 //==========================================================================
@@ -54,9 +54,9 @@ HRESULT CNumber2D::Init(int nPriority)
 void CNumber2D::Uninit()
 {
 	// 終了処理
-	if (m_aObject2D != NULL)
-	{// NULLじゃなかったら
-		m_aObject2D = NULL;
+	if (m_aObject2D != nullptr)
+	{// nullptrじゃなかったら
+		m_aObject2D = nullptr;
 	}
 }
 
@@ -65,10 +65,10 @@ void CNumber2D::Uninit()
 //==========================================================================
 void CNumber2D::Release()
 {
-	if (m_aObject2D != NULL)
-	{// NULLじゃなかったら
+	if (m_aObject2D != nullptr)
+	{// nullptrじゃなかったら
 		m_aObject2D->Uninit();
-		m_aObject2D = NULL;
+		m_aObject2D = nullptr;
 	}
 }
 
@@ -78,7 +78,7 @@ void CNumber2D::Release()
 void CNumber2D::Update()
 {
 	// 更新処理
-	if (m_aObject2D != NULL)
+	if (m_aObject2D != nullptr)
 	{
 		m_aObject2D->Update();
 	}
@@ -90,7 +90,7 @@ void CNumber2D::Update()
 void CNumber2D::Draw()
 {
 	// 描画処理
-	if (m_aObject2D != NULL)
+	if (m_aObject2D != nullptr)
 	{
 		m_aObject2D->Draw();
 	}
