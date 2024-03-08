@@ -1777,6 +1777,16 @@ void CCameraControlState::MoveCamera(CCamera* pCamera)
 //==========================================================================
 void CCameraControlState_RockOn::MoveCamera(CCamera* pCamera)
 {
+#if _DEBUG
+	if (CManager::GetInstance()->GetPause() != nullptr)
+	{
+		if (CManager::GetInstance()->GetPause()->IsPause())
+		{
+			return;
+		}
+	}
+#endif
+
 	// ゲームパッド情報取得
 	CInputGamepad* pInputGamepad = CManager::GetInstance()->GetInputGamepad();
 
@@ -1800,6 +1810,17 @@ void CCameraControlState_RockOn::MoveCamera(CCamera* pCamera)
 //==========================================================================
 void CCameraControlState_BeforePrayer::MoveCamera(CCamera* pCamera)
 {
+#if _DEBUG
+	if (CManager::GetInstance()->GetPause() != nullptr)
+	{
+		if (CManager::GetInstance()->GetPause()->IsPause())
+		{
+			return;
+		}
+	}
+
+#endif
+
 	// 情報取得
 	MyLib::Vector3 rot = pCamera->GetRotation();
 
@@ -1819,6 +1840,16 @@ void CCameraControlState_BeforePrayer::MoveCamera(CCamera* pCamera)
 //==========================================================================
 void CCameraControlState_Prayer::MoveCamera(CCamera* pCamera)
 {
+#if _DEBUG
+	if (CManager::GetInstance()->GetPause() != nullptr)
+	{
+		if (CManager::GetInstance()->GetPause()->IsPause())
+		{
+			return;
+		}
+	}
+
+#endif
 	// 情報取得
 	MyLib::Vector3 rot = pCamera->GetRotation();
 	MyLib::Vector3 targetpos = pCamera->GetTargetPosition();

@@ -6,6 +6,7 @@
 //=============================================================================
 #include "objectBillboard.h"
 #include "manager.h"
+#include "pause.h"
 
 //==========================================================================
 // 定数定義
@@ -164,6 +165,16 @@ void CObjectBillboard::Update()
 //==========================================================================
 void CObjectBillboard::Draw()
 {
+#if _DEBUG
+	if (CManager::GetInstance()->GetPause() != nullptr)
+	{
+		if (CManager::GetInstance()->GetPause()->IsPause())
+		{
+			return;
+		}
+	}
+#endif
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 

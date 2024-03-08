@@ -1090,7 +1090,7 @@ void CEnemy::StateDamage()
 
 #if _DEBUG
 	// 色設定
-	m_mMatcol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	//m_mMatcol = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 #endif
 
 	// 状態遷移カウンター減算
@@ -1360,7 +1360,7 @@ void CEnemy::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 	}
 
 #if _DEBUG
-	CEffect3D::Create(weponpos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), pATKInfo->fRangeSize, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
+	//CEffect3D::Create(weponpos, MyLib::Vector3(0.0f, 0.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), pATKInfo->fRangeSize, 10, CEffect3D::MOVEEFFECT_NONE, CEffect3D::TYPE_NORMAL);
 #endif
 
 	//============================

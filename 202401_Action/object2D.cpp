@@ -227,7 +227,7 @@ void CObject2D::Draw()
 	{
 		if (CManager::GetInstance()->GetPause()->IsPause())
 		{
-			//return;
+			return;
 		}
 	}
 #endif

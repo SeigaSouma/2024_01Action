@@ -1582,7 +1582,7 @@ void CPlayer::AttackInDicision(CMotion::AttackInfo* pATKInfo, int nCntATK)
 		return;
 	}
 
-#if _DEBUG
+#if 0
 	CEffect3D::Create(
 		weponpos,
 		MyLib::Vector3(0.0f, 0.0f, 0.0f),

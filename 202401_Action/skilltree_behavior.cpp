@@ -12,7 +12,7 @@
 
 
 //=============================
-// カテゴリー関数リストの初期化
+// カテゴリー関数リスト
 //=============================
 std::vector<CAbillityStrategy::CREATE_FUNC> CAbillityStrategy::m_CreateFunc =
 {
