@@ -25,7 +25,7 @@ namespace
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CEnemyPractice::CEnemyPractice(int nPriority) : CEnemy(nPriority)
+CEnemyPractice::CEnemyPractice() : CEnemy()
 {
 
 }

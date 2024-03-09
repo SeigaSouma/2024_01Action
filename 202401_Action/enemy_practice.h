@@ -37,7 +37,7 @@ public:
 		MOTION_MAX
 	};
 
-	CEnemyPractice(int nPriority = mylib_const::ENEMY_PRIORITY);
+	CEnemyPractice();
 	~CEnemyPractice();
 
 	// オーバーライドされた関数

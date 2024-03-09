@@ -432,82 +432,82 @@ void CEdit::ChangeType()
 //==========================================================================
 void CEdit::GrabModel()
 {
-#if TOPCUR
-	// キーボード情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
-
-	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
-	{
-		// 先頭を保存
-		CObject *pObj = CObject::GetTop(nCntPriority);
-
-		while (pObj != nullptr)
-		{// nullptrが来るまで無限ループ
-
-			// 次のオブジェクトを一時保存
-			CObject *pObjNext = pObj->GetNext();
-
-			// 種類の取得
-			CObject::TYPE TargetType = pObj->GetType();
-
-			if (TargetType != CObject::TYPE_XFILE || pObj == CObject::GetObjectX())
-			{// 自分と同じだったら
-
-				// 次のオブジェクトを代入
-				pObj = pObjNext;
-				continue;
-			}
-
-			// オブジェクトXの情報取得
-			CObjectX *pObjX = pObj->GetObjectX();
-
-			// オブジェクトXの位置取得
-			MyLib::Vector3 pObjPos = pObjX->GetPosition();
-
-			// オブジェクトXの向き取得
-			MyLib::Vector3 pObjRot = pObjX->GetRotation();
-
-			// オブジェクトXの最大値取得
-			MyLib::Vector3 pObjVtxMax = pObjX->GetVtxMax();
-
-			// オブジェクトXの最小値取得
-			MyLib::Vector3 pObjVtxMin = pObjX->GetVtxMin();
-
-			// 位置取得
-			MyLib::Vector3 pos = m_pObjX->GetPosition();
-
-			// 最大値取得
-			MyLib::Vector3 vtxMax = m_pObjX->GetVtxMax();
-
-			// 最小値取得
-			MyLib::Vector3 vtxMin = m_pObjX->GetVtxMin();
-
-			if (pObjPos.x + pObjVtxMax.x >= pos.x + vtxMin.x &&	// 右からめり込んでる
-				pObjPos.x + pObjVtxMin.x <= pos.x + vtxMax.x &&	// 左からめり込んでる
-				pObjPos.z + pObjVtxMax.z >= pos.z + vtxMin.z &&	// からめり込んでる
-				pObjPos.z + pObjVtxMin.z <= pos.z + vtxMax.z)	// 前からめり込んでる
-			{// 当たり判定内に入っていたら掴める
-
-				if (pInputKeyboard->GetPress(DIK_SPACE) == true)
-				{// SPACEが押された,つかんで移動
-
-					// 操作処理
-					Control(pObjX);
-				}
-
-				if (pInputKeyboard->GetTrigger(DIK_DELETE) == true)
-				{// Deleteが押された、削除
-
-					MyMap::Delete(pObjX);
-					//DeleteEditModel(nCntModel);
-				}
-			}
-
-			// 次のオブジェクトを代入
-			pObj = pObjNext;
-		}
-	}
-#endif
+//#if TOPCUR
+//	// キーボード情報取得
+//	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+//
+//	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+//	{
+//		// 先頭を保存
+//		CObject *pObj = CObject::GetTop(nCntPriority);
+//
+//		while (pObj != nullptr)
+//		{// nullptrが来るまで無限ループ
+//
+//			// 次のオブジェクトを一時保存
+//			CObject *pObjNext = pObj->GetNext();
+//
+//			// 種類の取得
+//			CObject::TYPE TargetType = pObj->GetType();
+//
+//			if (TargetType != CObject::TYPE_XFILE || pObj == CObject::GetObjectX())
+//			{// 自分と同じだったら
+//
+//				// 次のオブジェクトを代入
+//				pObj = pObjNext;
+//				continue;
+//			}
+//
+//			// オブジェクトXの情報取得
+//			CObjectX *pObjX = pObj->GetObjectX();
+//
+//			// オブジェクトXの位置取得
+//			MyLib::Vector3 pObjPos = pObjX->GetPosition();
+//
+//			// オブジェクトXの向き取得
+//			MyLib::Vector3 pObjRot = pObjX->GetRotation();
+//
+//			// オブジェクトXの最大値取得
+//			MyLib::Vector3 pObjVtxMax = pObjX->GetVtxMax();
+//
+//			// オブジェクトXの最小値取得
+//			MyLib::Vector3 pObjVtxMin = pObjX->GetVtxMin();
+//
+//			// 位置取得
+//			MyLib::Vector3 pos = m_pObjX->GetPosition();
+//
+//			// 最大値取得
+//			MyLib::Vector3 vtxMax = m_pObjX->GetVtxMax();
+//
+//			// 最小値取得
+//			MyLib::Vector3 vtxMin = m_pObjX->GetVtxMin();
+//
+//			if (pObjPos.x + pObjVtxMax.x >= pos.x + vtxMin.x &&	// 右からめり込んでる
+//				pObjPos.x + pObjVtxMin.x <= pos.x + vtxMax.x &&	// 左からめり込んでる
+//				pObjPos.z + pObjVtxMax.z >= pos.z + vtxMin.z &&	// からめり込んでる
+//				pObjPos.z + pObjVtxMin.z <= pos.z + vtxMax.z)	// 前からめり込んでる
+//			{// 当たり判定内に入っていたら掴める
+//
+//				if (pInputKeyboard->GetPress(DIK_SPACE) == true)
+//				{// SPACEが押された,つかんで移動
+//
+//					// 操作処理
+//					Control(pObjX);
+//				}
+//
+//				if (pInputKeyboard->GetTrigger(DIK_DELETE) == true)
+//				{// Deleteが押された、削除
+//
+//					MyMap::Delete(pObjX);
+//					//DeleteEditModel(nCntModel);
+//				}
+//			}
+//
+//			// 次のオブジェクトを代入
+//			pObj = pObjNext;
+//		}
+//	}
+//#endif
 }
 
 //==========================================================================

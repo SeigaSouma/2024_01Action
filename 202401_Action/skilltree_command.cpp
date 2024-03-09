@@ -26,7 +26,7 @@ namespace
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CSkillTree_Command::CSkillTree_Command(int nPriority) : CObject(nPriority)
+CSkillTree_Command::CSkillTree_Command(int nPriority, const LAYER layer) : CObject(nPriority, layer)
 {
 	// 値のクリア
 	memset(m_pIcon, 0, sizeof(m_pIcon));

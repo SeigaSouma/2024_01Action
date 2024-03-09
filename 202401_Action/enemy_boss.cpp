@@ -49,7 +49,7 @@ namespace
 //==========================================================================
 //  コンストラクタ
 //==========================================================================
-CEnemyBoss::CEnemyBoss(int nPriority) : CEnemy(nPriority)
+CEnemyBoss::CEnemyBoss() : CEnemy()
 {
 	m_TargetPosition = 0.0f;	// 目標の位置
 	m_fActTime = 0.0f;			// 行動カウンター

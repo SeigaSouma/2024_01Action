@@ -74,7 +74,15 @@ public:
 		TYPE_MAX
 	};
 
-	CObject(int nPriority = mylib_const::PRIORITY_DEFAULT);
+	enum LAYER
+	{
+		LAYER_MAP = 0,
+		LAYER_DEFAULT,
+		LAYER_2D,
+		LAYER_MAX
+	};
+
+	CObject(int nPriority = mylib_const::PRIORITY_DEFAULT, const LAYER layer = LAYER::LAYER_DEFAULT);
 	virtual ~CObject();
 
 	// 派生クラスでオーバーライドされた関数が絶対必要(純粋仮想関数)
@@ -117,10 +125,7 @@ public:
 	static void UpdateAll();
 	static void DrawAll();
 	static const int GetNumAll() { return m_nNumAll; }
-	static const int GetNumPriorityAll(int nPriority) { return m_nNumPriorityAll[nPriority]; }
 
-	static CObject *GetTop(int nPriority);	// 先頭のオブジェクト取得
-	CObject *GetNext();					// 次のオブジェクト取得
 	bool IsDeath();						// 死亡の判定
 	void SetType(const TYPE type);
 	TYPE GetType() const;
@@ -134,12 +139,11 @@ public:
 protected:
 
 	void Release();	// 開放処理
-	void Death();	// 死亡処理
 
 private:
 
-	static void DrawNone(int nPriority);	// 通常描画
-	static void DrawZSort(int nPriority);	// Zソート描画
+	static void DrawNone(const LAYER layer, int nPriority);	// 通常描画
+	static void DrawZSort(const LAYER layer, int nPriority);	// Zソート描画
 
 	MyLib::Vector3 m_pos;			// 位置
 	MyLib::Vector3 m_posOld;		// 前回の位置
@@ -149,18 +153,15 @@ private:
 	MyLib::Vector3 m_move;			// 移動量
 
 	int m_nPriority;		// 優先順位
+	LAYER m_Layer;	// レイヤー名
 	static int m_nNumAll;	// オブジェクトの総数
-	static int m_nNumPriorityAll[mylib_const::PRIORITY_NUM];
 	TYPE m_type;			// 種類
-	static CObject *m_pTop[mylib_const::PRIORITY_NUM];	// 先頭のオブジェクトへのポインタ
-	static CObject *m_pCur[mylib_const::PRIORITY_NUM];	// 最後尾のオブジェクトへのポインタ
-	CObject *m_pPrev;	// 前のオブジェクトへのポインタ
-	CObject *m_pNext;	// 次のオブジェクトへのポインタ
 	bool m_bDeath;		// 死亡フラグ
 	bool m_bDisp;		// 描画フラグ
 	CEffect3D *m_pEffect[mylib_const::MAX_OBJ];	// エフェクトのポインタ
 	int m_nNumEffectParent;	// エフェクトの親設定した数
 	bool m_bHitstopMove;		// ヒットストップ時に動くかのフラグ
+	static std::map<LAYER, std::map<int, std::vector<CObject*>>> m_pObj;	// オブジェクト格納用
 
 };
 

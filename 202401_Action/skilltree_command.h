@@ -18,7 +18,7 @@ class CSkillTree_Command : public CObject
 {
 public:
 
-	CSkillTree_Command(int nPriority = 8);
+	CSkillTree_Command(int nPriority = 8, const LAYER layer = LAYER::LAYER_2D);
 	~CSkillTree_Command();
 	
 	//  オーバーライド関数

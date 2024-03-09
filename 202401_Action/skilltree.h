@@ -40,7 +40,7 @@ public:
 		STATE_MAX
 	};
 
-	CSkillTree(int nPriority = 8);
+	CSkillTree(int nPriority = 8, const LAYER layer = LAYER::LAYER_2D);
 	~CSkillTree();
 
 	// オーバーライドされた関数

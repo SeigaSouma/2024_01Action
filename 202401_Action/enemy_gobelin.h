@@ -37,7 +37,7 @@ public:
 		MOTION_MAX
 	};
 
-	CEnemyGobelin(int nPriority = mylib_const::ENEMY_PRIORITY);
+	CEnemyGobelin();
 	~CEnemyGobelin();
 
 	// オーバーライドされた関数

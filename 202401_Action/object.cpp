@@ -15,14 +15,12 @@
 // 静的メンバ変数宣言
 //==========================================================================
 int CObject::m_nNumAll = 0;	// 総数
-int CObject::m_nNumPriorityAll[mylib_const::PRIORITY_NUM] = {};
-CObject *CObject::m_pTop[mylib_const::PRIORITY_NUM]= {};	// 先頭のオブジェクトへのポインタ
-CObject *CObject::m_pCur[mylib_const::PRIORITY_NUM]= {};	// 最後尾のオブジェクトへのポインタ
+std::map<CObject::LAYER, std::map<int, std::vector<CObject*>>> CObject::m_pObj = {};	// オブジェクト格納用
 
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CObject::CObject(int nPriority)
+CObject::CObject(int nPriority, const LAYER layer)
 {
 	if (nPriority < 0 || nPriority >= mylib_const::PRIORITY_NUM)
 	{// 範囲外だったら
@@ -37,9 +35,8 @@ CObject::CObject(int nPriority)
 	m_move = 0.0f;		// 移動量
 	m_rotOrigin = 0.0f;	// 元の向き
 
-	m_pPrev = nullptr;	// 前のオブジェクトへのポインタ
-	m_pNext = nullptr;	// 次のオブジェクトへのポインタ
 	m_nPriority = nPriority;	// 優先順位
+	m_Layer = layer;	// レイヤー名
 	m_type = TYPE_NONE;			// 種類
 	m_bDeath = false;			// 死亡フラグ
 	m_bDisp = true;			// 描画フラグ
@@ -47,31 +44,10 @@ CObject::CObject(int nPriority)
 	m_nNumEffectParent = 0;		// エフェクトの親設定した数
 	m_bHitstopMove = false;		// ヒットストップ時に動くかのフラグ
 	m_nNumAll++;				// 総数加算
-	m_nNumPriorityAll[nPriority]++;
 
-	// 最後尾を保存
-	CObject *pObjCur = m_pCur[nPriority];
-
-	if (pObjCur != nullptr)
-	{// 最後尾が存在していたら
-
-		pObjCur->m_pNext = this;				// 最後尾の次に自分自身を代入
-
-		m_pCur[nPriority] = this;				// 最後尾を自分自身に更新
-		m_pCur[nPriority]->m_pPrev = pObjCur;	// 最後尾の前に過去の最後尾を代入
-	}
-	else
-	{// 最後尾が無かったら
-
-		m_pCur[nPriority] = this;	// 最後尾を自分自身に更新
-	}
-
-	if (m_pTop[nPriority] == nullptr)
-	{// 先頭に何もなかったら
-
-		m_pTop[nPriority] = this;	// 先頭に自分自身のポインタを渡す
-	}
-
+	// オブジェクト格納
+	m_pObj[layer][nPriority].emplace_back();
+	m_pObj[layer][nPriority].back() = this;
 }
 
 //==========================================================================
@@ -87,83 +63,88 @@ CObject::~CObject()
 //==========================================================================
 void CObject::ReleaseAll()
 {
-	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+	// 削除する要素
+	std::map<LAYER, std::map<int, std::vector<CObject*>>> objectsToRemove;
+	for (auto& layer : m_pObj)
 	{
-		// 先頭を保存
-		CObject *pObject = m_pTop[nCntPriority];
-
-		while (pObject != nullptr)
-		{// nullptrが来るまで無限ループ
-
-			// 次のオブジェクトを一時保存
-			CObject *pObjNext = pObject->m_pNext;
-
-			if (pObject->m_type != TYPE_NONE)
-			{// NONEじゃなければ
-
-				// 終了処理
-				pObject->Uninit();
-			}
-
-			// 次のオブジェクトを代入
-			pObject = pObjNext;
-		}
-
-		//*******************************
-		// 死亡処理
-		//*******************************
-		// 先頭を保存
-		pObject = m_pTop[nCntPriority];
-
-		while (pObject != nullptr)
-		{// nullptrが来るまで無限ループ
-
-			// 次のオブジェクトを一時保存
-			CObject *pObjNext = pObject->m_pNext;
-
-			if (pObject->m_bDeath == true)
-			{// 死亡フラグが立っていたら
-
-				// 完全死亡処理
-				pObject->Death();
-			}
-			else
+		for (auto& priority : layer.second)
+		{
+			for (auto itr = priority.second.begin(); itr != priority.second.end();)
 			{
-				int n = 0;
-			}
+				CObject* pObj = (*itr);
 
-			// 次のオブジェクトを代入
-			pObject = pObjNext;
+				if (pObj->m_type != TYPE_NONE)
+				{// NONEじゃなければ
+
+					// 終了処理
+					pObj->Uninit();
+
+					// 後で消すvectorに格納
+					objectsToRemove[layer.first][priority.first].push_back(*itr);
+					itr = priority.second.erase(itr);
+				}
+				else
+				{
+					itr++;
+				}
+			}
 		}
 	}
 
-	// 優先順位的に消えなかったものを全削除
-	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+	
+
+	for (auto& layer : objectsToRemove)
 	{
-		// 先頭を保存
-		CObject *pObject = m_pTop[nCntPriority];
-
-		while (pObject != nullptr)
-		{// nullptrが来るまで無限ループ
-
-			// 次のオブジェクトを一時保存
-			CObject *pObjNext = pObject->m_pNext;
-
-			if (pObject->m_bDeath == true)
-			{// 死亡フラグが立っていたら
-
-				// 完全死亡処理
-				pObject->Death();
-			}
-			else
+		for (auto& priority : layer.second)
+		{
+			for (const auto& obj : priority.second)
 			{
-				int n = 0;
+				// 総数減算
+				m_nNumAll--;
+				obj->Uninit();
+				delete obj;
 			}
-
-			// 次のオブジェクトを代入
-			pObject = pObjNext;
 		}
 	}
+	objectsToRemove.clear();
+
+	//// 優先順位的に消えなかったものを全削除
+	//for (auto& layer : m_pObj)
+	//{
+	//	for (auto& priority : layer.second)
+	//	{
+	//		// 削除する要素
+	//		std::vector<CObject*> objectsToRemove;
+	//		for (auto itr = priority.second.begin(); itr != priority.second.end();)
+	//		{
+	//			CObject* pObj = (*itr);
+
+	//			if (pObj->m_type != TYPE_NONE)
+	//			{// NONEじゃなければ
+
+	//				// 終了処理
+	//				pObj->Uninit();
+
+	//				// 後で消すvectorに格納
+	//				objectsToRemove.push_back(*itr);
+	//				itr = priority.second.erase(itr);
+	//			}
+	//			else
+	//			{
+	//				itr++;
+	//			}
+	//		}
+
+	//		for (const auto& obj : objectsToRemove)
+	//		{
+	//			delete obj;
+
+	//			// 総数減算
+	//			m_nNumAll--;
+	//		}
+	//		objectsToRemove.clear();
+	//	}
+	//}
 }
 
 //==========================================================================
@@ -171,6 +152,7 @@ void CObject::ReleaseAll()
 //==========================================================================
 void CObject::UpdateAll()
 {
+#if 0
 #if _DEBUG
 	// エディットの情報取得
 	CEdit *pEdit = CManager::GetInstance()->GetEdit();
@@ -242,6 +224,90 @@ void CObject::UpdateAll()
 			pObject = pObjNext;
 		}
 	}
+
+#else
+
+
+
+#if _DEBUG
+	// エディットの情報取得
+	CEdit* pEdit = CManager::GetInstance()->GetEdit();
+#endif
+
+	// ヒットストップ中か
+	bool bHitstop = CManager::GetInstance()->IsHitStop();
+
+	// 削除する要素
+	std::map<LAYER, std::map<int, std::vector<CObject*>>> objectsToRemove;
+	for (auto& layer : m_pObj)
+	{
+		for (auto& priority : layer.second)
+		{
+			auto& vec = priority.second; // イテレータを失わないために参照を取得
+
+			for (int i = 0; i < vec.size(); i++)
+			{
+				CObject* pObj = priority.second[i];
+
+#if _DEBUG
+				if (!pObj->m_bDeath &&
+					pEdit != nullptr &&
+					(pObj->m_type == TYPE_EDIT || pObj->m_type == TYPE_XFILE || pObj->m_type == TYPE_ELEVATION) &&
+					(pObj->m_bHitstopMove || (!pObj->m_bHitstopMove && !bHitstop)))
+				{// エディット状態だったらエディットのみ更新
+
+					// 更新処理
+					pObj->Update();
+				}
+				else if (
+					!pObj->m_bDeath &&
+					pEdit == nullptr &&
+					pObj->m_type != TYPE_NONE &&
+					(pObj->m_bHitstopMove || (!pObj->m_bHitstopMove && !bHitstop)))
+				{// エディット状態じゃない && タイプがNONE以外
+
+					// 更新処理
+					pObj->Update();
+				}
+#else
+				if (!pObj->m_bDeath &&
+					pObj->m_type != TYPE_NONE &&
+					(pObj->m_bHitstopMove || (!pObj->m_bHitstopMove && !bHitstop)))
+				{// タイプがNONE以外
+
+					// 更新処理
+					pObj->Update();
+				}
+#endif
+
+				if (pObj->m_bDeath)
+				{
+					// 後で消すvectorに格納
+					objectsToRemove[layer.first][priority.first].push_back(pObj);
+					priority.second.erase(std::find(priority.second.begin(), priority.second.end(), pObj)); // erase要素とitrをインクリメント
+				}
+			}
+		}
+	}
+
+	//*******************************
+	// 死亡処理
+	//*******************************
+	for (auto& layer : objectsToRemove)
+	{
+		for (auto& priority : layer.second)
+		{
+			for (const auto& obj : priority.second)
+			{
+				// 総数減算
+				m_nNumAll--;
+				delete obj;
+			}
+		}
+	}
+	objectsToRemove.clear();
+#endif
+
 }
 
 //==========================================================================
@@ -249,24 +315,28 @@ void CObject::UpdateAll()
 //==========================================================================
 void CObject::DrawAll()
 {
-	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+	for (auto& layer : m_pObj)
 	{
-		if (nCntPriority == mylib_const::PRIORITY_ZSORT)
-		{// Zソート描画
-			DrawZSort(nCntPriority);
-		}
-		else
-		{// 通常描画
-			DrawNone(nCntPriority);
-		}
-
-		if (nCntPriority == 3)
+		for (auto& priority : layer.second)
 		{
-			// エフェクシアの更新兼描画
-			CMyEffekseer* pEffekseer = CMyEffekseer::GetInstance();
-			if (pEffekseer != nullptr)
+			if (priority.first == mylib_const::PRIORITY_ZSORT)
+			{// Zソート描画
+				DrawZSort(layer.first, priority.first);
+			}
+			else
+			{// 通常描画
+				DrawNone(layer.first, priority.first);
+			}
+
+			if (layer.first == LAYER::LAYER_DEFAULT &&
+				priority.first == 3)
 			{
-				pEffekseer->Update();
+				// エフェクシアの更新兼描画
+				CMyEffekseer* pEffekseer = CMyEffekseer::GetInstance();
+				if (pEffekseer != nullptr)
+				{
+					pEffekseer->Update();
+				}
 			}
 		}
 	}
@@ -275,65 +345,41 @@ void CObject::DrawAll()
 //==========================================================================
 // 通常描画
 //==========================================================================
-void CObject::DrawNone(int nPriority)
+void CObject::DrawNone(const LAYER layer, int nPriority)
 {
-	// 先頭を保存
-	CObject *pObject = m_pTop[nPriority];
-
-	while (pObject != nullptr)
-	{// nullptrが来るまで無限ループ
-
-		// 次のオブジェクトを一時保存
-		CObject *pObjNext = pObject->m_pNext;
-
-		if (pObject->m_bDisp == true &&
-			pObject->m_bDeath == false &&
-			pObject->m_type != TYPE_NONE)
+	for (const auto& obj : m_pObj[layer][nPriority])
+	{
+		if (obj->m_bDisp == true &&
+			obj->m_bDeath == false &&
+			obj->m_type != TYPE_NONE)
 		{// NONEじゃなければ
-
-			// 描画処理
-			pObject->Draw();
+			obj->Draw();
 		}
-
-		// 次のオブジェクトを代入
-		pObject = pObjNext;
 	}
 }
 
 //==========================================================================
 // Zソート描画
 //==========================================================================
-void CObject::DrawZSort(int nPriority)
+void CObject::DrawZSort(const LAYER layer, int nPriority)
 {
-	// 先頭を保存
-	CObject *pObject = m_pTop[nPriority];
+	// 要素コピー
+	std::vector<CObject*> tempVector;
 
-	// リストコピー
-	std::vector<CObject*> pObjectSort;
-	while (pObject != nullptr)
-	{
-		// 次のオブジェクトを一時保存
-		CObject *pObjNext = pObject->m_pNext;
-
-		// 要素を末尾に追加
-		pObjectSort.push_back(pObject);
-
-		// 次のオブジェクトを代入
-		pObject = pObjNext;
-	}
+	// サイズ分確保
+	tempVector.reserve(m_pObj[layer][nPriority].size());
+	std::move(m_pObj[layer][nPriority].begin(), m_pObj[layer][nPriority].end(), std::back_inserter(tempVector));
 
 	// Zソート
-	std::sort(pObjectSort.begin(), pObjectSort.end(), ZSort);
+	std::sort(tempVector.begin(), tempVector.end(), ZSort);
 
-	for (int i = 0; i < (int)pObjectSort.size(); i++)
+	for (const auto& obj : tempVector)
 	{
-		if (pObjectSort[i]->m_bDisp == true
-			&& pObjectSort[i]->m_bDeath == false
-			&& pObjectSort[i]->m_type != TYPE_NONE)
+		if (obj->m_bDisp == true &&
+			obj->m_bDeath == false &&
+			obj->m_type != TYPE_NONE)
 		{// NONEじゃなければ
-
-			// 描画処理
-			pObjectSort[i]->Draw();
+			obj->Draw();
 		}
 	}
 }
@@ -370,7 +416,9 @@ bool CObject::ZSort(const CObject *obj1, const CObject *obj2)
 	return bSort;
 }
 
+//==========================================================================
 // 描画設定
+//==========================================================================
 void CObject::SetEnableDisp(bool bDisp)
 {
 	m_bDisp = bDisp;
@@ -455,100 +503,6 @@ void CObject::Release()
 
 	// 死亡フラグを立てる
 	m_bDeath = true;
-}
-
-//==========================================================================
-// オブジェクトの破棄・死亡処理
-//==========================================================================
-void CObject::Death()
-{
-	// 今回の番号保存
-	int nPriority = m_nPriority;
-
-	// オブジェクトを保存
-	CObject *pObject = this;
-	CObject *pObjNext = pObject->m_pNext;
-	CObject *pObjPrev = pObject->m_pPrev;
-
-	if (pObject == nullptr)
-	{// nullptrだったら
-		return;
-	}
-
-	// 前のオブジェクトと次のオブジェクトを繋ぐ
-	if (pObjNext == nullptr)
-	{// 自分が最後尾の時
-
-		if (pObjPrev != nullptr)
-		{// 前のオブジェクトがあれば
-
-			// 前のオブジェクトの次をnullptrにする
-			pObjPrev->m_pNext = nullptr;
-
-			// 最後尾を自分の前のオブジェクトにする
-			m_pCur[nPriority] = pObjPrev;
-		}
-		else
-		{// 前のオブジェクトがない時
-
-			// 最後尾をnullptrにする
-			m_pCur[nPriority] = nullptr;
-		}
-	}
-	else
-	{// 最後尾じゃないとき
-
-		if (pObjPrev != nullptr)
-		{// 自分が先頭じゃない時
-
-			// 前のオブジェクトの次を, 自分の次にする
-			pObjPrev->m_pNext = pObject->m_pNext;
-		}
-
-	}
-
-	if (pObjPrev == nullptr)
-	{// 自分が先頭の時
-
-		if (pObjNext != nullptr)
-		{// 次のオブジェクトがある時
-
-			// 次のオブジェクトの前をnullptrにする
-			pObjNext->m_pPrev = nullptr;
-
-			// 先頭を自分の次のオブジェクトにする
-			m_pTop[nPriority] = pObjNext;
-		}
-		else
-		{// 次のオブジェクトがない時
-
-			// 先頭をnullptrにする
-			m_pTop[nPriority] = nullptr;
-		}
-	}
-	else
-	{// 先頭じゃないとき
-
-		if (pObjNext != nullptr)
-		{// 自分が最後尾じゃない時
-
-			// 次のオブジェクトの前を, 自分の前にする
-			pObjNext->m_pPrev = pObject->m_pPrev;
-		}
-	}
-
-	//if (m_pReleaseNext == pObject)
-	//{// 本来次に消すオブジェクトと今回消すオブジェクトが同じとき
-	//	m_pReleaseNext = pObjNext;
-	//}
-
-	// メモリの開放
-	delete pObject;
-	pObject = nullptr;
-
-	// 総数を減らす
-	m_nNumAll--;
-	m_nNumPriorityAll[nPriority]--;
 }
 
 //==========================================================================
@@ -685,22 +639,6 @@ CObject::TYPE CObject::GetType() const
 CObject *CObject::GetObject()
 {
 	return this;
-}
-
-//==========================================================================
-// 先頭のオブジェクト取得
-//==========================================================================
-CObject *CObject::GetTop(int nPriority)
-{
-	return m_pTop[nPriority];
-}
-
-//==========================================================================
-// 次のオブジェクト取得
-//==========================================================================
-CObject *CObject::GetNext()
-{
-	return this->m_pNext;
 }
 
 //==========================================================================

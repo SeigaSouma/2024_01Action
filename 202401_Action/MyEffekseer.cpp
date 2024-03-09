@@ -376,6 +376,10 @@ void CMyEffekseer::SetPosition(Effekseer::Handle handle, MyLib::Vector3 pos)
 	// インデックス検索
 	std::vector<Effekseer::Handle>::iterator itr = std::find(m_Handle.begin(), m_Handle.end(), handle);
 	int idx = std::distance(m_Handle.begin(), itr);
+	if (static_cast<int>(m_Handle.size()) <= idx)
+	{
+		return;
+	}
 
 	// 位置情報設定
 	m_EffectObj[idx].pos = pos;
@@ -425,6 +429,10 @@ void CMyEffekseer::SetMatrix(Effekseer::Handle handle, D3DXMATRIX mtx)
 	// インデックス検索
 	std::vector<Effekseer::Handle>::iterator itr = std::find(m_Handle.begin(), m_Handle.end(), handle);
 	int idx = std::distance(m_Handle.begin(), itr);
+	if (static_cast<int>(m_Handle.size()) <= idx)
+	{ 
+		return;
+	}
 
 	// スケール情報設定
 	float scale = m_EffectObj[idx].scale;
@@ -457,8 +465,6 @@ void CMyEffekseer::SetTransform(Effekseer::Handle handle, MyLib::Vector3 pos, My
 	a.RotationZXY(rot.x, rot.y, rot.z);
 
 	Effekseer::Matrix43 Weapon = efkManager->GetMatrix(handle);
-	//Weapon.Indentity();
-
 	Weapon.Multiple(Weapon, Weapon, a);
 
 	efkManager->SetMatrix(handle, Weapon);

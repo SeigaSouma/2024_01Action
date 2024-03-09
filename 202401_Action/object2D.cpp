@@ -19,7 +19,7 @@ namespace
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CObject2D::CObject2D(int nPriority) : CObject(nPriority)
+CObject2D::CObject2D(int nPriority, const LAYER layer) : CObject(nPriority, layer)
 {
 	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// 色
 	m_size = D3DXVECTOR2(0.0f, 0.0f);			// サイズ

@@ -23,11 +23,7 @@ class CObjectX : public CObject
 {
 public:
 
-	// マクロ定義
-#define MAX_MAT				(512)		// マテリアルサイズ
-#define MAX_TX				(96)		// テクスチャサイズ
-
-	CObjectX(int nPriority = mylib_const::PRIORITY_DEFAULT);
+	CObjectX(int nPriority = mylib_const::PRIORITY_DEFAULT, const LAYER layer = LAYER::LAYER_MAP);
 	~CObjectX();
 
 	// オーバーライドされた関数

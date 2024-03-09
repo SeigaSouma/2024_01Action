@@ -54,7 +54,7 @@ CSkillTree::STATE_FUNC CSkillTree::m_StateFuncList[] =
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CSkillTree::CSkillTree(int nPriority) : CObject(nPriority)
+CSkillTree::CSkillTree(int nPriority, const LAYER layer) : CObject(nPriority, layer)
 {
 	// 値のクリア
 	m_fAlpha = 0.0f;		// 不透明度

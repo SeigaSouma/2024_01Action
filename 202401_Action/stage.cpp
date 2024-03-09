@@ -188,52 +188,52 @@ HRESULT CStage::SaveText()
 		"# モデルの配置\n"
 		"#==============================================================================\n");
 
-	for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
-	{
-		// 先頭を保存
-		CObject *pObj = CObject::GetTop(nCntPriority);
+	//for (int nCntPriority = 0; nCntPriority < mylib_const::PRIORITY_NUM; nCntPriority++)
+	//{
+	//	// 先頭を保存
+	//	CObject *pObj = CObject::GetTop(nCntPriority);
 
-		while (pObj != nullptr)
-		{// nullptrが来るまで無限ループ
+	//	while (pObj != nullptr)
+	//	{// nullptrが来るまで無限ループ
 
-			// 次のオブジェクトを一時保存
-			CObject *pObjNext = pObj->GetNext();
+	//		// 次のオブジェクトを一時保存
+	//		CObject *pObjNext = pObj->GetNext();
 
-			// 種類の取得
-			CObject::TYPE TargetType = pObj->GetType();
+	//		// 種類の取得
+	//		CObject::TYPE TargetType = pObj->GetType();
 
-			if (TargetType == CObject::TYPE_XFILE)
-			{// Xファイルのモデルだったら
+	//		if (TargetType == CObject::TYPE_XFILE)
+	//		{// Xファイルのモデルだったら
 
-				// Xファイルの情報取得
-				CObjectX *pObjX = pObj->GetObjectX();
+	//			// Xファイルの情報取得
+	//			CObjectX *pObjX = pObj->GetObjectX();
 
-				int nType = pObjX->GetIdxXFile();		// 種類
-				MyLib::Vector3 pos = pObjX->GetPosition();	// 位置
-				MyLib::Vector3 rot = pObjX->GetRotation();	// 向き
-				int nShadow = 0;						// 影使うかどうか
+	//			int nType = pObjX->GetIdxXFile();		// 種類
+	//			MyLib::Vector3 pos = pObjX->GetPosition();	// 位置
+	//			MyLib::Vector3 rot = pObjX->GetRotation();	// 向き
+	//			int nShadow = 0;						// 影使うかどうか
 
-				if (pObjX->GetUseShadow() == true)
-				{// 使っている場合
-					nShadow = 1;
-				}
+	//			if (pObjX->GetUseShadow() == true)
+	//			{// 使っている場合
+	//				nShadow = 1;
+	//			}
 
-				// 出力
-				fprintf(pFile,
-					"MODELSET\n"
-					"\tTYPE = %d\n"
-					"\tPOS = %.2f %.2f %.2f\n"
-					"\tROT = %.2f %.2f %.2f\n"
-					"\tSHADOW = %d\n"
-					"END_MODELSET\n\n",
-					nType, pos.x, pos.y, pos.z,
-					rot.x, rot.y, rot.z, nShadow);
-			}
+	//			// 出力
+	//			fprintf(pFile,
+	//				"MODELSET\n"
+	//				"\tTYPE = %d\n"
+	//				"\tPOS = %.2f %.2f %.2f\n"
+	//				"\tROT = %.2f %.2f %.2f\n"
+	//				"\tSHADOW = %d\n"
+	//				"END_MODELSET\n\n",
+	//				nType, pos.x, pos.y, pos.z,
+	//				rot.x, rot.y, rot.z, nShadow);
+	//		}
 
-			// 次のオブジェクトを代入
-			pObj = pObjNext;
-		}
-	}
+	//		// 次のオブジェクトを代入
+	//		pObj = pObjNext;
+	//	}
+	//}
 
 	fprintf(pFile, "\nEND_SCRIPT		# この行は絶対消さないこと！");
 

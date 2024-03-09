@@ -23,7 +23,7 @@ namespace
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CEnemyGolem::CEnemyGolem(int nPriority) : CEnemy(nPriority)
+CEnemyGolem::CEnemyGolem() : CEnemy()
 {
 	
 }

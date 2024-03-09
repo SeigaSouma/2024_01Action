@@ -24,7 +24,7 @@ namespace
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CEnemyGobelin::CEnemyGobelin(int nPriority) : CEnemy(nPriority)
+CEnemyGobelin::CEnemyGobelin() : CEnemy()
 {
 
 }

@@ -24,7 +24,7 @@ int CObjectX::m_nNumAll = 0;	// 総数
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CObjectX::CObjectX(int nPriority) : CObject(nPriority)
+CObjectX::CObjectX(int nPriority, const LAYER layer) : CObject(nPriority, layer)
 {
 	D3DXMatrixIdentity(&m_mtxWorld);				// ワールドマトリックス
 	SetScale(MyLib::Vector3(1.0f, 1.0f, 1.0f));		// スケール

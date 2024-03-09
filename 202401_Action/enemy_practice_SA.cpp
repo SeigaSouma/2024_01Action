@@ -9,7 +9,7 @@
 //==========================================================================
 // コンストラクタ
 //==========================================================================
-CEnemyPractice_SA::CEnemyPractice_SA(int nPriority) : CEnemyPractice(nPriority)
+CEnemyPractice_SA::CEnemyPractice_SA() : CEnemyPractice()
 {
 
 }
